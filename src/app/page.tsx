@@ -42,36 +42,42 @@ async function getGlobalStats() {
 }
 
 async function getSchedule() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('platform_events')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order')
-  return data ?? []
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('platform_events')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order')
+    return data ?? []
+  } catch { return [] }
 }
 
 async function getCalendarEvents() {
-  const supabase = await createClient()
-  const today = new Date().toISOString().split('T')[0]
-  const { data } = await supabase
-    .from('calendar_events')
-    .select('*')
-    .eq('is_active', true)
-    .gte('event_date', today)
-    .order('event_date')
-    .limit(6)
-  return data ?? []
+  try {
+    const supabase = await createClient()
+    const today = new Date().toISOString().split('T')[0]
+    const { data } = await supabase
+      .from('calendar_events')
+      .select('*')
+      .eq('is_active', true)
+      .gte('event_date', today)
+      .order('event_date')
+      .limit(6)
+    return data ?? []
+  } catch { return [] }
 }
 
 async function getSpotifyStats() {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('platform_stats')
-    .select('spotify_monthly_streams, spotify_total_streams, spotify_profile_url')
-    .eq('id', 1)
-    .single()
-  return data ?? null
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('platform_stats')
+      .select('spotify_monthly_streams, spotify_total_streams, spotify_profile_url')
+      .eq('id', 1)
+      .single()
+    return data ?? null
+  } catch { return null }
 }
 
 export default async function HomePage() {

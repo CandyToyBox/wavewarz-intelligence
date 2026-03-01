@@ -83,20 +83,24 @@ async function getBattlesForMedia(supabase: Awaited<ReturnType<typeof createAdmi
 }
 
 async function getCalendarEvents(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
-  const { data } = await supabase
-    .from('calendar_events')
-    .select('id,title,description,event_date,event_time,event_type,location_or_link,is_featured,is_active')
-    .order('event_date', { ascending: true })
-  return data ?? []
+  try {
+    const { data } = await supabase
+      .from('calendar_events')
+      .select('id,title,description,event_date,event_time,event_type,location_or_link,is_featured,is_active')
+      .order('event_date', { ascending: true })
+    return data ?? []
+  } catch { return [] }
 }
 
 async function getPlatformStats(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
-  const { data } = await supabase
-    .from('platform_stats')
-    .select('spotify_monthly_streams,spotify_total_streams,spotify_profile_url')
-    .eq('id', 1)
-    .single()
-  return data ?? { spotify_monthly_streams: 0, spotify_total_streams: 0, spotify_profile_url: null }
+  try {
+    const { data } = await supabase
+      .from('platform_stats')
+      .select('spotify_monthly_streams,spotify_total_streams,spotify_profile_url')
+      .eq('id', 1)
+      .single()
+    return data ?? { spotify_monthly_streams: 0, spotify_total_streams: 0, spotify_profile_url: null }
+  } catch { return { spotify_monthly_streams: 0, spotify_total_streams: 0, spotify_profile_url: null } }
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
