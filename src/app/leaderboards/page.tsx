@@ -41,6 +41,17 @@ const BOARDS = [
     desc: 'Community battle competitors and sides ranked by outcomes. Battle artwork displayed per entry.',
     stats: ['Win / Loss record', 'Total SOL volume', 'Win rate %', 'Battle count'],
   },
+  {
+    href: '/leaderboards/traders',
+    badge: 'TRADERS',
+    badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/40',
+    borderColor: 'border-purple-500/20 hover:border-purple-500/50',
+    accentColor: 'text-purple-400',
+    number: '04',
+    title: 'Trader Rankings',
+    desc: 'Fans and speculators ranked by trading volume, win rate, and net P&L. Click any wallet to see live on-chain holdings.',
+    stats: ['Total SOL traded', 'Battle win rate', 'Net P&L', 'Live on-chain scan'],
+  },
 ]
 
 export default function LeaderboardsHub() {
