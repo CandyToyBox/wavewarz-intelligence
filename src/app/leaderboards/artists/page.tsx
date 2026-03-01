@@ -32,6 +32,8 @@ async function getData() {
       .from('battles')
       .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,event_subtype,status')
       .eq('is_main_battle', true)
+      .eq('is_community_battle', false)
+      .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
       .neq('event_subtype', 'charity')
       .neq('event_subtype', 'spotlight')

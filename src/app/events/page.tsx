@@ -274,61 +274,6 @@ export default async function EventsPage() {
           </div>
         </div>
 
-        {/* Overhead Comparison */}
-        <div className="rounded-xl border border-border bg-[#111827] p-6">
-          <h3 className="text-lg font-rajdhani font-bold text-white mb-5 tracking-wide">
-            The Overhead Trap — Bypassed
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <OverheadCompare
-              label="Traditional Charity"
-              reach="&lt;10¢ per $1"
-              desc="Administrative layers, fundraising overhead, and banking fees can consume 90%+ of donations before they reach the cause."
-              bad
-            />
-            <OverheadCompare
-              label="Credit Card Processor"
-              reach="95–97¢ per $1"
-              desc="Standard payment rails charge 3–5% per transaction. On a $10,000 raise, that's $300–$500 gone before it arrives."
-              bad
-            />
-            <OverheadCompare
-              label="WaveWarZ Benefit Battle"
-              reach="~$1.00 per $1"
-              desc="Solana network fees are <$0.01 per transaction. Platform fees are fully waived and redirected. $1 given = $1 received."
-              good
-            />
-          </div>
-
-          {/* Visual bar */}
-          <div className="mt-6 space-y-3">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest">Impact per $1.00 donated</p>
-            <div className="space-y-2">
-              <EfficiencyBar label="Traditional Charity" pct={10} color="red" />
-              <EfficiencyBar label="Credit Card (best case)" pct={97} color="amber" />
-              <EfficiencyBar label="WaveWarZ on Solana" pct={100} color="green" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ── */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <HowItWorksCard
-          step="01"
-          title="Platform Fee Waiver"
-          desc="WaveWarZ's 0.5% trading fee and 3% settlement bonus — normally platform revenue — are fully redirected to the designated charity wallet during Benefit Battles."
-        />
-        <HowItWorksCard
-          step="02"
-          title="Blockchain Transparency"
-          desc="Every SOL transfer is recorded on Solana Mainnet. Anyone can audit the full ledger via Solscan. No trust required — verify it yourself."
-        />
-        <HowItWorksCard
-          step="03"
-          title="Direct Giving Zone"
-          desc="Donation buttons on each battle page route SOL peer-to-peer, directly to the charity or artist wallet. WaveWarZ never touches the funds."
-        />
       </section>
 
       {/* ── FIAT BRIDGE ── */}
@@ -475,6 +420,64 @@ export default async function EventsPage() {
         </div>
       </section>
 
+      {/* ── THE OVERHEAD TRAP ── */}
+      <section>
+        <div className="rounded-xl border border-border bg-[#111827] p-6">
+          <h3 className="text-lg font-rajdhani font-bold text-white mb-5 tracking-wide">
+            The Overhead Trap — Bypassed
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <OverheadCompare
+              label="Traditional Charity"
+              reach="&lt;10¢ per $1"
+              desc="Administrative layers, fundraising overhead, and banking fees can consume 90%+ of donations before they reach the cause."
+              bad
+            />
+            <OverheadCompare
+              label="Credit Card Processor"
+              reach="95–97¢ per $1"
+              desc="Standard payment rails charge 3–5% per transaction. On a $10,000 raise, that's $300–$500 gone before it arrives."
+              bad
+            />
+            <OverheadCompare
+              label="WaveWarZ Benefit Battle"
+              reach="~$1.00 per $1"
+              desc="Solana network fees are <$0.01 per transaction. Platform fees are fully waived and redirected. $1 given = $1 received."
+              good
+            />
+          </div>
+
+          {/* Visual bar */}
+          <div className="mt-6 space-y-3">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest">Impact per $1.00 donated</p>
+            <div className="space-y-2">
+              <EfficiencyBar label="Traditional Charity" pct={10} color="red" />
+              <EfficiencyBar label="Credit Card (best case)" pct={97} color="amber" />
+              <EfficiencyBar label="WaveWarZ on Solana" pct={100} color="green" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <HowItWorksCard
+          step="01"
+          title="Platform Fee Waiver"
+          desc="WaveWarZ's 0.5% trading fee and 3% settlement bonus — normally platform revenue — are fully redirected to the designated charity wallet during Benefit Battles."
+        />
+        <HowItWorksCard
+          step="02"
+          title="Blockchain Transparency"
+          desc="Every SOL transfer is recorded on Solana Mainnet. Anyone can audit the full ledger via Solscan. No trust required — verify it yourself."
+        />
+        <HowItWorksCard
+          step="03"
+          title="Direct Giving Zone"
+          desc="Donation buttons on each battle page route SOL peer-to-peer, directly to the charity or artist wallet. WaveWarZ never touches the funds."
+        />
+      </section>
+
       {/* ── ALL OTHER BENEFIT BATTLES (DB-driven, not manually categorized above) ── */}
       {charityBattles.filter(b => {
         const mo = new Date(b.created_at).getMonth()
@@ -551,12 +554,16 @@ export default async function EventsPage() {
             month: 'short', day: 'numeric', ...(y ? { year: 'numeric' } : {}),
           })
 
+          // Pick the best available image: battle art from any round, or null
+          const eventImageUrl = battles.find(b => b.image_url)?.image_url ?? null
+
           return {
             eventName,
             totalRounds: battles.length,
             firstDateFormatted: fmt(firstDateStr),
             lastDateFormatted: firstDateStr !== lastDateStr ? fmt(lastDateStr) : null,
             youtubeReplay,
+            imageUrl: eventImageUrl,
             totalVolumeFormatted: formatSol(totalVolume),
             totalVolumeUsd: solToUsd(totalVolume, solPrice),
             avgRoundVolumeFormatted: formatSol(avgVol),

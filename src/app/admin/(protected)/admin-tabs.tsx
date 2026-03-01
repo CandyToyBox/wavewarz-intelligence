@@ -2,14 +2,20 @@
 
 import { useState } from 'react'
 
-type Tab = 'judging' | 'artists' | 'media'
+type Tab = 'judging' | 'artists' | 'media' | 'events' | 'stats'
 
-export function AdminTabs({ judgingPanel, artistPanel, mediaPanel, pendingCount, artistCount }: {
+export function AdminTabs({
+  judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
+  pendingCount, artistCount, eventCount,
+}: {
   judgingPanel: React.ReactNode
   artistPanel: React.ReactNode
   mediaPanel: React.ReactNode
+  eventsPanel: React.ReactNode
+  statsPanel: React.ReactNode
   pendingCount: number
   artistCount: number
+  eventCount: number
 }) {
   const [tab, setTab] = useState<Tab>('judging')
 
@@ -32,12 +38,24 @@ export function AdminTabs({ judgingPanel, artistPanel, mediaPanel, pendingCount,
       badge: 'YouTube · Images',
       badgeColor: 'text-[#7ec1fb] border-[#7ec1fb]/40 bg-[#7ec1fb]/10',
     },
+    {
+      id: 'events',
+      label: 'Events Calendar',
+      badge: eventCount > 0 ? `${eventCount} events` : undefined,
+      badgeColor: 'text-amber-400 border-amber-500/40 bg-amber-500/10',
+    },
+    {
+      id: 'stats',
+      label: 'Platform Stats',
+      badge: 'Spotify',
+      badgeColor: 'text-[#1DB954] border-[#1DB954]/40 bg-[#1DB954]/10',
+    },
   ]
 
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex items-center gap-1 border-b border-border mb-6 pb-1">
+      <div className="flex items-center gap-1 border-b border-border mb-6 pb-1 flex-wrap">
         {tabs.map(t => (
           <button
             key={t.id}
@@ -82,6 +100,24 @@ export function AdminTabs({ judgingPanel, artistPanel, mediaPanel, pendingCount,
             Add YouTube replay links, stream links, and battle artwork. Green dot = already set. Filter by type or show only battles missing media.
           </p>
           {mediaPanel}
+        </div>
+      )}
+      {tab === 'events' && (
+        <div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Manage upcoming events shown on the homepage calendar. Add battles, X Spaces, community meetups, or any other event.
+            Featured events get a green highlight. Hidden events are saved but not shown on the site.
+          </p>
+          {eventsPanel}
+        </div>
+      )}
+      {tab === 'stats' && (
+        <div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Update platform stats shown on the homepage. Spotify numbers must be entered manually from Spotify for Artists.
+            Set both stream counts to 0 to hide the Spotify section entirely.
+          </p>
+          {statsPanel}
         </div>
       )}
     </div>

@@ -33,6 +33,7 @@ export type SpotlightGroup = {
   firstDateFormatted: string
   lastDateFormatted: string | null
   youtubeReplay: string | null
+  imageUrl: string | null
   // Aggregated display strings
   totalVolumeFormatted: string
   totalVolumeUsd: string
@@ -46,18 +47,73 @@ export type SpotlightGroup = {
 export function SpotlightEventCard({ group }: { group: SpotlightGroup }) {
   const [expanded, setExpanded] = useState(false)
 
+  // Build avatar initials for the two main artists (first two in sorted list)
+  const [a1, a2] = group.artists
+  const initials = (name: string) => name.trim().charAt(0).toUpperCase()
+
   return (
     <div className="rounded-xl border border-[#7ec1fb]/20 bg-[#111827] overflow-hidden">
+
+      {/* ── VISUAL HEADER — battle art or artist avatars ── */}
+      {group.imageUrl ? (
+        // Battle artwork from DB
+        <div className="relative h-36 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={group.imageUrl}
+            alt={group.eventName}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/40 to-transparent" />
+          <div className="absolute bottom-3 left-4 flex items-center gap-2">
+            <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest backdrop-blur-sm">
+              ARTIST SPOTLIGHT
+            </Badge>
+          </div>
+        </div>
+      ) : (
+        // Fallback: VS-style avatar strip
+        <div className="flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-[#7ec1fb]/5 via-[#0d1321] to-[#95fe7c]/5 border-b border-[#7ec1fb]/10">
+          {a1 && (
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="w-14 h-14 rounded-full bg-[#7ec1fb]/15 border-2 border-[#7ec1fb]/40 flex items-center justify-center">
+                <span className="font-rajdhani font-bold text-xl text-[#7ec1fb]">{initials(a1.name)}</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground font-medium truncate max-w-[72px] text-center">{a1.name}</span>
+            </div>
+          )}
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-xs font-rajdhani font-bold text-muted-foreground/60 uppercase tracking-widest">vs</span>
+          </div>
+          {a2 && (
+            <div className="flex flex-col items-center gap-1.5">
+              <div className="w-14 h-14 rounded-full bg-[#95fe7c]/15 border-2 border-[#95fe7c]/40 flex items-center justify-center">
+                <span className="font-rajdhani font-bold text-xl text-[#95fe7c]">{initials(a2.name)}</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground font-medium truncate max-w-[72px] text-center">{a2.name}</span>
+            </div>
+          )}
+          {group.artists.length > 2 && (
+            <span className="text-[10px] text-muted-foreground ml-1">+{group.artists.length - 2} more</span>
+          )}
+        </div>
+      )}
+
       {/* ── FRONT / SUMMARY ── */}
       <div className="p-6">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest">
-                ARTIST SPOTLIGHT
-              </Badge>
-              <span className="text-xs text-muted-foreground">Excluded from rankings</span>
-            </div>
+            {!group.imageUrl && (
+              <div className="flex items-center gap-2 mb-2">
+                <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest">
+                  ARTIST SPOTLIGHT
+                </Badge>
+                <span className="text-xs text-muted-foreground">Excluded from rankings</span>
+              </div>
+            )}
+            {group.imageUrl && (
+              <span className="text-xs text-muted-foreground block mb-1">Excluded from rankings</span>
+            )}
             <h3 className="text-xl font-rajdhani font-bold text-white tracking-wide leading-tight">
               {group.eventName}
             </h3>

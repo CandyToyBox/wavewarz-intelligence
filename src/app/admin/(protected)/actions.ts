@@ -139,3 +139,101 @@ export async function deleteArtistProfile(artistId: string): Promise<{ ok: boole
   revalidatePath('/admin')
   return { ok: true }
 }
+
+// ─── Calendar Events ──────────────────────────────────────────────────────────
+
+type CalendarEventRow = {
+  id: string
+  title: string
+  description: string | null
+  event_date: string
+  event_time: string | null
+  event_type: string
+  location_or_link: string | null
+  is_featured: boolean
+  is_active: boolean
+}
+
+function formDataToCalendarEvent(fd: FormData) {
+  return {
+    title: String(fd.get('title') ?? '').trim(),
+    description: String(fd.get('description') ?? '').trim() || null,
+    event_date: String(fd.get('event_date') ?? ''),
+    event_time: String(fd.get('event_time') ?? '').trim() || null,
+    event_type: String(fd.get('event_type') ?? 'BATTLE'),
+    location_or_link: String(fd.get('location_or_link') ?? '').trim() || null,
+    is_featured: fd.get('is_featured') === 'on',
+    is_active: fd.get('is_active') === 'on',
+  }
+}
+
+export async function addCalendarEvent(fd: FormData): Promise<{ event?: CalendarEventRow; error?: string }> {
+  const supabase = await createAdminClient()
+  const payload = formDataToCalendarEvent(fd)
+  if (!payload.title || !payload.event_date) return { error: 'Title and date are required.' }
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .insert(payload)
+    .select()
+    .single()
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return { event: data as CalendarEventRow }
+}
+
+export async function updateCalendarEvent(id: string, fd: FormData): Promise<{ event?: CalendarEventRow; error?: string }> {
+  const supabase = await createAdminClient()
+  const payload = formDataToCalendarEvent(fd)
+  if (!payload.title || !payload.event_date) return { error: 'Title and date are required.' }
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .update({ ...payload, updated_at: new Date().toISOString() })
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return { event: data as CalendarEventRow }
+}
+
+export async function deleteCalendarEvent(id: string): Promise<{ error?: string }> {
+  const supabase = await createAdminClient()
+  const { error } = await supabase
+    .from('calendar_events')
+    .delete()
+    .eq('id', id)
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return {}
+}
+
+// ─── Platform Stats ───────────────────────────────────────────────────────────
+
+type PlatformStatsRow = {
+  spotify_monthly_streams: number
+  spotify_total_streams: number
+  spotify_profile_url: string | null
+}
+
+export async function updatePlatformStats(fd: FormData): Promise<{ stats?: PlatformStatsRow; error?: string }> {
+  const supabase = await createAdminClient()
+  const payload = {
+    spotify_monthly_streams: parseInt(String(fd.get('spotify_monthly_streams') ?? '0')) || 0,
+    spotify_total_streams: parseInt(String(fd.get('spotify_total_streams') ?? '0')) || 0,
+    spotify_profile_url: String(fd.get('spotify_profile_url') ?? '').trim() || null,
+    updated_at: new Date().toISOString(),
+  }
+  const { data, error } = await supabase
+    .from('platform_stats')
+    .update(payload)
+    .eq('id', 1)
+    .select('spotify_monthly_streams, spotify_total_streams, spotify_profile_url')
+    .single()
+  if (error) return { error: error.message }
+  revalidatePath('/')
+  revalidatePath('/admin')
+  return { stats: data as PlatformStatsRow }
+}

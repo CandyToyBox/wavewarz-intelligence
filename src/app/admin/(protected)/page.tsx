@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { JudgingPanel } from './judging-panel'
 import { ArtistPanel } from './artist-panel'
 import { MediaPanel } from './media-panel'
+import { CalendarPanel } from './calendar-panel'
+import { StatsPanel } from './stats-panel'
 import { AdminTabs } from './admin-tabs'
 
 // ─── Launch Fee Constants (Exact — confirmed 2026-02-28) ──────────────────────
@@ -80,15 +82,34 @@ async function getBattlesForMedia(supabase: Awaited<ReturnType<typeof createAdmi
   return data ?? []
 }
 
+async function getCalendarEvents(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
+  const { data } = await supabase
+    .from('calendar_events')
+    .select('id,title,description,event_date,event_time,event_type,location_or_link,is_featured,is_active')
+    .order('event_date', { ascending: true })
+  return data ?? []
+}
+
+async function getPlatformStats(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
+  const { data } = await supabase
+    .from('platform_stats')
+    .select('spotify_monthly_streams,spotify_total_streams,spotify_profile_url')
+    .eq('id', 1)
+    .single()
+  return data ?? { spotify_monthly_streams: 0, spotify_total_streams: 0, spotify_profile_url: null }
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AdminPage() {
   const supabase = await createAdminClient()
-  const [revenue, mainEvents, artistProfiles, mediaBattles, solPrice] = await Promise.all([
+  const [revenue, mainEvents, artistProfiles, mediaBattles, calendarEvents, platformStats, solPrice] = await Promise.all([
     getRevenueData(supabase),
     getMainEventsForJudging(supabase),
     getArtistProfiles(supabase),
     getBattlesForMedia(supabase),
+    getCalendarEvents(supabase),
+    getPlatformStats(supabase),
     getLiveSolPrice(),
   ])
 
@@ -160,8 +181,11 @@ export default async function AdminPage() {
         judgingPanel={<JudgingPanel battles={mainEvents} />}
         artistPanel={<ArtistPanel artists={artistProfiles} />}
         mediaPanel={<MediaPanel battles={mediaBattles} />}
+        eventsPanel={<CalendarPanel events={calendarEvents} />}
+        statsPanel={<StatsPanel stats={platformStats} />}
         pendingCount={revenue.pendingJudging.length}
         artistCount={artistProfiles.length}
+        eventCount={calendarEvents.length}
       />
 
     </div>
