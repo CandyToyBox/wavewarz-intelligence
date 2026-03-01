@@ -1,26 +1,99 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* WaveWarZ brand tokens */
+  --color-navy: #0d1321;
+  --color-waveblue: #7ec1fb;
+  --color-actiongreen: #95fe7c;
+  --color-iceblue: #daecfd;
+  --color-grey: #989898;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.5rem;
+
+  /* Deep Space Navy theme — always dark, no light mode */
+  --background: #0d1321;
+  --foreground: #ffffff;
+
+  --card: #111827;
+  --card-foreground: #ffffff;
+
+  --popover: #111827;
+  --popover-foreground: #ffffff;
+
+  /* Action Green as primary */
+  --primary: #95fe7c;
+  --primary-foreground: #0d1321;
+
+  /* Wave Blue as secondary */
+  --secondary: #7ec1fb;
+  --secondary-foreground: #0d1321;
+
+  --muted: #1f2937;
+  --muted-foreground: #989898;
+
+  --accent: #7ec1fb;
+  --accent-foreground: #0d1321;
+
+  --destructive: #ef4444;
+
+  --border: #1f2937;
+  --input: #1f2937;
+  --ring: #95fe7c;
+
+  /* Chart colors — no purple */
+  --chart-1: #95fe7c;  /* action green */
+  --chart-2: #7ec1fb;  /* wave blue */
+  --chart-3: #daecfd;  /* ice blue */
+  --chart-4: #f59e0b;  /* amber */
+  --chart-5: #ef4444;  /* red */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+    /* Subtle grid pattern — digital arena feel */
+    background-image:
+      linear-gradient(to right, #1a2035 1px, transparent 1px),
+      linear-gradient(to bottom, #1a2035 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-rajdhani), sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+  }
 }
