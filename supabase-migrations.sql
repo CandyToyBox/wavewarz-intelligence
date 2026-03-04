@@ -35,9 +35,13 @@ CREATE TABLE IF NOT EXISTS calendar_events (
   location_or_link text,
   is_featured   boolean DEFAULT false,
   is_active     boolean DEFAULT true,
+  flyer_url     text,                     -- YouTube-thumbnail-sized battle flyer image URL
   created_at    timestamptz DEFAULT now(),
   updated_at    timestamptz DEFAULT now()
 );
+
+-- Add flyer_url to existing calendar_events tables (run if table already exists)
+ALTER TABLE calendar_events ADD COLUMN IF NOT EXISTS flyer_url text;
 
 
 -- 3. Platform Stats (Spotify + manual global numbers)

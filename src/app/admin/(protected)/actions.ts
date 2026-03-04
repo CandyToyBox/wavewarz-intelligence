@@ -150,6 +150,7 @@ type CalendarEventRow = {
   event_time: string | null
   event_type: string
   location_or_link: string | null
+  flyer_url: string | null
   is_featured: boolean
   is_active: boolean
 }
@@ -162,6 +163,7 @@ function formDataToCalendarEvent(fd: FormData) {
     event_time: String(fd.get('event_time') ?? '').trim() || null,
     event_type: String(fd.get('event_type') ?? 'BATTLE'),
     location_or_link: String(fd.get('location_or_link') ?? '').trim() || null,
+    flyer_url: String(fd.get('flyer_url') ?? '').trim() || null,
     is_featured: fd.get('is_featured') === 'on',
     is_active: fd.get('is_active') === 'on',
   }

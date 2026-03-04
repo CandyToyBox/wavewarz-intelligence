@@ -108,7 +108,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         <div className="flex flex-col items-center text-center gap-2">
           <SongAvatar title={data.winnerIsA ? data.song2Title : data.song1Title}
             artUrl={data.winnerIsA ? data.song2ArtUrl : data.song1ArtUrl}
-            color={data.winnerIsA ? data.song2Color : data.song1Color} size="md" dim />
+            color={data.winnerIsA ? data.song2Color : data.song1Color} size="xl" dim />
           <p className="text-sm font-rajdhani font-bold text-white/60 leading-tight px-2">
             {data.winnerIsA ? data.song2Title : data.song1Title}
           </p>
@@ -141,7 +141,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         <div className="flex flex-col items-center text-center gap-2">
           <SongAvatar title={data.winnerIsA ? data.song1Title : data.song2Title}
             artUrl={data.winnerIsA ? data.song1ArtUrl : data.song2ArtUrl}
-            color={data.winnerIsA ? data.song1Color : data.song2Color} size="md" glow />
+            color={data.winnerIsA ? data.song1Color : data.song2Color} size="xl" glow />
           <p className="text-sm font-rajdhani font-bold text-white leading-tight px-2">
             {data.winnerIsA ? data.song1Title : data.song2Title}
           </p>
@@ -257,10 +257,10 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
 function SongAvatar({ title, artUrl, color, size = 'md', glow, dim }: {
-  title: string; artUrl?: string | null; color: string; size?: 'sm' | 'md' | 'lg'
+  title: string; artUrl?: string | null; color: string; size?: 'sm' | 'md' | 'lg' | 'xl'
   glow?: boolean; dim?: boolean
 }) {
-  const sizes = { sm: 'w-10 h-10 text-base', md: 'w-16 h-16 text-2xl', lg: 'w-20 h-20 text-3xl' }
+  const sizes = { sm: 'w-10 h-10 text-base', md: 'w-16 h-16 text-2xl', lg: 'w-20 h-20 text-3xl', xl: 'w-28 h-28 text-4xl' }
   const [imgFailed, setImgFailed] = useState(false)
 
   if (artUrl && !imgFailed) {

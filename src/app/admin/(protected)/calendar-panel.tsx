@@ -11,6 +11,7 @@ type CalendarEvent = {
   event_time: string | null
   event_type: string
   location_or_link: string | null
+  flyer_url: string | null
   is_featured: boolean
   is_active: boolean
 }
@@ -96,6 +97,15 @@ function EventForm({
             rows={2}
             className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb] resize-none"
             placeholder="Optional event description"
+          />
+        </div>
+        <div className="sm:col-span-2">
+          <label className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Battle Flyer URL <span className="text-muted-foreground/50 normal-case">(YouTube thumbnail size 1280×720)</span></label>
+          <input
+            name="flyer_url"
+            defaultValue={initial?.flyer_url ?? ''}
+            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
+            placeholder="https://… (paste image URL)"
           />
         </div>
         <div className="flex items-center gap-4">
@@ -251,6 +261,14 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
                   <p className="text-[10px] text-[#7ec1fb] mt-1 truncate">{evt.location_or_link}</p>
                 )}
               </div>
+              {evt.flyer_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={evt.flyer_url}
+                  alt="Battle flyer"
+                  className="w-32 h-[72px] object-cover rounded-lg border border-border shrink-0"
+                />
+              )}
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setEditId(evt.id)}

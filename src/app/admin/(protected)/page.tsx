@@ -86,7 +86,7 @@ async function getCalendarEvents(supabase: Awaited<ReturnType<typeof createAdmin
   try {
     const { data } = await supabase
       .from('calendar_events')
-      .select('id,title,description,event_date,event_time,event_type,location_or_link,is_featured,is_active')
+      .select('id,title,description,event_date,event_time,event_type,location_or_link,flyer_url,is_featured,is_active')
       .order('event_date', { ascending: true })
     return data ?? []
   } catch { return [] }
