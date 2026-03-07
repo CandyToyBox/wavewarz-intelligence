@@ -119,10 +119,11 @@ export async function POST(request: NextRequest) {
         .eq('battle_id', battleId)
 
       if (hydrateError) {
-        console.error('[webhook] hydrate update error:', hydrateError.message)
+        console.error('[webhook] hydrate update error:', JSON.stringify(hydrateError))
+        console.error('[webhook] hydrate update fields:', JSON.stringify(hydrated))
         // Non-fatal: metadata already saved
       } else {
-        console.log(`[webhook] hydrated battle ${battleId} from chain`)
+        console.log(`[webhook] hydrated battle ${battleId} from chain`, JSON.stringify(hydrated))
       }
     } else {
       console.warn(`[webhook] onchain hydration returned null for battle ${battleId}`)
