@@ -105,12 +105,14 @@ export async function POST(request: NextRequest) {
           const a1pool = onchain.artist1_pool > 0 ? onchain.artist1_pool : (battle.artist1_pool as number ?? 0)
           const a2pool = onchain.artist2_pool > 0 ? onchain.artist2_pool : (battle.artist2_pool as number ?? 0)
           hydrated.winner_decided = true
-          hydrated.winner_artist_a = a1pool >= a2pool
+          // winner_artist_a is stored as numeric (1.0/0.0) not boolean
+          hydrated.winner_artist_a = (a1pool >= a2pool) ? 1 : 0
         }
         // Main/Community: do NOT auto-decide — requires admin judging panel
       } else if (onchain.winner_decided && onchain.winner_artist_a !== null) {
         hydrated.winner_decided = true
-        hydrated.winner_artist_a = onchain.winner_artist_a
+        // winner_artist_a is stored as numeric (1.0/0.0) not boolean
+        hydrated.winner_artist_a = onchain.winner_artist_a ? 1 : 0
       }
 
       const { error: hydrateError } = await supabase
@@ -119,11 +121,10 @@ export async function POST(request: NextRequest) {
         .eq('battle_id', battleId)
 
       if (hydrateError) {
-        console.error('[webhook] hydrate update error:', JSON.stringify(hydrateError))
-        console.error('[webhook] hydrate update fields:', JSON.stringify(hydrated))
+        console.error('[webhook] hydrate update error:', hydrateError.code, hydrateError.message)
         // Non-fatal: metadata already saved
       } else {
-        console.log(`[webhook] hydrated battle ${battleId} from chain`, JSON.stringify(hydrated))
+        console.log(`[webhook] hydrated battle ${battleId} from chain`)
       }
     } else {
       console.warn(`[webhook] onchain hydration returned null for battle ${battleId}`)
