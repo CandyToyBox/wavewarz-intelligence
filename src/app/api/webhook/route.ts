@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     is_community_battle:             payload.is_community_battle ?? false,
     is_quick_battle:                 isQuickBattle,
     is_test_battle:                  payload.is_test_battle ?? false,
-    is_main_battle:                  payload.is_main_battle ?? false,
+    // is_main_battle is a GENERATED column — computed by DB, never inserted
     community_round_id:              payload.community_round_id,
     quick_battle_queue_id:           payload.quick_battle_queue_id,
     split_wallet_address:            payload.split_wallet_address,
