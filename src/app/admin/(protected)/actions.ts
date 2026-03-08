@@ -17,7 +17,7 @@ export async function submitJudging(payload: JudgingPayload): Promise<{ ok: bool
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('battles')
-    .update({ winner_artist_a: payload.winner === 'a', winner_decided: true })
+    .update({ winner_artist_a: payload.winner === 'a' ? 1 : 0, winner_decided: true })
     .eq('battle_id', payload.battleId)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin')
