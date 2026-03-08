@@ -116,9 +116,15 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   const allBattles = [...(a1 ?? []), ...(a2 ?? [])] as Battle[]
   if (allBattles.length === 0) return null
 
-  // Derive display name from most recent battle
+  // Derive display name — prefer non-quick battles (quick battles use song titles, not artist names)
+  const nameFromMainBattle =
+    allBattles.filter(b => !b.is_quick_battle)
+      .map(b => b.artist1_wallet === wallet ? b.artist1_name : b.artist2_name)
+      .find(n => n?.trim())
+
   const displayName =
     (profileData?.display_name as string) ??
+    nameFromMainBattle ??
     (a1?.[0]?.artist1_name || a2?.[0]?.artist2_name || 'Unknown Artist')
 
   const mainEventBattles = allBattles.filter(b => b.is_main_battle && b.event_subtype === 'standard')
@@ -138,8 +144,10 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     const p1 = b.artist1_pool ?? 0
     const p2 = b.artist2_pool ?? 0
 
-    // Always derive winner from pool values — the onchain source of truth.
-    const artistAWon = p1 >= p2
+    // For judged battles use winner_artist_a; fall back to pool for quick/undecided.
+    const artistAWon = (b.winner_decided && b.winner_artist_a !== null)
+      ? Boolean(b.winner_artist_a)
+      : p1 >= p2
     const won = isArtistA ? artistAWon : !artistAWon
     const myVolume = isArtistA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
     const { loserPool } = getWinnerLoserPools(p1, p2, artistAWon)
@@ -468,7 +476,9 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
               const opponent = isArtistA ? b.artist2_name : b.artist1_name
               const p1 = b.artist1_pool ?? 0
               const p2 = b.artist2_pool ?? 0
-              const artistAWon = p1 >= p2
+              const artistAWon = (b.winner_decided && b.winner_artist_a !== null)
+                ? Boolean(b.winner_artist_a)
+                : p1 >= p2
               const won = isArtistA ? artistAWon : !artistAWon
               const totalVol = (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0)
               return (
