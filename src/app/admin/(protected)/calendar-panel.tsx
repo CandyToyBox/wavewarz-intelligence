@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { addCalendarEvent, updateCalendarEvent, deleteCalendarEvent } from './actions'
+import { useState, useTransition, useRef } from 'react'
+import { addCalendarEvent, updateCalendarEvent, deleteCalendarEvent, uploadCalendarFlyer } from './actions'
 
 type CalendarEvent = {
   id: string
@@ -35,6 +35,24 @@ function EventForm({
   onCancel: () => void
   loading: boolean
 }) {
+  const [flyerUrl, setFlyerUrl] = useState(initial?.flyer_url ?? '')
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    setUploadError(null)
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await uploadCalendarFlyer(fd)
+    setUploading(false)
+    if (res.error) { setUploadError(res.error); return }
+    setFlyerUrl(res.url!)
+  }
+
   return (
     <form
       onSubmit={e => { e.preventDefault(); onSubmit(new FormData(e.currentTarget)) }}
@@ -99,15 +117,56 @@ function EventForm({
             placeholder="Optional event description"
           />
         </div>
+
+        {/* Flyer upload */}
         <div className="sm:col-span-2">
-          <label className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Battle Flyer URL <span className="text-muted-foreground/50 normal-case">(YouTube thumbnail size 1280×720)</span></label>
+          <label className="block text-[10px] text-muted-foreground uppercase tracking-widest mb-1">
+            Battle Flyer <span className="text-muted-foreground/50 normal-case">(JPG/PNG · max 5MB · 1280×720 recommended)</span>
+          </label>
           <input
-            name="flyer_url"
-            defaultValue={initial?.flyer_url ?? ''}
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
-            placeholder="https://… (paste image URL)"
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleFileChange}
           />
+          {/* Hidden field carries the URL into FormData on submit */}
+          <input type="hidden" name="flyer_url" value={flyerUrl} />
+
+          {flyerUrl ? (
+            <div className="relative group w-full rounded-lg overflow-hidden border border-border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={flyerUrl} alt="Flyer preview" className="w-full h-40 object-cover" />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-bold text-white"
+              >
+                {uploading ? 'Uploading…' : 'Replace Image'}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="w-full h-24 rounded-lg border border-dashed border-border hover:border-[#7ec1fb] hover:bg-[#7ec1fb]/5 transition-colors flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
+            >
+              {uploading ? (
+                <span className="text-xs">Uploading…</span>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  <span className="text-xs">Click to upload flyer</span>
+                </>
+              )}
+            </button>
+          )}
+          {uploadError && <p className="text-[10px] text-red-400 mt-1">{uploadError}</p>}
         </div>
+
         <div className="flex items-center gap-4">
           <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
             <input
@@ -132,7 +191,7 @@ function EventForm({
       <div className="flex gap-2 pt-1">
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || uploading}
           className="px-4 py-2 bg-[#95fe7c] hover:bg-[#95fe7c]/90 text-[#0d1321] font-bold text-xs rounded-lg disabled:opacity-50"
         >
           {loading ? 'Saving…' : 'Save Event'}

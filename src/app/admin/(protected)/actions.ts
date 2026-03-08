@@ -24,6 +24,31 @@ export async function submitJudging(payload: JudgingPayload): Promise<{ ok: bool
   return { ok: true }
 }
 
+// ─── Calendar Flyer Upload ────────────────────────────────────────────────────
+
+export async function uploadCalendarFlyer(formData: FormData): Promise<{ url?: string; error?: string }> {
+  const file = formData.get('file') as File | null
+  if (!file || !file.size) return { error: 'No file provided' }
+
+  const supabase = await createAdminClient()
+
+  // Ensure bucket exists (no-op if already exists)
+  await supabase.storage.createBucket('flyers', { public: true, fileSizeLimit: 5 * 1024 * 1024 })
+
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+  const filename = `calendar/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+  const bytes = await file.arrayBuffer()
+  const { data, error } = await supabase.storage
+    .from('flyers')
+    .upload(filename, bytes, { contentType: file.type, upsert: false })
+
+  if (error) return { error: error.message }
+
+  const { data: { publicUrl } } = supabase.storage.from('flyers').getPublicUrl(data.path)
+  return { url: publicUrl }
+}
+
 // ─── Battle Media ─────────────────────────────────────────────────────────────
 
 export async function updateBattleMedia(payload: {
