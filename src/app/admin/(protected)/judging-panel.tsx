@@ -119,6 +119,9 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
           const date = new Date(battle.created_at).toLocaleDateString('en-US', {
             month: 'short', day: 'numeric', year: 'numeric',
           })
+          const time = new Date(battle.created_at).toLocaleTimeString('en-US', {
+            hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/New_York',
+          })
 
           return (
             <div
@@ -145,7 +148,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                       <span className="text-[10px] font-bold text-amber-400 border border-amber-400/40 px-2 py-0.5 rounded animate-pulse">LIVE</span>
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground">#{battle.battle_id} · {date}</p>
+                  <p className="text-xs text-muted-foreground">#{battle.battle_id} · {date} · {time} EST</p>
                 </div>
                 {/* SOL Vote (automatic) */}
                 <div className="shrink-0 text-right">
