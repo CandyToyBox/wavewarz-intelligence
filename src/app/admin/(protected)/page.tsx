@@ -7,6 +7,7 @@ import { ArtistPanel } from './artist-panel'
 import { MediaPanel } from './media-panel'
 import { CalendarPanel } from './calendar-panel'
 import { StatsPanel } from './stats-panel'
+import { ClipsPanel } from './clips-panel'
 import { AdminTabs } from './admin-tabs'
 
 // ─── Launch Fee Constants (Exact — confirmed 2026-02-28) ──────────────────────
@@ -92,6 +93,17 @@ async function getCalendarEvents(supabase: Awaited<ReturnType<typeof createAdmin
   } catch { return [] }
 }
 
+async function getClipsData(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
+  try {
+    const { data } = await supabase
+      .from('clips')
+      .select('id,created_at,caption,submitter_name,submitter_id,status,upvotes,downvotes,net_votes,pending_platforms,scheduled_at,postiz_post_id,captions,submitter_context')
+      .order('created_at', { ascending: false })
+      .limit(150)
+    return data ?? []
+  } catch { return [] }
+}
+
 async function getPlatformStats(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
   try {
     const { data } = await supabase
@@ -107,13 +119,14 @@ async function getPlatformStats(supabase: Awaited<ReturnType<typeof createAdminC
 
 export default async function AdminPage() {
   const supabase = await createAdminClient()
-  const [revenue, mainEvents, artistProfiles, mediaBattles, calendarEvents, platformStats, solPrice] = await Promise.all([
+  const [revenue, mainEvents, artistProfiles, mediaBattles, calendarEvents, platformStats, clipsData, solPrice] = await Promise.all([
     getRevenueData(supabase),
     getMainEventsForJudging(supabase),
     getArtistProfiles(supabase),
     getBattlesForMedia(supabase),
     getCalendarEvents(supabase),
     getPlatformStats(supabase),
+    getClipsData(supabase),
     getLiveSolPrice(),
   ])
 
@@ -182,11 +195,13 @@ export default async function AdminPage() {
 
       {/* ── TABBED SECTIONS ── */}
       <AdminTabs
+        clipsPanel={<ClipsPanel clips={clipsData as Parameters<typeof ClipsPanel>[0]['clips']} />}
         judgingPanel={<JudgingPanel battles={mainEvents} />}
         artistPanel={<ArtistPanel artists={artistProfiles} />}
         mediaPanel={<MediaPanel battles={mediaBattles} />}
         eventsPanel={<CalendarPanel events={calendarEvents} />}
         statsPanel={<StatsPanel stats={platformStats} />}
+        clipsPendingCount={clipsData.filter((c: { status: string }) => c.status === 'pending_approval').length}
         pendingCount={revenue.pendingJudging.length}
         artistCount={artistProfiles.length}
         eventCount={calendarEvents.length}

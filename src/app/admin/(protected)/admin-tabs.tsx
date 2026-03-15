@@ -2,24 +2,34 @@
 
 import { useState } from 'react'
 
-type Tab = 'judging' | 'artists' | 'media' | 'events' | 'stats'
+type Tab = 'clips' | 'judging' | 'artists' | 'media' | 'events' | 'stats'
 
 export function AdminTabs({
-  judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
-  pendingCount, artistCount, eventCount,
+  clipsPanel, judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
+  clipsPendingCount, pendingCount, artistCount, eventCount,
 }: {
+  clipsPanel: React.ReactNode
   judgingPanel: React.ReactNode
   artistPanel: React.ReactNode
   mediaPanel: React.ReactNode
   eventsPanel: React.ReactNode
   statsPanel: React.ReactNode
+  clipsPendingCount: number
   pendingCount: number
   artistCount: number
   eventCount: number
 }) {
-  const [tab, setTab] = useState<Tab>('judging')
+  const [tab, setTab] = useState<Tab>('clips')
 
   const tabs: { id: Tab; label: string; badge?: string; badgeColor?: string }[] = [
+    {
+      id: 'clips',
+      label: 'Community Clips',
+      badge: clipsPendingCount > 0 ? `${clipsPendingCount} pending` : 'Sir Clipz',
+      badgeColor: clipsPendingCount > 0
+        ? 'text-[#7ec1fb] border-[#7ec1fb]/40 bg-[#7ec1fb]/10'
+        : 'text-orange-400 border-orange-500/40 bg-orange-500/10',
+    },
     {
       id: 'judging',
       label: 'Main Event Judging',
@@ -77,6 +87,15 @@ export function AdminTabs({
       </div>
 
       {/* Tab content */}
+      {tab === 'clips' && (
+        <div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Clips submitted by the community via the WaveWarz Clips HQ Telegram group. Sir Clipz bot routes clips through voting → approval → Postiz scheduling.
+            Click a status card to filter. Expand captions to review AI-generated copy before it posts.
+          </p>
+          {clipsPanel}
+        </div>
+      )}
       {tab === 'judging' && (
         <div>
           <p className="text-sm text-muted-foreground mb-4">
