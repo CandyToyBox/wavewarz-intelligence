@@ -254,9 +254,9 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {calendarEvents.map((evt: {
-              id: string; title: string; description: string
-              event_date: string; event_time: string; event_type: string
-              location_or_link: string; is_featured: boolean
+              id: string; title: string; description: string | null
+              event_date: string; event_time: string | null; event_type: string
+              location_or_link: string | null; is_featured: boolean; flyer_url: string | null
             }) => {
               const typeConfig: Record<string, { color: string; label: string }> = {
                 BATTLE:    { color: '#95fe7c', label: 'Battle' },
@@ -271,34 +271,45 @@ export default async function HomePage() {
               return (
                 <div
                   key={evt.id}
-                  className={`rounded-xl border p-4 ${evt.is_featured ? 'border-[#95fe7c]/30 bg-[#95fe7c]/5' : 'border-border bg-card'}`}
+                  className={`rounded-xl border overflow-hidden ${evt.is_featured ? 'border-[#95fe7c]/30 bg-[#95fe7c]/5' : 'border-border bg-card'}`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border"
-                      style={{ color: cfg.color, borderColor: `${cfg.color}30`, backgroundColor: `${cfg.color}10` }}>
-                      {cfg.label}
-                    </span>
-                    {evt.is_featured && (
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c]">Featured</span>
+                  {/* Battle flyer — shown when uploaded */}
+                  {evt.flyer_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={evt.flyer_url}
+                      alt={`${evt.title} flyer`}
+                      className="w-full h-40 object-cover"
+                    />
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border"
+                        style={{ color: cfg.color, borderColor: `${cfg.color}30`, backgroundColor: `${cfg.color}10` }}>
+                        {cfg.label}
+                      </span>
+                      {evt.is_featured && (
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c]">Featured</span>
+                      )}
+                    </div>
+                    <p className="font-rajdhani font-bold text-white text-base leading-tight mb-1">{evt.title}</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mb-2">
+                      {dateFmt}{evt.event_time ? ` · ${evt.event_time}` : ''}
+                    </p>
+                    {evt.description && (
+                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3">{evt.description}</p>
+                    )}
+                    {evt.location_or_link && (
+                      evt.location_or_link.startsWith('http') ? (
+                        <a href={evt.location_or_link} target="_blank" rel="noreferrer"
+                          className="text-[10px] text-[#7ec1fb] hover:underline">
+                          Join / Details ↗
+                        </a>
+                      ) : (
+                        <p className="text-[10px] text-muted-foreground">{evt.location_or_link}</p>
+                      )
                     )}
                   </div>
-                  <p className="font-rajdhani font-bold text-white text-base leading-tight mb-1">{evt.title}</p>
-                  <p className="text-[10px] font-mono text-muted-foreground mb-2">
-                    {dateFmt}{evt.event_time ? ` · ${evt.event_time}` : ''}
-                  </p>
-                  {evt.description && (
-                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-3">{evt.description}</p>
-                  )}
-                  {evt.location_or_link && (
-                    evt.location_or_link.startsWith('http') ? (
-                      <a href={evt.location_or_link} target="_blank" rel="noreferrer"
-                        className="text-[10px] text-[#7ec1fb] hover:underline">
-                        Join / Details ↗
-                      </a>
-                    ) : (
-                      <p className="text-[10px] text-muted-foreground">{evt.location_or_link}</p>
-                    )
-                  )}
                 </div>
               )
             })}

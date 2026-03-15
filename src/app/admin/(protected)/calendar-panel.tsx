@@ -45,12 +45,17 @@ function EventForm({
     if (!file) return
     setUploading(true)
     setUploadError(null)
-    const fd = new FormData()
-    fd.append('file', file)
-    const res = await uploadCalendarFlyer(fd)
-    setUploading(false)
-    if (res.error) { setUploadError(res.error); return }
-    setFlyerUrl(res.url!)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      const res = await uploadCalendarFlyer(fd)
+      if (res.error) { setUploadError(res.error); return }
+      setFlyerUrl(res.url!)
+    } catch {
+      setUploadError('Upload failed. Check Supabase Storage configuration.')
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
