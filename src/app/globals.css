@@ -97,3 +97,63 @@
     letter-spacing: 0.025em;
   }
 }
+
+/* ── Shimmer skeleton animation ──────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #1a2035 25%,
+    #1f2d4a 50%,
+    #1a2035 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: 6px;
+}
+
+/* ── Staggered entrance animation ─────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.anim-fade-up {
+  animation: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* ── Glow pulse for live / hot items ──────────────────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0px #95fe7c40; }
+  50%       { box-shadow: 0 0 14px #95fe7c60; }
+}
+.glow-pulse-green {
+  animation: glow-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-blue {
+  0%, 100% { box-shadow: 0 0 0px #7ec1fb30; }
+  50%       { box-shadow: 0 0 14px #7ec1fb50; }
+}
+.glow-pulse-blue {
+  animation: glow-pulse-blue 2.4s ease-in-out infinite;
+}
+
+/* ── Scrollbar hide ────────────────────────────────────────────────────────── */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

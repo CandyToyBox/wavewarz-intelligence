@@ -180,6 +180,46 @@ function SongName({ song }: { song: RankedSong }) {
   )
 }
 
+// ── Rank icons for full leaderboard ──────────────────────────────────────────
+
+function RankCell({ position }: { position: number }) {
+  const icons = [
+    // Crown — #1
+    <svg key="crown" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" stroke="#f59e0b" strokeWidth="0.5" strokeLinejoin="round"/>
+      <path d="M4 18h16" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
+      <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
+      <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
+      <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
+    </svg>,
+    // Lightning — #2
+    <svg key="zap" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#7ec1fb" stroke="#7ec1fb" strokeWidth="0.5" strokeLinejoin="round"/>
+    </svg>,
+    // Flame — #3
+    <svg key="flame" width="14" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#f97316" stroke="#f97316" strokeWidth="0.5"/>
+      <path d="M12 13C12 13 10 14.5 10 16.5C10 18 11 19.5 12 20C13 19.5 14 18 14 16.5C14 14.5 12 13 12 13Z" fill="#fbbf24"/>
+    </svg>,
+  ]
+  const bgColors = ['#f59e0b', '#7ec1fb', '#f97316']
+  const tips = ['Chart King', 'High Momentum', 'Heating Up']
+
+  if (position < 3) {
+    return (
+      <Tip text={tips[position]}>
+        <div
+          className="w-6 h-6 rounded-md flex items-center justify-center"
+          style={{ background: `${bgColors[position]}18`, border: `1px solid ${bgColors[position]}35` }}
+        >
+          {icons[position]}
+        </div>
+      </Tip>
+    )
+  }
+  return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
+}
+
 // ── Main chart table ─────────────────────────────────────────────────────────
 
 function ChartTable({
@@ -191,8 +231,6 @@ function ChartTable({
   category: Exclude<Category, 'genre'>
   maxScore: number
 }) {
-  const RANK_LABEL = ['🥇', '🥈', '🥉']
-
   return (
     <div className="rounded-xl border border-border overflow-x-auto">
       <table className="w-full text-sm min-w-[540px]">
@@ -239,8 +277,8 @@ function ChartTable({
             const heat = relativeHeat(song.trendingScore, maxScore)
             return (
               <tr key={song.key} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
-                <td className="px-3 sm:px-4 py-3 text-muted-foreground font-mono text-xs">
-                  {i < 3 ? RANK_LABEL[i] : `${i + 1}`}
+                <td className="px-3 sm:px-4 py-3">
+                  <RankCell position={i} />
                 </td>
                 <td className="px-3 sm:px-4 py-3">
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -374,7 +412,9 @@ function GenreView({ songs }: { songs: RankedSong[] }) {
             <div className="divide-y divide-border/50">
               {genreSongs.slice(0, 5).map((song, i) => (
                 <div key={song.key} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
-                  <span className="text-xs text-muted-foreground font-mono w-5 shrink-0">{i + 1}</span>
+                  <div className="w-5 shrink-0 flex items-center justify-center">
+                    <RankCell position={i} />
+                  </div>
                   <SongAvatar song={song} size={8} />
                   <div className="flex-1 min-w-0">
                     {song.musicLink ? (

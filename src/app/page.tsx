@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 import Link from 'next/link'
+import { resolveAudiusTrack } from '@/lib/audius'
+import QBChartsPreview from '@/app/qb-charts-preview'
+import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -80,13 +83,81 @@ async function getSpotifyStats() {
   } catch { return null }
 }
 
+function parseAudiusHandle(url: string | null): string | null {
+  if (!url) return null
+  try {
+    const parts = new URL(url).pathname.split('/').filter(Boolean)
+    return parts[0] ?? null
+  } catch { return null }
+}
+
+async function getQuickBattleData(): Promise<SongData[]> {
+  try {
+    const supabase = await createClient()
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86_400_000).toISOString()
+    const { data } = await supabase
+      .from('battles')
+      .select('battle_id,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_music_link,artist2_music_link,battle_duration,created_at,unique_traders,winner_decided,winner_artist_a')
+      .eq('is_quick_battle', true)
+      .eq('is_test_battle', false)
+      .neq('status', 'ACTIVE')
+      .gte('created_at', thirtyDaysAgo)
+      .order('created_at', { ascending: false })
+
+    const battles = data ?? []
+    const map = new Map<string, SongData>()
+
+    for (const b of battles) {
+      const aWon = (b.winner_decided && b.winner_artist_a != null)
+        ? Number(b.winner_artist_a) === 1
+        : (b.artist1_pool ?? 0) >= (b.artist2_pool ?? 0)
+      const durationSeconds = b.battle_duration ?? 0
+      const uniqueTraders   = b.unique_traders ?? 0
+
+      const sides = [
+        { title: b.artist1_name, musicLink: b.artist1_music_link, pool1: b.artist1_pool ?? 0, pool2: b.artist2_pool ?? 0, volume1: b.total_volume_a ?? 0, won: aWon },
+        { title: b.artist2_name, musicLink: b.artist2_music_link, pool1: b.artist2_pool ?? 0, pool2: b.artist1_pool ?? 0, volume1: b.total_volume_b ?? 0, won: !aWon },
+      ]
+
+      for (const s of sides) {
+        if (!s.title) continue
+        const key = s.title.toLowerCase().trim()
+        const handle = parseAudiusHandle(s.musicLink)
+        if (!map.has(key)) {
+          map.set(key, { key, songTitle: s.title, musicLink: s.musicLink, handle, artUrl: null, genre: null, artistName: null, battles: [] })
+        }
+        const entry = map.get(key)!
+        if (!entry.musicLink && s.musicLink) { entry.musicLink = s.musicLink; entry.handle = handle }
+        const battle: SongBattle = { battleId: b.battle_id, pool1: s.pool1, pool2: s.pool2, volume1: s.volume1, durationSeconds, createdAt: b.created_at, uniqueTraders, won: s.won }
+        entry.battles.push(battle)
+      }
+    }
+
+    const songs = Array.from(map.values())
+    const uniqueLinks = [...new Set(songs.map(s => s.musicLink).filter(Boolean) as string[])]
+    const trackMap = new Map<string, { artUrl: string | null; genre: string | null; artistName: string | null }>()
+    await Promise.all(uniqueLinks.map(async (link) => {
+      const track = await resolveAudiusTrack(link)
+      trackMap.set(link, { artUrl: track?.artwork?.['480x480'] ?? null, genre: track?.genre ?? null, artistName: track?.user?.name ?? null })
+    }))
+    for (const song of songs) {
+      if (song.musicLink) {
+        const info = trackMap.get(song.musicLink)
+        if (info) { song.artUrl = info.artUrl; song.genre = info.genre; song.artistName = info.artistName }
+      }
+    }
+    return songs
+  } catch { return [] }
+}
+
 export default async function HomePage() {
-  const [stats, schedule, calendarEvents, spotify, solPrice] = await Promise.all([
+  const [stats, schedule, calendarEvents, spotify, solPrice, qbSongs] = await Promise.all([
     getGlobalStats(),
     getSchedule(),
     getCalendarEvents(),
     getSpotifyStats(),
     getLiveSolPrice(),
+    getQuickBattleData(),
   ])
 
   const hasSpotify = spotify && (spotify.spotify_monthly_streams > 0 || spotify.spotify_total_streams > 0)
@@ -116,32 +187,39 @@ export default async function HomePage() {
 
       {/* Stat Cards */}
       {stats && (
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            label={<Tip text="Sum of all SOL traded by fans across every battle.">Total Volume</Tip>}
-            primary={`${parseFloat(stats.totalVolume.toFixed(2))} SOL`}
-            secondary={solToUsd(stats.totalVolume, solPrice)}
-            sub={`${stats.totalBattles} battles`}
-          />
-          <StatCard
-            label={<Tip text="Artists earn 1% of all trading volume + settlement bonus. Paid instantly onchain." wide>Artist Payouts</Tip>}
-            primary={`${parseFloat(stats.totalArtistPayouts.toFixed(2))} SOL`}
-            secondary={solToUsd(stats.totalArtistPayouts, solPrice)}
-            sub="Instant · automatic"
-            highlight
-          />
-          <StatCard
-            label={<Tip text="Platform earns 0.5% per trade + 3% of losing pool at settlement." wide>Platform Revenue</Tip>}
-            primary={`${parseFloat(stats.platformRevenue.toFixed(2))} SOL`}
-            secondary={solToUsd(stats.platformRevenue, solPrice)}
-            sub="0.5% fees + 3% settlement"
-          />
-          <StatCard
-            label={<Tip text="Main Events are artist vs artist with judges. Quick Battles are song vs song — winner by chart.">Battles</Tip>}
-            primary={`${stats.mainEvents} Main`}
-            secondary={`${stats.quickBattles} Quick`}
-            sub="Test battles excluded"
-          />
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Platform Stats</h2>
+            <div className="flex-1 h-px bg-border" />
+            <span className="text-[10px] text-muted-foreground font-mono">All time · test battles excluded</span>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              label={<Tip text="Sum of all SOL traded by fans across every battle. 98.5% of every trade stays in the ecosystem.">Total Volume</Tip>}
+              primary={`${parseFloat(stats.totalVolume.toFixed(2))} SOL`}
+              secondary={solToUsd(stats.totalVolume, solPrice)}
+              sub={`${stats.totalBattles} battles`}
+            />
+            <StatCard
+              label={<Tip text="Artists earn 1% of all trading volume + 5-7% settlement bonus. Paid instantly onchain — no withdrawal needed." wide>Artist Payouts</Tip>}
+              primary={`${parseFloat(stats.totalArtistPayouts.toFixed(2))} SOL`}
+              secondary={solToUsd(stats.totalArtistPayouts, solPrice)}
+              sub="Instant · automatic"
+              highlight
+            />
+            <StatCard
+              label={<Tip text="Platform earns 0.5% per trade + 3% of the losing pool at settlement." wide>Platform Revenue</Tip>}
+              primary={`${parseFloat(stats.platformRevenue.toFixed(2))} SOL`}
+              secondary={solToUsd(stats.platformRevenue, solPrice)}
+              sub="0.5% fees + 3% settlement"
+            />
+            <StatCard
+              label={<Tip text="Main Events = artist vs artist, judged by humans + X poll + SOL vote. Quick Battles = song vs song, 3-factor winner." wide>Battle Types</Tip>}
+              primary={`${stats.mainEvents} Main`}
+              secondary={`${stats.quickBattles} Quick`}
+              sub="2 formats · 1 arena"
+            />
+          </div>
         </section>
       )}
 
@@ -189,12 +267,15 @@ export default async function HomePage() {
 
       {/* X Spaces Schedule */}
       <section>
-        <h2 className="text-2xl font-rajdhani font-bold text-white mb-4 tracking-wide flex items-center gap-3">
-          X Spaces Schedule
-          <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/10 text-muted-foreground border border-border">
-            𝕏
-          </span>
-        </h2>
+        <div className="flex items-start justify-between mb-4 gap-3 flex-wrap">
+          <div>
+            <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide flex items-center gap-3">
+              Live Schedule
+              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/10 text-muted-foreground border border-border">𝕏</span>
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">Join us live — trade the charts in real-time or drop in for community AMA</p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {schedule.length > 0 ? schedule.map((evt: {
             id: number; title: string; description: string
@@ -244,6 +325,13 @@ export default async function HomePage() {
           Claim Winnings ↗
         </Link>
       </section>
+
+      {/* Quick Battle Charts Preview */}
+      {qbSongs.length > 0 && (
+        <section>
+          <QBChartsPreview songs={qbSongs} />
+        </section>
+      )}
 
       {/* Events Calendar */}
       {calendarEvents.length > 0 && (
@@ -329,18 +417,29 @@ function StatCard({
   label: React.ReactNode; primary: string; secondary?: string; sub?: string; highlight?: boolean
 }) {
   return (
-    <Card className="bg-card border-border">
-      <CardHeader className="pb-1">
-        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-widest">
+    <Card className={`bg-card border-border anim-fade-up ${highlight ? 'glow-pulse-green' : ''}`}>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           {label}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className={`text-2xl font-rajdhani font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
+      <CardContent className="pt-0">
+        {/* Primary value — SOL amount */}
+        <p className={`text-2xl font-rajdhani font-bold leading-tight ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
           {primary}
         </p>
-        {secondary && <p className="text-xs text-muted-foreground mt-0.5">{secondary}</p>}
-        {sub && <p className="text-xs text-muted-foreground mt-1">{sub}</p>}
+        {/* Secondary — USD equivalent or sub-label */}
+        {secondary && (
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="text-xs text-muted-foreground">{secondary}</span>
+          </div>
+        )}
+        {/* Sub-label */}
+        {sub && (
+          <p className="text-[10px] text-muted-foreground/70 mt-2 pt-2 border-t border-border font-mono">
+            {sub}
+          </p>
+        )}
       </CardContent>
     </Card>
   )
