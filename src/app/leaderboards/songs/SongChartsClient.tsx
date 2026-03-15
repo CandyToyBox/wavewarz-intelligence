@@ -330,25 +330,29 @@ function ChartTable({
                   </td>
                 )}
 
-                <td className="px-3 sm:px-4 py-3 text-center whitespace-nowrap">
-                  <div>
+                <td className="px-3 sm:px-4 py-3 text-center">
+                  {/* W – L headline */}
+                  <div className="flex items-center justify-center gap-1 whitespace-nowrap">
                     <span className="font-rajdhani font-bold text-[#7ec1fb]">{song.wins}W</span>
-                    <span className="text-muted-foreground mx-1">–</span>
+                    <span className="text-muted-foreground">–</span>
                     <span className="font-rajdhani font-bold text-red-400">{song.losses}L</span>
                   </div>
-                  {song.wins > 0 && (song.v1Wins > 0 || song.v2Wins > 0) && (
-                    <div className="flex items-center justify-center gap-1.5 mt-0.5">
+                  {/* V1 / V2 win split */}
+                  {song.wins > 0 && (
+                    <div className="flex items-center justify-center gap-1 mt-1.5 flex-wrap">
                       {song.v1Wins > 0 && (
-                        <Tip text="V1 wins: Charts only (before Mar 10, 2026)">
-                          <span className="text-[9px] font-mono text-muted-foreground bg-muted/60 px-1 rounded cursor-help">
-                            V1×{song.v1Wins}
+                        <Tip text="V1 — Charts only. Winner = larger SOL pool. Before Mar 10, 2026.">
+                          <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded border cursor-help"
+                            style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
+                            V1 · {song.v1Wins}W
                           </span>
                         </Tip>
                       )}
                       {song.v2Wins > 0 && (
-                        <Tip text="V2 wins: Poll + Charts + DJ Wavy (Mar 10, 2026+)">
-                          <span className="text-[9px] font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1 rounded cursor-help">
-                            V2×{song.v2Wins}
+                        <Tip text="V2 — Poll + Charts (SOL) + DJ Wavy. 2/3 wins. Mar 10, 2026+.">
+                          <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded border cursor-help"
+                            style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
+                            V2 · {song.v2Wins}W
                           </span>
                         </Tip>
                       )}
@@ -509,12 +513,18 @@ function GenreView({ songs }: { songs: RankedSong[] }) {
                       <span className="text-red-400">{song.losses}L</span>
                     </p>
                     {song.wins > 0 && (
-                      <div className="flex items-center justify-end gap-1 mt-0.5">
+                      <div className="flex items-center justify-end gap-1 mt-1 flex-wrap">
                         {song.v1Wins > 0 && (
-                          <span className="text-[9px] font-mono text-muted-foreground bg-muted/60 px-1 rounded">V1×{song.v1Wins}</span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border"
+                            style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
+                            V1·{song.v1Wins}W
+                          </span>
                         )}
                         {song.v2Wins > 0 && (
-                          <span className="text-[9px] font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1 rounded">V2×{song.v2Wins}</span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border"
+                            style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
+                            V2·{song.v2Wins}W
+                          </span>
                         )}
                       </div>
                     )}
@@ -632,17 +642,27 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
       </div>
 
       {/* Winner system legend */}
-      <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground px-1 border border-border/50 rounded-lg py-2 px-3 bg-muted/30">
-        <span className="font-bold text-muted-foreground uppercase tracking-wider">Winner System:</span>
-        <div className="flex items-center gap-1.5">
-          <span className="font-mono text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded">V1</span>
-          <span>Charts only · before Mar 10, 2026</span>
-        </div>
-        <span className="text-muted-foreground/40">·</span>
-        <div className="flex items-center gap-1.5">
-          <span className="font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1.5 py-0.5 rounded">V2</span>
-          <span>Poll + Charts + DJ Wavy · Mar 10, 2026+</span>
-        </div>
+      <div className="flex flex-wrap items-center gap-4 text-xs border border-border rounded-lg py-2.5 px-4 bg-muted/20">
+        <span className="font-bold text-white uppercase tracking-wider text-[11px]">Winner System:</span>
+        <Tip text="Before March 10, 2026 — winner determined by whichever song had the larger SOL pool when the timer ended.">
+          <div className="flex items-center gap-2 cursor-help">
+            <span className="font-bold px-2 py-0.5 rounded border text-[11px]"
+              style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
+              V1
+            </span>
+            <span className="text-muted-foreground">Charts only <span className="text-muted-foreground/60">· before Mar 10, 2026</span></span>
+          </div>
+        </Tip>
+        <span className="text-border">|</span>
+        <Tip text="From March 10, 2026 (YouTube livestream launch) — winner needs 2 of 3: Poll (live listener vote) + Charts (SOL pool) + DJ Wavy (AI Judge).">
+          <div className="flex items-center gap-2 cursor-help">
+            <span className="font-bold px-2 py-0.5 rounded border text-[11px]"
+              style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
+              V2
+            </span>
+            <span className="text-muted-foreground">Poll + Charts + DJ Wavy <span className="text-muted-foreground/60">· Mar 10, 2026+</span></span>
+          </div>
+        </Tip>
       </div>
 
       {/* Trending score legend (trending view only) */}
