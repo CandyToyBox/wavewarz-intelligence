@@ -4,7 +4,7 @@ import { formatSol, calculateArtistEarnings, calculatePlatformRevenue } from '@/
 import { resolveAudiusTrack } from '@/lib/audius'
 import { Badge } from '@/components/ui/badge'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
-import { QuickBattleCard, type QuickBattleCardData } from './quick-battle-card'
+import { QuickBattleCard, type QuickBattleCardData, V2_QB_LAUNCH } from './quick-battle-card'
 import { BattlesControls } from './battles-controls'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
@@ -318,6 +318,7 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     winnerTitle: winnerIsA ? b.artist1_name : b.artist2_name,
     loserTitle:  winnerIsA ? b.artist2_name : b.artist1_name,
     winnerIsA,
+    isV2: new Date(b.created_at) >= V2_QB_LAUNCH,
     marginSol: formatSol(Math.abs(p1 - p2)),
     marginPct: marginPct(p1, p2),
     // Song 1 earnings

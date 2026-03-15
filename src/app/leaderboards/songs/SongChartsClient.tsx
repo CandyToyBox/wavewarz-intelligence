@@ -36,6 +36,8 @@ type Category = 'trending' | 'played' | 'volume' | 'traders' | 'genre'
 type RankedSong = SongData & {
   wins: number
   losses: number
+  v1Wins: number   // charts-only era wins
+  v2Wins: number   // Poll + Charts + DJ Wavy era wins
   totalBattles: number
   winRate: number
   totalVolume: number
@@ -49,6 +51,11 @@ type RankedSong = SongData & {
 const PERIOD_LABELS: Record<Period, string>   = { today: 'Today', week: 'This Week', month: 'This Month', all: 'All Time' }
 const CATEGORY_LABELS: Record<Category, string> = { trending: 'Trending', played: 'Most Played', volume: 'Most Volume', traders: 'Most Traders', genre: 'By Genre' }
 const PAGE_SIZE = 25
+
+// V2 winner system: Poll + Charts (SOL) + DJ Wavy AI Judge (2/3 wins)
+// V1 was charts-only. Cutoff: March 10, 2026 YouTube livestream launch.
+const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
+const isV2Battle = (b: SongBattle) => new Date(b.createdAt) >= V2_QB_LAUNCH
 
 const PALETTE = ['#95fe7c', '#7ec1fb', '#f59e0b', '#f472b6', '#a78bfa', '#34d399']
 function colorForLetter(letter: string) {
@@ -97,6 +104,8 @@ function aggregateSong(song: SongData, period: Period): RankedSong | null {
   if (fb.length === 0) return null
   const wins    = fb.filter(b => b.won).length
   const losses  = fb.length - wins
+  const v1Wins  = fb.filter(b => b.won && !isV2Battle(b)).length
+  const v2Wins  = fb.filter(b => b.won && isV2Battle(b)).length
   const volume  = fb.reduce((s, b) => s + b.volume1, 0)
   const traders = fb.reduce((s, b) => s + b.uniqueTraders, 0)
   const score   = fb.reduce((s, b) => s + battleTrendingScore(b), 0)
@@ -104,7 +113,7 @@ function aggregateSong(song: SongData, period: Period): RankedSong | null {
   const lastPlayed = fb[0]?.createdAt ?? null
   return {
     ...song,
-    wins, losses,
+    wins, losses, v1Wins, v2Wins,
     totalBattles: fb.length,
     winRate: Math.round(wins / fb.length * 100),
     totalVolume: volume,
@@ -255,7 +264,7 @@ function ChartTable({
               </th>
             )}
             <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
-              <Tip text="Wins and losses in quick battles. Winner decided by 3-factor system: Poll + Charts (SOL) + DJ Wavy AI Judge — 2 out of 3 wins.">Record</Tip>
+              <Tip text="W-L record in quick battles. V1 wins (before Mar 10 2026) = Charts only. V2 wins (Mar 10+ 2026) = Poll + Charts + DJ Wavy, 2/3 wins.">Record</Tip>
             </th>
             <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden md:table-cell">
               <Tip text="Percentage of quick battles this song has won.">Win %</Tip>
@@ -322,9 +331,29 @@ function ChartTable({
                 )}
 
                 <td className="px-3 sm:px-4 py-3 text-center whitespace-nowrap">
-                  <span className="font-rajdhani font-bold text-[#7ec1fb]">{song.wins}W</span>
-                  <span className="text-muted-foreground mx-1">–</span>
-                  <span className="font-rajdhani font-bold text-red-400">{song.losses}L</span>
+                  <div>
+                    <span className="font-rajdhani font-bold text-[#7ec1fb]">{song.wins}W</span>
+                    <span className="text-muted-foreground mx-1">–</span>
+                    <span className="font-rajdhani font-bold text-red-400">{song.losses}L</span>
+                  </div>
+                  {song.wins > 0 && (song.v1Wins > 0 || song.v2Wins > 0) && (
+                    <div className="flex items-center justify-center gap-1.5 mt-0.5">
+                      {song.v1Wins > 0 && (
+                        <Tip text="V1 wins: Charts only (before Mar 10, 2026)">
+                          <span className="text-[9px] font-mono text-muted-foreground bg-muted/60 px-1 rounded cursor-help">
+                            V1×{song.v1Wins}
+                          </span>
+                        </Tip>
+                      )}
+                      {song.v2Wins > 0 && (
+                        <Tip text="V2 wins: Poll + Charts + DJ Wavy (Mar 10, 2026+)">
+                          <span className="text-[9px] font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1 rounded cursor-help">
+                            V2×{song.v2Wins}
+                          </span>
+                        </Tip>
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td className="px-3 sm:px-4 py-3 text-center hidden md:table-cell">
                   <WinRateBar rate={song.winRate} color="blue" />
@@ -479,6 +508,16 @@ function GenreView({ songs }: { songs: RankedSong[] }) {
                       <span className="text-muted-foreground">–</span>
                       <span className="text-red-400">{song.losses}L</span>
                     </p>
+                    {song.wins > 0 && (
+                      <div className="flex items-center justify-end gap-1 mt-0.5">
+                        {song.v1Wins > 0 && (
+                          <span className="text-[9px] font-mono text-muted-foreground bg-muted/60 px-1 rounded">V1×{song.v1Wins}</span>
+                        )}
+                        {song.v2Wins > 0 && (
+                          <span className="text-[9px] font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1 rounded">V2×{song.v2Wins}</span>
+                        )}
+                      </div>
+                    )}
                     <p className="text-[10px] text-muted-foreground">{formatSolShort(song.totalVolume)} SOL</p>
                   </div>
                 </div>
@@ -590,6 +629,20 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
             {CATEGORY_LABELS[c]}
           </TabBtn>
         ))}
+      </div>
+
+      {/* Winner system legend */}
+      <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground px-1 border border-border/50 rounded-lg py-2 px-3 bg-muted/30">
+        <span className="font-bold text-muted-foreground uppercase tracking-wider">Winner System:</span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-mono text-muted-foreground bg-muted/60 px-1.5 py-0.5 rounded">V1</span>
+          <span>Charts only · before Mar 10, 2026</span>
+        </div>
+        <span className="text-muted-foreground/40">·</span>
+        <div className="flex items-center gap-1.5">
+          <span className="font-mono text-[#7ec1fb] bg-[#7ec1fb]/10 px-1.5 py-0.5 rounded">V2</span>
+          <span>Poll + Charts + DJ Wavy · Mar 10, 2026+</span>
+        </div>
       </div>
 
       {/* Trending score legend (trending view only) */}

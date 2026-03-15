@@ -5,9 +5,14 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 
+// V2 winner system launched March 10, 2026 (Poll + Charts + DJ Wavy)
+// V1 was charts-only (larger pool wins)
+export const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
+
 export type QuickBattleCardData = {
   battle_id: number
   dateFormatted: string
+  isV2?: boolean  // true = Poll + Charts + DJ Wavy; false/absent = Charts Only
   // Songs
   song1Title: string
   song2Title: string
@@ -94,11 +99,27 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
 
       {/* ── WINNER BANNER ── */}
       <div className="px-4 py-2 bg-[#95fe7c]/5 border-b border-[#95fe7c]/10">
-        <p className="text-xs">
-          <span className="font-rajdhani font-bold" style={{ color: wColor }}>{w}</span>
-          <span className="text-muted-foreground ml-2">won with a</span>
-          <span className="text-[#95fe7c] font-bold ml-2">+{data.marginPct}% margin</span>
-        </p>
+        <div className="flex items-center gap-3 flex-wrap">
+          <p className="text-xs">
+            <span className="font-rajdhani font-bold" style={{ color: wColor }}>{w}</span>
+            <span className="text-muted-foreground ml-2">won with a</span>
+            <span className="text-[#95fe7c] font-bold ml-2">+{data.marginPct}% margin</span>
+          </p>
+          {data.isV2 === true && (
+            <Tip text="V2 Winner System: Poll (live listener vote) + Charts (SOL pool) + DJ Wavy (AI Judge) — 2 out of 3 wins. Launched March 10, 2026.">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider border bg-[#7ec1fb]/15 text-[#7ec1fb] border-[#7ec1fb]/35 cursor-help">
+                V2 · Poll + Charts + DJ Wavy
+              </span>
+            </Tip>
+          )}
+          {data.isV2 === false && (
+            <Tip text="V1 Winner System: Charts only — whichever song had the larger SOL pool when time expired. Replaced March 10, 2026.">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider border bg-muted/60 text-muted-foreground border-border cursor-help">
+                V1 · Charts Only
+              </span>
+            </Tip>
+          )}
+        </div>
       </div>
 
       {/* ── HERO: TWO SIDES ── */}
@@ -127,7 +148,9 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         {/* Center: trophy + margin */}
         <div className="flex flex-col items-center justify-center gap-2 text-center">
           <TrophyIcon color={wColor} />
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">Chart Winner</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">
+          {data.isV2 ? 'V2 Winner' : 'V1 Winner'}
+        </p>
           <p className="text-sm font-rajdhani font-bold leading-tight" style={{ color: wColor }}>
             {w}
           </p>
