@@ -21,6 +21,8 @@ export async function submitJudging(payload: JudgingPayload): Promise<{ ok: bool
     .eq('battle_id', payload.battleId)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin')
+  revalidatePath(`/battles/${payload.battleId}`)
+  revalidatePath('/battles')
   return { ok: true }
 }
 
@@ -68,6 +70,7 @@ export async function updateBattleMedia(payload: {
     .eq('battle_id', payload.battleId)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin')
+  revalidatePath(`/battles/${payload.battleId}`)
   return { ok: true }
 }
 

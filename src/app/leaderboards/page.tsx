@@ -9,6 +9,17 @@ export const metadata: Metadata = {
 
 const BOARDS = [
   {
+    href: '/leaderboards/clippers',
+    badge: 'COMMUNITY CLIPS',
+    badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/40',
+    borderColor: 'border-orange-500/20 hover:border-orange-500/50',
+    accentColor: 'text-orange-400',
+    number: '05',
+    title: 'Clipper Rankings',
+    desc: 'Community members ranked by clip submissions, approvals, and contributions. Many are also WaveWarz battle artists.',
+    stats: ['Clips submitted / approved / posted', 'Points earned', 'Artist battle record (if they battle)', 'SOL wallet for future rewards'],
+  },
+  {
     href: '/leaderboards/artists',
     badge: 'MAIN EVENTS',
     badgeColor: 'bg-[#95fe7c]/20 text-[#95fe7c] border-[#95fe7c]/40',
@@ -27,7 +38,7 @@ const BOARDS = [
     accentColor: 'text-[#7ec1fb]',
     number: '02',
     title: 'Song Rankings',
-    desc: 'Tracks ranked by quick battle performance. Album art pulled from Audius. Winner determined by chart dominance.',
+    desc: 'Tracks ranked by quick battle performance. Album art pulled from Audius. Winner decided by 3-factor system: Poll + Charts (SOL) + DJ Wavy AI Judge.',
     stats: ['Win / Loss record', 'Total SOL volume', 'Win rate %', 'Audius link'],
   },
   {
@@ -66,7 +77,7 @@ export default function LeaderboardsHub() {
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {BOARDS.map(b => (
           <Link
             key={b.href}

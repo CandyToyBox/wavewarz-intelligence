@@ -99,9 +99,10 @@ export default async function BattleDetailPage({ params }: Props) {
   const isSettled = battle.winner_decided === true ||
     endedStatuses.includes((battle.status ?? '').toLowerCase())
 
-  // Determine winner: use winner_artist_a if set, otherwise fall back to larger pool
+  // Determine winner: use winner_artist_a if set, otherwise fall back to larger pool.
+  // winner_artist_a is stored as numeric 1 (A wins) or 0 (B wins).
   const a1Won: boolean = battle.winner_decided === true
-    ? (battle.winner_artist_a >= 0.5)
+    ? (Number(battle.winner_artist_a) === 1)
     : p1 >= p2  // pool-based fallback for ended battles missing the flag
 
   // For display badge — only show ACTIVE if truly not settled and no pool data suggests end
@@ -262,6 +263,49 @@ export default async function BattleDetailPage({ params }: Props) {
           </div>
         )}
       </div>
+
+      {/* Quick Battle 3-Factor Result */}
+      {isQuick && isSettled && (
+        <div className="rounded-xl border border-[#7ec1fb]/20 bg-[#111827] p-5">
+          <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">
+            3-Factor Result
+            <span className="text-xs font-normal text-muted-foreground ml-2">Poll · Charts · DJ Wavy — 2 of 3 wins</span>
+          </h2>
+          <div className="grid grid-cols-3 gap-3">
+            {/* Poll */}
+            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Poll</p>
+              {battle.poll_winner ? (
+                <>
+                  <p className="font-rajdhani font-bold text-white text-sm">{battle.poll_winner}</p>
+                  {battle.poll_votes_a != null && battle.poll_votes_b != null && (
+                    <p className="text-[10px] text-muted-foreground mt-1 font-mono">
+                      {battle.artist1_name}: {battle.poll_votes_a} · {battle.artist2_name}: {battle.poll_votes_b}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-[10px] text-muted-foreground italic">No poll data</p>
+              )}
+            </div>
+            {/* Charts */}
+            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Charts (SOL)</p>
+              <p className="font-rajdhani font-bold text-white text-sm">
+                {a1Won ? battle.artist1_name : battle.artist2_name}
+              </p>
+              <p className="text-[10px] text-muted-foreground mt-1 font-mono">
+                {p1.toFixed(4)} vs {p2.toFixed(4)} SOL
+              </p>
+            </div>
+            {/* DJ Wavy */}
+            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">DJ Wavy</p>
+              <p className="text-[10px] text-muted-foreground italic">AI judge — result in final outcome</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Settlement Breakdown */}
       {settlement && (

@@ -14,6 +14,9 @@ import { AdminTabs } from './admin-tabs'
 const COMMUNITY_BATTLE_FEE = 0.017
 const QUICK_BATTLE_LAUNCH_FEE = 0.007
 const QUICK_BATTLE_QUEUE_FEE = 0.005
+// Skip Queue Fee: variable — 0.02 SOL base, +0.01 SOL per successive skip.
+// Example: first skip = 0.02, second = 0.03, third = 0.04, etc.
+// 100% goes to WaveWarz. NOT auto-tracked — webhook does not send per-battle skip totals.
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -172,6 +175,10 @@ export default async function AdminPage() {
               {revenue.pendingJudging.length > 0 && (
                 <p className="text-amber-400 font-bold text-xs">{revenue.pendingJudging.length} main events pending judging</p>
               )}
+              <p className="text-amber-400/70 text-[10px] font-mono pt-1">
+                ⚠ Skip queue fees not included<br />
+                (webhook doesn&apos;t send per-battle skip totals)
+              </p>
             </div>
           </div>
         </div>
@@ -183,11 +190,12 @@ export default async function AdminPage() {
         </div>
         <div className="rounded-xl border border-border bg-[#111827] p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Fee Rate Reference</p>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <FeeRef label="Trading Fee (Platform)" value="0.5% per trade" />
             <FeeRef label="Settlement Bonus" value="3% of loser pool" />
             <FeeRef label="Quick Battle Launch" value="0.007 SOL" />
             <FeeRef label="Add to Queue" value="0.005 SOL" />
+            <FeeRef label="Skip Queue (base)" value="0.02 SOL" note="+0.01 per successive skip" />
             <FeeRef label="Community Launch" value="0.017 SOL" />
           </div>
         </div>
@@ -228,11 +236,12 @@ function RevenueCard({ label, value, usd, detail, color }: {
   )
 }
 
-function FeeRef({ label, value }: { label: string; value: string }) {
+function FeeRef({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
     <div className="bg-[#0d1321] rounded-lg p-3">
       <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
       <p className="font-mono text-white font-bold text-xs">{value}</p>
+      {note && <p className="text-[9px] text-muted-foreground/60 mt-0.5">{note}</p>}
     </div>
   )
 }

@@ -3,12 +3,28 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { hydrateOnchainData } from '@/lib/solana/hydrate'
 
 export async function POST(request: NextRequest) {
-  let payload: Record<string, unknown>
+  // ── Auth: validate shared secret ─────────────────────────────────────────
+  const secret = request.headers.get('x-webhook-secret')
+  if (!secret || secret !== process.env.WEBHOOK_SECRET) {
+    console.warn('[webhook] rejected — missing or invalid x-webhook-secret')
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  let raw: Record<string, unknown>
   try {
-    payload = await request.json()
+    raw = await request.json()
   } catch {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
+
+  // ── Payload normalisation ─────────────────────────────────────────────────
+  // Supabase Database Webhooks wrap the row in { type, table, record: {...} }.
+  // Direct/custom webhooks send the battle fields at the top level.
+  // Support both so either source works without changes.
+  const payload: Record<string, unknown> =
+    (raw.record && typeof raw.record === 'object')
+      ? (raw.record as Record<string, unknown>)
+      : raw
 
   if (!payload.battle_id) {
     return NextResponse.json({ error: 'Missing battle_id' }, { status: 400 })
@@ -56,6 +72,11 @@ export async function POST(request: NextRequest) {
     community_round_id:              payload.community_round_id,
     quick_battle_queue_id:           payload.quick_battle_queue_id,
     split_wallet_address:            payload.split_wallet_address,
+    // ── QB 3-point judging — Poll factor ──────────────────────────────────────
+    poll_votes_a:                    payload.poll_votes_a,
+    poll_votes_b:                    payload.poll_votes_b,
+    poll_winner:                     payload.poll_winner,
+    poll_finalized_at:               payload.poll_finalized_at,
   }
 
   const { error: upsertError } = await supabase
@@ -96,16 +117,19 @@ export async function POST(request: NextRequest) {
 
       // ── Winner determination ────────────────────────────────────────────
       // For ENDED battles:
-      //   Quick Battles: chart winner = larger pool (no judges, automatic)
+      //   Quick Battles: 3-factor system — Poll + Charts (SOL) + DJ Wavy (AI Judge), 2/3 wins
+      //                  If webhook sends winner_decided=true, trust it.
+      //                  Fallback: charts-only (larger pool) if no result yet.
       //   Main Events:   determined by admin judging panel (human + X poll + SOL vote)
       //   Community:     determined by admin judging panel
       if (isEnded && !onchain.winner_decided) {
-        if (isQuickBattle) {
-          // Chart-based: larger pool wins
+        if (isQuickBattle && !battle.winner_decided) {
+          // Chart-based fallback ONLY when neither the chain nor the webhook
+          // has already provided a 3-factor winner. If the webhook already
+          // sent winner_decided=true (3-factor result), trust it — don't overwrite.
           const a1pool = onchain.artist1_pool > 0 ? onchain.artist1_pool : (battle.artist1_pool as number ?? 0)
           const a2pool = onchain.artist2_pool > 0 ? onchain.artist2_pool : (battle.artist2_pool as number ?? 0)
           hydrated.winner_decided = true
-          // winner_artist_a is stored as numeric (1.0/0.0) not boolean
           hydrated.winner_artist_a = (a1pool >= a2pool) ? 1 : 0
         }
         // Main/Community: do NOT auto-decide — requires admin judging panel
