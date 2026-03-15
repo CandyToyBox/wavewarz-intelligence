@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
@@ -48,6 +48,7 @@ type RankedSong = SongData & {
 
 const PERIOD_LABELS: Record<Period, string>   = { today: 'Today', week: 'This Week', month: 'This Month', all: 'All Time' }
 const CATEGORY_LABELS: Record<Category, string> = { trending: 'Trending', played: 'Most Played', volume: 'Most Volume', traders: 'Most Traders', genre: 'By Genre' }
+const PAGE_SIZE = 25
 
 const PALETTE = ['#95fe7c', '#7ec1fb', '#f59e0b', '#f472b6', '#a78bfa', '#34d399']
 function colorForLetter(letter: string) {
@@ -226,59 +227,70 @@ function ChartTable({
   songs,
   category,
   maxScore,
+  page,
+  onPageChange,
 }: {
   songs: RankedSong[]
   category: Exclude<Category, 'genre'>
   maxScore: number
+  page: number
+  onPageChange: (p: number) => void
 }) {
+  const totalPages = Math.max(1, Math.ceil(songs.length / PAGE_SIZE))
+  const start = (page - 1) * PAGE_SIZE
+  const pageSongs = songs.slice(start, start + PAGE_SIZE)
+  const globalOffset = start  // to keep rank numbers accurate across pages
+
   return (
+    <div className="space-y-3">
     <div className="rounded-xl border border-border overflow-x-auto">
       <table className="w-full text-sm min-w-[540px]">
         <thead>
-          <tr className="border-b border-border bg-[#111827]">
-            <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest w-10">#</th>
-            <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">Song</th>
+          <tr className="border-b border-border bg-muted">
+            <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest w-10">#</th>
+            <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">Song</th>
             {category === 'trending' && (
-              <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden sm:table-cell">
+              <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden sm:table-cell">
                 <Tip text="Composite score: volume velocity × competitiveness × recency × trader engagement. Decays over time.">Heat</Tip>
               </th>
             )}
-            <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
+            <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
               <Tip text="Wins and losses in quick battles. Winner decided by 3-factor system: Poll + Charts (SOL) + DJ Wavy AI Judge — 2 out of 3 wins.">Record</Tip>
             </th>
-            <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
+            <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden md:table-cell">
               <Tip text="Percentage of quick battles this song has won.">Win %</Tip>
             </th>
             {category === 'volume' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
+              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
                 <Tip text="Total SOL traded by fans backing this song.">Volume</Tip>
               </th>
             )}
             {category === 'traders' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
+              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
                 <Tip text="Sum of unique traders across all battles in this period.">Traders</Tip>
               </th>
             )}
             {category === 'played' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
+              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
                 <Tip text="Number of quick battles this song has competed in.">Battles</Tip>
               </th>
             )}
             {category === 'trending' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
+              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden md:table-cell">
                 <Tip text="Total SOL traded by fans backing this song.">Volume</Tip>
               </th>
             )}
-            <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Last</th>
+            <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Last</th>
           </tr>
         </thead>
         <tbody>
-          {songs.map((song, i) => {
+          {pageSongs.map((song, i) => {
+            const absPos = globalOffset + i
             const heat = relativeHeat(song.trendingScore, maxScore)
             return (
               <tr key={song.key} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
                 <td className="px-3 sm:px-4 py-3">
-                  <RankCell position={i} />
+                  <RankCell position={absPos} />
                 </td>
                 <td className="px-3 sm:px-4 py-3">
                   <div className="flex items-center gap-2 sm:gap-3">
@@ -351,7 +363,7 @@ function ChartTable({
               </tr>
             )
           })}
-          {songs.length === 0 && (
+          {pageSongs.length === 0 && (
             <tr>
               <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground text-sm">
                 No quick battles in this time period yet.
@@ -360,6 +372,35 @@ function ChartTable({
           )}
         </tbody>
       </table>
+    </div>
+
+    {/* Pagination */}
+    {totalPages > 1 && (
+      <div className="flex items-center justify-between px-1">
+        <span className="text-xs text-muted-foreground">
+          Showing {start + 1}–{Math.min(start + PAGE_SIZE, songs.length)} of <span className="text-white font-mono">{songs.length}</span> songs
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onPageChange(page - 1)}
+            disabled={page === 1}
+            className="px-3 py-1.5 rounded-lg border border-border text-xs font-mono text-muted-foreground hover:text-white hover:border-border/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            ← Prev
+          </button>
+          <span className="font-mono text-xs text-muted-foreground">
+            {page} / {totalPages}
+          </span>
+          <button
+            onClick={() => onPageChange(page + 1)}
+            disabled={page === totalPages}
+            className="px-3 py-1.5 rounded-lg border border-border text-xs font-mono text-muted-foreground hover:text-white hover:border-border/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+    )}
     </div>
   )
 }
@@ -485,6 +526,10 @@ function TabBtn({
 export default function SongChartsClient({ songs }: { songs: SongData[] }) {
   const [period,   setPeriod]   = useState<Period>('week')
   const [category, setCategory] = useState<Category>('trending')
+  const [page,     setPage]     = useState(1)
+
+  // Reset to page 1 whenever the sort/filter changes
+  useEffect(() => { setPage(1) }, [period, category])
 
   const { rankedSongs, maxScore, totalSongs } = useMemo(() => {
     // Aggregate each song for the selected period
@@ -572,7 +617,13 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
       {category === 'genre' ? (
         <GenreView songs={rankedSongs} />
       ) : (
-        <ChartTable songs={rankedSongs} category={category} maxScore={maxScore} />
+        <ChartTable
+          songs={rankedSongs}
+          category={category}
+          maxScore={maxScore}
+          page={page}
+          onPageChange={setPage}
+        />
       )}
     </div>
   )

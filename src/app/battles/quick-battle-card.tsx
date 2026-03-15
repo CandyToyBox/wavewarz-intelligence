@@ -73,10 +73,10 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
   const wColor = data.winnerIsA ? data.song1Color : data.song2Color
 
   return (
-    <div className="rounded-xl border border-border bg-[#0d1321] overflow-hidden">
+    <div className="rounded-xl border border-border bg-card overflow-hidden">
 
       {/* ── STATUS HEADER ── */}
-      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-[#111827]">
+      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-muted">
         <span className="w-2 h-2 rounded-full bg-[#95fe7c] shrink-0" />
         <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest">
           QUICK BATTLE · COMPLETED
@@ -86,8 +86,8 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           <span className="mx-2 text-muted-foreground/50">vs</span>
           {data.song2Title}
         </span>
-        <span className="text-[10px] text-muted-foreground shrink-0">{data.dateFormatted}</span>
-        <Link href={`/battles/${data.battle_id}`} className="font-mono text-[10px] text-[#7ec1fb]/60 hover:text-[#7ec1fb] shrink-0 transition-colors">
+        <span className="text-xs text-muted-foreground shrink-0">{data.dateFormatted}</span>
+        <Link href={`/battles/${data.battle_id}`} className="font-mono text-xs text-[#7ec1fb]/60 hover:text-[#7ec1fb] shrink-0 transition-colors">
           #{data.battle_id} ↗
         </Link>
       </div>
@@ -127,14 +127,14 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         {/* Center: trophy + margin */}
         <div className="flex flex-col items-center justify-center gap-2 text-center">
           <TrophyIcon color={wColor} />
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Chart Winner</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">Chart Winner</p>
           <p className="text-sm font-rajdhani font-bold leading-tight" style={{ color: wColor }}>
             {w}
           </p>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Margin: <span className="font-mono text-white">{data.marginSol} SOL</span>
           </p>
-          <p className="text-[10px] text-[#95fe7c] font-bold">+{data.marginPct}%</p>
+          <p className="text-xs text-[#95fe7c] font-bold">+{data.marginPct}%</p>
         </div>
 
         {/* Winner side */}
@@ -182,15 +182,15 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         >
           {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
         </button>
-        <span className="text-[10px] text-muted-foreground">
-          Platform earned: <span className="text-white font-mono">{data.platformEarnSol} SOL</span>
-          <span className="ml-1">({data.platformEarnUsd})</span>
+        <span className="text-xs text-muted-foreground">
+          Platform: <span className="text-[#f59e0b] font-mono font-bold">◎{data.platformEarnSol}</span>
+          <span className="ml-1 text-muted-foreground">({data.platformEarnUsd})</span>
         </span>
       </div>
 
       {/* ── EARNINGS BREAKDOWN ── */}
       {showEarnings && (
-        <div className="border-t border-border bg-[#111827]/50 divide-y divide-border/50">
+        <div className="border-t border-border bg-muted/40 divide-y divide-border/50">
 
           {/* Artist 1 */}
           <EarningsRow
@@ -222,7 +222,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
             name="WaveWarZ Platform"
             totalSol={data.platformEarnSol}
             totalUsd={data.platformEarnUsd}
-            accent="purple"
+            accent="platform"
             rows={[
               { label: 'Trading fees (0.5% of total volume)', sol: data.platformTradeFeesSol, usd: data.platformTradeFeesUsd },
               { label: 'Settlement bonus (3% of loser pool)', sol: data.platformSettleSol, usd: data.platformSettleUsd },
@@ -240,7 +240,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           {/* Wallet addresses */}
           {(data.song1Wallet || data.song2Wallet || data.wavewarzWallet) && (
             <div className="px-5 py-4">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-3">Wallet Addresses</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Wallet Addresses</p>
               <div className="space-y-1.5">
                 {data.song1Wallet && <WalletRow label="Wallet A" addr={data.song1Wallet} />}
                 {data.song2Wallet && <WalletRow label="Wallet B" addr={data.song2Wallet} />}
@@ -301,11 +301,11 @@ function SolStat({ sol, usd, label, accent, dim }: {
 }) {
   return (
     <div className="text-center">
-      <p className={`font-mono font-bold text-lg leading-tight ${dim ? 'text-muted-foreground' : accent ? 'text-[#95fe7c]' : 'text-white'}`}>
+      <p className={`font-mono font-bold text-xl leading-tight ${dim ? 'text-muted-foreground' : accent ? 'text-[#95fe7c]' : 'text-white'}`}>
         ◎{sol}
       </p>
-      <p className={`text-[10px] ${dim ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>({usd})</p>
-      <p className={`text-[9px] uppercase tracking-widest mt-0.5 ${dim ? 'text-muted-foreground/40' : accent ? 'text-[#95fe7c]/70' : 'text-muted-foreground/60'}`}>
+      <p className={`text-xs mt-0.5 ${dim ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>{usd}</p>
+      <p className={`text-[11px] uppercase tracking-widest mt-0.5 ${dim ? 'text-muted-foreground/40' : accent ? 'text-[#95fe7c]/70' : 'text-muted-foreground/60'}`}>
         {label}
       </p>
     </div>
@@ -314,10 +314,10 @@ function SolStat({ sol, usd, label, accent, dim }: {
 
 function StatBox({ label, value, sub }: { label: React.ReactNode; value: string; sub: string }) {
   return (
-    <div className="rounded-lg bg-[#111827] border border-border p-3">
-      <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1 leading-tight">{label}</p>
-      <p className="text-sm font-rajdhani font-bold text-[#7ec1fb] font-mono">◎{value}</p>
-      <p className="text-[10px] text-muted-foreground">{sub}</p>
+    <div className="card-elevated p-3">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1.5 leading-tight">{label}</p>
+      <p className="text-base font-rajdhani font-bold text-[#7ec1fb] font-mono">◎{value}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
 }
@@ -339,7 +339,7 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
   icon: string; name: string; totalSol: string; totalUsd: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
-  const textColor = accent === 'purple' ? 'text-[#a78bfa]' : 'text-[#95fe7c]'
+  const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
   return (
     <div className="px-5 py-4">
       <div className="flex items-start justify-between gap-3 mb-2">
@@ -349,17 +349,17 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
           </span> earned:
         </p>
         <div className="text-right shrink-0">
-          <p className={`font-mono font-bold text-sm ${textColor}`}>◎{totalSol}</p>
-          <p className="text-[10px] text-muted-foreground">({totalUsd})</p>
+          <p className={`font-mono font-bold text-base ${textColor}`}>◎{totalSol}</p>
+          <p className="text-xs text-muted-foreground">{totalUsd}</p>
         </div>
       </div>
-      <div className="space-y-1 ml-4">
+      <div className="space-y-1.5 ml-4">
         {rows.map(r => (
           <div key={r.label} className="flex items-center justify-between gap-3">
-            <p className="text-[10px] text-muted-foreground">└── {r.label}</p>
+            <p className="text-xs text-muted-foreground">└── {r.label}</p>
             <div className="text-right shrink-0">
-              <span className="font-mono text-[10px] text-white">◎{r.sol}</span>
-              <span className="text-[10px] text-muted-foreground ml-1">({r.usd})</span>
+              <span className="font-mono text-xs text-white">◎{r.sol}</span>
+              <span className="text-xs text-muted-foreground ml-1">{r.usd}</span>
             </div>
           </div>
         ))}
@@ -372,7 +372,7 @@ function WalletRow({ label, addr }: { label: string; addr: string }) {
   return (
     <div className="flex items-center gap-2">
       <span className="text-[10px] text-muted-foreground w-16 shrink-0">{label}:</span>
-      <span className="font-mono text-[10px] text-[#7ec1fb] break-all">{addr}</span>
+      <span className="font-mono text-xs text-[#7ec1fb] break-all">{addr}</span>
     </div>
   )
 }

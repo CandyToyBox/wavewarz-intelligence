@@ -84,11 +84,11 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
   const cfg = TYPE_CONFIG[data.eventType]
 
   return (
-    <div className="rounded-xl border border-border bg-[#0d1321] overflow-hidden hover:border-white/10 transition-colors">
+    <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-[#1a2d44] transition-colors">
       <div className="flex flex-col md:flex-row">
 
         {/* ── LANDSCAPE IMAGE ── */}
-        <div className="md:w-64 md:shrink-0 h-40 md:h-auto relative overflow-hidden bg-[#111827]">
+        <div className="md:w-64 md:shrink-0 h-40 md:h-auto relative overflow-hidden bg-muted">
           <BattleImage
             src={data.imageUrl}
             alt={`${data.artist1Name} vs ${data.artist2Name}`}
@@ -96,7 +96,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
             fallbackText={data.artist1Name}
           />
           {data.imageUrl && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0d1321]/70 hidden md:block" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#04080f]/70 hidden md:block" />
           )}
         </div>
 
@@ -182,8 +182,8 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
       {/* ── EXPANDED ROUNDS ── */}
       {expanded && (
         <div className="border-t border-border">
-          <div className="px-5 py-2.5 bg-[#111827]">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Round-by-Round Breakdown</p>
+          <div className="px-5 py-2.5 bg-muted">
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Round-by-Round Breakdown</p>
           </div>
           <div className="divide-y divide-border/50">
             {data.rounds.map(r => (
@@ -200,9 +200,9 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
   const [showEarnings, setShowEarnings] = useState(false)
 
   return (
-    <div className="bg-[#0d1321]/50">
+    <div className="bg-card">
       {/* Round header */}
-      <div className="flex items-center gap-3 px-5 py-3 border-b border-border/30 bg-[#111827]/50">
+      <div className="flex items-center gap-3 px-5 py-3 border-b border-border/30 bg-muted/60">
         <span
           className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-rajdhani border shrink-0"
           style={{ borderColor: `${accent}40`, backgroundColor: `${accent}10`, color: accent }}
@@ -213,7 +213,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
           <p className="text-sm font-rajdhani font-bold text-white leading-tight">
             {r.artist1Name} <span className="text-muted-foreground font-normal text-xs">vs</span> {r.artist2Name}
           </p>
-          <p className="text-[10px] text-muted-foreground">{r.dateFormatted} · #{r.battle_id}</p>
+          <p className="text-xs text-muted-foreground">{r.dateFormatted} · #{r.battle_id}</p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           {r.youtubeLink && (
@@ -259,15 +259,15 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
         >
           {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
         </button>
-        <span className="text-[10px] text-muted-foreground">
-          Platform: <span className="text-white font-mono">{r.platformEarnSol} SOL</span>
-          <span className="ml-1">({r.platformEarnUsd})</span>
+        <span className="text-xs text-muted-foreground">
+          Platform: <span className="text-[#f59e0b] font-mono font-bold">◎{r.platformEarnSol}</span>
+          <span className="ml-1 text-muted-foreground">({r.platformEarnUsd})</span>
         </span>
       </div>
 
       {/* Earnings breakdown */}
       {showEarnings && (
-        <div className="border-t border-border/30 bg-[#111827]/40 divide-y divide-border/30">
+        <div className="border-t border-border/30 bg-muted/40 divide-y divide-border/30">
           <EarningsRow icon="🎤" name={r.artist1Name} totalSol={r.a1EarnSol} totalUsd={r.a1EarnUsd}
             rows={[
               { label: `Trading fees (1% of ${r.a1VolSol} SOL)`, sol: r.a1TradeFeesSol, usd: r.a1TradeFeesUsd },
@@ -281,7 +281,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
             ]}
           />
           <EarningsRow icon="⚡" name="WaveWarZ Platform" totalSol={r.platformEarnSol} totalUsd={r.platformEarnUsd}
-            accent="purple"
+            accent="platform"
             rows={[
               { label: `Trading fees (0.5% of ${r.totalVolSol} SOL)`, sol: formatPlatformFee(r.totalVolSol), usd: '' },
               { label: 'Settlement bonus (3% of loser pool)', sol: r.platformEarnSol, usd: r.platformEarnUsd },
@@ -311,10 +311,10 @@ function formatPlatformFee(volSol: string): string {
 
 function AggregateStat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="rounded-lg bg-[#111827] px-3 py-2">
-      <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-0.5">{label}</p>
-      <p className="text-sm font-rajdhani font-bold text-white leading-tight">{value}</p>
-      <p className="text-[10px] text-muted-foreground">{sub}</p>
+    <div className="card-elevated px-3 py-2.5">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
+      <p className="text-base font-rajdhani font-bold text-white leading-tight">{value}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
 }
@@ -324,26 +324,26 @@ function PoolBarRow({ name, poolSol, poolUsd, pct, won, accent }: {
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-28 shrink-0 truncate">{name}</span>
-      <div className="flex-1 h-1.5 bg-[#1f2937] rounded-full overflow-hidden">
+      <span className="text-xs text-muted-foreground w-28 shrink-0 truncate">{name}</span>
+      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: won ? accent : `${accent}40` }} />
       </div>
-      <span className="font-mono text-[10px] w-16 text-right" style={{ color: won ? accent : '#6b7280' }}>
+      <span className="font-mono text-xs w-16 text-right font-bold" style={{ color: won ? accent : '#6b7280' }}>
         ◎{poolSol}
       </span>
-      <span className="text-[10px] text-muted-foreground w-16 text-right">({poolUsd})</span>
-      <span className="text-[9px] font-bold w-4" style={{ color: won ? accent : 'transparent' }}>W</span>
+      <span className="text-xs text-muted-foreground w-16 text-right">{poolUsd}</span>
+      <span className="text-xs font-bold w-4" style={{ color: won ? accent : 'transparent' }}>W</span>
     </div>
   )
 }
 
 function MiniStatBox({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="rounded-lg bg-[#111827]/80 border border-border/50 p-2.5">
-      <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-0.5 leading-tight">{label}</p>
-      <p className="text-xs font-rajdhani font-bold text-white font-mono">{value}</p>
-      <p className="text-[10px] text-muted-foreground">{sub}</p>
+    <div className="card-elevated p-2.5">
+      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 leading-tight">{label}</p>
+      <p className="text-sm font-rajdhani font-bold text-white font-mono">{value}</p>
+      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
 }
@@ -352,27 +352,27 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
   icon: string; name: string; totalSol: string; totalUsd: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
-  const textColor = accent === 'purple' ? 'text-[#a78bfa]' : 'text-[#95fe7c]'
+  const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
   return (
     <div className="px-5 py-3">
       <div className="flex items-start justify-between gap-3 mb-1.5">
-        <p className="text-xs font-rajdhani font-bold text-white">
-          {icon} <span className="text-muted-foreground font-normal text-[11px]">
+        <p className="text-sm font-rajdhani font-bold text-white">
+          {icon} <span className="text-muted-foreground font-normal text-xs">
             {name.length > 28 ? name.slice(0, 28) + '…' : name}
           </span> earned:
         </p>
         <div className="text-right shrink-0">
-          <p className={`font-mono font-bold text-xs ${textColor}`}>◎{totalSol}</p>
-          {totalUsd && <p className="text-[10px] text-muted-foreground">({totalUsd})</p>}
+          <p className={`font-mono font-bold text-sm ${textColor}`}>◎{totalSol}</p>
+          {totalUsd && <p className="text-xs text-muted-foreground">{totalUsd}</p>}
         </div>
       </div>
-      <div className="space-y-0.5 ml-3">
+      <div className="space-y-1 ml-3">
         {rows.map(r => r.sol && (
           <div key={r.label} className="flex items-center justify-between gap-3">
-            <p className="text-[10px] text-muted-foreground">└── {r.label}</p>
+            <p className="text-xs text-muted-foreground">└── {r.label}</p>
             <div className="text-right shrink-0">
-              <span className="font-mono text-[10px] text-white">◎{r.sol}</span>
-              {r.usd && <span className="text-[10px] text-muted-foreground ml-1">({r.usd})</span>}
+              <span className="font-mono text-xs text-white">◎{r.sol}</span>
+              {r.usd && <span className="text-xs text-muted-foreground ml-1">{r.usd}</span>}
             </div>
           </div>
         ))}
@@ -384,8 +384,8 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
 function WalletRow({ label, addr }: { label: string; addr: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-16 shrink-0">{label}:</span>
-      <span className="font-mono text-[10px] text-[#7ec1fb] break-all">{addr}</span>
+      <span className="text-xs text-muted-foreground w-16 shrink-0">{label}:</span>
+      <span className="font-mono text-xs text-[#7ec1fb] break-all">{addr}</span>
     </div>
   )
 }

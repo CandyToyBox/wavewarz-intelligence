@@ -42,33 +42,33 @@
   --radius: 0.5rem;
 
   /* Deep Space Navy theme — always dark, no light mode */
-  --background: #0d1321;
-  --foreground: #ffffff;
+  --background: #04080f;   /* true deep space — much darker than before */
+  --foreground: #e8edf5;
 
-  --card: #111827;
+  --card: #0c1828;         /* real contrast vs background */
   --card-foreground: #ffffff;
 
-  --popover: #111827;
+  --popover: #0c1828;
   --popover-foreground: #ffffff;
 
   /* Action Green as primary */
   --primary: #95fe7c;
-  --primary-foreground: #0d1321;
+  --primary-foreground: #04080f;
 
   /* Wave Blue as secondary */
   --secondary: #7ec1fb;
-  --secondary-foreground: #0d1321;
+  --secondary-foreground: #04080f;
 
-  --muted: #1f2937;
-  --muted-foreground: #989898;
+  --muted: #0f1e30;        /* nested panel / elevated card bg */
+  --muted-foreground: #8b9cb5;
 
   --accent: #7ec1fb;
-  --accent-foreground: #0d1321;
+  --accent-foreground: #04080f;
 
   --destructive: #ef4444;
 
-  --border: #1f2937;
-  --input: #1f2937;
+  --border: #1a2d44;       /* now actually visible */
+  --input: #0f1e30;
   --ring: #95fe7c;
 
   /* Chart colors — no purple */
@@ -85,10 +85,10 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Subtle grid pattern — digital arena feel */
+    /* Grid pattern — now visible against the darker background */
     background-image:
-      linear-gradient(to right, #1a2035 1px, transparent 1px),
-      linear-gradient(to bottom, #1a2035 1px, transparent 1px);
+      linear-gradient(to right, #1a2d44 1px, transparent 1px),
+      linear-gradient(to bottom, #1a2d44 1px, transparent 1px);
     background-size: 40px 40px;
   }
   h1, h2, h3, h4, h5, h6 {
@@ -107,9 +107,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    #1a2035 25%,
-    #1f2d4a 50%,
-    #1a2035 75%
+    #0c1828 25%,
+    #1a2d44 50%,
+    #0c1828 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
@@ -148,6 +148,22 @@
 }
 .glow-pulse-blue {
   animation: glow-pulse-blue 2.4s ease-in-out infinite;
+}
+
+/* ── Elevated card layer (inner stat boxes, panels within cards) ───────────── */
+.card-elevated {
+  background: #0f1e30;
+  border: 1px solid #1a2d44;
+  border-radius: 8px;
+}
+
+/* ── Section divider accent ────────────────────────────────────────────────── */
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-foreground);
 }
 
 /* ── Scrollbar hide ────────────────────────────────────────────────────────── */

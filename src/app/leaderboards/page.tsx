@@ -55,9 +55,9 @@ const BOARDS = [
   {
     href: '/leaderboards/traders',
     badge: 'TRADERS',
-    badgeColor: 'bg-purple-500/20 text-purple-400 border-purple-500/40',
-    borderColor: 'border-purple-500/20 hover:border-purple-500/50',
-    accentColor: 'text-purple-400',
+    badgeColor: 'bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/40',
+    borderColor: 'border-[#f59e0b]/20 hover:border-[#f59e0b]/50',
+    accentColor: 'text-[#f59e0b]',
     number: '04',
     title: 'Trader Rankings',
     desc: 'Fans and speculators ranked by trading volume, win rate, and net P&L. Click any wallet to see live on-chain holdings.',
@@ -82,20 +82,20 @@ export default function LeaderboardsHub() {
           <Link
             key={b.href}
             href={b.href}
-            className={`group rounded-xl border ${b.borderColor} bg-[#111827] p-6 flex flex-col transition-colors`}
+            className={`group rounded-xl border ${b.borderColor} bg-card p-6 flex flex-col transition-all hover:scale-[1.01]`}
           >
             <div className="flex items-start justify-between mb-4">
-              <span className={`text-4xl font-rajdhani font-bold opacity-20 ${b.accentColor}`}>{b.number}</span>
+              <span className={`text-5xl font-rajdhani font-bold opacity-35 ${b.accentColor} leading-none`}>{b.number}</span>
               <Badge className={`${b.badgeColor} border text-[10px] font-bold tracking-widest`}>{b.badge}</Badge>
             </div>
             <h2 className={`text-2xl font-rajdhani font-bold text-white group-hover:${b.accentColor} transition-colors mb-2 tracking-wide`}>
               {b.title}
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">{b.desc}</p>
-            <ul className="space-y-1 mb-5">
+            <ul className="space-y-1.5 mb-5">
               {b.stats.map(s => (
                 <li key={s} className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span className={`w-1 h-1 rounded-full ${b.accentColor} bg-current shrink-0`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${b.accentColor} bg-current shrink-0`} />
                   {s}
                 </li>
               ))}
