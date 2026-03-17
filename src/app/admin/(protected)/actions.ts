@@ -2,6 +2,8 @@
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { scheduleClipToPostiz, isPostizConfigured } from '@/lib/postiz'
+import type { Platform, PlatformCaptions } from '@/lib/postiz'
 
 // ─── Judging ──────────────────────────────────────────────────────────────────
 
@@ -255,20 +257,62 @@ export async function approveClip(payload: {
   platforms: string[]
   scheduledAt: string
   captions?: Record<string, string>
-}): Promise<{ ok: boolean; error?: string }> {
+}): Promise<{ ok: boolean; postizId?: string; postizError?: string; error?: string }> {
   const supabase = await createAdminClient()
+
+  // Fetch the full clip to get telegram_file_id and existing AI captions as fallback
+  const { data: clip } = await supabase
+    .from('clips')
+    .select('telegram_file_id,caption,captions')
+    .eq('id', payload.clipId)
+    .single()
+
+  // Merge captions: UI input → DB AI captions → original caption fallback
+  const dbCaptions = (clip?.captions ?? {}) as Record<string, string>
+  const fallback   = clip?.caption ?? ''
+  const merged: PlatformCaptions = {
+    youtube:   payload.captions?.youtube   || dbCaptions.youtube   || fallback,
+    twitter:   payload.captions?.twitter   || dbCaptions.twitter   || fallback,
+    instagram: payload.captions?.instagram || dbCaptions.instagram || fallback,
+    tiktok:    payload.captions?.tiktok    || dbCaptions.tiktok    || fallback,
+  }
+
   const updates: Record<string, unknown> = {
-    status: 'approved',
+    status:           'approved',
     pending_platforms: payload.platforms,
-    scheduled_at: payload.scheduledAt,
+    scheduled_at:     payload.scheduledAt,
+    captions:         merged,
   }
-  if (payload.captions && Object.keys(payload.captions).length > 0) {
-    updates.captions = payload.captions
-  }
+
   const { error } = await supabase.from('clips').update(updates).eq('id', payload.clipId)
   if (error) return { ok: false, error: error.message }
+
+  // ── Direct Postiz trigger (soft-fail — approval still works without it) ──
+  let postizId: string | undefined
+  let postizError: string | undefined
+
+  if (isPostizConfigured() && clip?.telegram_file_id) {
+    const result = await scheduleClipToPostiz({
+      telegramFileId: clip.telegram_file_id as string,
+      captions:       merged,
+      platforms:      payload.platforms as Platform[],
+      scheduledAt:    new Date(payload.scheduledAt),
+    })
+
+    if (result.postizId) {
+      postizId = result.postizId
+      await supabase
+        .from('clips')
+        .update({ postiz_post_id: postizId })
+        .eq('id', payload.clipId)
+    } else {
+      postizError = result.error
+      console.warn('[approveClip] Postiz trigger failed:', result.error)
+    }
+  }
+
   revalidatePath('/admin')
-  return { ok: true }
+  return { ok: true, postizId, postizError }
 }
 
 export async function rejectClip(clipId: number): Promise<{ ok: boolean; error?: string }> {

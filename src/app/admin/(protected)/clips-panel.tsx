@@ -232,11 +232,15 @@ function ClipCard({
         scheduledAt,
         captions: Object.keys(localCaptions).length > 0 ? localCaptions : undefined,
       })
-      setFeedback(
-        result.ok
-          ? { type: 'ok', msg: 'Clip approved and queued. Sir Clipz will schedule to Postiz.' }
-          : { type: 'err', msg: result.error ?? 'Failed to approve.' }
-      )
+      if (!result.ok) {
+        setFeedback({ type: 'err', msg: result.error ?? 'Failed to approve.' })
+      } else if (result.postizId) {
+        setFeedback({ type: 'ok', msg: `Approved + scheduled to Postiz (ID: ${result.postizId}).` })
+      } else if (result.postizError) {
+        setFeedback({ type: 'ok', msg: `Approved in Supabase. Postiz: ${result.postizError}. Sir Clipz bot will retry.` })
+      } else {
+        setFeedback({ type: 'ok', msg: 'Approved and queued. Sir Clipz will schedule to Postiz.' })
+      }
     })
   }
 
