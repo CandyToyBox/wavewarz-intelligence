@@ -8,6 +8,7 @@ import { MediaPanel } from './media-panel'
 import { CalendarPanel } from './calendar-panel'
 import { StatsPanel } from './stats-panel'
 import { ClipsPanel } from './clips-panel'
+import { SchedulePanel } from './schedule-panel'
 import { AdminTabs } from './admin-tabs'
 
 // ─── Launch Fee Constants (Exact — confirmed 2026-02-28) ──────────────────────
@@ -204,12 +205,14 @@ export default async function AdminPage() {
       {/* ── TABBED SECTIONS ── */}
       <AdminTabs
         clipsPanel={<ClipsPanel clips={clipsData as Parameters<typeof ClipsPanel>[0]['clips']} />}
+        schedulePanel={<SchedulePanel clips={clipsData as Parameters<typeof SchedulePanel>[0]['clips']} />}
         judgingPanel={<JudgingPanel battles={mainEvents} />}
         artistPanel={<ArtistPanel artists={artistProfiles} />}
         mediaPanel={<MediaPanel battles={mediaBattles} />}
         eventsPanel={<CalendarPanel events={calendarEvents} />}
         statsPanel={<StatsPanel stats={platformStats} />}
         clipsPendingCount={clipsData.filter((c: { status: string }) => c.status === 'pending_approval').length}
+        scheduledCount={clipsData.filter((c: { status: string; scheduled_at: string | null }) => c.status === 'approved' && c.scheduled_at && new Date(c.scheduled_at).getTime() > Date.now()).length}
         pendingCount={revenue.pendingJudging.length}
         artistCount={artistProfiles.length}
         eventCount={calendarEvents.length}

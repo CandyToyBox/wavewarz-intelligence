@@ -2,19 +2,21 @@
 
 import { useState } from 'react'
 
-type Tab = 'clips' | 'judging' | 'artists' | 'media' | 'events' | 'stats'
+type Tab = 'clips' | 'schedule' | 'judging' | 'artists' | 'media' | 'events' | 'stats'
 
 export function AdminTabs({
-  clipsPanel, judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
-  clipsPendingCount, pendingCount, artistCount, eventCount,
+  clipsPanel, schedulePanel, judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
+  clipsPendingCount, scheduledCount, pendingCount, artistCount, eventCount,
 }: {
   clipsPanel: React.ReactNode
+  schedulePanel: React.ReactNode
   judgingPanel: React.ReactNode
   artistPanel: React.ReactNode
   mediaPanel: React.ReactNode
   eventsPanel: React.ReactNode
   statsPanel: React.ReactNode
   clipsPendingCount: number
+  scheduledCount: number
   pendingCount: number
   artistCount: number
   eventCount: number
@@ -29,6 +31,14 @@ export function AdminTabs({
       badgeColor: clipsPendingCount > 0
         ? 'text-[#7ec1fb] border-[#7ec1fb]/40 bg-[#7ec1fb]/10'
         : 'text-orange-400 border-orange-500/40 bg-orange-500/10',
+    },
+    {
+      id: 'schedule',
+      label: 'Schedule Queue',
+      badge: scheduledCount > 0 ? `${scheduledCount} queued` : 'empty',
+      badgeColor: scheduledCount > 0
+        ? 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10'
+        : 'text-muted-foreground border-border bg-white/5',
     },
     {
       id: 'judging',
@@ -94,6 +104,15 @@ export function AdminTabs({
             Click a status card to filter. Expand captions to review AI-generated copy before it posts.
           </p>
           {clipsPanel}
+        </div>
+      )}
+      {tab === 'schedule' && (
+        <div>
+          <p className="text-sm text-muted-foreground mb-4">
+            Upcoming approved clips and their scheduled post times (EST). Clips are queued by Sir Clipz bot and posted via Postiz.
+            Use the Community Clips tab to approve or reschedule individual clips.
+          </p>
+          {schedulePanel}
         </div>
       )}
       {tab === 'judging' && (
