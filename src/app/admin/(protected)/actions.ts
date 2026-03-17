@@ -29,26 +29,34 @@ export async function submitJudging(payload: JudgingPayload): Promise<{ ok: bool
 // ─── Calendar Flyer Upload ────────────────────────────────────────────────────
 
 export async function uploadCalendarFlyer(formData: FormData): Promise<{ url?: string; error?: string }> {
-  const file = formData.get('file') as File | null
-  if (!file || !file.size) return { error: 'No file provided' }
+  try {
+    const file = formData.get('file') as File | null
+    if (!file || !file.size) return { error: 'No file provided' }
 
-  const supabase = await createAdminClient()
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return { error: 'Storage not configured — SUPABASE_SERVICE_ROLE_KEY is missing from environment variables' }
+    }
 
-  // Ensure bucket exists (no-op if already exists)
-  await supabase.storage.createBucket('flyers', { public: true, fileSizeLimit: 5 * 1024 * 1024 })
+    const supabase = createAdminClient()
 
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
-  const filename = `calendar/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+    // Ensure bucket exists — ignore "already exists" error
+    await supabase.storage.createBucket('flyers', { public: true, fileSizeLimit: 5 * 1024 * 1024 })
 
-  const bytes = await file.arrayBuffer()
-  const { data, error } = await supabase.storage
-    .from('flyers')
-    .upload(filename, bytes, { contentType: file.type, upsert: false })
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'jpg'
+    const filename = `calendar/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
-  if (error) return { error: error.message }
+    const bytes = await file.arrayBuffer()
+    const { data, error } = await supabase.storage
+      .from('flyers')
+      .upload(filename, bytes, { contentType: file.type, upsert: false })
 
-  const { data: { publicUrl } } = supabase.storage.from('flyers').getPublicUrl(data.path)
-  return { url: publicUrl }
+    if (error) return { error: `Storage upload failed: ${error.message}` }
+
+    const { data: { publicUrl } } = supabase.storage.from('flyers').getPublicUrl(data.path)
+    return { url: publicUrl }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Unexpected upload error' }
+  }
 }
 
 // ─── Battle Media ─────────────────────────────────────────────────────────────
@@ -238,6 +246,55 @@ export async function deleteCalendarEvent(id: string): Promise<{ error?: string 
   revalidatePath('/')
   revalidatePath('/admin')
   return {}
+}
+
+// ─── Clip Management ──────────────────────────────────────────────────────────
+
+export async function approveClip(payload: {
+  clipId: number
+  platforms: string[]
+  scheduledAt: string
+  captions?: Record<string, string>
+}): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAdminClient()
+  const updates: Record<string, unknown> = {
+    status: 'approved',
+    pending_platforms: payload.platforms,
+    scheduled_at: payload.scheduledAt,
+  }
+  if (payload.captions && Object.keys(payload.captions).length > 0) {
+    updates.captions = payload.captions
+  }
+  const { error } = await supabase.from('clips').update(updates).eq('id', payload.clipId)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/admin')
+  return { ok: true }
+}
+
+export async function rejectClip(clipId: number): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAdminClient()
+  const { error } = await supabase.from('clips').update({ status: 'rejected' }).eq('id', clipId)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/admin')
+  return { ok: true }
+}
+
+export async function saveClipEdits(payload: {
+  clipId: number
+  captions?: Record<string, string>
+  platforms?: string[]
+  scheduledAt?: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAdminClient()
+  const updates: Record<string, unknown> = {}
+  if (payload.captions && Object.keys(payload.captions).length > 0) updates.captions = payload.captions
+  if (payload.platforms) updates.pending_platforms = payload.platforms
+  if (payload.scheduledAt) updates.scheduled_at = payload.scheduledAt
+  if (Object.keys(updates).length === 0) return { ok: true }
+  const { error } = await supabase.from('clips').update(updates).eq('id', payload.clipId)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/admin')
+  return { ok: true }
 }
 
 // ─── Platform Stats ───────────────────────────────────────────────────────────
