@@ -37,7 +37,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
   const [filter, setFilter] = useState<'pending' | 'all'>('pending')
 
   const displayed = filter === 'pending'
-    ? battles.filter(b => !b.winner_decided && b.status !== 'ACTIVE')
+    ? battles.filter(b => !b.winner_decided)
     : battles
 
   function getState(id: number): JudgingState {
@@ -165,7 +165,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
               </div>
 
               {/* Judging inputs */}
-              {!isSettled && !isLive && (
+              {!isSettled && (
                 <div className="px-5 py-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     {/* Human Judge */}

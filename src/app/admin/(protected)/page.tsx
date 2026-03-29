@@ -40,7 +40,7 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
   const quickLaunchRevenue = quickCount * (QUICK_BATTLE_LAUNCH_FEE + QUICK_BATTLE_QUEUE_FEE)
   const communityLaunchRevenue = communityCount * COMMUNITY_BATTLE_FEE
   const totalRevenue = tradingFeeRevenue + settlementRevenue + quickLaunchRevenue + communityLaunchRevenue
-  const pendingJudging = battles.filter(b => b.is_main_battle && !b.winner_decided && b.status !== 'ACTIVE')
+  const pendingJudging = battles.filter(b => b.is_main_battle && !b.winner_decided)
 
   return {
     totalVolume, tradingFeeRevenue, settlementRevenue,
