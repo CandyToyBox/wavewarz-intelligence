@@ -58,7 +58,6 @@ async function getMainEventsForJudging(supabase: Awaited<ReturnType<typeof creat
     .eq('is_main_battle', true)
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
-    .limit(100)
   return data ?? []
 }
 

@@ -110,6 +110,14 @@ export async function POST(request: NextRequest) {
         hydrated.artist2_pool = onchain.artist2_pool
       }
 
+      // Volume: artist_sol_balance tracks cumulative trading SOL per side.
+      // Webhook payload stopped reliably sending total_volume_a/b, so we
+      // always hydrate from chain when the onchain value is non-zero.
+      if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+        hydrated.total_volume_a = onchain.artist1_sol_balance
+        hydrated.total_volume_b = onchain.artist2_sol_balance
+      }
+
       // Use onchain battle_duration if we have valid timestamps
       if (onchain.battle_duration > 0) {
         hydrated.battle_duration = onchain.battle_duration
