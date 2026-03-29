@@ -51,8 +51,8 @@ function EventForm({
       const res = await uploadCalendarFlyer(fd)
       if (res.error) { setUploadError(res.error); return }
       setFlyerUrl(res.url!)
-    } catch {
-      setUploadError('Upload failed. Check Supabase Storage configuration.')
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : 'Upload failed — unexpected error')
     } finally {
       setUploading(false)
     }

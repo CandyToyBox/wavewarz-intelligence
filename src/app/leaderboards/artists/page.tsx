@@ -21,6 +21,7 @@ type RawBattle = {
   artist2_pool: number
   total_volume_a: number
   total_volume_b: number
+  winner_artist_a: number | null
   event_subtype: string
   status: string
 }
@@ -30,14 +31,14 @@ async function getData() {
   const [battlesRes, profilesRes, solPrice] = await Promise.all([
     supabase
       .from('battles')
-      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,event_subtype,status')
+      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,status')
       .eq('is_main_battle', true)
       .eq('is_community_battle', false)
       .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
+      .eq('winner_decided', true)
       .neq('event_subtype', 'charity')
-      .neq('event_subtype', 'spotlight')
-      .neq('status', 'ACTIVE'),
+      .neq('event_subtype', 'spotlight'),
     supabase
       .from('artist_profiles')
       .select('primary_wallet,profile_picture_url'),
@@ -56,7 +57,9 @@ async function getData() {
   }>()
 
   for (const b of battles) {
-    const aWon = (b.artist1_pool ?? 0) >= (b.artist2_pool ?? 0)
+    // Use the recorded 2-of-3 judging result (Human Judge + X Poll + SOL Vote).
+    // winner_artist_a = 1 means artist A won, 0 means artist B won.
+    const aWon = (b.winner_artist_a ?? 0) >= 1
     const p1 = b.artist1_pool ?? 0
     const p2 = b.artist2_pool ?? 0
     const { loserPool } = getWinnerLoserPools(p1, p2, aWon)
@@ -124,7 +127,7 @@ export default async function ArtistLeaderboardPage() {
           </Badge>
         </div>
         <p className="text-muted-foreground text-sm mt-1">
-          Ranked by wins, then volume. Charity & spotlight battles excluded. Winner derived from onchain pool values.
+          Ranked by wins, then volume. Charity & spotlight battles excluded. Winner = 2-of-3 (Human Judge · X Poll · SOL Vote).
         </p>
       </div>
 
