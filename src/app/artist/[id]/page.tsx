@@ -86,15 +86,26 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     profileData = profile
     wallet = (profile.primary_wallet as string) ?? id
   } else {
-    // Wallet path — check if there's a linked profile
+    // Wallet path — check artist_wallets first (secondary wallets)
     const { data: linked } = await supabase
       .from('artist_wallets')
       .select('artist_id, artist_profiles(*)')
       .eq('wallet_address', id)
-      .single()
+      .maybeSingle()
     if (linked?.artist_id) {
       profileId = linked.artist_id
       profileData = linked.artist_profiles as unknown as Record<string, unknown>
+    } else {
+      // Also check if this wallet is the primary_wallet on artist_profiles
+      const { data: primary } = await supabase
+        .from('artist_profiles')
+        .select('*')
+        .eq('primary_wallet', id)
+        .maybeSingle()
+      if (primary) {
+        profileId = primary.artist_id as string
+        profileData = primary
+      }
     }
   }
 
