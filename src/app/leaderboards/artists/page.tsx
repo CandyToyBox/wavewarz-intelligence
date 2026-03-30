@@ -39,9 +39,8 @@ async function getData() {
       .eq('is_community_battle', false)
       .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
-      .eq('winner_decided', true)
-      .neq('event_subtype', 'charity')
-      .neq('event_subtype', 'spotlight'),
+      .eq('winner_decided', true),
+    // Note: event_subtype charity/spotlight filtered below (neq excludes NULLs in SQL)
     supabase
       .from('artist_profiles')
       .select('artist_id,primary_wallet,display_name,profile_picture_url'),
@@ -51,7 +50,10 @@ async function getData() {
     getLiveSolPrice(),
   ])
 
-  const battles = (battlesRes.data ?? []) as RawBattle[]
+  // Filter out charity/spotlight — done in JS because SQL neq() excludes NULL rows
+  const battles = ((battlesRes.data ?? []) as RawBattle[]).filter(
+    b => b.event_subtype !== 'charity' && b.event_subtype !== 'spotlight'
+  )
 
   // Build wallet → canonical profile map (merges multi-wallet artists)
   const profileById = new Map<string, { primaryWallet: string; displayName: string | null; pfpUrl: string | null }>(
