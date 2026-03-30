@@ -101,8 +101,9 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
     startTransition(async () => {
       const result = await linkWalletToArtist({ artistId, walletAddress: wallet })
       if (result.ok) {
+        setMsg({ id: artistId, text: `Wallet linked: ${wallet.slice(0, 8)}…${wallet.slice(-4)}`, ok: true })
         setNewWallet(prev => ({ ...prev, [artistId]: '' }))
-        router.refresh()
+        window.location.reload()
       } else {
         setMsg({ id: artistId, text: result.error ?? 'Link failed.', ok: false })
       }

@@ -44,7 +44,7 @@ async function getData() {
       .neq('event_subtype', 'spotlight'),
     supabase
       .from('artist_profiles')
-      .select('id,primary_wallet,display_name,profile_picture_url'),
+      .select('artist_id,primary_wallet,display_name,profile_picture_url'),
     supabase
       .from('artist_wallets')
       .select('artist_id,wallet_address'),
@@ -55,17 +55,17 @@ async function getData() {
 
   // Build wallet → canonical profile map (merges multi-wallet artists)
   const profileById = new Map<string, { primaryWallet: string; displayName: string | null; pfpUrl: string | null }>(
-    (profilesRes.data ?? []).map(p => [p.id, { primaryWallet: p.primary_wallet, displayName: p.display_name, pfpUrl: p.profile_picture_url }])
+    (profilesRes.data ?? []).map(p => [p.artist_id, { primaryWallet: p.primary_wallet, displayName: p.display_name, pfpUrl: p.profile_picture_url }])
   )
   const walletToProfileId = new Map<string, string>()
-  for (const p of profilesRes.data ?? []) walletToProfileId.set(p.primary_wallet, p.id)
+  for (const p of profilesRes.data ?? []) walletToProfileId.set(p.primary_wallet, p.artist_id)
   for (const w of walletsRes.data ?? []) walletToProfileId.set(w.wallet_address, w.artist_id)
 
   function resolveWallet(wallet: string, fallbackName: string) {
     const profileId = walletToProfileId.get(wallet)
     if (profileId) {
-      const p = profileById.get(profileId)!
-      return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl }
+      const p = profileById.get(profileId)
+      if (p) return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl }
     }
     return { key: wallet, wallet, name: fallbackName, pfpUrl: null }
   }
