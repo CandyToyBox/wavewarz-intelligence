@@ -138,7 +138,9 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   const displayName =
     (profileData?.display_name as string) ??
     nameFromMainBattle ??
-    (a1?.[0]?.artist1_name || a2?.[0]?.artist2_name || 'Unknown Artist')
+    allBattles.find(b => allWallets.includes(b.artist1_wallet))?.artist1_name ??
+    allBattles.find(b => allWallets.includes(b.artist2_wallet))?.artist2_name ??
+    'Unknown Artist'
 
   const mainEventBattles = allBattles.filter(b => b.is_main_battle && b.event_subtype === 'standard')
   const quickBattles = allBattles.filter(b => b.is_quick_battle)

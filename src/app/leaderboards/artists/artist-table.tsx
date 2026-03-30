@@ -53,7 +53,7 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
               <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest w-10">#</th>
               <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">Artist</th>
               <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
-                <Tip text="Wins and losses across all main event battles.">Record</Tip>
+                <Tip text="Main Event wins and losses. Each event = 2-of-3 or 3-of-5 rounds.">Record</Tip>
               </th>
               <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
                 <Tip text="Percentage of battles won. Higher is better.">Win %</Tip>
@@ -89,7 +89,7 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
                         {a.name}
                       </p>
                       <p className="font-mono text-[10px] text-muted-foreground truncate">
-                        {a.wallet.slice(0, 6)}…{a.wallet.slice(-4)} · {a.battles}b
+                        {a.wallet.slice(0, 6)}…{a.wallet.slice(-4)} · {a.battles}e
                       </p>
                     </div>
                   </Link>
