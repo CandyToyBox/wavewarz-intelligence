@@ -28,7 +28,7 @@ type RawBattle = {
 
 async function getData() {
   const supabase = await createClient()
-  const [battlesRes, profilesRes, solPrice] = await Promise.all([
+  const [battlesRes, profilesRes, walletsRes, solPrice] = await Promise.all([
     supabase
       .from('battles')
       .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,status')
@@ -41,14 +41,33 @@ async function getData() {
       .neq('event_subtype', 'spotlight'),
     supabase
       .from('artist_profiles')
-      .select('primary_wallet,profile_picture_url'),
+      .select('id,primary_wallet,display_name,profile_picture_url'),
+    supabase
+      .from('artist_wallets')
+      .select('artist_id,wallet_address'),
     getLiveSolPrice(),
   ])
 
   const battles = (battlesRes.data ?? []) as RawBattle[]
-  const pfpByWallet = new Map<string, string | null>(
-    (profilesRes.data ?? []).map(p => [p.primary_wallet, p.profile_picture_url])
+
+  // Build wallet → canonical key map (profile id when linked, else wallet itself)
+  // This merges multi-wallet artists (e.g. STILO + STILOWORLD) into one row.
+  const profileById = new Map<string, { primaryWallet: string; displayName: string | null; pfpUrl: string | null }>(
+    (profilesRes.data ?? []).map(p => [p.id, { primaryWallet: p.primary_wallet, displayName: p.display_name, pfpUrl: p.profile_picture_url }])
   )
+  const walletToProfileId = new Map<string, string>()
+  for (const p of profilesRes.data ?? []) walletToProfileId.set(p.primary_wallet, p.id)
+  for (const w of walletsRes.data ?? []) walletToProfileId.set(w.wallet_address, w.artist_id)
+
+  // Resolve a wallet to its canonical group key and display info
+  function resolveWallet(wallet: string, fallbackName: string) {
+    const profileId = walletToProfileId.get(wallet)
+    if (profileId) {
+      const p = profileById.get(profileId)!
+      return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl }
+    }
+    return { key: wallet, wallet, name: fallbackName, pfpUrl: null }
+  }
 
   const map = new Map<string, {
     wallet: string; name: string; wins: number; losses: number
@@ -71,18 +90,19 @@ async function getData() {
 
     for (const s of sides) {
       if (!s.wallet) continue
-      const existing = map.get(s.wallet) ?? {
-        wallet: s.wallet, name: s.name,
+      const resolved = resolveWallet(s.wallet, s.name)
+      const existing = map.get(resolved.key) ?? {
+        wallet: resolved.wallet, name: resolved.name,
         wins: 0, losses: 0, totalVolume: 0, totalEarnings: 0,
         winRate: 0, battles: 0,
-        pfpUrl: pfpByWallet.get(s.wallet) ?? null,
+        pfpUrl: resolved.pfpUrl,
       }
       existing.battles++
       existing.totalVolume += s.volume
       if (s.won) existing.wins++; else existing.losses++
       const e = calculateArtistEarnings(s.volume, loserPool, s.won)
       existing.totalEarnings += e.tradingFees + e.settlementBonus
-      map.set(s.wallet, existing)
+      map.set(resolved.key, existing)
     }
   }
 

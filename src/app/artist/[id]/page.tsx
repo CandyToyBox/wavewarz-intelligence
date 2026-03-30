@@ -98,28 +98,41 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     }
   }
 
-  // Get all battles for this wallet (both sides), exclude test
-  const { data: a1 } = await supabase
-    .from('battles')
-    .select('*')
-    .eq('artist1_wallet', wallet)
-    .eq('is_test_battle', false)
-    .order('created_at', { ascending: false })
+  // Get all wallets for this profile (handles artists with multiple wallets / name changes)
+  const allWallets: string[] = [wallet]
+  if (profileId) {
+    const { data: linked } = await supabase
+      .from('artist_wallets')
+      .select('wallet_address')
+      .eq('artist_id', profileId)
+    for (const w of linked ?? []) {
+      if (w.wallet_address && !allWallets.includes(w.wallet_address)) {
+        allWallets.push(w.wallet_address)
+      }
+    }
+  }
 
-  const { data: a2 } = await supabase
-    .from('battles')
-    .select('*')
-    .eq('artist2_wallet', wallet)
-    .eq('is_test_battle', false)
-    .order('created_at', { ascending: false })
-
-  const allBattles = [...(a1 ?? []), ...(a2 ?? [])] as Battle[]
+  // Get all battles for all linked wallets (both sides), exclude test
+  const battleSets = await Promise.all(
+    allWallets.flatMap(w => [
+      supabase.from('battles').select('*').eq('artist1_wallet', w).eq('is_test_battle', false).order('created_at', { ascending: false }),
+      supabase.from('battles').select('*').eq('artist2_wallet', w).eq('is_test_battle', false).order('created_at', { ascending: false }),
+    ])
+  )
+  const seen = new Set<number>()
+  const allBattles: Battle[] = []
+  for (const { data } of battleSets) {
+    for (const b of data ?? []) {
+      if (!seen.has(b.battle_id)) { seen.add(b.battle_id); allBattles.push(b as Battle) }
+    }
+  }
+  allBattles.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
   if (allBattles.length === 0) return null
 
   // Derive display name — prefer non-quick battles (quick battles use song titles, not artist names)
   const nameFromMainBattle =
     allBattles.filter(b => !b.is_quick_battle)
-      .map(b => b.artist1_wallet === wallet ? b.artist1_name : b.artist2_name)
+      .map(b => allWallets.includes(b.artist1_wallet) ? b.artist1_name : b.artist2_name)
       .find(n => n?.trim())
 
   const displayName =
@@ -137,10 +150,10 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   let tradingFeesSol = 0, settlementBonusSol = 0, totalVolumeSol = 0
 
   for (const b of allBattles) {
-    // Skip genuinely live battles (only 1 can be active at a time)
-    if (b.status === 'ACTIVE') continue
+    // Skip genuinely live battles — but include ACTIVE battles that have been judged
+    if (b.status === 'ACTIVE' && !b.winner_decided) continue
 
-    const isArtistA = b.artist1_wallet === wallet
+    const isArtistA = allWallets.includes(b.artist1_wallet)
     const p1 = b.artist1_pool ?? 0
     const p2 = b.artist2_pool ?? 0
 
