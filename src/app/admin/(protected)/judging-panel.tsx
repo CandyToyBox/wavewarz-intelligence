@@ -33,6 +33,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
   const [judging, setJudging] = useState<Record<number, JudgingState>>({})
   const [saved, setSaved] = useState<Record<number, boolean>>({})
   const [errors, setErrors] = useState<Record<number, string>>({})
+  const [overrides, setOverrides] = useState<Record<number, boolean>>({})
   const [isPending, startTransition] = useTransition()
   const [filter, setFilter] = useState<'pending' | 'all'>('pending')
 
@@ -51,6 +52,13 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
     }))
     setSaved(prev => ({ ...prev, [battleId]: false }))
     setErrors(prev => ({ ...prev, [battleId]: '' }))
+  }
+
+  function toggleOverride(battleId: number) {
+    setOverrides(prev => ({ ...prev, [battleId]: !prev[battleId] }))
+    setSaved(prev => ({ ...prev, [battleId]: false }))
+    setErrors(prev => ({ ...prev, [battleId]: '' }))
+    setJudging(prev => ({ ...prev, [battleId]: { humanJudge: null, xPoll: null } }))
   }
 
   function handleSubmit(battle: Battle) {
@@ -115,6 +123,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
             ? deriveWinner(state, solVote)
             : null
           const isSettled = battle.winner_decided
+          const isOverride = !!overrides[battle.battle_id]
           const isLive = battle.status === 'ACTIVE'
           const date = new Date(battle.created_at).toLocaleDateString('en-US', {
             month: 'short', day: 'numeric', year: 'numeric',
@@ -127,7 +136,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
             <div
               key={battle.battle_id}
               className={`rounded-xl border bg-[#111827] overflow-hidden ${
-                isSettled ? 'border-[#95fe7c]/20 opacity-60' : isLive ? 'border-amber-500/30' : 'border-border'
+                isSettled && !isOverride ? 'border-[#95fe7c]/20 opacity-60' : isOverride ? 'border-amber-400/40' : isLive ? 'border-amber-500/30' : 'border-border'
               }`}
             >
               {/* Battle header */}
@@ -141,8 +150,11 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                     <span className="font-rajdhani font-bold text-white text-lg">
                       {battle.artist2_name}
                     </span>
-                    {isSettled && (
+                    {isSettled && !isOverride && (
                       <span className="text-[10px] font-bold text-[#95fe7c] border border-[#95fe7c]/40 px-2 py-0.5 rounded">JUDGED</span>
+                    )}
+                    {isOverride && (
+                      <span className="text-[10px] font-bold text-amber-400 border border-amber-400/40 px-2 py-0.5 rounded animate-pulse">RE-JUDGING</span>
                     )}
                     {isLive && (
                       <span className="text-[10px] font-bold text-amber-400 border border-amber-400/40 px-2 py-0.5 rounded animate-pulse">LIVE</span>
@@ -164,11 +176,10 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                 </div>
               </div>
 
-              {/* Judging inputs */}
-              {!isSettled && (
+              {/* Judging inputs — shown for unsettled battles OR settled battles in override mode */}
+              {(!isSettled || isOverride) && (
                 <div className="px-5 py-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    {/* Human Judge */}
                     <JudgeInput
                       label="Human Judge"
                       battleId={battle.battle_id}
@@ -178,7 +189,6 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                       nameB={battle.artist2_name}
                       onChange={setVote}
                     />
-                    {/* X Poll */}
                     <JudgeInput
                       label="X Poll Winner"
                       battleId={battle.battle_id}
@@ -190,7 +200,6 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                     />
                   </div>
 
-                  {/* Projected winner */}
                   {projectedWinner && (
                     <div className="rounded-lg bg-[#95fe7c]/5 border border-[#95fe7c]/20 px-4 py-2 mb-3 flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">2-of-3 Winner:</span>
@@ -207,23 +216,41 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                     <p className="text-xs text-red-400 mb-3">{errors[battle.battle_id]}</p>
                   )}
 
-                  {saved[battle.battle_id] ? (
-                    <p className="text-xs text-[#95fe7c] font-bold">Saved to database.</p>
-                  ) : (
-                    <button
-                      onClick={() => handleSubmit(battle)}
-                      disabled={isPending || !state.humanJudge || !state.xPoll}
-                      className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
-                    >
-                      {isPending ? 'Saving…' : 'Save Judging Result'}
-                    </button>
-                  )}
+                  <div className="flex items-center gap-3">
+                    {saved[battle.battle_id] ? (
+                      <p className="text-xs text-[#95fe7c] font-bold">
+                        {isOverride ? 'Result updated.' : 'Saved to database.'}
+                      </p>
+                    ) : (
+                      <button
+                        onClick={() => handleSubmit(battle)}
+                        disabled={isPending || !state.humanJudge || !state.xPoll}
+                        className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+                      >
+                        {isPending ? 'Saving…' : isOverride ? 'Update Result' : 'Save Judging Result'}
+                      </button>
+                    )}
+                    {isOverride && (
+                      <button
+                        onClick={() => toggleOverride(battle.battle_id)}
+                        className="text-xs text-muted-foreground hover:text-white border border-border px-3 py-2 rounded-lg transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 
-              {isSettled && (
-                <div className="px-5 py-3 text-xs text-muted-foreground">
-                  Winner already recorded in database.
+              {isSettled && !isOverride && (
+                <div className="px-5 py-3 flex items-center justify-between">
+                  <span className="text-xs text-muted-foreground">Winner recorded in database.</span>
+                  <button
+                    onClick={() => toggleOverride(battle.battle_id)}
+                    className="text-[10px] font-bold text-amber-400 border border-amber-400/30 hover:bg-amber-400/10 px-3 py-1 rounded transition-colors font-rajdhani tracking-wide"
+                  >
+                    Re-judge
+                  </button>
                 </div>
               )}
             </div>
