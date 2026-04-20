@@ -10,12 +10,14 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 
+const GROUP_WINDOW_MS = 6 * 60 * 60 * 1000
+
 async function getGlobalStats() {
   const supabase = await createClient()
 
   const { data: battles } = await supabase
     .from('battles')
-    .select('total_volume_a, total_volume_b, artist1_pool, artist2_pool, winner_artist_a, is_quick_battle, is_main_battle, is_test_battle, unique_traders')
+    .select('battle_id, created_at, total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, is_quick_battle, is_main_battle, is_test_battle, event_subtype, unique_traders')
     .eq('is_test_battle', false)
 
   if (!battles) return null
@@ -32,12 +34,36 @@ async function getGlobalStats() {
     }, 0)
 
   const platform = calculatePlatformRevenue(totalVolume, totalLoserPools)
+  // Artist payouts: 1% of each side's volume + 5% (winner) / 2% (loser) of loser pool at settlement
   const totalArtistPayouts = totalVolume * 0.01 + totalLoserPools * 0.07
+
+  // Count Main Events by grouping rounds (same wallet-pair within 6-hour window)
+  // Excludes charity/spotlight/prediction subtypes
+  const mainRounds = battles
+    .filter(b => b.is_main_battle &&
+      b.event_subtype !== 'charity' &&
+      b.event_subtype !== 'spotlight' &&
+      b.event_subtype !== 'prediction'
+    )
+    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+
+  const eventGroups: { key: string; latestAt: number }[] = []
+  for (const b of mainRounds) {
+    const key = [b.artist1_wallet, b.artist2_wallet].sort().join('|')
+    const bTime = new Date(b.created_at).getTime()
+    let matched = false
+    for (let i = eventGroups.length - 1; i >= 0; i--) {
+      const g = eventGroups[i]
+      if (g.key !== key) continue
+      if (bTime - g.latestAt <= GROUP_WINDOW_MS) { g.latestAt = bTime; matched = true; break }
+    }
+    if (!matched) eventGroups.push({ key, latestAt: bTime })
+  }
 
   return {
     totalVolume,
     totalBattles: battles.length,
-    mainEvents: battles.filter(b => b.is_main_battle).length,
+    mainEvents: eventGroups.length,
     quickBattles: battles.filter(b => b.is_quick_battle).length,
     totalArtistPayouts,
     platformRevenue: platform.totalSol,
@@ -171,8 +197,8 @@ export default async function HomePage() {
           <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
             WaveWarZ <span className="text-[#7ec1fb]">Intelligence</span>
           </h1>
-          <p className="text-muted-foreground mt-2 text-lg">
-            Back Music, Not Memes. The decentralized arena on Solana.
+          <p className="text-muted-foreground mt-2 text-lg tracking-wide">
+            Every battle. Every number. <span className="text-white font-bold">ONCHAIN</span>
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -185,6 +211,138 @@ export default async function HomePage() {
         </div>
       </header>
 
+      {/* What Is WaveWarZ */}
+      <section className="rounded-2xl border border-[#7ec1fb]/20 bg-[#7ec1fb]/5 p-6 md:p-8 space-y-4">
+        <h2 className="text-3xl font-rajdhani font-bold text-white">What Is WaveWarZ?</h2>
+        <p className="text-gray-300 leading-relaxed max-w-3xl">
+          WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade ephemeral tokens on who they think will win. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
+        </p>
+        <p className="text-gray-400 leading-relaxed max-w-3xl text-sm">
+          We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans put real money behind the artists they believe in — and lets artists earn directly from that conviction, instantly, every time.
+        </p>
+        <div className="pt-2 flex flex-wrap gap-3">
+          <a href="https://wavewarz.com" target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+            Enter the Arena ↗
+          </a>
+          <a href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+            Watch on YouTube ↗
+          </a>
+        </div>
+      </section>
+
+      {/* What You'll Find Here */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">What&apos;s On This Site</h2>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <FeatureCard
+            icon="🏆"
+            title="Leaderboards"
+            desc="Artist and song rankings by volume, wins, and battle count. See who&apos;s dominating the arena."
+            href="/leaderboards"
+          />
+          <FeatureCard
+            icon="🎬"
+            title="WaveWarZ Clippers"
+            desc="Community members submit battle highlights. Approved clips go out on YouTube, X, and TikTok. Submit your clip and earn points."
+            href="https://t.me/wavewarzclipshq"
+            external
+          />
+          <FeatureCard
+            icon="🎙"
+            title="X Spaces — Daily"
+            desc="Join us live Mon–Fri at 8:30 PM EST for the Quick Battle Livestream. Trade the charts in real-time while the music plays."
+            href="https://x.com/wavewarz"
+            external
+          />
+          <FeatureCard
+            icon="📺"
+            title="YouTube Livestream"
+            desc="Quick Battles stream live on YouTube every weeknight at 8:30 PM EST. Two songs battle it out — fans vote and trade in real-time."
+            href="https://www.youtube.com/@wavewarz"
+            external
+          />
+          <FeatureCard
+            icon="📅"
+            title="Events Calendar"
+            desc="Upcoming battles, X Spaces, community events, and tournaments — all in one place."
+            href="/events"
+          />
+          <FeatureCard
+            icon="📊"
+            title="Battle Analytics"
+            desc="Verified onchain stats for every battle. Volume, pools, trader counts, and payout breakdowns — all sourced directly from Solana."
+            href="/battles"
+          />
+        </div>
+      </section>
+
+      {/* Tournaments */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Upcoming Tournaments</h2>
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] border border-[#95fe7c]/30 px-2 py-0.5 rounded">
+            Registration Open
+          </span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          {/* Artist Tournament */}
+          <div className="rounded-2xl border border-[#95fe7c]/30 bg-[#95fe7c]/5 p-6 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">16-Artist Bracket</p>
+                <h3 className="text-2xl font-rajdhani font-bold text-white">Artist Tournament</h3>
+              </div>
+              <span className="text-3xl">🎤</span>
+            </div>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Sixteen artists. Single-elimination bracket. Fans trade on every matchup and the SOL flows to the winners. This is the championship — apply now to secure your spot.
+            </p>
+            <ul className="text-xs text-gray-400 space-y-1">
+              <li>• 16 artist slots — first come, first qualified</li>
+              <li>• Each round is a full WaveWarZ battle</li>
+              <li>• Instant SOL payouts to artists each round</li>
+              <li>• Fans trade across all matchups simultaneously</li>
+            </ul>
+            <a href="https://x.com/wavewarz" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Register on X ↗
+            </a>
+          </div>
+
+          {/* AI Artist Tournament */}
+          <div className="rounded-2xl border border-[#7ec1fb]/30 bg-[#7ec1fb]/5 p-6 space-y-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">8–16 Artist Bracket</p>
+                <h3 className="text-2xl font-rajdhani font-bold text-white">AI Artist Tournament</h3>
+              </div>
+              <span className="text-3xl">🤖</span>
+            </div>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              AI-generated artists go head-to-head. Bracket size depends on signups — 8 or 16 slots. No human artists, just AI music. The community votes, the chains settles, the SOL moves.
+            </p>
+            <ul className="text-xs text-gray-400 space-y-1">
+              <li>• 8 or 16 slots based on registrations</li>
+              <li>• Register with X, email, Telegram, or phone</li>
+              <li>• AI-generated tracks judged by the community</li>
+              <li>• Same payout structure as live battles</li>
+            </ul>
+            <a href="https://x.com/wavewarz" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#7ec1fb] hover:bg-[#5aaae8] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Register on X ↗
+            </a>
+          </div>
+
+        </div>
+      </section>
+
       {/* Stat Cards */}
       {stats && (
         <section>
@@ -195,29 +353,29 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
-              label={<Tip text="Sum of all SOL traded by fans across every battle. 98.5% of every trade stays in the ecosystem.">Total Volume</Tip>}
+              label={<Tip text="Total SOL from all buys and sells across every battle, all time. Test battles excluded.">Total Volume</Tip>}
               primary={`${parseFloat(stats.totalVolume.toFixed(2))} SOL`}
               secondary={solToUsd(stats.totalVolume, solPrice)}
               sub={`${stats.totalBattles} battles`}
             />
             <StatCard
-              label={<Tip text="Artists earn 1% of all trading volume + 5-7% settlement bonus. Paid instantly onchain — no withdrawal needed." wide>Artist Payouts</Tip>}
+              label={<Tip text="1% of trading volume per side, paid per trade. At settlement: winning artist gets 5% of loser pool, losing artist gets 2%. All automatic, instant, onchain." wide>Artist Payouts</Tip>}
               primary={`${parseFloat(stats.totalArtistPayouts.toFixed(2))} SOL`}
               secondary={solToUsd(stats.totalArtistPayouts, solPrice)}
               sub="Instant · automatic"
               highlight
             />
             <StatCard
-              label={<Tip text="Platform earns 0.5% per trade + 3% of the losing pool at settlement." wide>Platform Revenue</Tip>}
+              label={<Tip text="0.5% per trade + 3% of the losing pool at settlement." wide>Platform Revenue</Tip>}
               primary={`${parseFloat(stats.platformRevenue.toFixed(2))} SOL`}
               secondary={solToUsd(stats.platformRevenue, solPrice)}
               sub="0.5% fees + 3% settlement"
             />
             <StatCard
-              label={<Tip text="Main Events = artist vs artist, judged by humans + X poll + SOL vote. Quick Battles = song vs song, 3-factor winner." wide>Battle Types</Tip>}
+              label={<Tip text="Main Events = grouped artist vs artist rounds (2-of-3 or 3-of-5). Quick Battles = individual song vs song battles." wide>Battle Types</Tip>}
               primary={`${stats.mainEvents} Main`}
               secondary={`${stats.quickBattles} Quick`}
-              sub="2 formats · 1 arena"
+              sub="events · quick battles"
             />
           </div>
         </section>
@@ -465,6 +623,24 @@ function ScheduleCard({
       </span>
     </a>
   )
+}
+
+function FeatureCard({
+  icon, title, desc, href, external = false,
+}: {
+  icon: string; title: string; desc: string; href: string; external?: boolean
+}) {
+  const inner = (
+    <div className="h-full p-5 rounded-xl border border-border bg-card hover:border-[#7ec1fb]/40 transition-colors group space-y-2">
+      <div className="text-2xl">{icon}</div>
+      <h3 className="font-rajdhani font-bold text-white text-base group-hover:text-[#7ec1fb] transition-colors">{title}</h3>
+      <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+    </div>
+  )
+  if (external) {
+    return <a href={href} target="_blank" rel="noreferrer" className="block h-full">{inner}</a>
+  }
+  return <Link href={href} className="block h-full">{inner}</Link>
 }
 
 function SpotifyIcon() {
