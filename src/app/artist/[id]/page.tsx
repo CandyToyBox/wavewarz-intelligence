@@ -35,6 +35,7 @@ type Battle = {
 type ArtistStats = {
   displayName: string
   wallet: string
+  allWallets: string[]
   profileId: string | null
   pfpUrl: string | null
   bio: string | null
@@ -112,6 +113,12 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   // Get all wallets for this profile (handles artists with multiple wallets / name changes)
   const allWallets: string[] = [wallet]
   if (profileId) {
+    // Include the canonical primary wallet from artist_profiles (in case we navigated via a secondary wallet)
+    const primaryFromProfile = profileData?.primary_wallet as string | undefined
+    if (primaryFromProfile && !allWallets.includes(primaryFromProfile)) {
+      allWallets.push(primaryFromProfile)
+    }
+    // Include all secondary wallets linked via artist_wallets
     const { data: linked } = await supabase
       .from('artist_wallets')
       .select('wallet_address')
@@ -153,7 +160,11 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     allBattles.find(b => allWallets.includes(b.artist2_wallet))?.artist2_name ??
     'Unknown Artist'
 
-  const mainEventBattles = allBattles.filter(b => b.is_main_battle && b.event_subtype === 'standard')
+  // Include all main battles except charity/spotlight/prediction — use JS filter because
+  // SQL neq() excludes NULL rows (battles with no event_subtype would be dropped)
+  const mainEventBattles = allBattles.filter(
+    b => b.is_main_battle && b.event_subtype !== 'charity' && b.event_subtype !== 'spotlight' && b.event_subtype !== 'prediction'
+  )
   const quickBattles = allBattles.filter(b => b.is_quick_battle)
 
   // W/L from onchain data (money layer) — split by category
@@ -197,6 +208,7 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   return {
     displayName,
     wallet,
+    allWallets,
     profileId,
     pfpUrl: (profileData?.profile_picture_url as string) ?? (profileData?.custom_pfp_url as string) ?? null,
     bio: (profileData?.bio as string) ?? null,
@@ -497,8 +509,13 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
               <span className="text-center">Result</span>
               <span className="text-right">Replay</span>
             </div>
-            {stats.mainEventBattles.slice(0, 10).map((b) => {
-              const isArtistA = b.artist1_wallet === stats.wallet
+            {stats.mainEventBattles.filter(b => {
+              // Skip self-battles (two wallets from the same merged profile on opposite sides)
+              const a1IsOwn = stats.allWallets.includes(b.artist1_wallet)
+              const a2IsOwn = stats.allWallets.includes(b.artist2_wallet)
+              return !(a1IsOwn && a2IsOwn)
+            }).map((b) => {
+              const isArtistA = stats.allWallets.includes(b.artist1_wallet)
               const opponent = isArtistA ? b.artist2_name : b.artist1_name
               const p1 = b.artist1_pool ?? 0
               const p2 = b.artist2_pool ?? 0
@@ -572,12 +589,12 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
           {/* Summary row */}
           <div className="grid grid-cols-3 gap-3 mb-4">
             <StatBox label="Quick Record" value={`${stats.quickWins}W – ${stats.quickLosses}L`} sub={`${stats.quickWins + stats.quickLosses > 0 ? Math.round(stats.quickWins / (stats.quickWins + stats.quickLosses) * 100) : 0}% win rate`} />
-            <StatBox label="Quick Volume" value={`${formatSol(stats.quickBattles.reduce((s, b) => { const isA = b.artist1_wallet === stats.wallet; return s + (isA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)) }, 0))} SOL`} sub="Chart trading" />
-            <StatBox label="Songs Entered" value={[...new Set(stats.quickBattles.map(b => b.artist1_wallet === stats.wallet ? b.artist1_name : b.artist2_name))].length.toString()} sub="Unique tracks" />
+            <StatBox label="Quick Volume" value={`${formatSol(stats.quickBattles.reduce((s, b) => { const isA = stats.allWallets.includes(b.artist1_wallet); return s + (isA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)) }, 0))} SOL`} sub="Chart trading" />
+            <StatBox label="Songs Entered" value={[...new Set(stats.quickBattles.map(b => stats.allWallets.includes(b.artist1_wallet) ? b.artist1_name : b.artist2_name))].length.toString()} sub="Unique tracks" />
           </div>
 
           {/* Per-song breakdown */}
-          <QuickBattleSongTable battles={stats.quickBattles} wallet={stats.wallet} solPrice={solPrice} />
+          <QuickBattleSongTable battles={stats.quickBattles} allWallets={stats.allWallets} solPrice={solPrice} />
         </section>
       )}
 
@@ -619,14 +636,14 @@ function SocialIcon({ href, label, color, children }: {
   )
 }
 
-function QuickBattleSongTable({ battles, wallet, solPrice }: {
-  battles: Battle[]; wallet: string; solPrice: number
+function QuickBattleSongTable({ battles, allWallets, solPrice }: {
+  battles: Battle[]; allWallets: string[]; solPrice: number
 }) {
   // Group by song title (artist's song is the one matching their wallet side)
   const songMap = new Map<string, { title: string; musicLink: string | null; wins: number; losses: number; volume: number }>()
 
   for (const b of battles) {
-    const isA = b.artist1_wallet === wallet
+    const isA = allWallets.includes(b.artist1_wallet)
     const title = isA ? b.artist1_name : b.artist2_name
     const musicLink = isA ? (b.artist1_music_link ?? null) : (b.artist2_music_link ?? null)
     const p1 = b.artist1_pool ?? 0
