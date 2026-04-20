@@ -38,13 +38,9 @@ async function getGlobalStats() {
   const totalArtistPayouts = totalVolume * 0.01 + totalLoserPools * 0.07
 
   // Count Main Events by grouping rounds (same wallet-pair within 6-hour window)
-  // Excludes charity/spotlight/prediction subtypes
+  // Includes charity and spotlight events; excludes prediction market rounds only
   const mainRounds = battles
-    .filter(b => b.is_main_battle &&
-      b.event_subtype !== 'charity' &&
-      b.event_subtype !== 'spotlight' &&
-      b.event_subtype !== 'prediction'
-    )
+    .filter(b => b.is_main_battle && b.event_subtype !== 'prediction')
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 
   const eventGroups: { key: string; latestAt: number }[] = []
