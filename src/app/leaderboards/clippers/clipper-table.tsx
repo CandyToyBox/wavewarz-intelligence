@@ -6,7 +6,33 @@ import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
 import { Badge } from '@/components/ui/badge'
 
-const RANK_LABEL = ['🥇', '🥈', '🥉']
+function RankCell({ position }: { position: number }) {
+  if (position === 0) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#f59e0b]/15 border border-[#f59e0b]/30">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" strokeLinejoin="round"/>
+        <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
+        <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
+        <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
+      </svg>
+    </div>
+  )
+  if (position === 1) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-400/10 border border-zinc-400/25">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#a1a1aa"/>
+      </svg>
+    </div>
+  )
+  if (position === 2) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-orange-700/10 border border-orange-700/25">
+      <svg width="13" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#c2410c"/>
+      </svg>
+    </div>
+  )
+  return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
+}
 
 export type ClipperRowClient = {
   telegramId: number
@@ -79,8 +105,8 @@ export function ClipperTable({ rows }: { rows: ClipperRowClient[] }) {
               <tr key={r.telegramId} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
 
                 {/* Rank */}
-                <td className="px-3 sm:px-4 py-3 text-muted-foreground font-mono text-xs">
-                  {i < 3 && !search ? RANK_LABEL[i] : `${i + 1}`}
+                <td className="px-3 sm:px-4 py-3">
+                  {i < 3 && !search ? <RankCell position={i} /> : <span className="font-mono text-xs text-muted-foreground">{i + 1}</span>}
                 </td>
 
                 {/* Identity */}

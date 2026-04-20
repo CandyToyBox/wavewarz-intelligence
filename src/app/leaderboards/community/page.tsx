@@ -4,7 +4,7 @@ import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
-import Link from 'next/link'
+import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -89,18 +89,43 @@ async function getData() {
   return { rows, solPrice }
 }
 
-const RANK_LABEL = ['🥇', '🥈', '🥉']
+function RankCell({ position }: { position: number }) {
+  if (position === 0) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#f59e0b]/15 border border-[#f59e0b]/30">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" strokeLinejoin="round"/>
+        <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
+        <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
+        <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
+      </svg>
+    </div>
+  )
+  if (position === 1) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-400/10 border border-zinc-400/25">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#a1a1aa"/>
+      </svg>
+    </div>
+  )
+  if (position === 2) return (
+    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-orange-700/10 border border-orange-700/25">
+      <svg width="13" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#c2410c"/>
+      </svg>
+    </div>
+  )
+  return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
+}
 
 export default async function CommunityLeaderboardPage() {
   const { rows, solPrice } = await getData()
 
   return (
     <div className="space-y-6">
+      <LeaderboardNav />
+
       <div>
-        <Link href="/leaderboards" className="text-xs text-muted-foreground hover:text-white transition-colors mb-4 inline-block">
-          ← All Leaderboards
-        </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
             Community <span className="text-amber-400">Rankings</span>
           </h1>
@@ -110,7 +135,7 @@ export default async function CommunityLeaderboardPage() {
           <span className="text-xs text-muted-foreground ml-auto">{rows.length} competitors</span>
         </div>
         <p className="text-muted-foreground text-sm mt-1">
-          Ranked by wins, then volume. Battle artwork shown per entry — falls back to artist profile picture.
+          Ranked by wins, then total SOL volume. Battle artwork shown per entry.
         </p>
       </div>
 
@@ -137,8 +162,8 @@ export default async function CommunityLeaderboardPage() {
           <tbody>
             {rows.map((c, i) => (
               <tr key={c.wallet} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
-                <td className="px-3 sm:px-4 py-3 text-muted-foreground font-mono text-xs">
-                  {i < 3 ? RANK_LABEL[i] : `${i + 1}`}
+                <td className="px-3 sm:px-4 py-3">
+                  <RankCell position={i} />
                 </td>
                 <td className="px-3 sm:px-4 py-3">
                   <div className="flex items-center gap-2 sm:gap-3">

@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
+import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import Link from 'next/link'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -559,10 +560,10 @@ function TabBtn({
   return (
     <button
       onClick={onClick}
-      className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded transition-all whitespace-nowrap ${
+      className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-lg transition-all whitespace-nowrap ${
         active
-          ? 'bg-[#7ec1fb]/15 text-[#7ec1fb] border border-[#7ec1fb]/40'
-          : 'text-muted-foreground hover:text-white border border-transparent'
+          ? 'bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/50'
+          : 'text-muted-foreground border border-transparent hover:bg-white/[0.06] hover:text-white'
       }`}
     >
       {children}
@@ -602,11 +603,10 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
 
   return (
     <div className="space-y-6">
+      <LeaderboardNav />
+
       {/* Page header */}
       <div>
-        <Link href="/leaderboards" className="text-xs text-muted-foreground hover:text-white transition-colors mb-4 inline-block">
-          ← All Leaderboards
-        </Link>
         <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
             Song <span className="text-[#7ec1fb]">Charts</span>
@@ -621,24 +621,28 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
         </p>
       </div>
 
-      {/* Period tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest shrink-0 mr-1">Period:</span>
-        {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
-          <TabBtn key={p} active={period === p} onClick={() => setPeriod(p)}>
-            {PERIOD_LABELS[p]}
-          </TabBtn>
-        ))}
-      </div>
-
-      {/* Category tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-        <span className="text-[10px] text-muted-foreground uppercase tracking-widest shrink-0 mr-1">View:</span>
-        {(Object.keys(CATEGORY_LABELS) as Category[]).map(c => (
-          <TabBtn key={c} active={category === c} onClick={() => setCategory(c)}>
-            {CATEGORY_LABELS[c]}
-          </TabBtn>
-        ))}
+      {/* Period + Category filters */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">Period</span>
+          <div className="flex items-center gap-1 bg-[#080d18] border border-border/60 rounded-xl p-1">
+            {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
+              <TabBtn key={p} active={period === p} onClick={() => setPeriod(p)}>
+                {PERIOD_LABELS[p]}
+              </TabBtn>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">View</span>
+          <div className="flex items-center gap-1 bg-[#080d18] border border-border/60 rounded-xl p-1">
+            {(Object.keys(CATEGORY_LABELS) as Category[]).map(c => (
+              <TabBtn key={c} active={category === c} onClick={() => setCategory(c)}>
+                {CATEGORY_LABELS[c]}
+              </TabBtn>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Winner system legend */}
