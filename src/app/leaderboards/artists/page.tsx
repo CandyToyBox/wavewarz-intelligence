@@ -3,7 +3,7 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { calculateArtistEarnings, getWinnerLoserPools, formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { ArtistTable, type ArtistRowClient } from './artist-table'
-import Link from 'next/link'
+import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,8 +18,10 @@ type RawBattle = {
   created_at: string
   artist1_name: string
   artist1_wallet: string
+  artist1_twitter: string | null
   artist2_name: string
   artist2_wallet: string
+  artist2_twitter: string | null
   artist1_pool: number
   artist2_pool: number
   total_volume_a: number
@@ -34,7 +36,7 @@ async function getData() {
   const [battlesRes, profilesRes, walletsRes, solPrice] = await Promise.all([
     supabase
       .from('battles')
-      .select('battle_id,created_at,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,status')
+      .select('battle_id,created_at,artist1_name,artist1_wallet,artist1_twitter,artist2_name,artist2_wallet,artist2_twitter,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,status')
       .eq('is_main_battle', true)
       .eq('is_community_battle', false)
       .eq('is_quick_battle', false)
@@ -55,6 +57,17 @@ async function getData() {
     b => b.event_subtype !== 'charity' && b.event_subtype !== 'spotlight'
   )
 
+  // Build wallet → Twitter handle map from battles (strip @ if present)
+  const twitterByWallet = new Map<string, string>()
+  for (const b of ((battlesRes.data ?? []) as RawBattle[])) {
+    if (b.artist1_wallet && b.artist1_twitter) {
+      twitterByWallet.set(b.artist1_wallet, b.artist1_twitter.replace(/^@/, ''))
+    }
+    if (b.artist2_wallet && b.artist2_twitter) {
+      twitterByWallet.set(b.artist2_wallet, b.artist2_twitter.replace(/^@/, ''))
+    }
+  }
+
   // Build wallet → canonical profile map (merges multi-wallet artists)
   const profileById = new Map<string, { primaryWallet: string; displayName: string | null; pfpUrl: string | null }>(
     (profilesRes.data ?? []).map(p => [p.artist_id, { primaryWallet: p.primary_wallet, displayName: p.display_name, pfpUrl: p.profile_picture_url }])
@@ -67,9 +80,9 @@ async function getData() {
     const profileId = walletToProfileId.get(wallet)
     if (profileId) {
       const p = profileById.get(profileId)
-      if (p) return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl }
+      if (p) return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl, twitterHandle: twitterByWallet.get(p.primaryWallet) ?? twitterByWallet.get(wallet) ?? null }
     }
-    return { key: wallet, wallet, name: fallbackName, pfpUrl: null }
+    return { key: wallet, wallet, name: fallbackName, pfpUrl: null, twitterHandle: twitterByWallet.get(wallet) ?? null }
   }
 
   // Build pair key using resolved keys so multi-wallet artists group correctly
@@ -114,7 +127,7 @@ async function getData() {
   const map = new Map<string, {
     wallet: string; name: string; events: number; wins: number; losses: number
     totalVolume: number; totalEarnings: number; winRate: number
-    pfpUrl: string | null
+    pfpUrl: string | null; twitterHandle: string | null
   }>()
 
   for (const group of eventGroups) {
@@ -158,7 +171,7 @@ async function getData() {
 
     const ex1 = map.get(r1.key) ?? {
       wallet: r1.wallet, name: r1.name, events: 0, wins: 0, losses: 0,
-      totalVolume: 0, totalEarnings: 0, winRate: 0, pfpUrl: r1.pfpUrl,
+      totalVolume: 0, totalEarnings: 0, winRate: 0, pfpUrl: r1.pfpUrl, twitterHandle: r1.twitterHandle,
     }
     ex1.events++
     ex1.totalVolume += r1Volume
@@ -169,7 +182,7 @@ async function getData() {
 
     const ex2 = map.get(r2.key) ?? {
       wallet: r2.wallet, name: r2.name, events: 0, wins: 0, losses: 0,
-      totalVolume: 0, totalEarnings: 0, winRate: 0, pfpUrl: r2.pfpUrl,
+      totalVolume: 0, totalEarnings: 0, winRate: 0, pfpUrl: r2.pfpUrl, twitterHandle: r2.twitterHandle,
     }
     ex2.events++
     ex2.totalVolume += r2Volume
@@ -180,7 +193,12 @@ async function getData() {
   }
 
   const rows = Array.from(map.values())
-    .map(r => ({ ...r, winRate: r.events > 0 ? Math.round(r.wins / r.events * 100) : 0 }))
+    .map(r => ({
+      ...r,
+      draws: r.events - r.wins - r.losses,
+      // Win rate only among decided events (excludes ties)
+      winRate: (r.wins + r.losses) > 0 ? Math.round(r.wins / (r.wins + r.losses) * 100) : 0,
+    }))
     .sort((a, b) => b.wins - a.wins || b.totalVolume - a.totalVolume)
 
   const clientRows: ArtistRowClient[] = rows.map(r => ({
@@ -188,6 +206,7 @@ async function getData() {
     name: r.name,
     wins: r.wins,
     losses: r.losses,
+    draws: r.draws,
     totalVolumeSol: formatSol(r.totalVolume),
     totalVolumeUsd: solToUsd(r.totalVolume, solPrice),
     totalEarningsSol: formatSol(r.totalEarnings),
@@ -195,6 +214,7 @@ async function getData() {
     winRate: r.winRate,
     battles: r.events,
     pfpUrl: r.pfpUrl,
+    twitterHandle: r.twitterHandle,
   }))
 
   return { clientRows }
@@ -205,21 +225,20 @@ export default async function ArtistLeaderboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Back + header */}
+      <LeaderboardNav />
+
       <div>
-        <Link href="/leaderboards" className="text-xs text-muted-foreground hover:text-white transition-colors mb-4 inline-block">
-          ← All Leaderboards
-        </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
             Artist <span className="text-[#95fe7c]">Rankings</span>
           </h1>
           <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest">
             MAIN EVENTS
           </Badge>
+          <span className="text-xs text-muted-foreground ml-auto">{clientRows.length} artists</span>
         </div>
         <p className="text-muted-foreground text-sm mt-1">
-          Ranked by Main Event wins. Each event = 2-of-3 or 3-of-5 rounds. Charity & spotlight excluded. Round winner = 2-of-3 (Human Judge · X Poll · SOL Vote).
+          Ranked by Main Event wins. Each event = 2-of-3 or 3-of-5 rounds — round winner = Human Judge + X Poll + SOL Vote (2-of-3). Charity & spotlight events excluded.
         </p>
       </div>
 

@@ -48,9 +48,9 @@ export default async function TraderPage({ params }: Props) {
   let totalVolume = 0
   let totalInvested = 0
   let totalPayout = 0
-  let wins = 0
-  let losses = 0
-  const settledBattles = new Set<number>()
+  // Per-battle: battle_id → true (won on winning side) | false (lost)
+  // If trader held both sides, a win on either side counts as a win.
+  const settledBattles = new Map<number, boolean>()
 
   for (const t of trades) {
     totalVolume += t.amount_sol ?? 0
@@ -60,16 +60,25 @@ export default async function TraderPage({ params }: Props) {
     if (isSell) totalPayout += t.amount_sol ?? 0
 
     const battle = t.battle_id ? battleMap.get(t.battle_id) : null
-    if (battle && !settledBattles.has(t.battle_id)) {
+    if (battle && t.battle_id && t.trade_type) {
       const isOver = battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase())
-      if (isOver && t.trade_type) {
-        settledBattles.add(t.battle_id)
+      if (isOver) {
         const a1Won = battle.winner_artist_a >= 0.5
         const sideA = t.trade_type.toLowerCase().includes('_a') || t.trade_type.toLowerCase() === 'buy'
-        if (sideA ? a1Won : !a1Won) wins++
-        else losses++
+        const won = sideA ? a1Won : !a1Won
+        const existing = settledBattles.get(t.battle_id)
+        // Once marked as a win, don't downgrade back to loss
+        if (existing === undefined || (!existing && won)) {
+          settledBattles.set(t.battle_id, won)
+        }
       }
     }
+  }
+
+  let wins = 0, losses = 0
+  for (const [, won] of settledBattles) {
+    if (won) wins++
+    else losses++
   }
 
   const netPnl = totalPayout - totalInvested

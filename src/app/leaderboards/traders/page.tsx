@@ -4,6 +4,8 @@ import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
+import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import { TraderLookup } from './trader-lookup'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -56,8 +58,9 @@ async function getData() {
     totalVolume: number
     tradeCount: number
     battleIds: Set<number>
-    wins: number
-    losses: number
+    // Per-battle win tracking: battle_id → true (won on winning side) | false (lost)
+    // If trader held both sides, winning side takes precedence (true overrides false)
+    settledBattles: Map<number, boolean>
     invested: number
     payout: number
   }
@@ -71,8 +74,7 @@ async function getData() {
         totalVolume: 0,
         tradeCount: 0,
         battleIds: new Set(),
-        wins: 0,
-        losses: 0,
+        settledBattles: new Map(),
         invested: 0,
         payout: 0,
       })
@@ -82,26 +84,27 @@ async function getData() {
     a.tradeCount++
     if (t.battle_id) a.battleIds.add(t.battle_id)
 
-    // Determine win/loss per battle participation
+    // Determine win/loss per BATTLE (not per trade).
+    // If a trader held tokens on both sides, a win on either side counts as a win.
     const battle = t.battle_id ? battleMap.get(t.battle_id) : null
-    if (battle && (battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase()))) {
-      const a1Won = battle.winner_artist_a >= 0.5
-      // We determine which side this trader was on by checking artist wallets
-      // If trader_wallet matches artist wallet, skip (that's an artist, not a trader)
-      // Otherwise use trade_type: 'buy_a' / 'buy_b' / 'sell_a' / 'sell_b' if available
-      // Fallback: attribute by trade_type field
-      if (t.trade_type) {
+    if (battle && t.trade_type && t.battle_id) {
+      const isOver = battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase())
+      if (isOver) {
+        const a1Won = battle.winner_artist_a >= 0.5
         const sideA = t.trade_type.toLowerCase().includes('_a') || t.trade_type.toLowerCase() === 'buy'
         const won = sideA ? a1Won : !a1Won
-        if (won) a.wins++
-        else a.losses++
+        const existing = a.settledBattles.get(t.battle_id)
+        // Once marked as a win, don't downgrade back to loss
+        if (existing === undefined || (!existing && won)) {
+          a.settledBattles.set(t.battle_id, won)
+        }
       }
     }
 
-    if (t.trade_type?.toLowerCase().includes('buy') || t.trade_type?.toLowerCase() === 'buy') {
+    if (t.trade_type?.toLowerCase().includes('buy')) {
       a.invested += t.amount_sol ?? 0
-    } else if (t.trade_type?.toLowerCase().includes('sell') || t.trade_type?.toLowerCase() === 'sell') {
-      a.payout += t.trade_type?.amount_sol ?? t.amount_sol ?? 0
+    } else if (t.trade_type?.toLowerCase().includes('sell')) {
+      a.payout += t.amount_sol ?? 0
     }
   }
 
@@ -111,8 +114,13 @@ async function getData() {
     .sort((a, b) => b.totalVolume - a.totalVolume)
     .map(a => {
       const battles = a.battleIds.size
-      const settled = a.wins + a.losses
-      const winRate = settled > 0 ? (a.wins / settled) * 100 : 0
+      let wins = 0, losses = 0
+      for (const [, won] of a.settledBattles) {
+        if (won) wins++
+        else losses++
+      }
+      const settled = wins + losses
+      const winRate = settled > 0 ? (wins / settled) * 100 : 0
       const netPnl = a.payout - a.invested
       return {
         wallet: a.wallet,
@@ -121,8 +129,8 @@ async function getData() {
         totalVolumeUsd: solToUsd(a.totalVolume, sp),
         tradeCount: a.tradeCount,
         battleCount: battles,
-        wins: a.wins,
-        losses: a.losses,
+        wins,
+        losses,
         winRate,
         netPnlSol: netPnl,
         netPnlFmt: formatSol(Math.abs(netPnl)),
@@ -141,16 +149,25 @@ export default async function TradersLeaderboardPage() {
 
   return (
     <div className="space-y-6">
+      <LeaderboardNav />
+
+      {/* Wallet lookup */}
+      <TraderLookup />
+
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">Leaderboards</p>
-          <h1 className="text-3xl sm:text-4xl font-rajdhani font-bold text-white tracking-tight">
-            Trader <span className="text-[#7ec1fb]">Rankings</span>
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1">Ranked by total trading volume across all battles.</p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
+              Trader <span className="text-[#f59e0b]">Rankings</span>
+            </h1>
+            <Badge className="bg-[#f59e0b]/20 text-[#f59e0b] border border-[#f59e0b]/40 text-[10px] font-bold tracking-widest">
+              TRADERS
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">Fans and speculators ranked by total SOL traded across all battles.</p>
         </div>
-        <div className="text-right">
+        <div className="text-right shrink-0">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Trader Volume</p>
           <p className="font-rajdhani font-bold text-2xl text-white">{formatSol(totalVolume)} <span className="text-muted-foreground text-lg font-normal">SOL</span></p>
           <p className="text-xs text-muted-foreground">{solToUsd(totalVolume, solPrice)}</p>
@@ -161,7 +178,7 @@ export default async function TradersLeaderboardPage() {
         <div className="rounded-xl border border-border bg-card p-16 text-center">
           <p className="font-rajdhani font-bold text-white text-xl mb-2">No Trade Data Yet</p>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            Trader data flows in from the WaveWarZ webhook. Once battles are connected and trades are recorded, rankings will appear here.
+            Individual trade records haven&apos;t been connected yet — the trades table needs to be populated from WaveWarz on-chain data. Use the wallet lookup above to scan a specific wallet&apos;s history directly.
           </p>
         </div>
       ) : (
