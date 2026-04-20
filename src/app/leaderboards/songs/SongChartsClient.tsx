@@ -253,10 +253,10 @@ function ChartTable({
 
   return (
     <div className="space-y-3">
-    <div className="rounded-xl border border-border overflow-x-auto">
+    <div className="rounded-xl border border-border overflow-x-auto bg-[#0d1321]">
       <table className="w-full text-sm min-w-[540px]">
         <thead>
-          <tr className="border-b border-border bg-muted">
+          <tr className="border-b border-border bg-[#111827]">
             <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest w-10">#</th>
             <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">Song</th>
             {category === 'trending' && (
