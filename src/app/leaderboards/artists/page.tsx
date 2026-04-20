@@ -52,9 +52,9 @@ async function getData() {
     getLiveSolPrice(),
   ])
 
-  // Filter out charity/spotlight — done in JS because SQL neq() excludes NULL rows
+  // Filter out charity/spotlight/prediction — done in JS because SQL neq() excludes NULL rows
   const battles = ((battlesRes.data ?? []) as RawBattle[]).filter(
-    b => b.event_subtype !== 'charity' && b.event_subtype !== 'spotlight'
+    b => b.event_subtype !== 'charity' && b.event_subtype !== 'spotlight' && b.event_subtype !== 'prediction'
   )
 
   // Build wallet → Twitter handle map from battles (strip @ if present)
