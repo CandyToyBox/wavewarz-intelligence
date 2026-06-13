@@ -107,7 +107,7 @@ export function AdminTabs({
       {tab === 'clips' && (
         <div>
           <p className="text-sm text-muted-foreground mb-4">
-            Clips submitted by the community via the WaveWarz Clips HQ Telegram group. Sir Clipz bot routes clips through voting → approval → Postiz scheduling.
+            Clips submitted by the community via the WaveWarZ Clips HQ Telegram group. Sir Clipz bot routes clips through voting → approval → Postiz scheduling.
             Click a status card to filter. Expand captions to review AI-generated copy before it posts.
           </p>
           {clipsPanel}
@@ -168,7 +168,7 @@ export function AdminTabs({
       {tab === 'command-center' && (
         <div>
           <p className="text-sm text-muted-foreground mb-4">
-            WaveWarz operations overview. Live KPIs from DB, schedule, open workstreams, team roster, and messaging quick reference.
+            WaveWarZ operations overview. Live KPIs from DB, schedule, open workstreams, team roster, and messaging quick reference.
           </p>
           {commandCenterPanel}
         </div>

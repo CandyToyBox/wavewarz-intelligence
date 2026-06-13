@@ -431,7 +431,7 @@ export default async function BattleDetailPage({ params }: Props) {
           {battle.unique_traders != null && <MetaRow label="Unique Traders" value={String(battle.unique_traders)} />}
           {battle.artist1_wallet && <MetaRow label={`${battle.artist1_name} Wallet`} value={battle.artist1_wallet} mono truncate />}
           {battle.artist2_wallet && <MetaRow label={`${battle.artist2_name} Wallet`} value={battle.artist2_wallet} mono truncate />}
-          {battle.wavewarz_wallet && <MetaRow label="WaveWarz Wallet" value={battle.wavewarz_wallet} mono truncate />}
+          {battle.wavewarz_wallet && <MetaRow label="WaveWarZ Wallet" value={battle.wavewarz_wallet} mono truncate />}
           {battle.creator_wallet && <MetaRow label="Creator Wallet" value={battle.creator_wallet} mono truncate />}
           {battle.quick_battle_queue_id && <MetaRow label="Queue ID" value={battle.quick_battle_queue_id} mono />}
         </div>

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -33,19 +34,22 @@ type TraderRow = {
 async function getData() {
   const supabase = await createClient()
 
-  const [tradesRes, battlesRes, solPrice] = await Promise.all([
-    supabase
-      .from('trades')
-      .select('battle_id, trader_wallet, trade_type, amount_sol'),
-    supabase
-      .from('battles')
-      .select('battle_id, artist1_wallet, artist2_wallet, winner_artist_a, winner_decided, status, artist1_pool, artist2_pool')
-      .eq('is_test_battle', false),
+  // fetchAll paginates past the 1000-row cap — the trades table alone has
+  // ~8k rows, so without this the whole leaderboard was built from a fraction.
+  const [trades, battles, solPrice] = await Promise.all([
+    fetchAll<{ battle_id: number | null; trader_wallet: string | null; trade_type: string | null; amount_sol: number | null }>(
+      (from, to) => supabase
+        .from('trades')
+        .select('battle_id, trader_wallet, trade_type, amount_sol')
+        .range(from, to)),
+    fetchAll<{ battle_id: number; artist1_wallet: string | null; artist2_wallet: string | null; winner_artist_a: number | null; winner_decided: boolean | null; status: string | null; artist1_pool: number | null; artist2_pool: number | null }>(
+      (from, to) => supabase
+        .from('battles')
+        .select('battle_id, artist1_wallet, artist2_wallet, winner_artist_a, winner_decided, status, artist1_pool, artist2_pool')
+        .eq('is_test_battle', false)
+        .range(from, to)),
     getLiveSolPrice(),
   ])
-
-  const trades = tradesRes.data ?? []
-  const battles = battlesRes.data ?? []
 
   if (trades.length === 0) return { rows: [], solPrice }
 
@@ -90,7 +94,7 @@ async function getData() {
     if (battle && t.trade_type && t.battle_id) {
       const isOver = battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase())
       if (isOver) {
-        const a1Won = battle.winner_artist_a >= 0.5
+        const a1Won = (battle.winner_artist_a ?? 0) >= 0.5
         const sideA = t.trade_type.toLowerCase().includes('_a') || t.trade_type.toLowerCase() === 'buy'
         const won = sideA ? a1Won : !a1Won
         const existing = a.settledBattles.get(t.battle_id)
@@ -178,7 +182,7 @@ export default async function TradersLeaderboardPage() {
         <div className="rounded-xl border border-border bg-card p-16 text-center">
           <p className="font-rajdhani font-bold text-white text-xl mb-2">No Trade Data Yet</p>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            Individual trade records haven&apos;t been connected yet — the trades table needs to be populated from WaveWarz on-chain data. Use the wallet lookup above to scan a specific wallet&apos;s history directly.
+            No trades recorded yet. Trade history is sourced from WaveWarZ onchain data and updates as battles settle. Use the wallet lookup above to scan a specific wallet&apos;s history directly.
           </p>
         </div>
       ) : (
@@ -265,7 +269,7 @@ export default async function TradersLeaderboardPage() {
       )}
 
       <p className="text-[10px] text-muted-foreground text-center">
-        Trade data sourced from WaveWarZ on-chain records. Net P&L requires buy/sell side data in trade records.
+        Trade data sourced from WaveWarZ onchain records. Net P&L requires buy/sell side data in trade records.
       </p>
     </div>
   )

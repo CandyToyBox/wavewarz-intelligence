@@ -1,5 +1,6 @@
 import type React from 'react'
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { calculatePlatformRevenue } from '@/lib/wavewarz-math'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -15,12 +16,19 @@ const GROUP_WINDOW_MS = 6 * 60 * 60 * 1000
 async function getGlobalStats() {
   const supabase = await createClient()
 
-  const { data: battles } = await supabase
+  // fetchAll paginates past PostgREST's 1000-row cap so totals count every battle.
+  const battles = await fetchAll<{
+    battle_id: number; created_at: string; total_volume_a: number | null; total_volume_b: number | null
+    artist1_pool: number | null; artist2_pool: number | null; artist1_wallet: string | null; artist2_wallet: string | null
+    winner_artist_a: number | null; is_quick_battle: boolean | null; is_main_battle: boolean | null
+    is_test_battle: boolean | null; event_subtype: string | null; unique_traders: number | null
+  }>((from, to) => supabase
     .from('battles')
     .select('battle_id, created_at, total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, is_quick_battle, is_main_battle, is_test_battle, event_subtype, unique_traders')
     .eq('is_test_battle', false)
+    .range(from, to))
 
-  if (!battles) return null
+  if (!battles.length) return null
 
   const totalVolume = battles.reduce(
     (sum, b) => sum + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0),

@@ -134,7 +134,7 @@ export default async function TraderPage({ params }: Props) {
         />
       </div>
 
-      {/* Live Holdings — client-side on-chain scan */}
+      {/* Live Holdings — client-side onchain scan */}
       <TraderHoldings wallet={wallet} />
 
       {/* Battle History */}
@@ -254,7 +254,7 @@ export default async function TraderPage({ params }: Props) {
         <div className="rounded-xl border border-border bg-card p-12 text-center">
           <p className="font-bold text-white mb-1">No trade history found</p>
           <p className="text-sm text-muted-foreground">This wallet has no recorded trades in the WaveWarZ database yet.</p>
-          <p className="text-xs text-muted-foreground mt-2">Use the <Link href="/claim" className="text-[#7ec1fb] hover:underline">Claim tool</Link> to check for on-chain holdings.</p>
+          <p className="text-xs text-muted-foreground mt-2">Use the <Link href="/claim" className="text-[#7ec1fb] hover:underline">Claim tool</Link> to check for onchain holdings.</p>
         </div>
       )}
     </div>

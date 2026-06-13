@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol, calculateArtistEarnings, calculatePlatformRevenue } from '@/lib/wavewarz-math'
 import { resolveAudiusTrack } from '@/lib/audius'
@@ -95,7 +96,8 @@ function marginPct(a: number, b: number): string {
 
 async function getBattles(): Promise<RawBattle[]> {
   const supabase = await createClient()
-  const { data } = await supabase
+  // fetchAll paginates past the 1000-row cap so the full battle history shows.
+  const data = await fetchAll((from, to) => supabase
     .from('battles')
     .select([
       'battle_id','created_at',
@@ -108,8 +110,9 @@ async function getBattles(): Promise<RawBattle[]> {
     ].join(','))
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
+    .range(from, to))
 
-  return (data ?? []) as unknown as RawBattle[]
+  return data as unknown as RawBattle[]
 }
 
 async function getArtistPfpMap(): Promise<Map<string, string | null>> {

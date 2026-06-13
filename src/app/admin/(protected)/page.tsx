@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -23,32 +24,42 @@ const QUICK_BATTLE_QUEUE_FEE = 0.005
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
-  const { data: battles } = await supabase
+  // fetchAll paginates past PostgREST's 1000-row cap so totals count every battle.
+  const battles = await fetchAll<{
+    battle_id: number; created_at: string; artist1_name: string | null; artist2_name: string | null
+    artist1_pool: number | null; artist2_pool: number | null; total_volume_a: number | null; total_volume_b: number | null
+    trade_count: number | null; is_main_battle: boolean | null; is_quick_battle: boolean | null
+    is_community_battle: boolean | null; is_test_battle: boolean | null; winner_decided: boolean | null; status: string | null
+  }>((from, to) => supabase
     .from('battles')
     .select('battle_id,created_at,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,trade_count,is_main_battle,is_quick_battle,is_community_battle,is_test_battle,winner_decided,status')
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
+    .range(from, to))
 
-  if (!battles) return null
+  if (!battles.length) return null
   const completed = battles.filter(b => b.status !== 'ACTIVE')
   const totalVolume = completed.reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
   const tradingFeeRevenue = totalVolume * 0.005
   const settlementRevenue = completed
     .filter(b => (b.artist1_pool ?? 0) + (b.artist2_pool ?? 0) > 0)
     .reduce((s, b) => s + Math.min(b.artist1_pool ?? 0, b.artist2_pool ?? 0) * 0.03, 0)
+  // Canonical classification: a battle with is_quick_battle is a Quick Battle
+  // regardless of other flags (song vs song). Community = DIY non-quick.
+  // Main = official non-quick non-community. Mutually exclusive, sums to total.
   const quickCount = completed.filter(b => b.is_quick_battle).length
-  const communityCount = completed.filter(b => b.is_community_battle).length
+  const communityCount = completed.filter(b => b.is_community_battle && !b.is_quick_battle).length
   const quickLaunchRevenue = quickCount * (QUICK_BATTLE_LAUNCH_FEE + QUICK_BATTLE_QUEUE_FEE)
   const communityLaunchRevenue = communityCount * COMMUNITY_BATTLE_FEE
   const totalRevenue = tradingFeeRevenue + settlementRevenue + quickLaunchRevenue + communityLaunchRevenue
-  const pendingJudging = battles.filter(b => b.is_main_battle && !b.winner_decided)
+  const pendingJudging = battles.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle && !b.winner_decided)
   const totalTrades = battles.reduce((s, b) => s + (b.trade_count ?? 0), 0)
 
   return {
     totalVolume, tradingFeeRevenue, settlementRevenue,
     quickLaunchRevenue, communityLaunchRevenue, totalRevenue,
     totalBattles: completed.length, quickCount, communityCount,
-    mainCount: completed.filter(b => b.is_main_battle).length,
+    mainCount: completed.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle).length,
     pendingJudging,
     totalNonTest: battles.length,
     totalTrades,

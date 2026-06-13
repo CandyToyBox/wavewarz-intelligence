@@ -148,7 +148,7 @@ export default function ClaimChecker() {
           </div>
           <div>
             <p className="font-rajdhani font-bold text-white text-base">Wallet Scanner</p>
-            <p className="text-xs text-muted-foreground">Scans all on-chain WaveWarZ battles in real time</p>
+            <p className="text-xs text-muted-foreground">Scans all onchain WaveWarZ battles in real time</p>
           </div>
         </div>
 

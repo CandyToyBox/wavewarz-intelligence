@@ -13,7 +13,7 @@ export default function PrivacyPage() {
         <p>WaveWarZ collects the following data when you use the platform:</p>
         <ul className="list-disc list-inside space-y-1 pl-2">
           <li>Solana wallet address (required for trading and payouts)</li>
-          <li>Battle participation and trading activity (on-chain, publicly visible)</li>
+          <li>Battle participation and trading activity (onchain, publicly visible)</li>
           <li>Social media account identifiers when you connect platforms (YouTube, X, TikTok)</li>
           <li>Content you submit (clips, captions, context notes)</li>
           <li>Basic usage data (page views, feature interactions)</li>
@@ -38,7 +38,7 @@ export default function PrivacyPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-white">4. Blockchain Data</h2>
-        <p>All trades, payouts, and battle outcomes are recorded on the Solana blockchain and are publicly visible by design. WaveWarZ cannot delete or modify on-chain data.</p>
+        <p>All trades, payouts, and battle outcomes are recorded on the Solana blockchain and are publicly visible by design. WaveWarZ cannot delete or modify onchain data.</p>
       </section>
 
       <section className="space-y-3">
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-white">7. Your Rights</h2>
-        <p>You may request deletion of your off-chain data by contacting us. On-chain data cannot be deleted. You may disconnect social accounts at any time.</p>
+        <p>You may request deletion of your off-chain data by contacting us. Onchain data cannot be deleted. You may disconnect social accounts at any time.</p>
       </section>
 
       <section className="space-y-3">

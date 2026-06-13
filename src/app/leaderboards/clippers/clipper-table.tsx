@@ -93,7 +93,7 @@ export function ClipperTable({ rows }: { rows: ClipperRowClient[] }) {
                 <Tip text="Clips submitted → approved → posted to social media.">Clips</Tip>
               </th>
               <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
-                <Tip text="For contributors who are also WaveWarz battle artists. Links to their full artist profile." wide>Battle Record</Tip>
+                <Tip text="For contributors who are also WaveWarZ battle artists. Links to their full artist profile." wide>Battle Record</Tip>
               </th>
               <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
                 <Tip text="Percentage of submitted clips that get approved by the team.">Approval %</Tip>
@@ -230,7 +230,7 @@ export function ClipperTable({ rows }: { rows: ClipperRowClient[] }) {
       {/* Legend */}
       <p className="text-[11px] text-muted-foreground mt-3">
         Clips funnel: <span className="text-muted-foreground">submitted</span> → <span className="text-[#7ec1fb]">approved by team</span> → <span className="text-[#95fe7c]">posted to socials</span>.
-        Contributors with an <span className="text-[#95fe7c] font-bold">ARTIST</span> badge also battle in WaveWarz — click their name to see clip + battle history together.
+        Contributors with an <span className="text-[#95fe7c] font-bold">ARTIST</span> badge also battle in WaveWarZ — click their name to see clip + battle history together.
       </p>
     </div>
   )

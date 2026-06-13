@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { resolveAudiusTrack } from '@/lib/audius'
 import SongChartsClient from './SongChartsClient'
 import type { SongData, SongBattle } from './SongChartsClient'
@@ -38,19 +39,17 @@ function parseAudiusHandle(url: string | null): string | null {
 
 async function getData() {
   const supabase = await createClient()
-  const [res] = await Promise.all([
-    supabase
-      .from('battles')
-      .select(
-        'battle_id,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_music_link,artist2_music_link,battle_duration,created_at,unique_traders,winner_decided,winner_artist_a'
-      )
-      .eq('is_quick_battle', true)
-      .eq('is_test_battle', false)
-      .neq('status', 'ACTIVE')
-      .order('created_at', { ascending: false }),
-  ])
-
-  const battles = (res.data ?? []) as RawBattle[]
+  // fetchAll paginates past the 1000-row cap — quick battles are nearing it.
+  const battles = (await fetchAll((from, to) => supabase
+    .from('battles')
+    .select(
+      'battle_id,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_music_link,artist2_music_link,battle_duration,created_at,unique_traders,winner_decided,winner_artist_a'
+    )
+    .eq('is_quick_battle', true)
+    .eq('is_test_battle', false)
+    .neq('status', 'ACTIVE')
+    .order('created_at', { ascending: false })
+    .range(from, to))) as RawBattle[]
   const map = new Map<string, SongData>()
 
   for (const b of battles) {

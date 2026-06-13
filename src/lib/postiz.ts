@@ -93,7 +93,7 @@ function platformSettings(platform: Platform, caption: string): object {
     case 'youtube':
       return {
         type: 'public',
-        title: (caption.split('\n')[0] || 'WaveWarz Clip').slice(0, 100),
+        title: (caption.split('\n')[0] || 'WaveWarZ Clip').slice(0, 100),
         selfDeclaredMadeForKids: 'no',
       }
     case 'tiktok':

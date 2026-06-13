@@ -240,7 +240,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">
-                    Also battles in WaveWarz
+                    Also battles in WaveWarZ
                   </p>
                   <p className="text-xl font-rajdhani font-bold text-white">
                     {profile.artistName ?? profile.displayName}

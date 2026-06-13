@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -43,12 +44,18 @@ type CommunityRow = {
 async function getData() {
   const supabase = await createClient()
   const [res, profilesRes, solPrice] = await Promise.all([
-    supabase
+    // fetchAll paginates past the 1000-row cap; .then keeps the {data} shape.
+    fetchAll((from, to) => supabase
       .from('battles')
       .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a')
       .eq('is_community_battle', true)
+      // Community = DIY artist/name/brand vs same. A song-vs-song (Audius)
+      // battle is a Quick Battle even if it carries the community flag, so
+      // exclude is_quick_battle here — community leaderboard is never song vs song.
+      .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
-      .neq('status', 'ACTIVE'),
+      .neq('status', 'ACTIVE')
+      .range(from, to)).then(data => ({ data })),
     supabase
       .from('artist_profiles')
       .select('primary_wallet,profile_picture_url'),

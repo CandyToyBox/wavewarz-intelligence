@@ -34,7 +34,7 @@ export default function ClaimPage() {
             },
             {
               step: '02',
-              title: 'Funds Wait On-Chain',
+              title: 'Funds Wait Onchain',
               desc: 'Unlike artist payouts (automatic), trader funds sit in the Battle Vault PDA until you manually claim them.',
             },
             {
@@ -53,7 +53,7 @@ export default function ClaimPage() {
           ))}
         </div>
         <div className="mt-4 pt-4 border-t border-border text-xs text-muted-foreground">
-          Losing traders get <span className="text-white">50% refunded</span>. Winning traders get their proportional share of the winner pool plus bonus. All funds are on-chain — no expiry.
+          Losing traders get <span className="text-white">50% refunded</span>. Winning traders get their proportional share of the winner pool plus bonus. All funds are onchain — no expiry.
         </div>
       </div>
     </div>

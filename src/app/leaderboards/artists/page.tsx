@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { calculateArtistEarnings, getWinnerLoserPools, formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -34,14 +35,16 @@ type RawBattle = {
 async function getData() {
   const supabase = await createClient()
   const [battlesRes, profilesRes, walletsRes, solPrice] = await Promise.all([
-    supabase
+    // fetchAll paginates past the 1000-row cap; .then keeps the {data} shape.
+    fetchAll((from, to) => supabase
       .from('battles')
       .select('battle_id,created_at,artist1_name,artist1_wallet,artist1_twitter,artist2_name,artist2_wallet,artist2_twitter,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,status')
       .eq('is_main_battle', true)
       .eq('is_community_battle', false)
       .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
-      .eq('winner_decided', true),
+      .eq('winner_decided', true)
+      .range(from, to)).then(data => ({ data })),
     // Note: event_subtype charity/spotlight filtered below (neq excludes NULLs in SQL)
     supabase
       .from('artist_profiles')

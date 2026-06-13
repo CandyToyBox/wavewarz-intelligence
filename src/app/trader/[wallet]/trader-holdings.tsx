@@ -92,7 +92,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Live On-Chain Holdings</h2>
+          <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Live Onchain Holdings</h2>
           <p className="text-xs text-muted-foreground mt-0.5">Scans Solana for active or unclaimed WaveWarZ battle tokens</p>
         </div>
         <button
@@ -124,7 +124,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
             <div className="px-5 py-8 text-center">
               <Coins size={28} className="text-muted-foreground mx-auto mb-2" />
               <p className="text-sm text-white font-bold mb-1">No Active Holdings</p>
-              <p className="text-xs text-muted-foreground">This wallet holds no WaveWarZ battle tokens on-chain.</p>
+              <p className="text-xs text-muted-foreground">This wallet holds no WaveWarZ battle tokens onchain.</p>
             </div>
           ) : (
             <>

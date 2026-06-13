@@ -36,7 +36,7 @@ export function TraderLookup() {
         </button>
       </div>
       <p className="text-[10px] text-muted-foreground mt-2">
-        Pulls your full trade history, battle record, win rate, and net P&L from the WaveWarz database.
+        Pulls your full trade history, battle record, win rate, and net P&L from the WaveWarZ database.
       </p>
     </div>
   )
