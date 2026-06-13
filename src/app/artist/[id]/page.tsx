@@ -648,7 +648,9 @@ function QuickBattleSongTable({ battles, allWallets, solPrice }: {
     const musicLink = isA ? (b.artist1_music_link ?? null) : (b.artist2_music_link ?? null)
     const p1 = b.artist1_pool ?? 0
     const p2 = b.artist2_pool ?? 0
-    const artistAWon = p1 >= p2
+    const artistAWon = (b.winner_decided && b.winner_artist_a !== null)
+      ? Boolean(b.winner_artist_a)
+      : p1 >= p2
     const won = isA ? artistAWon : !artistAWon
     const vol = isA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
     const key = title.toLowerCase().trim()

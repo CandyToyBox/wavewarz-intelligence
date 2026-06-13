@@ -16,3 +16,11 @@ export function getBattleAddress(battleId: number | bigint): PublicKey {
   )
   return pda
 }
+
+export function getBattleVaultAddress(battleId: number | bigint): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [new TextEncoder().encode('battle_vault'), toU64LE(battleId)],
+    PROGRAM_ID
+  )
+  return pda
+}

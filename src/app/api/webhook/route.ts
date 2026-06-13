@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { hydrateOnchainData } from '@/lib/solana/hydrate'
+import { hydrateOnchainData, fetchBattleTradesFromChain } from '@/lib/solana/hydrate'
 
 export async function POST(request: NextRequest) {
   // ── Auth: validate shared secret ─────────────────────────────────────────
@@ -72,11 +72,15 @@ export async function POST(request: NextRequest) {
     community_round_id:              payload.community_round_id,
     quick_battle_queue_id:           payload.quick_battle_queue_id,
     split_wallet_address:            payload.split_wallet_address,
-    // ── QB 3-point judging — Poll factor ──────────────────────────────────────
+    // ── QB 3-factor judging — Poll factor ─────────────────────────────────────
     poll_votes_a:                    payload.poll_votes_a,
     poll_votes_b:                    payload.poll_votes_b,
     poll_winner:                     payload.poll_winner,
     poll_finalized_at:               payload.poll_finalized_at,
+    // ── QB 3-factor judging — DJ Wavy (AI judge) factor ───────────────────────
+    // wavewarz.com may send this as dj_wavy_winner or djwavy_winner
+    dj_wavy_winner:                  payload.dj_wavy_winner ?? payload.djwavy_winner ?? null,
+    dj_wavy_reasoning:               payload.dj_wavy_reasoning ?? payload.djwavy_reasoning ?? null,
   }
 
   const { error: upsertError } = await supabase
@@ -110,10 +114,55 @@ export async function POST(request: NextRequest) {
         hydrated.artist2_pool = onchain.artist2_pool
       }
 
-      // Volume: artist_sol_balance tracks cumulative trading SOL per side.
-      // Webhook payload stopped reliably sending total_volume_a/b, so we
-      // always hydrate from chain when the onchain value is non-zero.
-      if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+      // Volume: true trading volume = all buyShares (gross SOL) + all sellShares
+      // (SOL returned from vault) during the battle window.  We compute this
+      // from the vault PDA transaction history via the Helius Enhanced API.
+      //
+      // Fallback: if the Helius fetch fails or the battle has no valid
+      // timestamps, use artist_sol_balance (cumulative buys only — an
+      // undercount, but better than nothing).
+      if (isEnded && onchain.start_time_sec > 0 && onchain.end_time_sec > 0) {
+        try {
+          // One chain scan feeds both: per-trade rows for the trades table
+          // AND the gross volume totals (sum of those rows).
+          const chainTrades = await fetchBattleTradesFromChain(
+            battleId,
+            onchain.start_time_sec,
+            onchain.end_time_sec,
+          )
+          if (chainTrades && chainTrades.length > 0) {
+            const volumeA = chainTrades.filter(t => t.trade_type.endsWith('_a')).reduce((s, t) => s + t.amount_sol, 0)
+            const volumeB = chainTrades.filter(t => t.trade_type.endsWith('_b')).reduce((s, t) => s + t.amount_sol, 0)
+            hydrated.total_volume_a = volumeA
+            hydrated.total_volume_b = volumeB
+            console.log(`[webhook] volume from chain: A=${volumeA.toFixed(4)} B=${volumeB.toFixed(4)} (${chainTrades.length} trades)`)
+
+            // Persist per-trade history (powers trader profiles + leaderboard).
+            // Delete-then-insert keeps re-fired webhooks idempotent.
+            const { error: delErr } = await supabase.from('trades').delete().eq('battle_id', battleId)
+            if (delErr) {
+              console.warn(`[webhook] trades delete failed for ${battleId}: ${delErr.message}`)
+            } else {
+              const { error: insErr } = await supabase.from('trades').insert(chainTrades)
+              if (insErr) console.warn(`[webhook] trades insert failed for ${battleId}: ${insErr.message}`)
+              else console.log(`[webhook] stored ${chainTrades.length} trades for battle ${battleId}`)
+            }
+          } else {
+            // Fallback to artist_sol_balance (buys only)
+            if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+              hydrated.total_volume_a = onchain.artist1_sol_balance
+              hydrated.total_volume_b = onchain.artist2_sol_balance
+            }
+          }
+        } catch (volErr) {
+          console.warn(`[webhook] volume fetch failed for ${battleId}, using sol_balance fallback:`, volErr)
+          if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+            hydrated.total_volume_a = onchain.artist1_sol_balance
+            hydrated.total_volume_b = onchain.artist2_sol_balance
+          }
+        }
+      } else if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+        // ACTIVE battle or missing timestamps: use sol_balance as best available estimate
         hydrated.total_volume_a = onchain.artist1_sol_balance
         hydrated.total_volume_b = onchain.artist2_sol_balance
       }
@@ -132,13 +181,46 @@ export async function POST(request: NextRequest) {
       //   Community:     determined by admin judging panel
       if (isEnded && !onchain.winner_decided) {
         if (isQuickBattle && !battle.winner_decided) {
-          // Chart-based fallback ONLY when neither the chain nor the webhook
-          // has already provided a 3-factor winner. If the webhook already
-          // sent winner_decided=true (3-factor result), trust it — don't overwrite.
+          // 3-factor winner: Poll + Charts (SOL) + DJ Wavy — 2 of 3 wins.
+          // If wavewarz.com already sent winner_decided=true, trust it (no override).
+          // Otherwise compute from available factors:
           const a1pool = onchain.artist1_pool > 0 ? onchain.artist1_pool : (battle.artist1_pool as number ?? 0)
           const a2pool = onchain.artist2_pool > 0 ? onchain.artist2_pool : (battle.artist2_pool as number ?? 0)
-          hydrated.winner_decided = true
-          hydrated.winner_artist_a = (a1pool >= a2pool) ? 1 : 0
+          const artist1Name = (battle.artist1_name as string | null) ?? ''
+
+          // Charts factor: larger pool wins
+          const chartsA = a1pool >= a2pool
+
+          // Poll factor: poll_winner name matches artist1_name → A wins
+          const pollWinner = (battle.poll_winner as string | null) ?? null
+          const pollA: boolean | null = pollWinner
+            ? pollWinner.trim().toLowerCase() === artist1Name.trim().toLowerCase()
+            : null
+
+          // DJ Wavy factor: dj_wavy_winner name matches artist1_name → A wins
+          const djWinner = (battle.dj_wavy_winner as string | null)
+            ?? (payload.dj_wavy_winner as string | null)
+            ?? (payload.djwavy_winner as string | null)
+            ?? null
+          const djA: boolean | null = djWinner
+            ? djWinner.trim().toLowerCase() === artist1Name.trim().toLowerCase()
+            : null
+
+          // Count votes: charts always counts; poll + DJ Wavy count when available
+          const factorsForA = [chartsA, pollA, djA].filter(v => v !== null) as boolean[]
+          const votesA = factorsForA.filter(Boolean).length
+          const votesB = factorsForA.filter(v => !v).length
+
+          if (votesA >= 2 || votesB >= 2) {
+            // Enough factors to determine a 2-of-3 winner
+            hydrated.winner_decided = true
+            hydrated.winner_artist_a = votesA >= 2 ? 1 : 0
+          } else {
+            // Only charts available — use it as single-factor fallback
+            hydrated.winner_decided = true
+            hydrated.winner_artist_a = chartsA ? 1 : 0
+          }
+
         }
         // Main/Community: do NOT auto-decide — requires admin judging panel
       } else if (onchain.winner_decided && onchain.winner_artist_a !== null) {

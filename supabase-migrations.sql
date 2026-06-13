@@ -123,7 +123,11 @@ CREATE TABLE IF NOT EXISTS battles (
   poll_votes_a                integer,
   poll_votes_b                integer,
   poll_winner                 text,
-  poll_finalized_at           timestamptz
+  poll_finalized_at           timestamptz,
+
+  -- Quick Battle 3-factor judging — DJ Wavy (AI judge) factor
+  dj_wavy_winner              text,        -- artist name as sent by wavewarz.com
+  dj_wavy_reasoning           text         -- optional explanation from the AI judge
 );
 
 -- Auto-update updated_at on any row change
@@ -199,3 +203,22 @@ CREATE TABLE IF NOT EXISTS artist_wallets (
   artist_id       uuid REFERENCES artist_profiles(artist_id) ON DELETE CASCADE,
   created_at      timestamptz DEFAULT now()
 );
+
+
+-- ─── Column Additions (run when tables already exist) ──────────────────────────
+
+-- DJ Wavy 3-factor judging fields (Quick Battles)
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS dj_wavy_winner    text;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS dj_wavy_reasoning text;
+
+-- event_subtype was added after initial migration
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS event_subtype text;
+
+-- youtube_replay_link for main events
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS youtube_replay_link text;
+
+-- QB poll judging fields (if missing from older installs)
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_votes_a      integer;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_votes_b      integer;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_winner       text;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_finalized_at timestamptz;

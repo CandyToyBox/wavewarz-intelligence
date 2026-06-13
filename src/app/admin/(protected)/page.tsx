@@ -10,6 +10,7 @@ import { StatsPanel } from './stats-panel'
 import { ClipsPanel } from './clips-panel'
 import { SchedulePanel } from './schedule-panel'
 import { AdminTabs } from './admin-tabs'
+import { CommandCenterPanel } from './command-center-panel'
 
 // ─── Launch Fee Constants (Exact — confirmed 2026-02-28) ──────────────────────
 const COMMUNITY_BATTLE_FEE = 0.017
@@ -24,7 +25,7 @@ const QUICK_BATTLE_QUEUE_FEE = 0.005
 async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
   const { data: battles } = await supabase
     .from('battles')
-    .select('battle_id,created_at,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,is_main_battle,is_quick_battle,is_community_battle,is_test_battle,winner_decided,status')
+    .select('battle_id,created_at,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,trade_count,is_main_battle,is_quick_battle,is_community_battle,is_test_battle,winner_decided,status')
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
 
@@ -41,6 +42,7 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
   const communityLaunchRevenue = communityCount * COMMUNITY_BATTLE_FEE
   const totalRevenue = tradingFeeRevenue + settlementRevenue + quickLaunchRevenue + communityLaunchRevenue
   const pendingJudging = battles.filter(b => b.is_main_battle && !b.winner_decided)
+  const totalTrades = battles.reduce((s, b) => s + (b.trade_count ?? 0), 0)
 
   return {
     totalVolume, tradingFeeRevenue, settlementRevenue,
@@ -48,6 +50,8 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
     totalBattles: completed.length, quickCount, communityCount,
     mainCount: completed.filter(b => b.is_main_battle).length,
     pendingJudging,
+    totalNonTest: battles.length,
+    totalTrades,
   }
 }
 
@@ -210,6 +214,7 @@ export default async function AdminPage() {
         mediaPanel={<MediaPanel battles={mediaBattles} />}
         eventsPanel={<CalendarPanel events={calendarEvents} />}
         statsPanel={<StatsPanel stats={platformStats} />}
+        commandCenterPanel={<CommandCenterPanel revenue={revenue} solPrice={solPrice} />}
         clipsPendingCount={clipsData.filter((c: { status: string }) => c.status === 'pending_approval').length}
         scheduledCount={clipsData.filter((c: { status: string; scheduled_at: string | null }) => c.status === 'approved' && c.scheduled_at && new Date(c.scheduled_at).getTime() > Date.now()).length}
         pendingCount={revenue.pendingJudging.length}

@@ -46,8 +46,8 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
         if (account.data.length < 100) continue
         const b = parseBattleAccount(account.data)
         if (!b) continue
-        const poolA = Number(b.artistASolBalance) / 1e9
-        const poolB = Number(b.artistBSolBalance) / 1e9
+        const poolA = Number(b.artistAPool) / 1e9
+        const poolB = Number(b.artistBPool) / 1e9
         const id = b.battleId.toString()
         mintMap.set(b.artistAMint.toBase58(), { battleId: id, side: 'A', poolA, poolB, isActive: b.isActive, winnerDecided: b.winnerDecided, winnerArtistA: b.winnerArtistA })
         mintMap.set(b.artistBMint.toBase58(), { battleId: id, side: 'B', poolA, poolB, isActive: b.isActive, winnerDecided: b.winnerDecided, winnerArtistA: b.winnerArtistA })

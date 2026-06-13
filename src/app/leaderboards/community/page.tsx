@@ -24,6 +24,8 @@ type RawBattle = {
   total_volume_b: number
   image_url: string | null
   status: string
+  winner_decided: boolean | null
+  winner_artist_a: number | null
 }
 
 type CommunityRow = {
@@ -43,7 +45,7 @@ async function getData() {
   const [res, profilesRes, solPrice] = await Promise.all([
     supabase
       .from('battles')
-      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status')
+      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a')
       .eq('is_community_battle', true)
       .eq('is_test_battle', false)
       .neq('status', 'ACTIVE'),
@@ -61,7 +63,10 @@ async function getData() {
   const map = new Map<string, CommunityRow>()
 
   for (const b of battles) {
-    const aWon = (b.artist1_pool ?? 0) >= (b.artist2_pool ?? 0)
+    // Use admin-decided winner when available; fall back to pool comparison for undecided battles
+    const aWon = (b.winner_decided && b.winner_artist_a !== null)
+      ? Number(b.winner_artist_a) >= 0.5
+      : (b.artist1_pool ?? 0) >= (b.artist2_pool ?? 0)
     const sides = [
       { wallet: b.artist1_wallet, name: b.artist1_name, won: aWon, volume: b.total_volume_a ?? 0, imageUrl: b.image_url },
       { wallet: b.artist2_wallet, name: b.artist2_name, won: !aWon, volume: b.total_volume_b ?? 0, imageUrl: b.image_url },

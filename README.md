@@ -1,3 +1,38 @@
+# WaveWarz Intelligence (Statz App V2)
+
+WaveWarz analytics platform. Reads battle state from Solana Mainnet and stores derived stats in Supabase.
+
+## Critical: Helius API Domain
+
+`api.helius.xyz` is a dead domain — returns 403 for every request. Always use `api-mainnet.helius-rpc.com`:
+
+| Purpose | URL |
+|---------|-----|
+| RPC calls | `https://mainnet.helius-rpc.com/?api-key=KEY` |
+| Enhanced TX batch (POST) | `https://api-mainnet.helius-rpc.com/v0/transactions` |
+| Address TX history (GET) | `https://api-mainnet.helius-rpc.com/v0/addresses/{addr}/transactions` |
+
+## Critical: Volume Calculation
+
+True trading volume ≠ account pool state. `artistAPool` is the net vault balance (goes to zero at settlement). True volume must be computed by parsing BUY/SELL instructions from the vault PDA's transaction history.
+
+- Correct backfill: `npx tsx scripts/fix-volume-from-chain.ts`
+- Do not use: `scripts/backfill-volume.ts` (reads net pool state, not gross flow)
+
+## Volume Backfill
+
+Battles settled before 2026-04-27 have corrupted volume data. Run the fix:
+
+```bash
+# Dry run first
+npx tsx scripts/fix-volume-from-chain.ts --dry-run
+
+# Apply
+npx tsx scripts/fix-volume-from-chain.ts
+```
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

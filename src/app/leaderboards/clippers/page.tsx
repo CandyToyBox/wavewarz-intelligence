@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { ClipperTable, type ClipperRowClient } from './clipper-table'
-import Link from 'next/link'
+import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -68,11 +68,10 @@ export default async function ClipperLeaderboardPage() {
   return (
     <div className="space-y-6">
 
-      {/* Back + header */}
+      <LeaderboardNav />
+
+      {/* Header */}
       <div>
-        <Link href="/leaderboards" className="text-xs text-muted-foreground hover:text-white transition-colors mb-4 inline-block">
-          ← All Leaderboards
-        </Link>
         <div className="flex items-center gap-3">
           <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
             Clipper <span className="text-orange-400">Rankings</span>

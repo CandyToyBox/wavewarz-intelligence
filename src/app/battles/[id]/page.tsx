@@ -301,7 +301,18 @@ export default async function BattleDetailPage({ params }: Props) {
             {/* DJ Wavy */}
             <div className="rounded-lg border border-border bg-[#0d1321] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">DJ Wavy</p>
-              <p className="text-[10px] text-muted-foreground italic">AI judge — result in final outcome</p>
+              {battle.dj_wavy_winner ? (
+                <>
+                  <p className="font-rajdhani font-bold text-white text-sm">{battle.dj_wavy_winner}</p>
+                  {battle.dj_wavy_reasoning && (
+                    <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed italic line-clamp-3">
+                      {battle.dj_wavy_reasoning}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-[10px] text-muted-foreground italic">No DJ Wavy data</p>
+              )}
             </div>
           </div>
         </div>

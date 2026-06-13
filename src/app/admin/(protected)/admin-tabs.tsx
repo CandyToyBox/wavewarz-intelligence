@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 
-type Tab = 'clips' | 'schedule' | 'judging' | 'artists' | 'media' | 'events' | 'stats'
+type Tab = 'clips' | 'schedule' | 'judging' | 'artists' | 'media' | 'events' | 'stats' | 'command-center'
 
 export function AdminTabs({
-  clipsPanel, schedulePanel, judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel,
+  clipsPanel, schedulePanel, judgingPanel, artistPanel, mediaPanel, eventsPanel, statsPanel, commandCenterPanel,
   clipsPendingCount, scheduledCount, pendingCount, artistCount, eventCount,
 }: {
   clipsPanel: React.ReactNode
@@ -15,6 +15,7 @@ export function AdminTabs({
   mediaPanel: React.ReactNode
   eventsPanel: React.ReactNode
   statsPanel: React.ReactNode
+  commandCenterPanel: React.ReactNode
   clipsPendingCount: number
   scheduledCount: number
   pendingCount: number
@@ -69,6 +70,12 @@ export function AdminTabs({
       label: 'Platform Stats',
       badge: 'Spotify',
       badgeColor: 'text-[#1DB954] border-[#1DB954]/40 bg-[#1DB954]/10',
+    },
+    {
+      id: 'command-center',
+      label: 'Command Center',
+      badge: 'Live',
+      badgeColor: 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10',
     },
   ]
 
@@ -156,6 +163,14 @@ export function AdminTabs({
             Set both stream counts to 0 to hide the Spotify section entirely.
           </p>
           {statsPanel}
+        </div>
+      )}
+      {tab === 'command-center' && (
+        <div>
+          <p className="text-sm text-muted-foreground mb-4">
+            WaveWarz operations overview. Live KPIs from DB, schedule, open workstreams, team roster, and messaging quick reference.
+          </p>
+          {commandCenterPanel}
         </div>
       )}
     </div>
