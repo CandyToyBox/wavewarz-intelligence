@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { canonicalSongKey } from '@/lib/song-identity'
-import { resolveAudiusTrack } from '@/lib/audius'
 import SongChartsClient from './SongChartsClient'
 import type { SongData, SongBattle } from './SongChartsClient'
 import type { Metadata } from 'next'
@@ -133,31 +132,23 @@ async function getData() {
 
   const songs = Array.from(map.values())
 
-  // Resolve Audius artwork + genre server-side (parallel, cached 60s in resolveAudiusTrack)
-  const uniqueLinks = [
-    ...new Set(songs.map(s => s.musicLink).filter(Boolean) as string[]),
-  ]
-
-  const trackMap = new Map<string, { artUrl: string | null; genre: string | null; artistName: string | null }>()
-  await Promise.all(
-    uniqueLinks.map(async (link) => {
-      const track = await resolveAudiusTrack(link)
-      trackMap.set(link, {
-        artUrl: track?.artwork?.['480x480'] ?? null,
-        genre: track?.genre ?? null,
-        artistName: track?.user?.name ?? null,
-      })
-    })
-  )
+  // Enrich from song_registry — resolved once via the (free, open) Audius API
+  // by scripts/backfill-song-registry.ts, keyed by the same canonical permalink.
+  // This replaces ~hundreds of live API calls per render with one cached read.
+  // Falls back gracefully (no artwork) if the table isn't populated yet.
+  const { data: registry } = await supabase
+    .from('song_registry')
+    .select('permalink_key, title, artist_name, genre, artwork_url')
+  const regMap = new Map((registry ?? []).map(r => [r.permalink_key, r]))
 
   for (const song of songs) {
-    if (song.musicLink) {
-      const info = trackMap.get(song.musicLink)
-      if (info) {
-        song.artUrl = info.artUrl
-        song.genre = info.genre
-        song.artistName = info.artistName
-      }
+    const r = regMap.get(song.key)
+    if (r) {
+      song.artUrl = r.artwork_url ?? null
+      song.genre = r.genre ?? null
+      song.artistName = r.artist_name ?? null
+      // Prefer the official Audius title over the hand-typed battle name
+      if (r.title) song.songTitle = r.title
     }
   }
 

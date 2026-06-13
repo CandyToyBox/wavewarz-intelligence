@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hydrateOnchainData, fetchBattleTradesFromChain } from '@/lib/solana/hydrate'
+import { registerBattleSongs } from '@/lib/song-registry'
 
 export async function POST(request: NextRequest) {
   // ── Auth: validate shared secret ─────────────────────────────────────────
@@ -246,6 +247,15 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     // Hydration failure is non-fatal — metadata upsert already succeeded
     console.error(`[webhook] hydration threw for battle ${battleId}:`, err)
+  }
+
+  // Register this quick battle's songs in song_registry so new songs from the
+  // daily WaveWarZ/Audius catalog are ready immediately (non-fatal).
+  if (isQuickBattle) {
+    await registerBattleSongs(supabase, [
+      { musicLink: payload.artist1_music_link as string | null, title: payload.artist1_name as string | null },
+      { musicLink: payload.artist2_music_link as string | null, title: payload.artist2_name as string | null },
+    ])
   }
 
   return NextResponse.json({ ok: true, battle_id: battleId })
