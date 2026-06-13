@@ -38,17 +38,22 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
     .range(from, to))
 
   if (!battles.length) return null
-  const completed = battles.filter(b => b.status !== 'ACTIVE')
-  const totalVolume = completed.reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
+  // Volume + category counts are computed over ALL non-test battles (not just
+  // non-ACTIVE) so they match the overview page exactly — trading volume
+  // accrues on active battles too, and launch fees are paid at launch
+  // regardless of status. Only SETTLEMENT revenue is restricted to settled
+  // (winner_decided) battles, since only those distribute a loser pool.
+  const totalVolume = battles.reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
   const tradingFeeRevenue = totalVolume * 0.005
-  const settlementRevenue = completed
-    .filter(b => (b.artist1_pool ?? 0) + (b.artist2_pool ?? 0) > 0)
+  const settlementRevenue = battles
+    .filter(b => b.winner_decided && (b.artist1_pool ?? 0) + (b.artist2_pool ?? 0) > 0)
     .reduce((s, b) => s + Math.min(b.artist1_pool ?? 0, b.artist2_pool ?? 0) * 0.03, 0)
   // Canonical classification: a battle with is_quick_battle is a Quick Battle
   // regardless of other flags (song vs song). Community = DIY non-quick.
   // Main = official non-quick non-community. Mutually exclusive, sums to total.
-  const quickCount = completed.filter(b => b.is_quick_battle).length
-  const communityCount = completed.filter(b => b.is_community_battle && !b.is_quick_battle).length
+  const quickCount = battles.filter(b => b.is_quick_battle).length
+  const communityCount = battles.filter(b => b.is_community_battle && !b.is_quick_battle).length
+  const mainCount = battles.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle).length
   const quickLaunchRevenue = quickCount * (QUICK_BATTLE_LAUNCH_FEE + QUICK_BATTLE_QUEUE_FEE)
   const communityLaunchRevenue = communityCount * COMMUNITY_BATTLE_FEE
   const totalRevenue = tradingFeeRevenue + settlementRevenue + quickLaunchRevenue + communityLaunchRevenue
@@ -58,8 +63,8 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
   return {
     totalVolume, tradingFeeRevenue, settlementRevenue,
     quickLaunchRevenue, communityLaunchRevenue, totalRevenue,
-    totalBattles: completed.length, quickCount, communityCount,
-    mainCount: completed.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle).length,
+    totalBattles: battles.length, quickCount, communityCount,
+    mainCount,
     pendingJudging,
     totalNonTest: battles.length,
     totalTrades,
