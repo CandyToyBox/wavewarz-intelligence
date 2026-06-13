@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { canonicalSongKey } from '@/lib/song-identity'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { calculateArtistEarnings, getWinnerLoserPools, formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -653,7 +654,8 @@ function QuickBattleSongTable({ battles, allWallets, solPrice }: {
       : p1 >= p2
     const won = isA ? artistAWon : !artistAWon
     const vol = isA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
-    const key = title.toLowerCase().trim()
+    // Key by track permalink, not title string — one track = one row.
+    const key = canonicalSongKey(musicLink, title)
     const existing = songMap.get(key) ?? { title, musicLink, wins: 0, losses: 0, volume: 0 }
     existing.wins += won ? 1 : 0
     existing.losses += won ? 0 : 1

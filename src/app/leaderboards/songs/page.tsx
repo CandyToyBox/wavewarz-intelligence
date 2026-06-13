@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
+import { canonicalSongKey } from '@/lib/song-identity'
 import { resolveAudiusTrack } from '@/lib/audius'
 import SongChartsClient from './SongChartsClient'
 import type { SongData, SongBattle } from './SongChartsClient'
@@ -89,7 +90,10 @@ async function getData() {
 
     for (const s of sides) {
       if (!s.title) continue
-      const key = s.title.toLowerCase().trim()
+      // Key by the track's permalink, not the hand-entered title — so one
+      // track is one row regardless of title-string variations, and two
+      // different tracks sharing a title stay separate.
+      const key = canonicalSongKey(s.musicLink, s.title)
       const handle = parseAudiusHandle(s.musicLink)
 
       if (!map.has(key)) {
