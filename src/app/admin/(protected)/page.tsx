@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
+import { platformMetrics, type MetricsBattle } from '@/lib/battle-metrics'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -13,58 +14,40 @@ import { SchedulePanel } from './schedule-panel'
 import { AdminTabs } from './admin-tabs'
 import { CommandCenterPanel } from './command-center-panel'
 
-// ─── Launch Fee Constants (Exact — confirmed 2026-02-28) ──────────────────────
-const COMMUNITY_BATTLE_FEE = 0.017
-const QUICK_BATTLE_LAUNCH_FEE = 0.007
-const QUICK_BATTLE_QUEUE_FEE = 0.005
-// Skip Queue Fee: variable — 0.02 SOL base, +0.01 SOL per successive skip.
-// Example: first skip = 0.02, second = 0.03, third = 0.04, etc.
-// 100% goes to WaveWarz. NOT auto-tracked — webhook does not send per-battle skip totals.
+// Launch/queue fees now live in src/lib/battle-metrics.ts (LAUNCH_FEES),
+// shared with the overview so revenue matches everywhere.
+// Skip Queue Fee: variable — 0.02 SOL base, +0.01 per successive skip; 100%
+// WaveWarZ, not auto-tracked (webhook does not send per-battle skip totals).
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
   // fetchAll paginates past PostgREST's 1000-row cap so totals count every battle.
-  const battles = await fetchAll<{
-    battle_id: number; created_at: string; artist1_name: string | null; artist2_name: string | null
-    artist1_pool: number | null; artist2_pool: number | null; total_volume_a: number | null; total_volume_b: number | null
-    trade_count: number | null; is_main_battle: boolean | null; is_quick_battle: boolean | null
-    is_community_battle: boolean | null; is_test_battle: boolean | null; winner_decided: boolean | null; status: string | null
-  }>((from, to) => supabase
+  const battles = await fetchAll<MetricsBattle & { battle_id: number; trade_count: number | null }>((from, to) => supabase
     .from('battles')
-    .select('battle_id,created_at,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,trade_count,is_main_battle,is_quick_battle,is_community_battle,is_test_battle,winner_decided,status')
+    .select('battle_id,created_at,artist1_wallet,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,trade_count,winner_artist_a,winner_decided,is_main_battle,is_quick_battle,is_community_battle,is_test_battle,event_subtype')
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
     .range(from, to))
 
   if (!battles.length) return null
-  // Volume + category counts are computed over ALL non-test battles (not just
-  // non-ACTIVE) so they match the overview page exactly — trading volume
-  // accrues on active battles too, and launch fees are paid at launch
-  // regardless of status. Only SETTLEMENT revenue is restricted to settled
-  // (winner_decided) battles, since only those distribute a loser pool.
-  const totalVolume = battles.reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
-  const tradingFeeRevenue = totalVolume * 0.005
-  const settlementRevenue = battles
-    .filter(b => b.winner_decided && (b.artist1_pool ?? 0) + (b.artist2_pool ?? 0) > 0)
-    .reduce((s, b) => s + Math.min(b.artist1_pool ?? 0, b.artist2_pool ?? 0) * 0.03, 0)
-  // Canonical classification: a battle with is_quick_battle is a Quick Battle
-  // regardless of other flags (song vs song). Community = DIY non-quick.
-  // Main = official non-quick non-community. Mutually exclusive, sums to total.
-  const quickCount = battles.filter(b => b.is_quick_battle).length
-  const communityCount = battles.filter(b => b.is_community_battle && !b.is_quick_battle).length
-  const mainCount = battles.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle).length
-  const quickLaunchRevenue = quickCount * (QUICK_BATTLE_LAUNCH_FEE + QUICK_BATTLE_QUEUE_FEE)
-  const communityLaunchRevenue = communityCount * COMMUNITY_BATTLE_FEE
-  const totalRevenue = tradingFeeRevenue + settlementRevenue + quickLaunchRevenue + communityLaunchRevenue
+  // Single source of truth — identical to the public overview page.
+  const m = platformMetrics(battles)
   const pendingJudging = battles.filter(b => b.is_main_battle && !b.is_quick_battle && !b.is_community_battle && !b.winner_decided)
   const totalTrades = battles.reduce((s, b) => s + (b.trade_count ?? 0), 0)
 
   return {
-    totalVolume, tradingFeeRevenue, settlementRevenue,
-    quickLaunchRevenue, communityLaunchRevenue, totalRevenue,
-    totalBattles: battles.length, quickCount, communityCount,
-    mainCount,
+    totalVolume: m.totalVolume,
+    tradingFeeRevenue: m.revenue.tradingFees,
+    settlementRevenue: m.revenue.settlement,
+    quickLaunchRevenue: m.revenue.quickLaunch,
+    communityLaunchRevenue: m.revenue.communityLaunch,
+    totalRevenue: m.revenue.total,
+    totalBattles: battles.length,
+    quickCount: m.quickCount,
+    communityCount: m.communityCount,
+    mainCount: m.mainBattles,
+    mainEvents: m.mainEvents,
     pendingJudging,
     totalNonTest: battles.length,
     totalTrades,

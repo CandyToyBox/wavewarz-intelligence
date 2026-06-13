@@ -2,7 +2,7 @@ import type React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
-import { calculatePlatformRevenue } from '@/lib/wavewarz-math'
+import { platformMetrics, type MetricsBattle } from '@/lib/battle-metrics'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
@@ -11,66 +11,29 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 
-const GROUP_WINDOW_MS = 6 * 60 * 60 * 1000
-
 async function getGlobalStats() {
   const supabase = await createClient()
 
   // fetchAll paginates past PostgREST's 1000-row cap so totals count every battle.
-  const battles = await fetchAll<{
-    battle_id: number; created_at: string; total_volume_a: number | null; total_volume_b: number | null
-    artist1_pool: number | null; artist2_pool: number | null; artist1_wallet: string | null; artist2_wallet: string | null
-    winner_artist_a: number | null; is_quick_battle: boolean | null; is_main_battle: boolean | null
-    is_test_battle: boolean | null; event_subtype: string | null; unique_traders: number | null
-  }>((from, to) => supabase
+  const battles = await fetchAll<MetricsBattle & { unique_traders: number | null }>((from, to) => supabase
     .from('battles')
-    .select('battle_id, created_at, total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, is_quick_battle, is_main_battle, is_test_battle, event_subtype, unique_traders')
+    .select('total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, winner_decided, is_quick_battle, is_community_battle, is_main_battle, is_test_battle, event_subtype, created_at, unique_traders')
     .eq('is_test_battle', false)
     .range(from, to))
 
   if (!battles.length) return null
 
-  const totalVolume = battles.reduce(
-    (sum, b) => sum + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0),
-    0
-  )
-  const totalLoserPools = battles
-    .filter(b => b.winner_artist_a !== null)
-    .reduce((sum, b) => {
-      const loser = b.winner_artist_a ? (b.artist2_pool ?? 0) : (b.artist1_pool ?? 0)
-      return sum + loser
-    }, 0)
-
-  const platform = calculatePlatformRevenue(totalVolume, totalLoserPools)
-  // Artist payouts: 1% of each side's volume + 5% (winner) / 2% (loser) of loser pool at settlement
-  const totalArtistPayouts = totalVolume * 0.01 + totalLoserPools * 0.07
-
-  // Count Main Events by grouping rounds (same wallet-pair within 6-hour window)
-  // Includes charity and spotlight events; excludes prediction market rounds only
-  const mainRounds = battles
-    .filter(b => b.is_main_battle && b.event_subtype !== 'prediction')
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-
-  const eventGroups: { key: string; latestAt: number }[] = []
-  for (const b of mainRounds) {
-    const key = [b.artist1_wallet, b.artist2_wallet].sort().join('|')
-    const bTime = new Date(b.created_at).getTime()
-    let matched = false
-    for (let i = eventGroups.length - 1; i >= 0; i--) {
-      const g = eventGroups[i]
-      if (g.key !== key) continue
-      if (bTime - g.latestAt <= GROUP_WINDOW_MS) { g.latestAt = bTime; matched = true; break }
-    }
-    if (!matched) eventGroups.push({ key, latestAt: bTime })
-  }
+  // Single source of truth — identical to the admin Command Center.
+  const m = platformMetrics(battles)
 
   return {
-    totalVolume,
+    totalVolume: m.totalVolume,
     totalBattles: battles.length,
-    mainEvents: eventGroups.length,
-    quickBattles: battles.filter(b => b.is_quick_battle).length,
-    totalArtistPayouts,
-    platformRevenue: platform.totalSol,
+    mainEvents: m.mainEvents,
+    mainBattles: m.mainBattles,
+    quickBattles: m.quickCount,
+    totalArtistPayouts: m.artistPayouts,
+    platformRevenue: m.revenue.total,        // ALL revenue: trading + settlement + launch fees
   }
 }
 
@@ -370,16 +333,16 @@ export default async function HomePage() {
               highlight
             />
             <StatCard
-              label={<Tip text="0.5% per trade + 3% of the losing pool at settlement." wide>Platform Revenue</Tip>}
+              label={<Tip text="All WaveWarZ revenue: 0.5% per trade + 3% of the losing pool at settlement + battle launch & queue fees (100% platform)." wide>Platform Revenue</Tip>}
               primary={`${parseFloat(stats.platformRevenue.toFixed(2))} SOL`}
               secondary={solToUsd(stats.platformRevenue, solPrice)}
-              sub="0.5% fees + 3% settlement"
+              sub="trades + settlement + launches"
             />
             <StatCard
-              label={<Tip text="Main Events = grouped artist vs artist rounds (2-of-3 or 3-of-5). Quick Battles = individual song vs song battles." wide>Battle Types</Tip>}
-              primary={`${stats.mainEvents} Main`}
+              label={<Tip text="A Main Event is multiple battles (catalog vs catalog, ~2 songs per artist per round). Quick Battles are individual song vs song." wide>Battle Types</Tip>}
+              primary={`${stats.mainEvents} events · ${stats.mainBattles} battles`}
               secondary={`${stats.quickBattles} Quick`}
-              sub="events · quick battles"
+              sub="main events · battles · quick songs"
             />
           </div>
         </section>

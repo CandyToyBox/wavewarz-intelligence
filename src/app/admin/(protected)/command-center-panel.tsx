@@ -10,6 +10,7 @@ type RevenueData = {
   quickCount: number
   communityCount: number
   mainCount: number
+  mainEvents: number
   pendingJudging: { battle_id: number }[]
 }
 
@@ -31,8 +32,8 @@ export function CommandCenterPanel({
           <Kpi label="Real Battles" value={revenue.totalNonTest.toLocaleString()} sub="non-test battles" />
           <Kpi label="Total Trades" value={revenue.totalTrades.toLocaleString()} sub="across all battles" />
           <Kpi label="Platform Revenue" value={`${formatSol(revenue.totalRevenue)} SOL`} sub={solToUsd(revenue.totalRevenue, solPrice)} />
-          <Kpi label="Quick Battles" value={revenue.quickCount.toLocaleString()} sub="non-test" />
-          <Kpi label="Main / Community" value={`${revenue.mainCount} / ${revenue.communityCount}`} sub="non-test" />
+          <Kpi label="Quick Battles" value={revenue.quickCount.toLocaleString()} sub="song vs song" />
+          <Kpi label="Main / Community" value={`${revenue.mainCount} / ${revenue.communityCount}`} sub={`${revenue.mainEvents} main events · battles`} />
         </div>
       </section>
 
@@ -46,9 +47,9 @@ export function CommandCenterPanel({
             </tr>
           </thead>
           <tbody>
-            <TableRow label="Quick Battles" value={revenue.quickCount.toLocaleString()} green />
-            <TableRow label="Main format (Events, Spotlights, Charity)" value={revenue.mainCount.toLocaleString()} />
-            <TableRow label="Community" value={revenue.communityCount.toLocaleString()} />
+            <TableRow label="Quick Battles (song vs song)" value={revenue.quickCount.toLocaleString()} green />
+            <TableRow label={`Main battles (in ${revenue.mainEvents} events)`} value={revenue.mainCount.toLocaleString()} />
+            <TableRow label="Community (DIY)" value={revenue.communityCount.toLocaleString()} />
             <TableRow label="Total (non-test)" value={revenue.totalNonTest.toLocaleString()} bold />
           </tbody>
         </table>
