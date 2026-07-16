@@ -31,11 +31,43 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
+type LiveBattleRow = {
+  battle_id: number
+  artist1_name: string | null
+  artist2_name: string | null
+  artist1_wallet: string | null
+  artist2_wallet: string | null
+  artist1_pool: number | null
+  artist2_pool: number | null
+  total_volume_a: number | null
+  total_volume_b: number | null
+  is_quick_battle: boolean | null
+  is_main_battle: boolean | null
+  is_community_battle: boolean | null
+  battle_duration: number | null
+  created_at: string
+}
+
+// Live vs completed is pure timer math: created_at + battle_duration. Neither
+// winner_decided nor status text is trustworthy here — winner_decided can sit
+// at false forever for a battle that ended hours ago (the DJ Wavy verdict step
+// that sets it can fail to fire independent of settlement), and status text is
+// inconsistently cased across historical rows (ACTIVE/Active/ENDED/Ended).
+// Once the timer passes, settlement is automatic and no further contract state
+// changes are possible (per Samantha, 2026-07-16) — so this is ground truth,
+// not a heuristic. WaveWarz currently runs one battle at a time, so the single
+// most recent battle is always the only live candidate.
+function isLiveNow(row: Pick<LiveBattleRow, 'created_at' | 'battle_duration'>, nowMs: number): boolean {
+  if (!row.battle_duration) return false
+  const endsAt = new Date(row.created_at).getTime() + row.battle_duration * 1000
+  return nowMs < endsAt
+}
+
 export async function GET() {
   try {
     const supabase = await createClient()
 
-    const [battles, claims, solPrice] = await Promise.all([
+    const [battles, claims, solPrice, liveCandidateRes] = await Promise.all([
       fetchAll<MetricsBattle>((from, to) => supabase
         .from('battles')
         .select('total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, winner_decided, is_quick_battle, is_community_battle, is_main_battle, event_subtype, created_at')
@@ -47,6 +79,12 @@ export async function GET() {
         .eq('trade_type', 'claim')
         .range(from, to)),
       getLiveSolPrice(),
+      supabase
+        .from('battles')
+        .select('battle_id, artist1_name, artist2_name, artist1_wallet, artist2_wallet, artist1_pool, artist2_pool, total_volume_a, total_volume_b, is_quick_battle, is_main_battle, is_community_battle, battle_duration, created_at')
+        .eq('is_test_battle', false)
+        .order('created_at', { ascending: false })
+        .limit(1),
     ])
 
     if (!battles.length) {
@@ -57,6 +95,22 @@ export async function GET() {
     const c = claimTotals(claims)
     const round = (n: number) => Math.round(n * 10000) / 10000
 
+    const now = Date.now()
+    const windowVolume = (ms: number) => battles
+      .filter(b => now - new Date(b.created_at).getTime() <= ms)
+      .reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
+
+    const candidate = (liveCandidateRes.data?.[0] ?? null) as LiveBattleRow | null
+    const liveBattle = (candidate && isLiveNow(candidate, now)) ? {
+      battleId: candidate.battle_id,
+      type: candidate.is_quick_battle ? 'quick' : candidate.is_community_battle ? 'community' : 'main',
+      artist1: { name: candidate.artist1_name, wallet: candidate.artist1_wallet, poolSol: round(candidate.artist1_pool ?? 0), volumeSol: round(candidate.total_volume_a ?? 0) },
+      artist2: { name: candidate.artist2_name, wallet: candidate.artist2_wallet, poolSol: round(candidate.artist2_pool ?? 0), volumeSol: round(candidate.total_volume_b ?? 0) },
+      startedAt: candidate.created_at,
+      endsAt: new Date(new Date(candidate.created_at).getTime() + (candidate.battle_duration ?? 0) * 1000).toISOString(),
+      url: `https://wavewarz.info/battles/${candidate.battle_id}`,
+    } : null
+
     const body = {
       updatedAt: new Date().toISOString(),
       solPriceUsd: solPrice,
@@ -64,7 +118,10 @@ export async function GET() {
       volume: {
         totalSol: round(m.totalVolume),
         totalUsd: round(m.totalVolume * solPrice),
+        last24hSol: round(windowVolume(24 * 60 * 60 * 1000)),
+        last7dSol: round(windowVolume(7 * 24 * 60 * 60 * 1000)),
       },
+      liveBattle,
       artistPayouts: {
         totalSol: round(m.artistPayouts),
         totalUsd: round(m.artistPayouts * solPrice),
