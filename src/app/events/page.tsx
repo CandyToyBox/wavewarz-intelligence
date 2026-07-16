@@ -3,6 +3,7 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { SpotlightEventCard } from './spotlight-event-card'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -882,7 +883,9 @@ function BenefitBattleCard({ battle: b, solPrice }: { battle: BenefitBattle; sol
                 {winner} <span className="text-muted-foreground font-normal">defeated</span> {loser}
               </p>
             )}
-            <p className="text-xs text-muted-foreground mt-1">{date} · Battle #{b.battle_id}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {date} · <Link href={`/battles/${b.battle_id}`} className="hover:text-[#7ec1fb] transition-colors">Battle #{b.battle_id} ↗</Link>
+            </p>
           </div>
           <div className="flex gap-2 shrink-0">
             {b.youtube_replay_link && (

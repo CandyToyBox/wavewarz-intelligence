@@ -2,8 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol, calculateArtistEarnings, calculatePlatformRevenue, calculateSettlementBreakdown, getWinnerLoserPools } from '@/lib/wavewarz-math'
 import { resolveAudiusTrack } from '@/lib/audius'
+import { getBattleAddress, getBattleVaultAddress, getArtistAMintAddress, getArtistBMintAddress, PROGRAM_ID } from '@/lib/solana/pda'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
+import { SolscanLink } from '@/components/solscan-link'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -126,6 +128,13 @@ export default async function BattleDetailPage({ params }: Props) {
   const durationSecs = battle.end_time && battle.start_time
     ? battle.end_time - battle.start_time
     : null
+
+  // Deterministic PDAs — same seeds as the onchain program, computed client-side
+  // (no RPC call needed). Every battle has these regardless of settlement state.
+  const battlePDA = getBattleAddress(battleId).toBase58()
+  const vaultPDA = getBattleVaultAddress(battleId).toBase58()
+  const artistAMint = getArtistAMintAddress(battleId).toBase58()
+  const artistBMint = getArtistBMintAddress(battleId).toBase58()
 
   // Resolve Audius artwork for quick battles
   let art1: string | null = null
@@ -429,11 +438,45 @@ export default async function BattleDetailPage({ params }: Props) {
           <MetaRow label="Status" value={battle.status ?? '—'} />
           {durationSecs !== null && <MetaRow label="Duration" value={fmtDuration(durationSecs)} />}
           {battle.unique_traders != null && <MetaRow label="Unique Traders" value={String(battle.unique_traders)} />}
-          {battle.artist1_wallet && <MetaRow label={`${battle.artist1_name} Wallet`} value={battle.artist1_wallet} mono truncate />}
-          {battle.artist2_wallet && <MetaRow label={`${battle.artist2_name} Wallet`} value={battle.artist2_wallet} mono truncate />}
-          {battle.wavewarz_wallet && <MetaRow label="WaveWarZ Wallet" value={battle.wavewarz_wallet} mono truncate />}
-          {battle.creator_wallet && <MetaRow label="Creator Wallet" value={battle.creator_wallet} mono truncate />}
+          {battle.artist1_wallet && (
+            <MetaRow label={`${battle.artist1_name} Wallet`} value={battle.artist1_wallet} mono truncate
+              solscanAddress={battle.artist1_wallet} />
+          )}
+          {battle.artist2_wallet && (
+            <MetaRow label={`${battle.artist2_name} Wallet`} value={battle.artist2_wallet} mono truncate
+              solscanAddress={battle.artist2_wallet} />
+          )}
+          {battle.wavewarz_wallet && (
+            <MetaRow label="WaveWarZ Wallet" value={battle.wavewarz_wallet} mono truncate
+              solscanAddress={battle.wavewarz_wallet} />
+          )}
+          {battle.creator_wallet && (
+            <MetaRow label="Creator Wallet" value={battle.creator_wallet} mono truncate
+              solscanAddress={battle.creator_wallet} />
+          )}
           {battle.quick_battle_queue_id && <MetaRow label="Queue ID" value={battle.quick_battle_queue_id} mono />}
+        </div>
+      </div>
+
+      {/* Onchain Contract — every account this battle actually lives in on Solana */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Onchain Contract</h2>
+          <Tip text="Every account below is a deterministic PDA (Program Derived Address) — same seeds the WaveWarZ program itself uses. Nothing here is a guess; view any of them directly on Solscan to verify against the raw account data.">
+            <span className="text-[10px] text-muted-foreground border border-border rounded-full w-4 h-4 flex items-center justify-center cursor-help">?</span>
+          </Tip>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <MetaRow label="Program" value={`${PROGRAM_ID.toBase58().slice(0, 6)}…${PROGRAM_ID.toBase58().slice(-6)}`} mono
+            solscanAddress={PROGRAM_ID.toBase58()} />
+          <MetaRow label="Battle Account" value={`${battlePDA.slice(0, 6)}…${battlePDA.slice(-6)}`} mono
+            solscanAddress={battlePDA} />
+          <MetaRow label="Battle Vault" value={`${vaultPDA.slice(0, 6)}…${vaultPDA.slice(-6)}`} mono
+            solscanAddress={vaultPDA} />
+          <MetaRow label={`${battle.artist1_name ?? 'Artist A'} Mint`} value={`${artistAMint.slice(0, 6)}…${artistAMint.slice(-6)}`} mono
+            solscanAddress={artistAMint} solscanKind="token" />
+          <MetaRow label={`${battle.artist2_name ?? 'Artist B'} Mint`} value={`${artistBMint.slice(0, 6)}…${artistBMint.slice(-6)}`} mono
+            solscanAddress={artistBMint} solscanKind="token" />
         </div>
       </div>
 
@@ -520,7 +563,10 @@ function SidePanel({
           </span>
         )}
         {wallet && (
-          <p className="font-mono text-[10px] text-muted-foreground">{wallet.slice(0, 6)}…{wallet.slice(-4)}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="font-mono text-[10px] text-muted-foreground">{wallet.slice(0, 6)}…{wallet.slice(-4)}</p>
+            <SolscanLink address={wallet} />
+          </div>
         )}
       </div>
 
@@ -592,14 +638,16 @@ function Stat({
 }
 
 function MetaRow({
-  label, value, mono, truncate,
+  label, value, mono, truncate, solscanAddress, solscanKind,
 }: {
   label: string; value: string; mono?: boolean; truncate?: boolean
+  solscanAddress?: string; solscanKind?: 'account' | 'token'
 }) {
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex items-start gap-2 flex-wrap">
       <span className="text-muted-foreground shrink-0 w-36">{label}</span>
       <span className={`${mono ? 'font-mono' : ''} text-white ${truncate ? 'truncate min-w-0' : ''}`}>{value}</span>
+      {solscanAddress && <SolscanLink address={solscanAddress} kind={solscanKind} />}
     </div>
   )
 }
@@ -696,7 +744,10 @@ function ArtistProfileCard({
         </div>
 
         {wallet && !profile?.twitter_handle && !profile?.audius_handle && (
-          <p className="font-mono text-[10px] text-muted-foreground mt-1">{wallet.slice(0, 8)}…{wallet.slice(-6)}</p>
+          <div className="flex items-center gap-1.5 mt-1">
+            <p className="font-mono text-[10px] text-muted-foreground">{wallet.slice(0, 8)}…{wallet.slice(-6)}</p>
+            <SolscanLink address={wallet} />
+          </div>
         )}
       </div>
     </div>

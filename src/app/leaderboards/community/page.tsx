@@ -5,7 +5,9 @@ import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
+import { SolscanLink } from '@/components/solscan-link'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -190,10 +192,15 @@ export default async function CommunityLeaderboardPage() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-rajdhani font-bold text-white text-sm sm:text-base leading-tight truncate">{c.name}</p>
-                      <p className="font-mono text-[10px] text-muted-foreground mt-0.5 truncate">
-                        {c.wallet.slice(0, 6)}…{c.wallet.slice(-4)}
-                      </p>
+                      <Link href={`/artist/${c.wallet}`} className="font-rajdhani font-bold text-white hover:text-[#95fe7c] transition-colors text-sm sm:text-base leading-tight truncate block">
+                        {c.name}
+                      </Link>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        <p className="font-mono text-[10px] text-muted-foreground truncate">
+                          {c.wallet.slice(0, 6)}…{c.wallet.slice(-4)}
+                        </p>
+                        <SolscanLink address={c.wallet} label="↗" className="!px-1 !py-0 !border-0" />
+                      </div>
                     </div>
                   </div>
                 </td>

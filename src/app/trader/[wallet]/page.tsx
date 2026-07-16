@@ -53,14 +53,20 @@ export default async function TraderPage({ params }: Props) {
   const settledBattles = new Map<number, boolean>()
 
   for (const t of trades) {
-    totalVolume += t.amount_sol ?? 0
     const isBuy = t.trade_type?.toLowerCase().includes('buy')
     const isSell = t.trade_type?.toLowerCase().includes('sell')
+    const isClaim = t.trade_type === 'claim'
+    // Claims are settlement withdrawals, not trading volume — exclude from totalVolume.
+    if (isBuy || isSell) totalVolume += t.amount_sol ?? 0
     if (isBuy) totalInvested += t.amount_sol ?? 0
-    if (isSell) totalPayout += t.amount_sol ?? 0
+    // 'claim' = real settlement payout (claimShares), backfilled from chain — this is
+    // what makes P&L accurate for traders who held to settlement instead of selling early.
+    if (isSell || isClaim) totalPayout += t.amount_sol ?? 0
 
     const battle = t.battle_id ? battleMap.get(t.battle_id) : null
-    if (battle && t.battle_id && t.trade_type) {
+    // Claim rows don't carry a/b side info (unlike buy_a/buy_b/sell_a/sell_b) — skip them
+    // here, win/loss is already established from that trader's buy/sell rows in the battle.
+    if (battle && t.battle_id && t.trade_type && !isClaim) {
       const isOver = battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase())
       if (isOver) {
         const a1Won = battle.winner_artist_a >= 0.5
@@ -127,7 +133,7 @@ export default async function TraderPage({ params }: Props) {
           sub={wins + losses > 0 ? `${wins}W · ${losses}L` : 'no side data'}
         />
         <StatCard
-          label={<Tip text="Total SOL received from sells minus SOL spent on buys">Net P&L</Tip>}
+          label={<Tip text="SOL received back — from mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced directly from onchain vault transactions, including withdrawals claimed after settlement." wide>Net P&L</Tip>}
           value={netPnl !== 0 ? `${netPnl >= 0 ? '+' : ''}${formatSol(netPnl)} SOL` : '—'}
           sub={netPnl !== 0 ? solToUsd(Math.abs(netPnl), sp) : 'no buy/sell data'}
           accent={netPnl > 0 ? '#95fe7c' : netPnl < 0 ? '#ef4444' : undefined}
@@ -212,6 +218,7 @@ export default async function TraderPage({ params }: Props) {
               <tbody>
                 {trades.slice(0, 50).map(t => {
                   const isBuy = t.trade_type?.toLowerCase().includes('buy')
+                  const isClaim = t.trade_type === 'claim'
                   return (
                     <tr key={t.id} className="border-b border-border/30 hover:bg-white/[0.02]">
                       <td className="px-4 py-2.5">
@@ -223,11 +230,13 @@ export default async function TraderPage({ params }: Props) {
                       </td>
                       <td className="px-4 py-2.5">
                         <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border ${
-                          isBuy
-                            ? 'text-[#95fe7c] border-[#95fe7c]/30 bg-[#95fe7c]/10'
-                            : 'text-[#7ec1fb] border-[#7ec1fb]/30 bg-[#7ec1fb]/10'
+                          isClaim
+                            ? 'text-[#f59e0b] border-[#f59e0b]/30 bg-[#f59e0b]/10'
+                            : isBuy
+                              ? 'text-[#95fe7c] border-[#95fe7c]/30 bg-[#95fe7c]/10'
+                              : 'text-[#7ec1fb] border-[#7ec1fb]/30 bg-[#7ec1fb]/10'
                         }`}>
-                          {t.trade_type ?? '—'}
+                          {isClaim ? 'claim (withdrawal)' : (t.trade_type ?? '—')}
                         </span>
                       </td>
                       <td className="px-4 py-2.5 text-right font-mono text-white">

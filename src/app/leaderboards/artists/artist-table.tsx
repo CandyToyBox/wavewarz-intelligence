@@ -134,7 +134,7 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
                   <Tip text="Total SOL traded by fans on this artist across all battles.">Volume</Tip>
                 </th>
                 <th className="text-right px-3 py-3 pr-4 text-[10px] text-muted-foreground uppercase tracking-widest">
-                  <Tip text="Estimated SOL earned: 1% of trading volume + settlement bonuses (5% winner / 2% loser of loser's pool)." wide>Earnings</Tip>
+                  <Tip text="SOL earned: 1% of trading volume + settlement bonus (5% of loser pool if won, 2% if lost). Same formula the contract pays automatically onchain, computed from real trading volume." wide>Earnings</Tip>
                 </th>
               </tr>
             </thead>

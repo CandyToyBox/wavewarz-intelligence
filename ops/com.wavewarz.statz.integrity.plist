@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  WaveWarz Statz — nightly data integrity check.
+  Re-runs the volume-fix and claims-resync scripts every night at 4:00 AM so
+  webhook fallback corruption and newly-trickled-in trader claims get caught
+  automatically instead of drifting silently for months. See
+  ops/nightly-integrity-check.sh for what it actually runs.
+
+  Install (one time):
+    cp ops/com.wavewarz.statz.integrity.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.wavewarz.statz.integrity.plist
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.wavewarz.statz.integrity.plist
+
+  Check logs:
+    tail -f "/Users/samanthakinney/Statz App V2 WaveWarz/ops/integrity.log"
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.wavewarz.statz.integrity</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/samanthakinney/Statz App V2 WaveWarz/ops/nightly-integrity-check.sh</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Users/samanthakinney/Statz App V2 WaveWarz</string>
+  <key>StartCalendarInterval</key>
+  <dict><key>Hour</key><integer>4</integer><key>Minute</key><integer>0</integer></dict>
+  <key>StandardOutPath</key><string>/Users/samanthakinney/Statz App V2 WaveWarz/ops/integrity.log</string>
+  <key>StandardErrorPath</key><string>/Users/samanthakinney/Statz App V2 WaveWarz/ops/integrity.log</string>
+  <key>EnvironmentVariables</key>
+  <dict><key>PATH</key><string>/Users/samanthakinney/.nvm/versions/node/v22.22.0/bin:/opt/homebrew/bin:/usr/bin:/bin</string></dict>
+</dict>
+</plist>

@@ -24,3 +24,19 @@ export function getBattleVaultAddress(battleId: number | bigint): PublicKey {
   )
   return pda
 }
+
+export function getArtistAMintAddress(battleId: number | bigint): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [new TextEncoder().encode('artist_a_mint'), toU64LE(battleId)],
+    PROGRAM_ID
+  )
+  return pda
+}
+
+export function getArtistBMintAddress(battleId: number | bigint): PublicKey {
+  const [pda] = PublicKey.findProgramAddressSync(
+    [new TextEncoder().encode('artist_b_mint'), toU64LE(battleId)],
+    PROGRAM_ID
+  )
+  return pda
+}

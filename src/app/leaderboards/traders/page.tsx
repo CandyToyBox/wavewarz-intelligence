@@ -4,6 +4,7 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
+import { SolscanLink } from '@/components/solscan-link'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import { TraderLookup } from './trader-lookup'
@@ -83,15 +84,21 @@ async function getData() {
         payout: 0,
       })
     }
+    const isClaim = t.trade_type === 'claim'
     const a = agg.get(t.trader_wallet)!
-    a.totalVolume += t.amount_sol ?? 0
-    a.tradeCount++
+    // Claims are settlement withdrawals, not trading activity — exclude from volume/trade count.
+    if (!isClaim) {
+      a.totalVolume += t.amount_sol ?? 0
+      a.tradeCount++
+    }
     if (t.battle_id) a.battleIds.add(t.battle_id)
 
     // Determine win/loss per BATTLE (not per trade).
     // If a trader held tokens on both sides, a win on either side counts as a win.
+    // Claim rows don't carry a/b side info (unlike buy_a/buy_b/sell_a/sell_b) — skip
+    // them here, win/loss is already established from that trader's buy/sell rows.
     const battle = t.battle_id ? battleMap.get(t.battle_id) : null
-    if (battle && t.trade_type && t.battle_id) {
+    if (battle && t.trade_type && t.battle_id && !isClaim) {
       const isOver = battle.winner_decided || ['ended','completed','settled'].includes((battle.status ?? '').toLowerCase())
       if (isOver) {
         const a1Won = (battle.winner_artist_a ?? 0) >= 0.5
@@ -107,7 +114,11 @@ async function getData() {
 
     if (t.trade_type?.toLowerCase().includes('buy')) {
       a.invested += t.amount_sol ?? 0
-    } else if (t.trade_type?.toLowerCase().includes('sell')) {
+    } else if (t.trade_type?.toLowerCase().includes('sell') || t.trade_type === 'claim') {
+      // 'claim' = real settlement withdrawal (claimShares), backfilled from chain.
+      // Previously only mid-battle sells counted as payout, so any trader who
+      // held to settlement and claimed showed as a near-total loss even when
+      // they won. See scripts/backfill-claims-from-chain.ts.
       a.payout += t.amount_sol ?? 0
     }
   }
@@ -201,7 +212,7 @@ export default async function TradersLeaderboardPage() {
                   <Tip text="Win rate across settled battles">Win Rate</Tip>
                 </th>
                 <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden md:table-cell">
-                  <Tip text="Payout received minus SOL invested">Net P&L</Tip>
+                  <Tip text="SOL received back — mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced from onchain vault transactions." wide>Net P&L</Tip>
                 </th>
                 <th className="px-4 py-3 w-8" />
               </tr>
@@ -216,9 +227,12 @@ export default async function TradersLeaderboardPage() {
                         <span className="text-[10px] font-bold text-[#7ec1fb]">{r.wallet.slice(0, 2)}</span>
                       </div>
                       <div>
-                        <Link href={`/trader/${r.wallet}`} className="font-mono text-xs text-white hover:text-[#7ec1fb] transition-colors">
-                          {r.wallet.slice(0, 6)}…{r.wallet.slice(-4)}
-                        </Link>
+                        <div className="flex items-center gap-1.5">
+                          <Link href={`/trader/${r.wallet}`} className="font-mono text-xs text-white hover:text-[#7ec1fb] transition-colors">
+                            {r.wallet.slice(0, 6)}…{r.wallet.slice(-4)}
+                          </Link>
+                          <SolscanLink address={r.wallet} label="↗" className="!px-1 !py-0 !border-0" />
+                        </div>
                         <p className="text-[10px] text-muted-foreground">{r.wins}W · {r.losses}L</p>
                       </div>
                     </div>

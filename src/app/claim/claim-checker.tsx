@@ -6,6 +6,7 @@ import { parseBattleAccount, type BattleAccount } from '@/lib/solana/parser'
 import { PROGRAM_ID } from '@/lib/solana/pda'
 import Link from 'next/link'
 import { Search, Loader2, Wallet, Coins, History, AlertTriangle, CheckCircle2, ExternalLink, Zap } from 'lucide-react'
+import { SolscanLink } from '@/components/solscan-link'
 
 const HELIUS_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY ?? '8b84d8d3-59ad-4778-829b-47db8a9149fa'
 const RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_KEY}`
@@ -306,9 +307,12 @@ function HoldingCard({ holding }: { holding: UserHolding }) {
             <span>Your side: <span className="font-mono text-white">{myPool.toFixed(3)} SOL</span></span>
           </div>
 
-          <p className="font-mono text-[10px] text-muted-foreground/50 mt-1 truncate max-w-xs" title={holding.mint}>
-            Mint: {holding.mint}
-          </p>
+          <div className="flex items-center gap-1.5 mt-1">
+            <p className="font-mono text-[10px] text-muted-foreground/50 truncate max-w-[180px]" title={holding.mint}>
+              Mint: {holding.mint}
+            </p>
+            <SolscanLink address={holding.mint} kind="token" label="↗" className="!px-1 !py-0 !border-0 shrink-0" />
+          </div>
         </div>
       </div>
 

@@ -9,8 +9,9 @@ const LAMPORTS_PER_SOL = 1_000_000_000
 const WAVEWARZ_PROGRAM  = '9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo'
 
 // Anchor instruction discriminators (from IDL)
-const BUY_DISCRIMINATOR  = [40, 239, 138, 154, 8, 37, 106, 108]
-const SELL_DISCRIMINATOR = [184, 164, 169, 16, 231, 158, 199, 196]
+const BUY_DISCRIMINATOR   = [40, 239, 138, 154, 8, 37, 106, 108]
+const SELL_DISCRIMINATOR  = [184, 164, 169, 16, 231, 158, 199, 196]
+const CLAIM_DISCRIMINATOR = [130, 131, 29, 237, 134, 20, 110, 245]
 
 function matchesDiscriminator(data: Buffer, disc: number[]): boolean {
   return disc.every((b, i) => data[i] === b)
@@ -58,11 +59,11 @@ interface HeliusTx {
   instructions: HeliusInstruction[]
 }
 
-/** One parsed buy/sell from the vault history, shaped for the trades table. */
+/** One parsed buy/sell/claim from the vault history, shaped for the trades table. */
 export interface OnchainTrade {
   battle_id: number
   trader_wallet: string
-  trade_type: 'buy_a' | 'buy_b' | 'sell_a' | 'sell_b'
+  trade_type: 'buy_a' | 'buy_b' | 'sell_a' | 'sell_b' | 'claim'
   amount_sol: number
   timestamp: string  // ISO
 }
@@ -184,7 +185,10 @@ export async function fetchBattleTradesFromChain(
             trades.push({ ...base, trade_type: isArtistA ? 'sell_a' : 'sell_b', amount_sol: returned / LAMPORTS_PER_SOL })
           }
         }
-        // All other discriminators (endBattle, claimShares, initializeBattle, etc.) are ignored
+        // All other discriminators (endBattle, claimShares, initializeBattle, etc.) are ignored here —
+        // claims are fetched separately by fetchBattleClaimsFromChain since they happen after end_time
+        // (sometimes much later, via the claim.wavewarz.info recovery flow) and aren't bounded by
+        // [startTimeSec, endTimeSec] the way buys/sells are.
       }
 
       if (hitFloor || txs.length < 100) break
@@ -196,6 +200,96 @@ export async function fetchBattleTradesFromChain(
   }
 
   return trades.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+}
+
+/**
+ * Fetch every claimShares withdrawal for a battle from the vault PDA
+ * transaction history. This is the real, ground-truth trader payout —
+ * the actual SOL amount the vault paid out to each trader's wallet when
+ * they claimed their winning/losing-side settlement, no estimation needed.
+ *
+ * Unlike buys/sells, claims are NOT bounded to [start_time, end_time] —
+ * they happen any time after settlement, including much later via the
+ * claim.wavewarz.info recovery flow for traders who forgot to withdraw.
+ * So this scans the full available vault history (same page cap) rather
+ * than stopping at a timestamp floor.
+ *
+ * Returns rows shaped for the trades table (trade_type: 'claim'), oldest
+ * first, or null on error.
+ */
+export async function fetchBattleClaimsFromChain(
+  battleId: number | bigint,
+  endTimeSec: number,
+): Promise<OnchainTrade[] | null> {
+  const apiKey = process.env.NEXT_PUBLIC_HELIUS_API_KEY
+  if (!apiKey) return null
+
+  const vaultPDA  = getBattleVaultAddress(battleId)
+  const vaultAddr = vaultPDA.toBase58()
+
+  const claims: OnchainTrade[] = []
+  let cursor: string | undefined
+
+  try {
+    for (let page = 0; page < 20; page++) {  // max 2000 transactions
+      const url =
+        `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
+        `?api-key=${apiKey}&limit=100` +
+        (cursor ? `&before=${cursor}` : '')
+
+      let res: Response | null = null
+      for (let attempt = 0; attempt < 6; attempt++) {
+        res = await fetch(url, { next: { revalidate: 0 } })
+        if (res.status !== 429) break
+        await new Promise(r => setTimeout(r, 1500 * (attempt + 1)))
+      }
+      if (!res || !res.ok) {
+        console.warn(`[claims] Helius responded ${res?.status} for battle ${battleId} after retries`)
+        return null
+      }
+
+      const txs: HeliusTx[] = await res.json()
+      if (!txs.length) break
+
+      for (const tx of txs) {
+        if (endTimeSec && tx.timestamp < endTimeSec) continue  // claims can't precede settlement
+
+        const ix = tx.instructions.find(i => i.programId === WAVEWARZ_PROGRAM)
+        if (!ix?.data) continue
+
+        let data: Buffer
+        try {
+          data = Buffer.from(bs58.decode(ix.data))
+        } catch {
+          continue
+        }
+        if (data.length < 8) continue
+
+        if (matchesDiscriminator(data, CLAIM_DISCRIMINATOR)) {
+          const paid = tx.nativeTransfers
+            .filter(t => t.fromUserAccount === vaultAddr)
+            .reduce((sum, t) => sum + t.amount, 0)
+          if (paid > 0) {
+            claims.push({
+              battle_id: Number(battleId),
+              trader_wallet: tx.feePayer,
+              trade_type: 'claim',
+              amount_sol: paid / LAMPORTS_PER_SOL,
+              timestamp: new Date(tx.timestamp * 1000).toISOString(),
+            })
+          }
+        }
+      }
+
+      if (txs.length < 100) break
+      cursor = txs[txs.length - 1].signature
+    }
+  } catch (err) {
+    console.error(`[claims] Error fetching claims for battle ${battleId}:`, err)
+    return null
+  }
+
+  return claims.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 }
 
 /**

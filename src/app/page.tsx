@@ -2,7 +2,7 @@ import type React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
-import { platformMetrics, type MetricsBattle } from '@/lib/battle-metrics'
+import { platformMetrics, claimTotals, type MetricsBattle } from '@/lib/battle-metrics'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
@@ -26,6 +26,15 @@ async function getGlobalStats() {
   // Single source of truth — identical to the admin Command Center.
   const m = platformMetrics(battles)
 
+  // Real trader withdrawals (claimShares), backfilled from chain — separate metric
+  // from trading volume. See scripts/backfill-claims-from-chain.ts.
+  const claims = await fetchAll<{ amount_sol: number | null }>((from, to) => supabase
+    .from('trades')
+    .select('amount_sol')
+    .eq('trade_type', 'claim')
+    .range(from, to))
+  const c = claimTotals(claims)
+
   return {
     totalVolume: m.totalVolume,
     totalBattles: battles.length,
@@ -34,6 +43,8 @@ async function getGlobalStats() {
     quickBattles: m.quickCount,
     totalArtistPayouts: m.artistPayouts,
     platformRevenue: m.revenue.total,        // ALL revenue: trading + settlement + launch fees
+    totalClaimed: c.totalClaimed,
+    claimCount: c.claimCount,
   }
 }
 
@@ -196,6 +207,10 @@ export default async function HomePage() {
             className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
             Watch on YouTube ↗
           </a>
+          <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
+            View Program on Solscan ↗
+          </a>
         </div>
       </section>
 
@@ -318,12 +333,18 @@ export default async function HomePage() {
             <div className="flex-1 h-px bg-border" />
             <span className="text-[10px] text-muted-foreground font-mono">All time · test battles excluded</span>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             <StatCard
               label={<Tip text="Total SOL from all buys and sells across every battle, all time. Test battles excluded.">Total Volume</Tip>}
               primary={`${parseFloat(stats.totalVolume.toFixed(2))} SOL`}
               secondary={solToUsd(stats.totalVolume, solPrice)}
               sub={`${stats.totalBattles} battles`}
+            />
+            <StatCard
+              label={<Tip text="Real SOL withdrawn by traders via claimShares — the actual settlement payout, parsed from onchain vault transactions. Distinct from trading volume." wide>Total Claimed</Tip>}
+              primary={`${parseFloat(stats.totalClaimed.toFixed(2))} SOL`}
+              secondary={solToUsd(stats.totalClaimed, solPrice)}
+              sub={`${stats.claimCount} withdrawals`}
             />
             <StatCard
               label={<Tip text="1% of trading volume per side, paid per trade. At settlement: winning artist gets 5% of loser pool, losing artist gets 2%. All automatic, instant, onchain." wide>Artist Payouts</Tip>}

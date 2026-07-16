@@ -16,6 +16,11 @@ export const LAUNCH_FEES = {
 
 const MAIN_EVENT_WINDOW_MS = 6 * 60 * 60 * 1000  // rounds of one event share a wallet-pair within 6h
 
+export type ClaimTotals = {
+  totalClaimed: number
+  claimCount: number
+}
+
 export type MetricsBattle = {
   total_volume_a: number | null
   total_volume_b: number | null
@@ -53,6 +58,17 @@ export function countMainEvents(battles: MetricsBattle[]): number {
     if (!matched) groups.push({ key, latestAt: t })
   }
   return groups.length
+}
+
+/**
+ * Total real trader withdrawals (claimShares), backfilled from chain — distinct
+ * from trading volume (buys+sells). Pass rows already filtered to trade_type='claim'.
+ */
+export function claimTotals(claims: { amount_sol: number | null }[]): ClaimTotals {
+  return {
+    totalClaimed: claims.reduce((s, c) => s + (c.amount_sol ?? 0), 0),
+    claimCount: claims.length,
+  }
 }
 
 /** Canonical platform metrics over a set of (already non-test) battles. */
