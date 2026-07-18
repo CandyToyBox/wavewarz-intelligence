@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { isBattleLive } from '@/lib/battle-metrics'
+import { canonicalSongKey } from '@/lib/song-identity'
 
 /**
  * Public battles list API — flat, paginated feed of every battle.
@@ -30,7 +31,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
-const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url'
+const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url'
 
 type Row = {
   battle_id: number
@@ -38,6 +39,8 @@ type Row = {
   artist2_name: string | null
   artist1_wallet: string | null
   artist2_wallet: string | null
+  artist1_twitter: string | null
+  artist2_twitter: string | null
   artist1_music_link: string | null
   artist2_music_link: string | null
   artist1_pool: number | null
@@ -54,7 +57,28 @@ type Row = {
   image_url: string | null
 }
 
-function toPublicBattle(b: Row, now: number) {
+type ProfileInfo = { profilePictureUrl: string | null; twitterHandle: string | null }
+type ArtUrlByKey = Map<string, string | null>
+
+function resolveArtist(
+  wallet: string | null, name: string | null, twitter: string | null, musicLink: string | null,
+  profileByWallet: Map<string, ProfileInfo>, artByKey: ArtUrlByKey,
+) {
+  const profile = wallet ? profileByWallet.get(wallet) : undefined
+  const songKey = musicLink ? canonicalSongKey(musicLink, name) : null
+  return {
+    name,
+    wallet,
+    musicLink,
+    profilePictureUrl: profile?.profilePictureUrl ?? null,
+    twitterHandle: (profile?.twitterHandle ?? twitter)?.replace(/^@/, '') || null,
+    albumArtUrl: songKey ? (artByKey.get(songKey) ?? null) : null,
+  }
+}
+
+function toPublicBattle(
+  b: Row, now: number, profileByWallet: Map<string, ProfileInfo>, artByKey: ArtUrlByKey,
+) {
   const round = (n: number) => Math.round(n * 10000) / 10000
   const type = b.is_quick_battle ? 'quick' : b.is_community_battle ? 'community' : 'main'
   const live = isBattleLive(b, now)
@@ -62,26 +86,17 @@ function toPublicBattle(b: Row, now: number) {
     ? (Number(b.winner_artist_a) >= 0.5 ? 'artist1' : 'artist2')
     : null
 
+  const a1 = resolveArtist(b.artist1_wallet, b.artist1_name, b.artist1_twitter, b.artist1_music_link, profileByWallet, artByKey)
+  const a2 = resolveArtist(b.artist2_wallet, b.artist2_name, b.artist2_twitter, b.artist2_music_link, profileByWallet, artByKey)
+
   return {
     battleId: b.battle_id,
     type,
     live,
     winnerDecided: !!b.winner_decided,
     winnerSide,
-    artist1: {
-      name: b.artist1_name,
-      wallet: b.artist1_wallet,
-      musicLink: b.artist1_music_link,
-      poolSol: round(b.artist1_pool ?? 0),
-      volumeSol: round(b.total_volume_a ?? 0),
-    },
-    artist2: {
-      name: b.artist2_name,
-      wallet: b.artist2_wallet,
-      musicLink: b.artist2_music_link,
-      poolSol: round(b.artist2_pool ?? 0),
-      volumeSol: round(b.total_volume_b ?? 0),
-    },
+    artist1: { ...a1, poolSol: round(b.artist1_pool ?? 0), volumeSol: round(b.total_volume_a ?? 0) },
+    artist2: { ...a2, poolSol: round(b.artist2_pool ?? 0), volumeSol: round(b.total_volume_b ?? 0) },
     imageUrl: b.image_url,
     createdAt: b.created_at,
     endsAt: new Date(new Date(b.created_at).getTime() + (b.battle_duration ?? 0) * 1000).toISOString(),
@@ -116,8 +131,37 @@ export async function GET(request: Request) {
     const { data, error } = await query
     if (error) throw error
 
+    const rows = (data ?? []) as Row[]
+
+    // Batch-resolve artist profile pictures/Twitter and Quick Battle album art
+    // in two extra queries rather than N+1 per battle.
+    const wallets = Array.from(new Set(rows.flatMap(b => [b.artist1_wallet, b.artist2_wallet]).filter((w): w is string => !!w)))
+    const songKeys = Array.from(new Set(
+      rows.flatMap(b => [
+        b.artist1_music_link ? canonicalSongKey(b.artist1_music_link, b.artist1_name) : null,
+        b.artist2_music_link ? canonicalSongKey(b.artist2_music_link, b.artist2_name) : null,
+      ]).filter((k): k is string => !!k)
+    ))
+
+    const [profilesRes, registryRes] = await Promise.all([
+      wallets.length
+        ? supabase.from('artist_profiles').select('primary_wallet,profile_picture_url,twitter_handle').in('primary_wallet', wallets)
+        : Promise.resolve({ data: [] }),
+      songKeys.length
+        ? supabase.from('song_registry').select('permalink_key,artwork_url').in('permalink_key', songKeys)
+        : Promise.resolve({ data: [] }),
+    ])
+
+    const profileByWallet = new Map<string, ProfileInfo>(
+      (profilesRes.data ?? []).map((p: { primary_wallet: string; profile_picture_url: string | null; twitter_handle: string | null }) =>
+        [p.primary_wallet, { profilePictureUrl: p.profile_picture_url, twitterHandle: p.twitter_handle }])
+    )
+    const artByKey: ArtUrlByKey = new Map(
+      (registryRes.data ?? []).map((r: { permalink_key: string; artwork_url: string | null }) => [r.permalink_key, r.artwork_url])
+    )
+
     const now = Date.now()
-    let battles = ((data ?? []) as Row[]).map(b => toPublicBattle(b, now))
+    let battles = rows.map(b => toPublicBattle(b, now, profileByWallet, artByKey))
     if (liveOnly) battles = battles.filter(b => b.live).slice(0, 1)
 
     return NextResponse.json({
