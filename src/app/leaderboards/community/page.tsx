@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
+import { isBattleLive } from '@/lib/battle-metrics'
 import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
@@ -29,6 +30,8 @@ type RawBattle = {
   status: string
   winner_decided: boolean | null
   winner_artist_a: number | null
+  created_at: string
+  battle_duration: number | null
 }
 
 type CommunityRow = {
@@ -49,14 +52,13 @@ async function getData() {
     // fetchAll paginates past the 1000-row cap; .then keeps the {data} shape.
     fetchAll((from, to) => supabase
       .from('battles')
-      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a')
+      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a,created_at,battle_duration')
       .eq('is_community_battle', true)
       // Community = DIY artist/name/brand vs same. A song-vs-song (Audius)
       // battle is a Quick Battle even if it carries the community flag, so
       // exclude is_quick_battle here — community leaderboard is never song vs song.
       .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
-      .neq('status', 'ACTIVE')
       .range(from, to)).then(data => ({ data })),
     supabase
       .from('artist_profiles')
@@ -64,7 +66,9 @@ async function getData() {
     getLiveSolPrice(),
   ])
 
-  const battles = (res.data ?? []) as RawBattle[]
+  const allBattles = (res.data ?? []) as RawBattle[]
+  const now = Date.now()
+  const battles = allBattles.filter(b => !isBattleLive(b, now))
   const pfpByWallet = new Map<string, string | null>(
     (profilesRes.data ?? []).map(p => [p.primary_wallet, p.profile_picture_url])
   )

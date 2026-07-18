@@ -2,7 +2,7 @@ import type React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
-import { platformMetrics, claimTotals, type MetricsBattle } from '@/lib/battle-metrics'
+import { platformMetrics, claimTotals, isBattleLive, type MetricsBattle } from '@/lib/battle-metrics'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
@@ -104,11 +104,13 @@ async function getQuickBattleData(): Promise<SongData[]> {
       .select('battle_id,artist1_name,artist2_name,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_music_link,artist2_music_link,battle_duration,created_at,unique_traders,winner_decided,winner_artist_a')
       .eq('is_quick_battle', true)
       .eq('is_test_battle', false)
-      .neq('status', 'ACTIVE')
       .gte('created_at', thirtyDaysAgo)
       .order('created_at', { ascending: false })
 
-    const battles = data ?? []
+    // Liveness filtered in JS via isBattleLive() (timer math), not a SQL status
+    // filter -- status text is inconsistently cased across historical rows,
+    // which silently dropped genuinely-ended battles from this preview.
+    const battles = (data ?? []).filter(b => !isBattleLive(b))
     const map = new Map<string, SongData>()
 
     for (const b of battles) {
