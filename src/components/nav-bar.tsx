@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: '/leaderboards', label: 'Leaderboards' },
   { href: '/events',       label: 'Events' },
   { href: '/claim',        label: 'Claim' },
+  { href: '/api-docs',     label: 'API' },
 ]
 
 export function NavBar() {
