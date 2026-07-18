@@ -86,7 +86,9 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     if (!profile) return null
     profileId = id
     profileData = profile
-    wallet = (profile.primary_wallet as string) ?? id
+    // Sub-profiles (e.g. "AI LUI") don't have their own wallet -- their battles
+    // come entirely from battle_artist_overrides below, not a wallet match.
+    wallet = (profile.primary_wallet as string) ?? ''
   } else {
     // Wallet path — check artist_wallets first (secondary wallets)
     const { data: linked } = await supabase
@@ -112,12 +114,14 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   }
 
   // Get all wallets for this profile (handles artists with multiple wallets / name changes)
-  const allWallets: string[] = [wallet]
+  // dbQueryWallets = only real onchain wallets, used to fetch from `battles` by wallet match.
+  // Sub-profiles (e.g. "AI LUI") have none -- their battles come entirely from overrides below.
+  const dbQueryWallets: string[] = wallet ? [wallet] : []
   if (profileId) {
     // Include the canonical primary wallet from artist_profiles (in case we navigated via a secondary wallet)
     const primaryFromProfile = profileData?.primary_wallet as string | undefined
-    if (primaryFromProfile && !allWallets.includes(primaryFromProfile)) {
-      allWallets.push(primaryFromProfile)
+    if (primaryFromProfile && !dbQueryWallets.includes(primaryFromProfile)) {
+      dbQueryWallets.push(primaryFromProfile)
     }
     // Include all secondary wallets linked via artist_wallets
     const { data: linked } = await supabase
@@ -125,23 +129,50 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
       .select('wallet_address')
       .eq('artist_id', profileId)
     for (const w of linked ?? []) {
-      if (w.wallet_address && !allWallets.includes(w.wallet_address)) {
-        allWallets.push(w.wallet_address)
+      if (w.wallet_address && !dbQueryWallets.includes(w.wallet_address)) {
+        dbQueryWallets.push(w.wallet_address)
       }
     }
   }
 
+  // Per-battle profile overrides — splits one wallet's battles across multiple
+  // named profiles. Two directions: overrides ON this profile's own wallets
+  // (exclude those battles, they've been reassigned elsewhere) and overrides
+  // POINTING TO this profile from a wallet that isn't otherwise "ours" (include
+  // those battles even though dbQueryWallets wouldn't have found them).
+  const [overridesOnOwnWallets, overridesIntoThisProfile] = await Promise.all([
+    dbQueryWallets.length
+      ? supabase.from('battle_artist_overrides').select('battle_id,wallet,artist_id').in('wallet', dbQueryWallets)
+      : Promise.resolve({ data: [] }),
+    profileId
+      ? supabase.from('battle_artist_overrides').select('battle_id,wallet,artist_id').eq('artist_id', profileId)
+      : Promise.resolve({ data: [] }),
+  ])
+  const excludeBattleIds = new Set(
+    (overridesOnOwnWallets.data ?? []).filter(o => o.artist_id !== profileId).map(o => o.battle_id)
+  )
+  const includeOverrides = overridesIntoThisProfile.data ?? []
+  const includeBattleIds = includeOverrides.map(o => o.battle_id)
+  // allWallets drives side-detection (artist1 vs artist2) throughout the rest of
+  // this page/component tree — extend it with override wallets so a battle
+  // pulled in purely via override still correctly resolves which side is "mine".
+  const allWallets = [...dbQueryWallets, ...new Set(includeOverrides.map(o => o.wallet))]
+
   // Get all battles for all linked wallets (both sides), exclude test
-  const battleSets = await Promise.all(
-    allWallets.flatMap(w => [
+  const battleSets = await Promise.all([
+    ...dbQueryWallets.flatMap(w => [
       supabase.from('battles').select('*').eq('artist1_wallet', w).eq('is_test_battle', false).order('created_at', { ascending: false }),
       supabase.from('battles').select('*').eq('artist2_wallet', w).eq('is_test_battle', false).order('created_at', { ascending: false }),
-    ])
-  )
+    ]),
+    ...(includeBattleIds.length
+      ? [supabase.from('battles').select('*').in('battle_id', includeBattleIds).eq('is_test_battle', false)]
+      : []),
+  ])
   const seen = new Set<number>()
   const allBattles: Battle[] = []
   for (const { data } of battleSets) {
     for (const b of data ?? []) {
+      if (excludeBattleIds.has(b.battle_id)) continue
       if (!seen.has(b.battle_id)) { seen.add(b.battle_id); allBattles.push(b as Battle) }
     }
   }
@@ -208,7 +239,9 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
 
   return {
     displayName,
-    wallet,
+    // Sub-profiles have no real wallet -- fall back to the profile UUID so
+    // links/routing (e.g. Solscan, /artist/{wallet}) still resolve to something.
+    wallet: wallet || profileId || '',
     allWallets,
     profileId,
     pfpUrl: (profileData?.profile_picture_url as string) ?? (profileData?.custom_pfp_url as string) ?? null,
@@ -269,7 +302,9 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
     ? Math.round((stats.wins / completedBattles) * 100)
     : null
 
-  // Solscan vault link — uses wallet as account reference
+  // Sub-profiles (e.g. "AI LUI") fall back to the profile UUID for stats.wallet
+  // since they have no real onchain wallet -- don't show it as a Solana address.
+  const hasRealWallet = !isUUID(stats.wallet)
   const solscanUrl = `https://solscan.io/account/${stats.wallet}`
 
   return (
@@ -309,19 +344,23 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
                 <h1 className="text-4xl font-rajdhani font-bold text-white tracking-wide leading-none">
                   {stats.displayName}
                 </h1>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="font-mono text-xs text-muted-foreground">
-                    {stats.wallet.slice(0, 6)}...{stats.wallet.slice(-4)}
-                  </span>
-                  <a
-                    href={solscanUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[10px] text-[#7ec1fb] hover:underline font-mono"
-                  >
-                    Verify on Solscan ↗
-                  </a>
-                </div>
+                {hasRealWallet ? (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {stats.wallet.slice(0, 6)}...{stats.wallet.slice(-4)}
+                    </span>
+                    <a
+                      href={solscanUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[10px] text-[#7ec1fb] hover:underline font-mono"
+                    >
+                      Verify on Solscan ↗
+                    </a>
+                  </div>
+                ) : (
+                  <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest">Sub-profile</p>
+                )}
                 {/* Social icons */}
                 <div className="flex items-center gap-2 mt-2">
                   {stats.twitterHandle && (

@@ -34,7 +34,7 @@ type RawBattle = {
 
 async function getData() {
   const supabase = await createClient()
-  const [battlesRes, profilesRes, walletsRes, solPrice] = await Promise.all([
+  const [battlesRes, profilesRes, walletsRes, overridesRes, solPrice] = await Promise.all([
     // fetchAll paginates past the 1000-row cap; .then keeps the {data} shape.
     fetchAll((from, to) => supabase
       .from('battles')
@@ -52,6 +52,11 @@ async function getData() {
     supabase
       .from('artist_wallets')
       .select('artist_id,wallet_address'),
+    // Per-battle profile overrides — splits one wallet's battles across multiple
+    // named profiles (e.g. an "AI LUI" sub-profile sharing Lui's real wallet).
+    supabase
+      .from('battle_artist_overrides')
+      .select('battle_id,wallet,artist_id'),
     getLiveSolPrice(),
   ])
 
@@ -76,22 +81,29 @@ async function getData() {
     (profilesRes.data ?? []).map(p => [p.artist_id, { primaryWallet: p.primary_wallet, displayName: p.display_name, pfpUrl: p.profile_picture_url }])
   )
   const walletToProfileId = new Map<string, string>()
-  for (const p of profilesRes.data ?? []) walletToProfileId.set(p.primary_wallet, p.artist_id)
+  for (const p of profilesRes.data ?? []) {
+    if (p.primary_wallet) walletToProfileId.set(p.primary_wallet, p.artist_id)
+  }
   for (const w of walletsRes.data ?? []) walletToProfileId.set(w.wallet_address, w.artist_id)
 
-  function resolveWallet(wallet: string, fallbackName: string) {
-    const profileId = walletToProfileId.get(wallet)
+  // battle_id|wallet -> artist_id, checked before the default wallet lookup.
+  const overrideMap = new Map<string, string>()
+  for (const o of overridesRes.data ?? []) overrideMap.set(`${o.battle_id}|${o.wallet}`, o.artist_id)
+
+  function resolveWallet(battleId: number, wallet: string, fallbackName: string) {
+    const overrideId = overrideMap.get(`${battleId}|${wallet}`)
+    const profileId = overrideId ?? walletToProfileId.get(wallet)
     if (profileId) {
       const p = profileById.get(profileId)
-      if (p) return { key: profileId, wallet: p.primaryWallet, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl, twitterHandle: twitterByWallet.get(p.primaryWallet) ?? twitterByWallet.get(wallet) ?? null }
+      if (p) return { key: profileId, wallet: p.primaryWallet ?? profileId, name: p.displayName ?? fallbackName, pfpUrl: p.pfpUrl, twitterHandle: (p.primaryWallet && twitterByWallet.get(p.primaryWallet)) ?? twitterByWallet.get(wallet) ?? null }
     }
     return { key: wallet, wallet, name: fallbackName, pfpUrl: null, twitterHandle: twitterByWallet.get(wallet) ?? null }
   }
 
   // Build pair key using resolved keys so multi-wallet artists group correctly
   function resolvedPairKey(b: RawBattle): string {
-    const r1 = resolveWallet(b.artist1_wallet, b.artist1_name)
-    const r2 = resolveWallet(b.artist2_wallet, b.artist2_name)
+    const r1 = resolveWallet(b.battle_id, b.artist1_wallet, b.artist1_name)
+    const r2 = resolveWallet(b.battle_id, b.artist2_wallet, b.artist2_name)
     return [r1.key, r2.key].sort().join('|')
   }
 
@@ -135,8 +147,8 @@ async function getData() {
 
   for (const group of eventGroups) {
     const firstBattle = group.battles[0]
-    const r1 = resolveWallet(firstBattle.artist1_wallet, firstBattle.artist1_name)
-    const r2 = resolveWallet(firstBattle.artist2_wallet, firstBattle.artist2_name)
+    const r1 = resolveWallet(firstBattle.battle_id, firstBattle.artist1_wallet, firstBattle.artist1_name)
+    const r2 = resolveWallet(firstBattle.battle_id, firstBattle.artist2_wallet, firstBattle.artist2_name)
 
     let r1RoundWins = 0, r2RoundWins = 0
     let r1Volume = 0, r2Volume = 0
@@ -144,7 +156,7 @@ async function getData() {
 
     for (const b of group.battles) {
       // Determine which canonical artist maps to artist1 in this specific round
-      const bR1 = resolveWallet(b.artist1_wallet, b.artist1_name)
+      const bR1 = resolveWallet(b.battle_id, b.artist1_wallet, b.artist1_name)
       const r1IsArtist1 = bR1.key === r1.key
 
       const aWon = (b.winner_artist_a ?? 0) >= 1

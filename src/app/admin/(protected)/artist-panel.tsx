@@ -2,7 +2,10 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { upsertArtistProfile, linkWalletToArtist, unlinkWallet, deleteArtistProfile } from './actions'
+import {
+  upsertArtistProfile, linkWalletToArtist, unlinkWallet, deleteArtistProfile,
+  getMainEventBattlesForWallet, setBattleArtistOverride, removeBattleArtistOverride,
+} from './actions'
 
 export type ArtistProfile = {
   artist_id: string
@@ -66,15 +69,15 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
   }
 
   function handleSave() {
-    if (!form.displayName || !form.primaryWallet) {
-      setMsg({ id: 'new', text: 'Display name and primary wallet are required.', ok: false })
+    if (!form.displayName) {
+      setMsg({ id: 'new', text: 'Display name is required.', ok: false })
       return
     }
     startTransition(async () => {
       const result = await upsertArtistProfile({
         artistId: form.artistId,
         displayName: form.displayName,
-        primaryWallet: form.primaryWallet,
+        primaryWallet: form.primaryWallet || null,
         audiusHandle: form.audiusHandle || null,
         twitterHandle: form.twitterHandle || null,
         pfpUrl: form.pfpUrl || null,
@@ -149,6 +152,9 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
         </button>
       </div>
 
+      {/* Split a wallet's Main Events across profiles (e.g. AI LUI vs LUI) */}
+      <BattleOverrideTool profiles={list} />
+
       {/* Global message */}
       {msg && (
         <div className={`rounded-lg px-4 py-2 mb-4 text-xs font-mono ${msg.ok ? 'bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}`}>
@@ -170,7 +176,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <Field label="Display Name *" value={form.displayName} onChange={v => setForm(f => ({ ...f, displayName: v }))} placeholder="e.g. Harrdknock" />
-            <Field label="Primary Wallet *" value={form.primaryWallet} onChange={v => setForm(f => ({ ...f, primaryWallet: v }))} placeholder="Solana wallet address" mono />
+            <Field label="Primary Wallet" value={form.primaryWallet} onChange={v => setForm(f => ({ ...f, primaryWallet: v }))} placeholder="Leave blank for a sub-profile (e.g. AI LUI) tagged via battle overrides below" mono />
             <Field label="Audius Handle" value={form.audiusHandle} onChange={v => setForm(f => ({ ...f, audiusHandle: v }))} placeholder="e.g. harrdknock (no @)" />
             <Field label="Twitter / X Handle" value={form.twitterHandle} onChange={v => setForm(f => ({ ...f, twitterHandle: v }))} placeholder="e.g. harrdknock (no @)" />
             <Field label="YouTube Channel URL" value={form.youtubeUrl} onChange={v => setForm(f => ({ ...f, youtubeUrl: v }))} placeholder="https://youtube.com/@handle" />
@@ -329,6 +335,173 @@ function Field({ label, value, onChange, placeholder, mono }: {
         placeholder={placeholder}
         className={`w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 transition-colors ${mono ? 'font-mono text-xs' : ''}`}
       />
+    </div>
+  )
+}
+
+type WalletBattle = {
+  battle_id: number
+  artist1_name: string | null
+  artist2_name: string | null
+  artist1_wallet: string | null
+  artist2_wallet: string | null
+  created_at: string
+  overrideArtistId: string | null
+}
+
+/**
+ * Splits a shared wallet's Main Event battles across profiles — e.g. a wallet
+ * that's both the real Lui and "AI LUI" gets its AI-tagged battles reassigned
+ * to a separate profile without touching the rest of that wallet's history.
+ * Only affects Main Events; Quick Battles are keyed by song, not wallet.
+ */
+function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
+  const [wallet, setWallet] = useState('')
+  const [battles, setBattles] = useState<WalletBattle[] | null>(null)
+  const [selected, setSelected] = useState<Set<number>>(new Set())
+  const [targetArtistId, setTargetArtistId] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [msg, setMsg] = useState<{ text: string; ok: boolean } | null>(null)
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+
+  function load() {
+    const w = wallet.trim()
+    if (!w) return
+    setLoading(true)
+    setMsg(null)
+    setSelected(new Set())
+    startTransition(async () => {
+      const result = await getMainEventBattlesForWallet(w)
+      setLoading(false)
+      if (result.error) { setMsg({ text: result.error, ok: false }); return }
+      setBattles(result.battles)
+      if (result.battles.length === 0) setMsg({ text: 'No Main Event battles found for this wallet.', ok: false })
+    })
+  }
+
+  function toggle(battleId: number) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      if (next.has(battleId)) next.delete(battleId)
+      else next.add(battleId)
+      return next
+    })
+  }
+
+  function assignSelected() {
+    if (!targetArtistId || selected.size === 0) return
+    const w = wallet.trim()
+    startTransition(async () => {
+      for (const battleId of selected) {
+        await setBattleArtistOverride({ battleId, wallet: w, artistId: targetArtistId })
+      }
+      setMsg({ text: `Assigned ${selected.size} battle${selected.size === 1 ? '' : 's'}.`, ok: true })
+      setSelected(new Set())
+      load()
+      router.refresh()
+    })
+  }
+
+  function clearOverride(battleId: number) {
+    const w = wallet.trim()
+    startTransition(async () => {
+      await removeBattleArtistOverride({ battleId, wallet: w })
+      load()
+      router.refresh()
+    })
+  }
+
+  const profileName = (id: string | null) => id ? (profiles.find(p => p.artist_id === id)?.display_name ?? 'Unknown profile') : null
+
+  return (
+    <div className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-5 mb-6">
+      <h3 className="font-rajdhani font-bold text-white text-base mb-1 tracking-wide">Split a Wallet&apos;s Main Events</h3>
+      <p className="text-xs text-muted-foreground mb-4">
+        Paste a wallet, pick which of its Main Event battles belong to a different profile (e.g. an &quot;AI LUI&quot; sub-profile), and assign them. Quick Battles don&apos;t need this — they&apos;re already ranked by song.
+      </p>
+
+      <div className="flex gap-2 mb-4">
+        <input
+          type="text"
+          placeholder="Paste wallet address…"
+          value={wallet}
+          onChange={e => setWallet(e.target.value)}
+          className="flex-1 max-w-md bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-xs font-mono text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#7ec1fb]/50"
+        />
+        <button
+          onClick={load}
+          disabled={loading || !wallet.trim()}
+          className="bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/30 hover:bg-[#7ec1fb]/20 disabled:opacity-40 text-xs font-bold px-4 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+        >
+          {loading ? 'Loading…' : 'Load Battles'}
+        </button>
+      </div>
+
+      {msg && (
+        <div className={`rounded-lg px-3 py-2 mb-3 text-xs font-mono ${msg.ok ? 'bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/20' : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'}`}>
+          {msg.text}
+        </div>
+      )}
+
+      {battles && battles.length > 0 && (
+        <>
+          <div className="space-y-2 mb-4 max-h-72 overflow-y-auto">
+            {battles.map(b => (
+              <label key={b.battle_id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#0d1321] border border-border cursor-pointer hover:border-[#7ec1fb]/30">
+                <input
+                  type="checkbox"
+                  checked={selected.has(b.battle_id)}
+                  onChange={() => toggle(b.battle_id)}
+                  className="accent-[#7ec1fb]"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-white truncate">
+                    #{b.battle_id} — {b.artist1_name} vs {b.artist2_name}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">{b.created_at.slice(0, 10)}</p>
+                </div>
+                {b.overrideArtistId && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-[10px] text-[#95fe7c] font-bold">→ {profileName(b.overrideArtistId)}</span>
+                    <button
+                      type="button"
+                      onClick={e => { e.preventDefault(); clearOverride(b.battle_id) }}
+                      className="text-red-400 hover:text-red-300 text-[10px]"
+                      title="Clear override"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </label>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <select
+              value={targetArtistId}
+              onChange={e => setTargetArtistId(e.target.value)}
+              className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#95fe7c]/50"
+            >
+              <option value="">Assign selected to profile…</option>
+              {profiles.map(p => (
+                <option key={p.artist_id} value={p.artist_id}>{p.display_name}</option>
+              ))}
+            </select>
+            <button
+              onClick={assignSelected}
+              disabled={isPending || !targetArtistId || selected.size === 0}
+              className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-4 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+            >
+              Assign {selected.size > 0 ? `(${selected.size})` : ''}
+            </button>
+            <span className="text-[10px] text-muted-foreground">
+              No profile for the sub-identity yet? Create one above with no wallet, then come back here.
+            </span>
+          </div>
+        </>
+      )}
     </div>
   )
 }

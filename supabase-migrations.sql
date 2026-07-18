@@ -197,6 +197,30 @@ CREATE TRIGGER artist_profiles_updated_at
 CREATE INDEX IF NOT EXISTS artist_profiles_wallet_idx ON artist_profiles (primary_wallet);
 
 
+-- 6b. Battle Artist Overrides (added 2026-07-18) — splits one wallet's battles
+-- across multiple named profiles (e.g. an "AI LUI" sub-profile sharing the
+-- real Lui's wallet) without needing a second onchain wallet. Applies to Main
+-- Events; Quick Battles are keyed by song, not wallet, so this doesn't touch those.
+CREATE TABLE IF NOT EXISTS battle_artist_overrides (
+  battle_id   bigint NOT NULL,
+  wallet      text NOT NULL,
+  artist_id   uuid NOT NULL REFERENCES artist_profiles(artist_id) ON DELETE CASCADE,
+  created_at  timestamptz DEFAULT now(),
+  PRIMARY KEY (battle_id, wallet)
+);
+CREATE INDEX IF NOT EXISTS battle_artist_overrides_artist_idx ON battle_artist_overrides (artist_id);
+ALTER TABLE battle_artist_overrides ENABLE ROW LEVEL SECURITY;
+CREATE POLICY IF NOT EXISTS "Public read access" ON battle_artist_overrides FOR SELECT USING (true);
+
+-- artist_profiles.primary_wallet is nullable as of 2026-07-18 -- a sub-profile
+-- (e.g. "AI LUI") has no distinct payout wallet of its own; it's resolved
+-- purely through battle_artist_overrides above.
+ALTER TABLE artist_profiles ALTER COLUMN primary_wallet DROP NOT NULL;
+ALTER TABLE artist_profiles DROP CONSTRAINT IF EXISTS artist_profiles_primary_wallet_key;
+CREATE UNIQUE INDEX IF NOT EXISTS artist_profiles_primary_wallet_uniq
+  ON artist_profiles (primary_wallet) WHERE primary_wallet IS NOT NULL;
+
+
 -- 6. Artist Wallets (links additional wallets to a single artist profile)
 CREATE TABLE IF NOT EXISTS artist_wallets (
   wallet_address  text PRIMARY KEY,
@@ -222,3 +246,15 @@ ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_votes_a      integer;
 ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_votes_b      integer;
 ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_winner       text;
 ALTER TABLE battles ADD COLUMN IF NOT EXISTS poll_finalized_at timestamptz;
+
+-- QB full outcome fields (added 2026-06-29 — verified against wavewarz.com schema)
+-- wavewarz.com uses the quick_battles_* prefix for all QB judging columns.
+-- dj_wavy_winner (existing) is populated from quick_battles_dj_wavy_winner in the webhook.
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_dj_wavy_judged_at     timestamptz;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_chart_winner           text;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_final_artist1_pool     numeric;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_final_artist2_pool     numeric;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_charts_finalized_at    timestamptz;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_overall_winner         text;   -- definitive winner name
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_winner_decided         boolean DEFAULT false;
+ALTER TABLE battles ADD COLUMN IF NOT EXISTS quick_battles_winner_artist_a        boolean;

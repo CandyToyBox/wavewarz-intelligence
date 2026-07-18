@@ -89,7 +89,7 @@ export async function updateBattleMedia(payload: {
 export async function upsertArtistProfile(payload: {
   artistId: string | null
   displayName: string
-  primaryWallet: string
+  primaryWallet: string | null
   audiusHandle: string | null
   twitterHandle: string | null
   pfpUrl: string | null
@@ -111,7 +111,7 @@ export async function upsertArtistProfile(payload: {
       .from('artist_profiles')
       .update({
         display_name: payload.displayName,
-        primary_wallet: payload.primaryWallet,
+        primary_wallet: payload.primaryWallet || null,
         audius_handle: payload.audiusHandle || null,
         twitter_handle: payload.twitterHandle || null,
         profile_picture_url: payload.pfpUrl || null,
@@ -121,14 +121,14 @@ export async function upsertArtistProfile(payload: {
       .eq('artist_id', payload.artistId)
     if (error) return { ok: false, error: error.message }
     revalidatePath('/admin')
-    revalidatePath(`/artist/${payload.primaryWallet}`)
+    if (payload.primaryWallet) revalidatePath(`/artist/${payload.primaryWallet}`)
     return { ok: true, artistId: payload.artistId }
   } else {
     const { data, error } = await supabase
       .from('artist_profiles')
       .insert({
         display_name: payload.displayName,
-        primary_wallet: payload.primaryWallet,
+        primary_wallet: payload.primaryWallet || null,
         audius_handle: payload.audiusHandle || null,
         twitter_handle: payload.twitterHandle || null,
         profile_picture_url: payload.pfpUrl || null,
@@ -176,6 +176,81 @@ export async function deleteArtistProfile(artistId: string): Promise<{ ok: boole
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin')
   return { ok: true }
+}
+
+// ─── Battle Artist Overrides (splits one wallet across multiple profiles) ─────
+// Lets a specific battle resolve to a different artist_profile than the wallet's
+// default — e.g. an "AI LUI" sub-profile for the same wallet as the real Lui.
+// Applies to Main Event battles; Quick Battles are keyed by song, not artist,
+// so this doesn't need to touch those.
+
+export async function setBattleArtistOverride(payload: {
+  battleId: number
+  wallet: string
+  artistId: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAdminClient()
+  const { error } = await supabase
+    .from('battle_artist_overrides')
+    .upsert({ battle_id: payload.battleId, wallet: payload.wallet, artist_id: payload.artistId })
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/admin')
+  revalidatePath('/leaderboards/artists')
+  revalidatePath(`/battles/${payload.battleId}`)
+  return { ok: true }
+}
+
+export async function removeBattleArtistOverride(payload: {
+  battleId: number
+  wallet: string
+}): Promise<{ ok: boolean; error?: string }> {
+  const supabase = await createAdminClient()
+  const { error } = await supabase
+    .from('battle_artist_overrides')
+    .delete()
+    .eq('battle_id', payload.battleId)
+    .eq('wallet', payload.wallet)
+  if (error) return { ok: false, error: error.message }
+  revalidatePath('/admin')
+  revalidatePath('/leaderboards/artists')
+  revalidatePath(`/battles/${payload.battleId}`)
+  return { ok: true }
+}
+
+// Find every Main Event battle a wallet appears in, and any current override
+// for each — used to build the "which profile does each of this wallet's
+// main-event battles belong to" admin tool.
+export async function getMainEventBattlesForWallet(wallet: string): Promise<{
+  battles: {
+    battle_id: number
+    artist1_name: string | null
+    artist2_name: string | null
+    artist1_wallet: string | null
+    artist2_wallet: string | null
+    created_at: string
+    overrideArtistId: string | null
+  }[]
+  error?: string
+}> {
+  const supabase = await createAdminClient()
+  const { data: battles, error } = await supabase
+    .from('battles')
+    .select('battle_id, artist1_name, artist2_name, artist1_wallet, artist2_wallet, created_at')
+    .eq('is_main_battle', true)
+    .eq('is_test_battle', false)
+    .or(`artist1_wallet.eq.${wallet},artist2_wallet.eq.${wallet}`)
+    .order('created_at', { ascending: false })
+  if (error) return { battles: [], error: error.message }
+
+  const { data: overrides } = await supabase
+    .from('battle_artist_overrides')
+    .select('battle_id, artist_id')
+    .eq('wallet', wallet)
+  const overrideMap = new Map((overrides ?? []).map(o => [o.battle_id, o.artist_id]))
+
+  return {
+    battles: (battles ?? []).map(b => ({ ...b, overrideArtistId: overrideMap.get(b.battle_id) ?? null })),
+  }
 }
 
 // ─── Calendar Events ──────────────────────────────────────────────────────────
