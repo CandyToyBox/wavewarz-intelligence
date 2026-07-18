@@ -39,6 +39,12 @@ export async function POST(request: NextRequest) {
   const isQuickBattle = Boolean(payload.is_quick_battle)
   const isEnded = payload.status === 'ENDED' || payload.status === 'ended'
 
+  // If wavewarz.com has already determined the QB winner via 3-factor judging,
+  // propagate it to the general winner fields so the app shows the correct result
+  // even before on-chain settlement completes.
+  const qbWinnerDecided = isQuickBattle && Boolean(payload.quick_battles_winner_decided)
+  const qbWinnerArtistA = payload.quick_battles_winner_artist_a as boolean | null | undefined
+
   const battle = {
     battle_id:                       payload.battle_id,
     status:                          payload.status ?? 'ACTIVE',
@@ -59,8 +65,11 @@ export async function POST(request: NextRequest) {
     image_url:                       payload.image_url,
     stream_link:                     payload.stream_link,
     battle_duration:                 payload.battle_duration,
-    winner_decided:                  payload.winner_decided,
-    winner_artist_a:                 payload.winner_artist_a,
+    // For QB battles: prefer the QB-specific winner decision over the general one
+    winner_decided:                  qbWinnerDecided ? true : payload.winner_decided,
+    winner_artist_a:                 qbWinnerDecided && qbWinnerArtistA != null
+                                       ? (qbWinnerArtistA ? 1 : 0)
+                                       : payload.winner_artist_a,
     unique_traders:                  payload.unique_traders,
     trade_count:                     payload.trade_count,
     total_distribution_amount:       payload.total_distribution_amount,
@@ -79,9 +88,22 @@ export async function POST(request: NextRequest) {
     poll_winner:                     payload.poll_winner,
     poll_finalized_at:               payload.poll_finalized_at,
     // ── QB 3-factor judging — DJ Wavy (AI judge) factor ───────────────────────
-    // wavewarz.com may send this as dj_wavy_winner or djwavy_winner
-    dj_wavy_winner:                  payload.dj_wavy_winner ?? payload.djwavy_winner ?? null,
+    // wavewarz.com column is quick_battles_dj_wavy_winner (prefixed).
+    // Map it into our dj_wavy_winner field; fall back to legacy names just in case.
+    dj_wavy_winner:                  payload.quick_battles_dj_wavy_winner
+                                       ?? payload.dj_wavy_winner
+                                       ?? payload.djwavy_winner
+                                       ?? null,
     dj_wavy_reasoning:               payload.dj_wavy_reasoning ?? payload.djwavy_reasoning ?? null,
+    // ── QB full outcome fields (wavewarz.com quick_battles_* columns) ──────────
+    quick_battles_dj_wavy_judged_at:  payload.quick_battles_dj_wavy_judged_at  ?? null,
+    quick_battles_chart_winner:       payload.quick_battles_chart_winner        ?? null,
+    quick_battles_final_artist1_pool: payload.quick_battles_final_artist1_pool  ?? null,
+    quick_battles_final_artist2_pool: payload.quick_battles_final_artist2_pool  ?? null,
+    quick_battles_charts_finalized_at: payload.quick_battles_charts_finalized_at ?? null,
+    quick_battles_overall_winner:     payload.quick_battles_overall_winner      ?? null,
+    quick_battles_winner_decided:     qbWinnerDecided,
+    quick_battles_winner_artist_a:    qbWinnerArtistA ?? null,
   }
 
   const { error: upsertError } = await supabase
@@ -139,8 +161,12 @@ export async function POST(request: NextRequest) {
             console.log(`[webhook] volume from chain: A=${volumeA.toFixed(4)} B=${volumeB.toFixed(4)} (${chainTrades.length} trades)`)
 
             // Persist per-trade history (powers trader profiles + leaderboard).
-            // Delete-then-insert keeps re-fired webhooks idempotent.
-            const { error: delErr } = await supabase.from('trades').delete().eq('battle_id', battleId)
+            // Delete-then-insert keeps re-fired webhooks idempotent. chainTrades is
+            // buy/sell only (claims are backfilled separately by the nightly job via
+            // scripts/backfill-claims-from-chain.ts) -- excluding trade_type='claim'
+            // from the delete is critical, otherwise a re-fired webhook silently
+            // wipes real settlement withdrawals until the next nightly resync.
+            const { error: delErr } = await supabase.from('trades').delete().eq('battle_id', battleId).neq('trade_type', 'claim')
             if (delErr) {
               console.warn(`[webhook] trades delete failed for ${battleId}: ${delErr.message}`)
             } else {
@@ -192,20 +218,37 @@ export async function POST(request: NextRequest) {
           // Charts factor: larger pool wins
           const chartsA = a1pool >= a2pool
 
-          // Poll factor: poll_winner name matches artist1_name → A wins
+          // Poll factor: poll_winner is "A", "B", "TIE", or artist name
+          // wavewarz.com sends "A" or "B" — handle that first, then fall back
+          // to name comparison for any legacy format.
           const pollWinner = (battle.poll_winner as string | null) ?? null
-          const pollA: boolean | null = pollWinner
-            ? pollWinner.trim().toLowerCase() === artist1Name.trim().toLowerCase()
-            : null
+          const pollUpper = pollWinner?.trim().toUpperCase() ?? null
+          const pollA: boolean | null = pollUpper === null || pollUpper === 'TIE'
+            ? null
+            : pollUpper === 'A'
+              ? true
+              : pollUpper === 'B'
+                ? false
+                : pollWinner!.trim().toLowerCase() === artist1Name.trim().toLowerCase()
+                  ? true
+                  : false
 
-          // DJ Wavy factor: dj_wavy_winner name matches artist1_name → A wins
+          // DJ Wavy factor: same A/B/name format as poll_winner
           const djWinner = (battle.dj_wavy_winner as string | null)
+            ?? (payload.quick_battles_dj_wavy_winner as string | null)
             ?? (payload.dj_wavy_winner as string | null)
             ?? (payload.djwavy_winner as string | null)
             ?? null
-          const djA: boolean | null = djWinner
-            ? djWinner.trim().toLowerCase() === artist1Name.trim().toLowerCase()
-            : null
+          const djUpper = djWinner?.trim().toUpperCase() ?? null
+          const djA: boolean | null = djUpper === null
+            ? null
+            : djUpper === 'A'
+              ? true
+              : djUpper === 'B'
+                ? false
+                : djWinner!.trim().toLowerCase() === artist1Name.trim().toLowerCase()
+                  ? true
+                  : false
 
           // Count votes: charts always counts; poll + DJ Wavy count when available
           const factorsForA = [chartsA, pollA, djA].filter(v => v !== null) as boolean[]
