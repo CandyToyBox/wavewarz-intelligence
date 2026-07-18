@@ -161,19 +161,24 @@ export async function POST(request: NextRequest) {
             console.log(`[webhook] volume from chain: A=${volumeA.toFixed(4)} B=${volumeB.toFixed(4)} (${chainTrades.length} trades)`)
 
             // Persist per-trade history (powers trader profiles + leaderboard).
-            // Delete-then-insert keeps re-fired webhooks idempotent. chainTrades is
-            // buy/sell only (claims are backfilled separately by the nightly job via
-            // scripts/backfill-claims-from-chain.ts) -- excluding trade_type='claim'
-            // from the delete is critical, otherwise a re-fired webhook silently
-            // wipes real settlement withdrawals until the next nightly resync.
-            const { error: delErr } = await supabase.from('trades').delete().eq('battle_id', battleId).neq('trade_type', 'claim')
-            if (delErr) {
-              console.warn(`[webhook] trades delete failed for ${battleId}: ${delErr.message}`)
-            } else {
-              const { error: insErr } = await supabase.from('trades').insert(chainTrades)
-              if (insErr) console.warn(`[webhook] trades insert failed for ${battleId}: ${insErr.message}`)
-              else console.log(`[webhook] stored ${chainTrades.length} trades for battle ${battleId}`)
-            }
+            // Delete-then-insert keeps re-fired webhooks idempotent -- but doing
+            // that as two separate calls let two overlapping webhook deliveries
+            // for the same battle race each other (both pass the delete before
+            // either inserts), which produced 709 exact-duplicate trade rows
+            // across 79 battles. replace_battle_trades() does both steps inside
+            // one Postgres function call, holding pg_advisory_xact_lock(battle_id)
+            // for the duration, so concurrent deliveries serialize instead of
+            // racing. chainTrades is buy/sell only (claims are backfilled
+            // separately by the nightly job via scripts/backfill-claims-from-chain.ts)
+            // -- the function excludes trade_type='claim' from its delete, otherwise
+            // a re-fired webhook would silently wipe real settlement withdrawals
+            // until the next nightly resync.
+            const { error: rpcErr } = await supabase.rpc('replace_battle_trades', {
+              p_battle_id: battleId,
+              p_trades: chainTrades,
+            })
+            if (rpcErr) console.warn(`[webhook] replace_battle_trades failed for ${battleId}: ${rpcErr.message}`)
+            else console.log(`[webhook] stored ${chainTrades.length} trades for battle ${battleId}`)
           } else {
             // Fallback to artist_sol_balance (buys only)
             if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
