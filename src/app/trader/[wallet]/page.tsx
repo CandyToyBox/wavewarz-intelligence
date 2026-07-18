@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol, calculateArtistEarnings, getWinnerLoserPools } from '@/lib/wavewarz-math'
 import { Badge } from '@/components/ui/badge'
@@ -22,16 +23,18 @@ export default async function TraderPage({ params }: Props) {
   if (!wallet || wallet.length < 32) notFound()
 
   const supabase = await createClient()
-  const [tradesRes, solPrice] = await Promise.all([
-    supabase
-      .from('trades')
-      .select('id, battle_id, trade_type, amount_sol, timestamp')
-      .eq('trader_wallet', wallet)
-      .order('timestamp', { ascending: false }),
+  // fetchAll paginates past PostgREST's 1000-row cap -- heavy traders (2000+ trades)
+  // were silently truncated to their newest 1000 rows, skewing volume/PNL/W-L.
+  const [trades, solPrice] = await Promise.all([
+    fetchAll<{ id: string; battle_id: number | null; trade_type: string | null; amount_sol: number | null; timestamp: string }>(
+      (from, to) => supabase
+        .from('trades')
+        .select('id, battle_id, trade_type, amount_sol, timestamp')
+        .eq('trader_wallet', wallet)
+        .order('timestamp', { ascending: false })
+        .range(from, to)),
     getLiveSolPrice(),
   ])
-
-  const trades = tradesRes.data ?? []
 
   // Get all referenced battles
   const battleIds = [...new Set(trades.map(t => t.battle_id).filter(Boolean))]

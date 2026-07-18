@@ -16,6 +16,19 @@ export const LAUNCH_FEES = {
 
 const MAIN_EVENT_WINDOW_MS = 6 * 60 * 60 * 1000  // rounds of one event share a wallet-pair within 6h
 
+/**
+ * Live vs. completed is pure timer math (created_at + battle_duration) -- never
+ * trust `winner_decided` (can sit false long after real completion) or `status`
+ * text (inconsistently cased across historical rows: ACTIVE/Active/ENDED/Ended).
+ * See CANONICAL_RULES.md. Originally lived only in the public stats API route;
+ * shared here so every page filtering "is this battle still live" agrees.
+ */
+export function isBattleLive(row: { created_at: string; battle_duration: number | null }, nowMs: number = Date.now()): boolean {
+  if (!row.battle_duration) return false
+  const endsAt = new Date(row.created_at).getTime() + row.battle_duration * 1000
+  return nowMs < endsAt
+}
+
 export type ClaimTotals = {
   totalClaimed: number
   claimCount: number

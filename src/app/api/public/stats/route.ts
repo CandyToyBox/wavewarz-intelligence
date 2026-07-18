@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice } from '@/lib/coingecko'
-import { platformMetrics, claimTotals, type MetricsBattle } from '@/lib/battle-metrics'
+import { platformMetrics, claimTotals, isBattleLive, type MetricsBattle } from '@/lib/battle-metrics'
 
 /**
  * Public platform stats API — for wavewarz.com (or anywhere else) to embed
@@ -48,20 +48,10 @@ type LiveBattleRow = {
   created_at: string
 }
 
-// Live vs completed is pure timer math: created_at + battle_duration. Neither
-// winner_decided nor status text is trustworthy here — winner_decided can sit
-// at false forever for a battle that ended hours ago (the DJ Wavy verdict step
-// that sets it can fail to fire independent of settlement), and status text is
-// inconsistently cased across historical rows (ACTIVE/Active/ENDED/Ended).
-// Once the timer passes, settlement is automatic and no further contract state
-// changes are possible (per Samantha, 2026-07-16) — so this is ground truth,
-// not a heuristic. WaveWarz currently runs one battle at a time, so the single
-// most recent battle is always the only live candidate.
-function isLiveNow(row: Pick<LiveBattleRow, 'created_at' | 'battle_duration'>, nowMs: number): boolean {
-  if (!row.battle_duration) return false
-  const endsAt = new Date(row.created_at).getTime() + row.battle_duration * 1000
-  return nowMs < endsAt
-}
+// Live-vs-completed logic now lives in isBattleLive() in battle-metrics.ts, shared
+// across every page/API that needs to know if a battle is still running. WaveWarz
+// currently runs one battle at a time, so the single most recent battle is always
+// the only live candidate.
 
 export async function GET() {
   try {
@@ -101,7 +91,7 @@ export async function GET() {
       .reduce((s, b) => s + (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0), 0)
 
     const candidate = (liveCandidateRes.data?.[0] ?? null) as LiveBattleRow | null
-    const liveBattle = (candidate && isLiveNow(candidate, now)) ? {
+    const liveBattle = (candidate && isBattleLive(candidate, now)) ? {
       battleId: candidate.battle_id,
       type: candidate.is_quick_battle ? 'quick' : candidate.is_community_battle ? 'community' : 'main',
       artist1: { name: candidate.artist1_name, wallet: candidate.artist1_wallet, poolSol: round(candidate.artist1_pool ?? 0), volumeSol: round(candidate.total_volume_a ?? 0) },
