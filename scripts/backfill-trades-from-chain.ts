@@ -39,6 +39,7 @@ function loadEnv() {
 loadEnv()
 
 import { fetchBattleTradesFromChain, hydrateOnchainData } from '../src/lib/solana/hydrate'
+import { fetchAll } from '../src/lib/supabase/fetch-all'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -61,9 +62,17 @@ async function main() {
 
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
 
-  // Which battles already have trades rows?
-  const { data: existing } = await supabase.from('trades').select('battle_id').limit(500000)
-  const haveTrades = new Set((existing ?? []).map(r => r.battle_id))
+  // Which battles already have BUY/SELL trades rows? (paginated past PostgREST's
+  // 1000-row default cap -- a plain .limit(500000) silently truncates at 1000,
+  // which was misclassifying battles as "already backfilled" and risked
+  // re-inserting duplicates. Also excludes trade_type='claim': a battle with
+  // only withdrawal rows and zero buy/sell rows still needs backfilling --
+  // the old unfiltered query counted claim-only battles as "done" and they
+  // were silently skipped forever, 74 battles / 33.94 SOL worth.)
+  const existing = await fetchAll<{ battle_id: number }>((from, to) =>
+    supabase.from('trades').select('battle_id').neq('trade_type', 'claim').range(from, to)
+  )
+  const haveTrades = new Set(existing.map(r => r.battle_id))
 
   // Target battles
   let q = supabase
