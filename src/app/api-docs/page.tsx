@@ -76,6 +76,7 @@ const TOC = [
   { id: 'stats', label: 'GET /api/public/stats' },
   { id: 'battles-list', label: 'GET /api/public/battles' },
   { id: 'battles-detail', label: 'GET /api/public/battles/:id' },
+  { id: 'events', label: 'GET /api/public/events' },
   { id: 'lb-artists', label: 'GET /api/public/leaderboards/artists' },
   { id: 'lb-traders', label: 'GET /api/public/leaderboards/traders' },
   { id: 'lb-songs', label: 'GET /api/public/leaderboards/songs' },
@@ -202,6 +203,41 @@ export default function ApiDocsPage() {
       />
 
       <Endpoint
+        id="events"
+        method="GET"
+        path="/api/public/events"
+        summary="Main Events grouped from individual rounds. A Main Event is typically 3 rounds (each its own battle_id from /api/public/battles) between the same two artists. Each round's winner is decided 2-of-3 (Human Judge + X Poll + SOL/Chart vote, entered by the WaveWarZ team through the admin judging panel). The EVENT winner is best-of-3: whoever wins the majority of rounds. Use this endpoint for the real event result — don't infer it from a single round's pool or volume."
+        params={[
+          { name: 'subtype', type: 'string', desc: `"standard" | "charity" | "spotlight" | "prediction" — omit for all` },
+          { name: 'live', type: 'boolean', desc: '"true" to return only events with a round currently live' },
+          { name: 'limit', type: 'number', desc: 'default 50, max 200' },
+        ]}
+        example={`curl "https://wavewarz.info/api/public/events?limit=1"`}
+        response={`{
+  "updatedAt": "2026-07-18T17:04:14.215Z",
+  "count": 1,
+  "events": [
+    {
+      "eventId": "event-1783899858",
+      "eventSubtype": "standard",
+      "live": false,
+      "artist1": { "name": "R3plic4nT", "wallet": "HEB2...hVt", "profilePictureUrl": null, "twitterHandle": "r3plic4nt206" },
+      "artist2": { "name": "Stormi", "wallet": "2J32...8bXp", "profilePictureUrl": null, "twitterHandle": "Stormiunleashed" },
+      "roundsWon": { "artist1": 0, "artist2": 3 },
+      "winnerSide": "artist2",
+      "totalVolumeSol": 3.5622,
+      "imageUrl": "https://...",
+      "startedAt": "2026-07-12T23:44:53.15946+00:00",
+      "endsAt": "2026-07-13T00:46:57.808Z",
+      "rounds": [
+        { "battleId": 1783899858, "roundNumber": 1, "winnerSide": "artist2", "artist1PoolSol": 0.0712, "artist2PoolSol": 0.3546, "artist1VolumeSol": 0.3655, "artist2VolumeSol": 0.36, "live": false, "url": "https://wavewarz.info/battles/1783899858" }
+      ]
+    }
+  ]
+}`}
+      />
+
+      <Endpoint
         id="lb-artists"
         method="GET"
         path="/api/public/leaderboards/artists"
@@ -283,6 +319,7 @@ export default function ApiDocsPage() {
           <li>All SOL amounts are plain numbers (not lamports). Multiply by <code className="text-[#7ec1fb]">solPriceUsd</code> where provided to convert to USD.</li>
           <li>&quot;Live&quot; means <code className="text-[#7ec1fb]">now &lt; created_at + battle_duration</code> — pure timer math, not a database status flag (status text is inconsistently cased across historical rows).</li>
           <li>WaveWarZ runs one battle at a time — expect at most one live battle across the whole platform.</li>
+          <li>Don&apos;t confuse a <strong>round</strong> (one <code className="text-[#7ec1fb]">battle_id</code>, from <code className="text-[#7ec1fb]">/api/public/battles</code>) with a <strong>Main Event</strong> (best-of-3 rounds, from <code className="text-[#7ec1fb]">/api/public/events</code>) — an individual round&apos;s winner and the overall event winner are frequently different artists.</li>
           <li>In Quick Battles, <code className="text-[#7ec1fb]">artist1</code> / <code className="text-[#7ec1fb]">artist2</code> fields hold <strong>song titles</strong>, not artist names — check <code className="text-[#7ec1fb]">musicLink</code> for the Audius track and the song leaderboard&apos;s <code className="text-[#7ec1fb]">artistName</code> field for the actual performer.</li>
           <li>Traders do not receive automatic payouts — they must manually claim. <code className="text-[#7ec1fb]">netPnlSol</code> in the trader leaderboard already accounts for real on-chain claims, not just recorded buy/sell rows.</li>
           <li>Responses are cached 30–60s server-side (<code className="text-[#7ec1fb]">Cache-Control</code> header) — safe to poll every 30s from a live UI.</li>
