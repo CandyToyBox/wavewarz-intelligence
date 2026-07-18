@@ -166,8 +166,8 @@ export default function ApiDocsPage() {
       "live": false,
       "winnerDecided": false,
       "winnerSide": null,
-      "artist1": { "name": "STILL DEGEN", "wallet": "HqHj...vvS", "musicLink": "https://audius.co/...", "poolSol": 0.0004, "volumeSol": 0.0393 },
-      "artist2": { "name": "I'm a Giant", "wallet": "JtcZ...7X", "musicLink": "https://audius.co/...", "poolSol": 0.0131, "volumeSol": 0.0246 },
+      "artist1": { "name": "STILL DEGEN", "wallet": "HqHj...vvS", "musicLink": "https://audius.co/...", "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://...", "poolSol": 0.0004, "volumeSol": 0.0393 },
+      "artist2": { "name": "I'm a Giant", "wallet": "JtcZ...7X", "musicLink": "https://audius.co/...", "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://...", "poolSol": 0.0131, "volumeSol": 0.0246 },
       "imageUrl": "https://...",
       "createdAt": "2026-07-18T02:56:21.761769+00:00",
       "endsAt": "2026-07-18T03:05:02.761Z",
@@ -189,8 +189,8 @@ export default function ApiDocsPage() {
   "live": false,
   "winnerDecided": true,
   "winnerSide": "artist1",
-  "artist1": { "name": "STILL DEGEN", "wallet": "...", "musicLink": "...", "twitter": null, "poolSol": 1.2, "volumeSol": 3.4 },
-  "artist2": { "name": "I'm a Giant", "wallet": "...", "musicLink": "...", "twitter": null, "poolSol": 0.6, "volumeSol": 1.1 },
+  "artist1": { "name": "STILL DEGEN", "wallet": "...", "musicLink": "...", "poolSol": 1.2, "volumeSol": 3.4, "profilePictureUrl": null, "twitterHandle": "r3plic4nt206", "albumArtUrl": "https://..." },
+  "artist2": { "name": "I'm a Giant", "wallet": "...", "musicLink": "...", "poolSol": 0.6, "volumeSol": 1.1, "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://..." },
   "artistEarnings": {
     "artist1": { "tradingFeesSol": 0.034, "settlementBonusSol": 0.03, "totalSol": 0.064 },
     "artist2": { "tradingFeesSol": 0.011, "settlementBonusSol": 0.012, "totalSol": 0.023 }
