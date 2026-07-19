@@ -1,0 +1,31 @@
+# WaveWarZ Intelligence
+
+> Verifiable onchain analytics for WaveWarZ — the decentralized music battle platform on Solana.
+> Artists go head-to-head in timed battles while fans trade ephemeral tokens on the outcome.
+> Every trade is denominated in SOL. Artists earn 1% of trading volume automatically; traders
+> withdraw winnings manually after settlement. All data is sourced from the Solana blockchain
+> (Program ID: 9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo, Solana Mainnet).
+
+Main platform (trading): https://wavewarz.com
+Analytics (this site): https://wavewarz.info
+Unclaimed winnings recovery: https://claim.wavewarz.info
+X / Twitter: https://x.com/wavewarz
+
+## Public API (free, no auth)
+
+- https://wavewarz.info/api/public/stats — platform totals: volume, claims, artist payouts, battle counts
+- https://wavewarz.info/api/public/battles — battle list with pools, volume, winners
+- https://wavewarz.info/api/public/events — upcoming events and tournaments
+- https://wavewarz.info/api/public/leaderboards/artists — artist rankings
+- https://wavewarz.info/api/public/leaderboards/songs — quick-battle song rankings
+- https://wavewarz.info/api/public/leaderboards/traders — trader rankings
+- Docs: https://wavewarz.info/api-docs
+
+## Key concepts
+
+- Battle types: Main Events (artist vs artist), Quick Battles (song vs song, Audius-powered,
+  ~6-9 min), Community Battles (anything vs anything).
+- Quick Battle winner = 2 of 3 factors: live poll, trading charts, DJ Wavy (AI judge).
+- Fees: 1.5% per trade total (1.0% to the artist, 0.5% platform). Settlement splits the losing
+  pool 50% losing traders / 40% winning traders / 5% winning artist / 2% losing artist / 3% platform.
+- Battle duration is variable — always computed from onchain start/end timestamps.

@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
+import { pinnedEvent } from '@/config/pinned-event'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -265,62 +266,55 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Tournaments */}
+      {/* Pinned event — mirrors the pinned post on @wavewarz (see src/config/pinned-event.ts) */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Upcoming Tournaments</h2>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Live Tournament</h2>
           <div className="flex-1 h-px bg-border" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] border border-[#95fe7c]/30 px-2 py-0.5 rounded">
-            Registration Open
+            {pinnedEvent.badge}
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* Artist Tournament */}
-          <div className="rounded-2xl border border-[#95fe7c]/30 bg-[#95fe7c]/5 p-6 space-y-4">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">16-Artist Bracket</p>
-                <h3 className="text-2xl font-rajdhani font-bold text-white">Artist Tournament</h3>
-              </div>
-              <span className="text-3xl">🎤</span>
-            </div>
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Sixteen artists. Single-elimination bracket. Fans trade on every matchup and the SOL flows to the winners. This is the championship — apply now to secure your spot.
-            </p>
-            <ul className="text-xs text-gray-400 space-y-1">
-              <li>• 16 artist slots — first come, first qualified</li>
-              <li>• Each round is a full WaveWarZ battle</li>
-              <li>• Instant SOL payouts to artists each round</li>
-              <li>• Fans trade across all matchups simultaneously</li>
-            </ul>
-            <a href="https://x.com/wavewarz" target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Register on X ↗
-            </a>
-          </div>
+          {/* Bracket animation / pinned flyer */}
+          <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
+            className="rounded-2xl border border-[#7ec1fb]/30 overflow-hidden block bg-black">
+            {pinnedEvent.mediaType === 'video' ? (
+              <video
+                src={pinnedEvent.src}
+                poster={pinnedEvent.poster}
+                autoPlay muted loop playsInline
+                className="w-full h-full object-cover"
+                aria-label={`${pinnedEvent.title} bracket animation`}
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={pinnedEvent.src} alt={`${pinnedEvent.title} flyer`} className="w-full h-full object-cover" />
+            )}
+          </a>
 
           {/* AI Artist Tournament */}
           <div className="rounded-2xl border border-[#7ec1fb]/30 bg-[#7ec1fb]/5 p-6 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">8–16 Artist Bracket</p>
-                <h3 className="text-2xl font-rajdhani font-bold text-white">AI Artist Tournament</h3>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">Single-Elimination Bracket</p>
+                <h3 className="text-2xl font-rajdhani font-bold text-white">{pinnedEvent.title}</h3>
               </div>
               <span className="text-3xl">🤖</span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
-              AI-generated artists go head-to-head. Bracket size depends on signups — 8 or 16 slots. No human artists, just AI music. The community votes, the chains settles, the SOL moves.
+              {pinnedEvent.subtitle}
             </p>
             <ul className="text-xs text-gray-400 space-y-1">
-              <li>• 8 or 16 slots based on registrations</li>
-              <li>• Register with X, email, Telegram, or phone</li>
-              <li>• AI-generated tracks judged by the community</li>
-              <li>• Same payout structure as live battles</li>
+              <li>• Semifinal tonight 7PM EST — AI LUI vs Geek Myth</li>
+              <li>• Stormbourne already through to the Grand Final</li>
+              <li>• Grand Final gauntlet: Stella Estrella challenges the winner</li>
+              <li>• Every round is a real onchain battle — trade it live</li>
             </ul>
-            <a href="https://x.com/wavewarz" target="_blank" rel="noreferrer"
+            <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
               className="inline-flex items-center gap-2 bg-[#7ec1fb] hover:bg-[#5aaae8] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Register on X ↗
+              {pinnedEvent.cta} ↗
             </a>
           </div>
 
