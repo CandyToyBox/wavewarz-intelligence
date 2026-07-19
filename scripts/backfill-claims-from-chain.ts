@@ -46,6 +46,7 @@ function loadEnv() {
 loadEnv()
 
 import { fetchBattleClaimsFromChain, hydrateOnchainData } from '../src/lib/solana/hydrate'
+import { fetchAll } from '../src/lib/supabase/fetch-all'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -74,12 +75,18 @@ async function main() {
   // might have a 3rd next week), re-fetching fresh from chain and replacing what's
   // stored. Without --resync, battles with any existing claims are skipped (fast
   // path for a one-off historical backfill).
-  const { data: existingClaims } = await supabase
-    .from('trades')
-    .select('battle_id')
-    .eq('trade_type', 'claim')
-    .limit(500000)
-  const haveClaims = new Set((existingClaims ?? []).map(r => r.battle_id))
+  //
+  // Paginated with fetchAll -- a bare .limit(500000) silently truncates to
+  // PostgREST's 1000-row cap. With claim rows approaching that threshold
+  // (957 as of 2026-07-18), a truncated haveClaims set would make the delete
+  // step below get skipped for battles whose claims fell past row 1000,
+  // inserting a second copy of every claim for that battle on the next run --
+  // the exact same duplicate-row bug already found and fixed in trades
+  // (709 rows, see git history) and in backfill-trades-from-chain.ts.
+  const existingClaims = await fetchAll<{ battle_id: number }>((from, to) =>
+    supabase.from('trades').select('battle_id').eq('trade_type', 'claim').range(from, to)
+  )
+  const haveClaims = new Set(existingClaims.map(r => r.battle_id))
 
   let q = supabase
     .from('battles')
