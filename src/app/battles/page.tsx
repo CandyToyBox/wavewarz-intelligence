@@ -3,6 +3,7 @@ import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol, calculateArtistEarnings, calculatePlatformRevenue } from '@/lib/wavewarz-math'
 import { resolveAudiusTrack } from '@/lib/audius'
+import { canonicalSongKey } from '@/lib/song-identity'
 import { Badge } from '@/components/ui/badge'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
 import { QuickBattleCard, type QuickBattleCardData, V2_QB_LAUNCH } from './quick-battle-card'
@@ -422,19 +423,53 @@ export default async function BattlesFeedPage({
   const safePage = Math.min(page, totalPages)
   const pageStubs = stubs.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  // Only resolve Audius art for quick battles on this page
+  // Only resolve art for quick battles on this page. Prefer the cached
+  // song_registry table (same source the Song Charts leaderboard uses) over
+  // live Audius API calls -- Audius discovery nodes are flaky/rate-limited,
+  // so a live resolveAudiusTrack() per card was the reason album art was
+  // "not loading much" on this page. Only fall back to a live lookup for
+  // songs that haven't been backfilled into the registry yet.
   const pageQuickStubs = pageStubs.filter(s => s.kind === 'quick') as Array<{ kind: 'quick'; battle: RawBattle; latestAt: number }>
   const artworkMap = new Map<number, { song1ArtUrl: string | null; song2ArtUrl: string | null }>()
+
+  const registryKeys = Array.from(new Set(pageQuickStubs.flatMap(s => [
+    s.battle.artist1_music_link ? canonicalSongKey(s.battle.artist1_music_link, s.battle.artist1_name) : null,
+    s.battle.artist2_music_link ? canonicalSongKey(s.battle.artist2_music_link, s.battle.artist2_name) : null,
+  ]).filter((k): k is string => !!k)))
+
+  const registryArtByKey = new Map<string, string | null>()
+  if (registryKeys.length) {
+    const supabase = await createClient()
+    const { data: registry } = await supabase
+      .from('song_registry')
+      .select('permalink_key, artwork_url')
+      .in('permalink_key', registryKeys)
+    for (const r of registry ?? []) registryArtByKey.set(r.permalink_key, r.artwork_url ?? null)
+  }
+
   await Promise.all(
     pageQuickStubs.map(async s => {
-      const [t1, t2] = await Promise.all([
-        resolveAudiusTrack(s.battle.artist1_music_link ?? ''),
-        resolveAudiusTrack(s.battle.artist2_music_link ?? ''),
-      ])
-      artworkMap.set(s.battle.battle_id, {
-        song1ArtUrl: t1?.artwork?.['480x480'] ?? null,
-        song2ArtUrl: t2?.artwork?.['480x480'] ?? null,
-      })
+      const key1 = s.battle.artist1_music_link ? canonicalSongKey(s.battle.artist1_music_link, s.battle.artist1_name) : null
+      const key2 = s.battle.artist2_music_link ? canonicalSongKey(s.battle.artist2_music_link, s.battle.artist2_name) : null
+
+      let art1 = key1 ? registryArtByKey.get(key1) ?? null : null
+      let art2 = key2 ? registryArtByKey.get(key2) ?? null : null
+
+      // Fall back to a live lookup only when the registry has no entry at all
+      // (key1/key2 not found as a key in the map -- distinct from a known
+      // registry row whose artwork_url is legitimately null).
+      const needsLive1 = key1 !== null && !registryArtByKey.has(key1)
+      const needsLive2 = key2 !== null && !registryArtByKey.has(key2)
+      if (needsLive1 || needsLive2) {
+        const [t1, t2] = await Promise.all([
+          needsLive1 ? resolveAudiusTrack(s.battle.artist1_music_link ?? '') : Promise.resolve(null),
+          needsLive2 ? resolveAudiusTrack(s.battle.artist2_music_link ?? '') : Promise.resolve(null),
+        ])
+        if (needsLive1) art1 = t1?.artwork?.['480x480'] ?? null
+        if (needsLive2) art2 = t2?.artwork?.['480x480'] ?? null
+      }
+
+      artworkMap.set(s.battle.battle_id, { song1ArtUrl: art1, song2ArtUrl: art2 })
     })
   )
 
