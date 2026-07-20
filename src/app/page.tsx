@@ -329,7 +329,7 @@ export default async function HomePage() {
             <div className="flex-1 h-px bg-border" />
             <span className="text-[10px] text-muted-foreground font-mono">All time · test battles excluded</span>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
               label={<Tip text="Total SOL from all buys and sells across every battle, all time. Test battles excluded.">Total Volume</Tip>}
               primary={`${parseFloat(stats.totalVolume.toFixed(2))} SOL`}
@@ -348,12 +348,6 @@ export default async function HomePage() {
               secondary={solToUsd(stats.totalArtistPayouts, solPrice)}
               sub="Instant · automatic"
               highlight
-            />
-            <StatCard
-              label={<Tip text="All WaveWarZ revenue: 0.5% per trade + 3% of the losing pool at settlement + battle launch & queue fees (100% platform)." wide>Platform Revenue</Tip>}
-              primary={`${parseFloat(stats.platformRevenue.toFixed(2))} SOL`}
-              secondary={solToUsd(stats.platformRevenue, solPrice)}
-              sub="trades + settlement + launches"
             />
             <StatCard
               label={<Tip text="A Main Event is multiple battles (catalog vs catalog, ~2 songs per artist per round). Quick Battles are individual song vs song." wide>Battle Types</Tip>}
