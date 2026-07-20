@@ -25,8 +25,8 @@ export type PinnedEvent = {
 export const pinnedEvent: PinnedEvent = {
   title: 'AI Artist Tournament',
   subtitle:
-    'Semifinal result: GEEK MYTH def. LUI 2 rounds to 1 — a 220.24 SOL event, 5.6x the biggest in WaveWarZ history. The equivalent of 5.6M Spotify streams traded in one night.',
-  badge: 'RECORD NIGHT · 220 SOL',
+    'Semifinal result: GEEK MYTH def. LUI 2 rounds to 1 — a 342 SOL event, 8.7x the biggest in WaveWarZ history. The equivalent of 8.9M Spotify streams traded in one night.',
+  badge: 'RECORD NIGHT · 342 SOL',
   mediaType: 'video',
   src: '/events/ai-tournament-bracket.mp4',
   poster: '/events/ai-tournament-bracket-poster.jpg',

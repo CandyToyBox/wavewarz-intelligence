@@ -357,8 +357,8 @@ export default async function HomePage() {
               {pinnedEvent.subtitle}
             </p>
             <ul className="text-xs text-gray-400 space-y-1">
-              <li>• Semifinal result: GEEK MYTH def. LUI 2–1 — 220.24 SOL, biggest event ever</li>
-              <li>• Round 3 alone traded 97 SOL — 2.5x any full event before it</li>
+              <li>• Semifinal result: GEEK MYTH def. LUI 2–1 — 342 SOL, biggest event ever</li>
+              <li>• Round 3 alone traded 159 SOL — 4x any full event before it</li>
               <li>• Grand Final: GEEK MYTH vs Stormbourne, then the Stella Estrella gauntlet</li>
               <li>• Every round is a real onchain battle — trade it live</li>
             </ul>
