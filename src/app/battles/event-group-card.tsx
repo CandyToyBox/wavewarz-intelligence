@@ -32,6 +32,7 @@ export type RoundData = {
   // Earnings
   a1EarnSol: string
   a1EarnUsd: string
+  a1EarnStreams: string
   a1TradeFeesSol: string
   a1TradeFeesUsd: string
   a1SettleSol: string
@@ -39,6 +40,7 @@ export type RoundData = {
   a1SettleLabel: string
   a2EarnSol: string
   a2EarnUsd: string
+  a2EarnStreams: string
   a2TradeFeesSol: string
   a2TradeFeesUsd: string
   a2SettleSol: string
@@ -269,12 +271,14 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
       {showEarnings && (
         <div className="border-t border-border/30 bg-muted/40 divide-y divide-border/30">
           <EarningsRow icon="🎤" name={r.artist1Name} totalSol={r.a1EarnSol} totalUsd={r.a1EarnUsd}
+            totalStreams={r.a1EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${r.a1VolSol} SOL)`, sol: r.a1TradeFeesSol, usd: r.a1TradeFeesUsd },
               { label: r.a1SettleLabel, sol: r.a1SettleSol, usd: r.a1SettleUsd },
             ]}
           />
           <EarningsRow icon="🎤" name={r.artist2Name} totalSol={r.a2EarnSol} totalUsd={r.a2EarnUsd}
+            totalStreams={r.a2EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${r.a2VolSol} SOL)`, sol: r.a2TradeFeesSol, usd: r.a2TradeFeesUsd },
               { label: r.a2SettleLabel, sol: r.a2SettleSol, usd: r.a2SettleUsd },
@@ -348,8 +352,8 @@ function MiniStatBox({ label, value, sub }: { label: string; value: string; sub:
   )
 }
 
-function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
-  icon: string; name: string; totalSol: string; totalUsd: string; accent?: string
+function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
+  icon: string; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
   const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
@@ -364,6 +368,7 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
         <div className="text-right shrink-0">
           <p className={`font-mono font-bold text-sm ${textColor}`}>◎{totalSol}</p>
           {totalUsd && <p className="text-xs text-muted-foreground">{totalUsd}</p>}
+          {totalStreams && <p className="text-[10px] text-[#7ec1fb]">≈ {totalStreams} Spotify streams</p>}
         </div>
       </div>
       <div className="space-y-1 ml-3">

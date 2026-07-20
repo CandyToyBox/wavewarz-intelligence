@@ -47,6 +47,7 @@ export type QuickBattleCardData = {
   // Artist earnings
   song1EarnSol: string
   song1EarnUsd: string
+  song1EarnStreams: string
   song1TradeFeesSol: string
   song1TradeFeesUsd: string
   song1SettleSol: string
@@ -54,6 +55,7 @@ export type QuickBattleCardData = {
   song1SettleLabel: string   // "Winner bonus (5%)" or "Consolation (2%)"
   song2EarnSol: string
   song2EarnUsd: string
+  song2EarnStreams: string
   song2TradeFeesSol: string
   song2TradeFeesUsd: string
   song2SettleSol: string
@@ -221,6 +223,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
             name={data.song1Title}
             totalSol={data.song1EarnSol}
             totalUsd={data.song1EarnUsd}
+            totalStreams={data.song1EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${data.song1VolSol} SOL)`, sol: data.song1TradeFeesSol, usd: data.song1TradeFeesUsd },
               { label: data.song1SettleLabel, sol: data.song1SettleSol, usd: data.song1SettleUsd },
@@ -233,6 +236,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
             name={data.song2Title}
             totalSol={data.song2EarnSol}
             totalUsd={data.song2EarnUsd}
+            totalStreams={data.song2EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${data.song2VolSol} SOL)`, sol: data.song2TradeFeesSol, usd: data.song2TradeFeesUsd },
               { label: data.song2SettleLabel, sol: data.song2SettleSol, usd: data.song2SettleUsd },
@@ -358,8 +362,8 @@ function TrophyIcon({ color }: { color: string }) {
   )
 }
 
-function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
-  icon: string; name: string; totalSol: string; totalUsd: string; accent?: string
+function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
+  icon: string; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
   const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
@@ -374,6 +378,7 @@ function EarningsRow({ icon, name, totalSol, totalUsd, rows, accent }: {
         <div className="text-right shrink-0">
           <p className={`font-mono font-bold text-base ${textColor}`}>◎{totalSol}</p>
           <p className="text-xs text-muted-foreground">{totalUsd}</p>
+          {totalStreams && <p className="text-[10px] text-[#7ec1fb]">≈ {totalStreams} Spotify streams</p>}
         </div>
       </div>
       <div className="space-y-1.5 ml-4">

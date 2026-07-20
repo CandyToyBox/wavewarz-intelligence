@@ -233,6 +233,7 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
       // Earnings
       a1EarnSol: formatSol(a1Earn.totalSol),
       a1EarnUsd: solToUsd(a1Earn.totalSol, solPrice),
+      a1EarnStreams: formatStreams((a1Earn.totalSol * solPrice) / SPOTIFY_RATE),
       a1TradeFeesSol: formatSol(a1Earn.tradingFees),
       a1TradeFeesUsd: solToUsd(a1Earn.tradingFees, solPrice),
       a1SettleSol: formatSol(a1Earn.settlementBonus),
@@ -240,6 +241,7 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
       a1SettleLabel: winnerIsA ? 'Winner bonus (5% of loser pool)' : 'Consolation (2% of loser pool)',
       a2EarnSol: formatSol(a2Earn.totalSol),
       a2EarnUsd: solToUsd(a2Earn.totalSol, solPrice),
+      a2EarnStreams: formatStreams((a2Earn.totalSol * solPrice) / SPOTIFY_RATE),
       a2TradeFeesSol: formatSol(a2Earn.tradingFees),
       a2TradeFeesUsd: solToUsd(a2Earn.tradingFees, solPrice),
       a2SettleSol: formatSol(a2Earn.settlementBonus),
@@ -328,6 +330,7 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     // Song 1 earnings
     song1EarnSol: formatSol(s1Earn.totalSol),
     song1EarnUsd: solToUsd(s1Earn.totalSol, solPrice),
+    song1EarnStreams: formatStreams((s1Earn.totalSol * solPrice) / SPOTIFY_RATE),
     song1TradeFeesSol: formatSol(s1Earn.tradingFees),
     song1TradeFeesUsd: solToUsd(s1Earn.tradingFees, solPrice),
     song1SettleSol: formatSol(s1Earn.settlementBonus),
@@ -336,6 +339,7 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     // Song 2 earnings
     song2EarnSol: formatSol(s2Earn.totalSol),
     song2EarnUsd: solToUsd(s2Earn.totalSol, solPrice),
+    song2EarnStreams: formatStreams((s2Earn.totalSol * solPrice) / SPOTIFY_RATE),
     song2TradeFeesSol: formatSol(s2Earn.tradingFees),
     song2TradeFeesUsd: solToUsd(s2Earn.tradingFees, solPrice),
     song2SettleSol: formatSol(s2Earn.settlementBonus),
