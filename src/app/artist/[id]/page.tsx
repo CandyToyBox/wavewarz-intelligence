@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { calculateArtistEarnings, getWinnerLoserPools, formatSol } from '@/lib/wavewarz-math'
+import { groupIntoEvents, pairKey } from '@/lib/event-grouping'
 import { Badge } from '@/components/ui/badge'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -199,11 +200,14 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   )
   const quickBattles = allBattles.filter(b => b.is_quick_battle)
 
-  // W/L from onchain data (money layer) — split by category
-  let wins = 0, losses = 0
+  // Quick Battles are single-round events, tallied per battle. Main Events
+  // are multi-round matches -- a round win isn't an event win, so main-event
+  // W/L is tallied per EVENT (round majority within a match), same grouping
+  // the artist leaderboard uses (src/lib/leaderboards/artists.ts).
   let mainWins = 0, mainLosses = 0
   let quickWins = 0, quickLosses = 0
   let tradingFeesSol = 0, settlementBonusSol = 0, totalVolumeSol = 0
+  const wonByBattleId = new Map<number, boolean>()
 
   for (const b of allBattles) {
     // Skip genuinely live battles — but include ACTIVE battles that have been judged
@@ -221,14 +225,9 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     const myVolume = isArtistA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
     const { loserPool } = getWinnerLoserPools(p1, p2, artistAWon)
 
-    // Overall tally
-    if (won) wins++; else losses++
-
-    // Per-category tally
+    wonByBattleId.set(b.battle_id, won)
     if (b.is_quick_battle) {
       if (won) quickWins++; else quickLosses++
-    } else if (b.is_main_battle) {
-      if (won) mainWins++; else mainLosses++
     }
 
     totalVolumeSol += myVolume
@@ -236,6 +235,25 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     tradingFeesSol += earnings.tradingFees
     settlementBonusSol += earnings.settlementBonus
   }
+
+  const decidedMainBattles = mainEventBattles.filter(b => wonByBattleId.has(b.battle_id))
+  const mainEvents = groupIntoEvents(
+    decidedMainBattles,
+    b => pairKey(b.artist1_wallet, b.artist1_name, b.artist2_wallet, b.artist2_name),
+    b => new Date(b.created_at).getTime(),
+  )
+  for (const event of mainEvents) {
+    let myRoundWins = 0, oppRoundWins = 0
+    for (const b of event) {
+      if (wonByBattleId.get(b.battle_id)) myRoundWins++; else oppRoundWins++
+    }
+    if (myRoundWins > oppRoundWins) mainWins++
+    else if (oppRoundWins > myRoundWins) mainLosses++
+    // an exact round tie decides neither way
+  }
+
+  const wins = mainWins + quickWins
+  const losses = mainLosses + quickLosses
 
   return {
     displayName,

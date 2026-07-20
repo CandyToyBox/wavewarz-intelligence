@@ -5,6 +5,7 @@ import { formatSol, calculateArtistEarnings, calculatePlatformRevenue } from '@/
 import { resolveAudiusTrack } from '@/lib/audius'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { getBattleAddress, getBattleVaultAddress } from '@/lib/solana/pda'
+import { groupIntoEvents, pairKey as sharedPairKey } from '@/lib/event-grouping'
 import { Badge } from '@/components/ui/badge'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
 import { QuickBattleCard, type QuickBattleCardData, V2_QB_LAUNCH } from './quick-battle-card'
@@ -20,7 +21,6 @@ export const metadata: Metadata = {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const SPOTIFY_RATE = 0.003
-const GROUP_WINDOW_MS = 6 * 60 * 60 * 1000  // 6 hours
 const PAGE_SIZE = 20
 
 type SortKey   = 'newest' | 'oldest' | 'volume'
@@ -83,11 +83,6 @@ function fmtDate(iso: string, includeYear = false): string {
   })
 }
 
-function pairKey(b: RawBattle): string {
-  return [b.artist1_wallet || b.artist1_name, b.artist2_wallet || b.artist2_name]
-    .sort().join('|')
-}
-
 function marginPct(a: number, b: number): string {
   const total = a + b
   if (total <= 0) return '0'
@@ -138,33 +133,16 @@ type Group = {
 }
 
 function buildGroups(nonQuick: RawBattle[]): Group[] {
-  const sorted = [...nonQuick].sort(
-    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  const eventBattles = groupIntoEvents(
+    nonQuick,
+    b => sharedPairKey(b.artist1_wallet, b.artist1_name, b.artist2_wallet, b.artist2_name),
+    b => new Date(b.created_at).getTime(),
   )
-
-  const groups: Group[] = []
-
-  for (const b of sorted) {
-    const key = pairKey(b)
-    const bTime = new Date(b.created_at).getTime()
-
-    let matched: Group | null = null
-    for (let i = groups.length - 1; i >= 0; i--) {
-      const g = groups[i]
-      if (g.key !== key) continue
-      const lastTime = new Date(g.battles[g.battles.length - 1].created_at).getTime()
-      if (bTime - lastTime <= GROUP_WINDOW_MS) { matched = g; break }
-    }
-
-    if (matched) {
-      matched.battles.push(b)
-      matched.latestAt = Math.max(matched.latestAt, bTime)
-    } else {
-      groups.push({ key, battles: [b], latestAt: bTime })
-    }
-  }
-
-  return groups
+  return eventBattles.map(battles => ({
+    key: sharedPairKey(battles[0].artist1_wallet, battles[0].artist1_name, battles[0].artist2_wallet, battles[0].artist2_name),
+    battles,
+    latestAt: Math.max(...battles.map(b => new Date(b.created_at).getTime())),
+  }))
 }
 
 // ─── Feed construction ────────────────────────────────────────────────────────
