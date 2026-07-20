@@ -25,11 +25,11 @@ export type PinnedEvent = {
 export const pinnedEvent: PinnedEvent = {
   title: 'AI Artist Tournament',
   subtitle:
-    'AI-generated artists, single-elimination bracket. The community votes, the chain settles, the SOL moves.',
-  badge: 'Semifinal Tonight · 7PM EST',
+    'Semifinal result: GEEK MYTH def. LUI 2 rounds to 1 — a 220.24 SOL event, 5.6x the biggest in WaveWarZ history. The equivalent of 5.6M Spotify streams traded in one night.',
+  badge: 'RECORD NIGHT · 220 SOL',
   mediaType: 'video',
   src: '/events/ai-tournament-bracket.mp4',
   poster: '/events/ai-tournament-bracket-poster.jpg',
   href: 'https://x.com/wavewarz',
-  cta: 'Watch live on X',
+  cta: 'Grand Final next — follow on X',
 }

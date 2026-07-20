@@ -307,9 +307,9 @@ export default async function HomePage() {
               {pinnedEvent.subtitle}
             </p>
             <ul className="text-xs text-gray-400 space-y-1">
-              <li>• Semifinal tonight 7PM EST — AI LUI vs Geek Myth</li>
-              <li>• Stormbourne already through to the Grand Final</li>
-              <li>• Grand Final gauntlet: Stella Estrella challenges the winner</li>
+              <li>• Semifinal result: GEEK MYTH def. LUI 2–1 — 220.24 SOL, biggest event ever</li>
+              <li>• Round 3 alone traded 97 SOL — 2.5x any full event before it</li>
+              <li>• Grand Final: GEEK MYTH vs Stormbourne, then the Stella Estrella gauntlet</li>
               <li>• Every round is a real onchain battle — trade it live</li>
             </ul>
             <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
