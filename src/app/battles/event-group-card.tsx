@@ -59,6 +59,7 @@ export type RoundData = {
   a2Wallet: string | null
   wavewarzWallet: string | null
   vaultAddress: string
+  battleAddress: string
 }
 
 export type EventGroupCardData = {
@@ -176,13 +177,18 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
               <a href={data.rounds[0].streamLink} target="_blank" rel="noreferrer"
                 className="text-xs text-muted-foreground hover:text-white hover:underline">Stream ↗</a>
             )}
-            <Link
-              href={`/battles/${data.rounds[0]?.battle_id}`}
-              className="text-[10px] text-muted-foreground/40 hover:text-[#7ec1fb] ml-auto font-mono transition-colors"
-            >
-              #{data.rounds[0]?.battle_id}
-              {data.rounds.length > 1 && `–#${data.rounds[data.rounds.length - 1].battle_id}`} ↗
-            </Link>
+            <div className="ml-auto flex items-center gap-2">
+              {data.rounds[0]?.battleAddress && (
+                <SolscanLink address={data.rounds[0].battleAddress} label="Battle Solscan" />
+              )}
+              <Link
+                href={`/battles/${data.rounds[0]?.battle_id}`}
+                className="text-[10px] text-muted-foreground/40 hover:text-[#7ec1fb] font-mono transition-colors"
+              >
+                #{data.rounds[0]?.battle_id}
+                {data.rounds.length > 1 && `–#${data.rounds[data.rounds.length - 1].battle_id}`} ↗
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -229,6 +235,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
               className="text-[10px] text-[#7ec1fb] hover:underline">Watch ↗</a>
           )}
           <SolscanLink address={r.vaultAddress} label="Verify Onchain" />
+          <SolscanLink address={r.battleAddress} label="Battle Solscan" />
           <Link href={`/battles/${r.battle_id}`} className="text-[10px] text-muted-foreground hover:text-white transition-colors">
             Details ↗
           </Link>

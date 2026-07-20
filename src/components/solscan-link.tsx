@@ -1,3 +1,5 @@
+'use client'
+
 import { ExternalLink } from 'lucide-react'
 
 /** Consistent "view on Solscan" link — used anywhere a wallet, account, mint, or program is shown. */

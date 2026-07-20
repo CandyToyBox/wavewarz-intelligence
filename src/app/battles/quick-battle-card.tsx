@@ -74,6 +74,7 @@ export type QuickBattleCardData = {
   song2Wallet: string | null
   wavewarzWallet: string | null
   vaultAddress: string
+  battleAddress: string
 }
 
 export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
@@ -97,6 +98,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
         </span>
         <span className="text-xs text-muted-foreground shrink-0">{data.dateFormatted}</span>
         <SolscanLink address={data.vaultAddress} label="Verify Onchain" />
+        <SolscanLink address={data.battleAddress} label="Battle Solscan" />
         <Link href={`/battles/${data.battle_id}`} className="font-mono text-xs text-[#7ec1fb]/60 hover:text-[#7ec1fb] shrink-0 transition-colors">
           #{data.battle_id} ↗
         </Link>
