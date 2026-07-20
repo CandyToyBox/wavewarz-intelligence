@@ -11,6 +11,7 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 import { pinnedEvent } from '@/config/pinned-event'
+import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -157,6 +158,52 @@ async function getQuickBattleData(): Promise<SongData[]> {
   } catch { return [] }
 }
 
+// "The Arena" — Design System v1 signature component, wired to the real live battle.
+// https://claude.ai/code/artifact/e9ef036f-61d2-4785-be94-1e1bd421af26
+// WaveWarZ runs one battle at a time, so the single most recent battle is the only
+// live candidate (same rule as the public stats API's liveBattle field).
+async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null> {
+  try {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('battles')
+      .select('battle_id, artist1_name, artist2_name, artist1_pool, artist2_pool, artist1_music_link, artist2_music_link, battle_duration, created_at, is_quick_battle, is_main_battle, is_community_battle')
+      .eq('is_test_battle', false)
+      .order('created_at', { ascending: false })
+      .limit(1)
+
+    const candidate = data?.[0]
+    if (!candidate || !isBattleLive(candidate)) return null
+
+    const [track1, track2] = await Promise.all([
+      candidate.artist1_music_link ? resolveAudiusTrack(candidate.artist1_music_link) : null,
+      candidate.artist2_music_link ? resolveAudiusTrack(candidate.artist2_music_link) : null,
+    ])
+
+    return {
+      battleId: candidate.battle_id,
+      type: candidate.is_quick_battle ? 'quick' : candidate.is_community_battle ? 'community' : 'main',
+      side1: {
+        name: candidate.artist1_name ?? 'Side A',
+        handle: parseAudiusHandle(candidate.artist1_music_link),
+        artUrl: track1?.artwork?.['480x480'] ?? null,
+        poolSol: candidate.artist1_pool ?? 0,
+      },
+      side2: {
+        name: candidate.artist2_name ?? 'Side B',
+        handle: parseAudiusHandle(candidate.artist2_music_link),
+        artUrl: track2?.artwork?.['480x480'] ?? null,
+        poolSol: candidate.artist2_pool ?? 0,
+      },
+      startedAt: candidate.created_at,
+      endsAt: new Date(new Date(candidate.created_at).getTime() + (candidate.battle_duration ?? 0) * 1000).toISOString(),
+      settledCount: totalBattles,
+    }
+  } catch {
+    return null
+  }
+}
+
 export default async function HomePage() {
   const [stats, schedule, calendarEvents, spotify, solPrice, qbSongs] = await Promise.all([
     getGlobalStats(),
@@ -166,11 +213,14 @@ export default async function HomePage() {
     getLiveSolPrice(),
     getQuickBattleData(),
   ])
+  const liveArena = stats ? await getLiveArena(stats.totalBattles) : null
 
   const hasSpotify = spotify && (spotify.spotify_monthly_streams > 0 || spotify.spotify_total_streams > 0)
 
   return (
     <div className="space-y-10">
+
+      {liveArena && <LiveArena data={liveArena} />}
 
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
