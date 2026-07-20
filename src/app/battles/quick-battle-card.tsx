@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
+import { SolscanLink } from '@/components/solscan-link'
 
 // V2 winner system launched March 10, 2026 (Poll + Charts + DJ Wavy)
 // V1 was charts-only (larger pool wins)
@@ -72,6 +73,7 @@ export type QuickBattleCardData = {
   song1Wallet: string | null
   song2Wallet: string | null
   wavewarzWallet: string | null
+  vaultAddress: string
 }
 
 export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
@@ -94,6 +96,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           {data.song2Title}
         </span>
         <span className="text-xs text-muted-foreground shrink-0">{data.dateFormatted}</span>
+        <SolscanLink address={data.vaultAddress} label="Verify Onchain" />
         <Link href={`/battles/${data.battle_id}`} className="font-mono text-xs text-[#7ec1fb]/60 hover:text-[#7ec1fb] shrink-0 transition-colors">
           #{data.battle_id} ↗
         </Link>
@@ -186,7 +189,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
       {/* ── STATS GRID ── */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-4 sm:px-5 pb-4">
         <StatBox
-          label={<Tip text="Total SOL traded by fans on both sides of this battle.">Total Trading Volume</Tip>}
+          label={<Tip text="Total SOL traded by fans on both sides of this battle -- buys and sells from real vault transaction history. Trader claim withdrawals happen separately after settlement; Verify Onchain above shows the vault's complete activity, claims included." wide>Total Trading Volume</Tip>}
           value={`${data.totalVolSol} SOL`} sub={data.totalVolUsd} />
         <StatBox
           label={<Tip text="Equivalent Spotify streams this battle's USD volume could buy at $0.003 per stream.">Spotify Equivalent</Tip>}

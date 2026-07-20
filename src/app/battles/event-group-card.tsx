@@ -4,6 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { BattleImage } from './battle-image'
+import { SolscanLink } from '@/components/solscan-link'
+import { Tip } from '@/components/tip'
+import type { ReactNode } from 'react'
 
 export type RoundData = {
   battle_id: number
@@ -55,6 +58,7 @@ export type RoundData = {
   a1Wallet: string | null
   a2Wallet: string | null
   wavewarzWallet: string | null
+  vaultAddress: string
 }
 
 export type EventGroupCardData = {
@@ -132,7 +136,9 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
 
           {/* Aggregate stats */}
           <div className="grid grid-cols-3 gap-3 mb-4">
-            <AggregateStat label="Total Volume" value={`${data.totalVolSol} SOL`} sub={data.totalVolUsd} />
+            <AggregateStat
+              label={<Tip text="Gross trading volume: every buy + sell during the battle window, computed from real vault transaction history. Trader claim withdrawals happen after settlement and are a separate onchain flow -- see Verify Onchain below to view the vault's full history, claims included." wide>Total Volume</Tip>}
+              value={`${data.totalVolSol} SOL`} sub={data.totalVolUsd} />
             <AggregateStat label="Spotify Equiv" value={data.streamEquivalent} sub="at $0.003/stream" />
             <AggregateStat label="Rounds" value={String(data.totalRounds)} sub="battle rounds" />
           </div>
@@ -222,6 +228,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
             <a href={r.youtubeLink} target="_blank" rel="noreferrer"
               className="text-[10px] text-[#7ec1fb] hover:underline">Watch ↗</a>
           )}
+          <SolscanLink address={r.vaultAddress} label="Verify Onchain" />
           <Link href={`/battles/${r.battle_id}`} className="text-[10px] text-muted-foreground hover:text-white transition-colors">
             Details ↗
           </Link>
@@ -247,7 +254,9 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-5 pb-3">
-        <MiniStatBox label="Round Volume" value={`${r.totalVolSol} SOL`} sub={r.totalVolUsd} />
+        <MiniStatBox
+          label={<Tip text="Buys + sells during this round, from the vault's real transaction history. Claim withdrawals (settlement payouts) are separate -- Verify Onchain above shows the vault's complete activity." wide>Round Volume</Tip>}
+          value={`${r.totalVolSol} SOL`} sub={r.totalVolUsd} />
         <MiniStatBox label="Margin" value={`${r.marginSol} SOL`} sub={`+${r.marginPct}%`} />
         <MiniStatBox label={`${r.artist1Name.split(' ')[0]} Vol`} value={`${r.a1VolSol} SOL`} sub={r.a1PoolUsd} />
         <MiniStatBox label={`${r.artist2Name.split(' ')[0]} Vol`} value={`${r.a2VolSol} SOL`} sub={r.a2PoolUsd} />
@@ -313,7 +322,7 @@ function formatPlatformFee(volSol: string): string {
   return parseFloat((parseFloat(volSol) * 0.005).toFixed(4)).toString()
 }
 
-function AggregateStat({ label, value, sub }: { label: string; value: string; sub: string }) {
+function AggregateStat({ label, value, sub }: { label: ReactNode; value: string; sub: string }) {
   return (
     <div className="card-elevated px-3 py-2.5">
       <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
@@ -342,7 +351,7 @@ function PoolBarRow({ name, poolSol, poolUsd, pct, won, accent }: {
   )
 }
 
-function MiniStatBox({ label, value, sub }: { label: string; value: string; sub: string }) {
+function MiniStatBox({ label, value, sub }: { label: ReactNode; value: string; sub: string }) {
   return (
     <div className="card-elevated p-2.5">
       <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 leading-tight">{label}</p>

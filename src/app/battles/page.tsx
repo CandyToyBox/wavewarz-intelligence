@@ -4,6 +4,7 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol, calculateArtistEarnings, calculatePlatformRevenue } from '@/lib/wavewarz-math'
 import { resolveAudiusTrack } from '@/lib/audius'
 import { canonicalSongKey } from '@/lib/song-identity'
+import { getBattleVaultAddress } from '@/lib/solana/pda'
 import { Badge } from '@/components/ui/badge'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
 import { QuickBattleCard, type QuickBattleCardData, V2_QB_LAUNCH } from './quick-battle-card'
@@ -256,6 +257,10 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
       a1Wallet: b.artist1_wallet || null,
       a2Wallet: b.artist2_wallet || null,
       wavewarzWallet: b.wavewarz_wallet,
+      // Onchain verification — the vault PDA holding this round's real SOL.
+      // Its Solscan history shows buys, sells, AND claim withdrawals -- the
+      // full picture, not just trading volume.
+      vaultAddress: getBattleVaultAddress(b.battle_id).toBase58(),
     }
   })
 
@@ -356,6 +361,8 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     song1Wallet: b.artist1_wallet || null,
     song2Wallet: b.artist2_wallet || null,
     wavewarzWallet: b.wavewarz_wallet,
+    // Onchain verification -- see note on RoundData.vaultAddress above.
+    vaultAddress: getBattleVaultAddress(b.battle_id).toBase58(),
   }
 
   return { kind: 'quick', data, latestAt: new Date(b.created_at).getTime(), totalVol }
