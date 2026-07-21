@@ -188,12 +188,17 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
         handle: parseAudiusHandle(candidate.artist1_music_link),
         artUrl: track1?.artwork?.['480x480'] ?? null,
         poolSol: candidate.artist1_pool ?? 0,
+        // Only Quick Battles play song1 then song2 sequentially -- Main/Community
+        // events don't, so leave duration undefined and the arena falls back to
+        // its old static "side1 is playing" display for those.
+        durationSec: candidate.is_quick_battle ? (track1?.duration ?? null) : null,
       },
       side2: {
         name: candidate.artist2_name ?? 'Side B',
         handle: parseAudiusHandle(candidate.artist2_music_link),
         artUrl: track2?.artwork?.['480x480'] ?? null,
         poolSol: candidate.artist2_pool ?? 0,
+        durationSec: candidate.is_quick_battle ? (track2?.duration ?? null) : null,
       },
       startedAt: candidate.created_at,
       endsAt: new Date(new Date(candidate.created_at).getTime() + (candidate.battle_duration ?? 0) * 1000).toISOString(),

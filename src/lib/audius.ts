@@ -55,6 +55,7 @@ export type AudiusTrack = {
   id: string
   title: string
   genre?: string
+  duration?: number
   artwork: {
     '150x150': string
     '480x480': string

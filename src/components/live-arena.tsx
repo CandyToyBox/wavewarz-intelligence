@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react'
 export type LiveArenaData = {
   battleId: number
   type: 'quick' | 'main' | 'community'
-  side1: { name: string; handle: string | null; artUrl: string | null; poolSol: number }
-  side2: { name: string; handle: string | null; artUrl: string | null; poolSol: number }
+  side1: { name: string; handle: string | null; artUrl: string | null; poolSol: number; durationSec?: number | null }
+  side2: { name: string; handle: string | null; artUrl: string | null; poolSol: number; durationSec?: number | null }
   startedAt: string
   endsAt: string
   settledCount: number
@@ -30,13 +30,25 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
   // so hydration never diffs on Date.now(). The real remaining time is only
   // computed client-side, after mount, inside the effect below.
   const [remaining, setRemaining] = useState(total)
+  // Quick Battles play song 1 fully, then song 2 -- whichever is actually
+  // playing right now needs to move the "NOW PLAYING" treatment with it.
+  // Deterministic initial value (side1) for the same hydration-safety reason
+  // as `remaining` above; corrected client-side once we know real elapsed time.
+  const [activeSide, setActiveSide] = useState<'side1' | 'side2'>('side1')
+  const song1DurationMs = (data.side1.durationSec ?? null) !== null ? data.side1.durationSec! * 1000 : null
 
   useEffect(() => {
-    const tick = () => setRemaining(Math.max(0, end - Date.now()))
+    const tick = () => {
+      const now = Date.now()
+      setRemaining(Math.max(0, end - now))
+      if (song1DurationMs !== null) {
+        setActiveSide(now - start >= song1DurationMs ? 'side2' : 'side1')
+      }
+    }
     tick()
     const id = setInterval(tick, 1000)
     return () => clearInterval(id)
-  }, [end, total])
+  }, [end, start, total, song1DurationMs])
 
   const pct1 = data.side1.poolSol + data.side2.poolSol > 0
     ? (data.side1.poolSol / (data.side1.poolSol + data.side2.poolSol)) * 100
@@ -87,14 +99,18 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0f1826]" />
             )}
-            <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#080d17]/85">
-              {Array.from({ length: 12 }).map((_, i) => (
-                <span key={i} className="flex-1 bg-[#7ec1fb] rounded-t-sm" style={{ height: '18%', opacity: .9 }} />
-              ))}
-            </div>
+            {activeSide === 'side1' && (
+              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#080d17]/85">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <span key={i} className="flex-1 bg-[#7ec1fb] rounded-t-sm" style={{ height: '18%', opacity: .9 }} />
+                ))}
+              </div>
+            )}
           </div>
           <div>
-            <div className="inline-flex items-center gap-2 font-mono text-[.62rem] tracking-[.16em] text-[#7ec1fb]">&#9836; NOW PLAYING</div>
+            <div className="inline-flex items-center gap-2 font-mono text-[.62rem] tracking-[.16em] text-[#7ec1fb]">
+              {activeSide === 'side1' ? <>&#9836; NOW PLAYING</> : 'PLAYED'}
+            </div>
             <div className="font-rajdhani font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side1.name}</div>
             {data.side1.handle && <div className="text-sm text-muted-foreground">by <b className="text-[#7ec1fb] font-semibold">@{data.side1.handle}</b></div>}
           </div>
@@ -143,9 +159,18 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0f1826]" />
             )}
+            {activeSide === 'side2' && (
+              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#080d17]/85">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <span key={i} className="flex-1 bg-[#95fe7c] rounded-t-sm" style={{ height: '18%', opacity: .9 }} />
+                ))}
+              </div>
+            )}
           </div>
           <div>
-            <div className="font-mono text-[.62rem] tracking-[.16em] text-muted-foreground">UP NEXT</div>
+            <div className="font-mono text-[.62rem] tracking-[.16em] text-muted-foreground">
+              {activeSide === 'side2' ? <span className="text-[#95fe7c]">&#9836; NOW PLAYING</span> : 'UP NEXT'}
+            </div>
             <div className="font-rajdhani font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side2.name}</div>
             {data.side2.handle && <div className="text-sm text-muted-foreground">by <b className="text-[#95fe7c] font-semibold">@{data.side2.handle}</b></div>}
           </div>
