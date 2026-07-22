@@ -2,12 +2,35 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { hydrateOnchainData, fetchBattleTradesFromChain } from '@/lib/solana/hydrate'
 import { registerBattleSongs } from '@/lib/song-registry'
+import { isRateLimited, recordFailure, clientIp, timingSafeEqual } from '@/lib/rate-limit'
+
+// Parses a single quick-battle factor value (poll_winner or dj_wavy_winner) into
+// true (artist A), false (artist B), or null (unknown/tie — excluded from the
+// 2-of-3 vote count). Recognizes "A"/"B" and the "artist_a"/"artist_b" format
+// wavewarz.com actually sends, falling back to a name match for any other
+// format. Returns null rather than silently defaulting to B for anything
+// unrecognized, so an unparseable value doesn't get miscounted as a real vote.
+function parseFactorWinner(raw: string | null | undefined, artist1Name: string): boolean | null {
+  if (!raw) return null
+  const upper = raw.trim().toUpperCase()
+  if (upper === 'TIE') return null
+  if (upper === 'A' || upper === 'ARTIST_A') return true
+  if (upper === 'B' || upper === 'ARTIST_B') return false
+  if (raw.trim().toLowerCase() === artist1Name.trim().toLowerCase()) return true
+  return null
+}
 
 export async function POST(request: NextRequest) {
   // ── Auth: validate shared secret ─────────────────────────────────────────
+  const bucket = `webhook:${clientIp(request)}`
+  if (await isRateLimited(bucket)) {
+    return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 })
+  }
+
   const secret = request.headers.get('x-webhook-secret')
-  if (!secret || secret !== process.env.WEBHOOK_SECRET) {
+  if (!secret || !timingSafeEqual(secret, process.env.WEBHOOK_SECRET ?? '')) {
     console.warn('[webhook] rejected — missing or invalid x-webhook-secret')
+    await recordFailure(bucket)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -223,37 +246,17 @@ export async function POST(request: NextRequest) {
           // Charts factor: larger pool wins
           const chartsA = a1pool >= a2pool
 
-          // Poll factor: poll_winner is "A", "B", "TIE", or artist name
-          // wavewarz.com sends "A" or "B" — handle that first, then fall back
-          // to name comparison for any legacy format.
+          // Poll factor: poll_winner is "A"/"B"/"artist_a"/"artist_b"/"TIE"/artist name
           const pollWinner = (battle.poll_winner as string | null) ?? null
-          const pollUpper = pollWinner?.trim().toUpperCase() ?? null
-          const pollA: boolean | null = pollUpper === null || pollUpper === 'TIE'
-            ? null
-            : pollUpper === 'A'
-              ? true
-              : pollUpper === 'B'
-                ? false
-                : pollWinner!.trim().toLowerCase() === artist1Name.trim().toLowerCase()
-                  ? true
-                  : false
+          const pollA = parseFactorWinner(pollWinner, artist1Name)
 
-          // DJ Wavy factor: same A/B/name format as poll_winner
+          // DJ Wavy factor: same value format as poll_winner
           const djWinner = (battle.dj_wavy_winner as string | null)
             ?? (payload.quick_battles_dj_wavy_winner as string | null)
             ?? (payload.dj_wavy_winner as string | null)
             ?? (payload.djwavy_winner as string | null)
             ?? null
-          const djUpper = djWinner?.trim().toUpperCase() ?? null
-          const djA: boolean | null = djUpper === null
-            ? null
-            : djUpper === 'A'
-              ? true
-              : djUpper === 'B'
-                ? false
-                : djWinner!.trim().toLowerCase() === artist1Name.trim().toLowerCase()
-                  ? true
-                  : false
+          const djA = parseFactorWinner(djWinner, artist1Name)
 
           // Count votes: charts always counts; poll + DJ Wavy count when available
           const factorsForA = [chartsA, pollA, djA].filter(v => v !== null) as boolean[]

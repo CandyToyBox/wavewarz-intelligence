@@ -33,6 +33,10 @@ type RawBattle = {
   event_subtype: string
   battle_duration: number | null
   image_url: string | null
+  main_event_human_judge: string | null
+  main_event_x_poll_winner: string | null
+  main_event_sol_vote_winner: string | null
+  main_event_judged_at: string | null
 }
 
 export type EventRound = {
@@ -47,6 +51,10 @@ export type EventRound = {
   endsAt: string
   live: boolean
   url: string
+  humanJudgeWinner: 'artist1' | 'artist2' | null
+  xPollWinner: 'artist1' | 'artist2' | null
+  solVoteWinner: 'artist1' | 'artist2' | null
+  judgedAt: string | null
 }
 
 export type MainEvent = {
@@ -69,7 +77,7 @@ export async function getMainEvents(): Promise<{ events: MainEvent[] }> {
   const [battlesRes, profilesRes, walletsRes, overridesRes] = await Promise.all([
     fetchAll<RawBattle>((from, to) => supabase
       .from('battles')
-      .select('battle_id,created_at,artist1_name,artist1_wallet,artist1_twitter,artist2_name,artist2_wallet,artist2_twitter,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,battle_duration,image_url')
+      .select('battle_id,created_at,artist1_name,artist1_wallet,artist1_twitter,artist2_name,artist2_wallet,artist2_twitter,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_artist_a,event_subtype,battle_duration,image_url,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at')
       .eq('is_main_battle', true)
       .eq('is_community_battle', false)
       .eq('is_quick_battle', false)
@@ -148,6 +156,18 @@ export async function getMainEvents(): Promise<{ events: MainEvent[] }> {
     let totalVolume = 0
     const rounds: EventRound[] = []
 
+    // Maps a raw "artist_a"/"artist_b" factor value (relative to this round's
+    // own battle.artist1/artist2) onto the event's resolved artist1/artist2
+    // sides — same swap `r1IsArtist1` already applies to pools/volumes below,
+    // since battle_artist_overrides can make a round's artist1 correspond to
+    // the event's artist2.
+    function resolveFactorSide(raw: string | null, r1IsArtist1: boolean): 'artist1' | 'artist2' | null {
+      if (!raw) return null
+      const isA = raw === 'artist_a'
+      const isR1 = r1IsArtist1 ? isA : !isA
+      return isR1 ? 'artist1' : 'artist2'
+    }
+
     group.battles.forEach((b, i) => {
       const bR1 = resolveWallet(b.battle_id, b.artist1_wallet, b.artist1_name, b.artist1_twitter)
       const r1IsArtist1 = bR1.key === r1.key
@@ -171,6 +191,10 @@ export async function getMainEvents(): Promise<{ events: MainEvent[] }> {
         endsAt: new Date(new Date(b.created_at).getTime() + (b.battle_duration ?? 0) * 1000).toISOString(),
         live,
         url: `https://wavewarz.info/battles/${b.battle_id}`,
+        humanJudgeWinner: resolveFactorSide(b.main_event_human_judge, r1IsArtist1),
+        xPollWinner: resolveFactorSide(b.main_event_x_poll_winner, r1IsArtist1),
+        solVoteWinner: resolveFactorSide(b.main_event_sol_vote_winner, r1IsArtist1),
+        judgedAt: b.main_event_judged_at,
       })
     })
 

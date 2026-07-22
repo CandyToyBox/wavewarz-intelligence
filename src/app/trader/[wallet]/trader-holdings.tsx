@@ -7,7 +7,7 @@ import { PROGRAM_ID } from '@/lib/solana/pda'
 import Link from 'next/link'
 import { Loader2, Coins, ExternalLink, Zap } from 'lucide-react'
 
-const HELIUS_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY ?? '8b84d8d3-59ad-4778-829b-47db8a9149fa'
+const HELIUS_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY ?? ''
 const RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_KEY}`
 const TOKEN_PROGRAM = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
 

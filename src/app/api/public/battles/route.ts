@@ -31,7 +31,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
-const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url'
+const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url,poll_winner,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at'
 
 type Row = {
   battle_id: number
@@ -55,6 +55,25 @@ type Row = {
   battle_duration: number | null
   created_at: string
   image_url: string | null
+  poll_winner: string | null
+  dj_wavy_winner: string | null
+  dj_wavy_reasoning: string | null
+  main_event_human_judge: string | null
+  main_event_x_poll_winner: string | null
+  main_event_sol_vote_winner: string | null
+  main_event_judged_at: string | null
+}
+
+// Normalizes a stored factor value ("A"/"B", "artist_a"/"artist_b", "TIE", or
+// an artist name) to the public API's existing artist1/artist2 convention.
+function normalizeFactorSide(raw: string | null, artist1Name: string | null): 'artist1' | 'artist2' | null {
+  if (!raw) return null
+  const upper = raw.trim().toUpperCase()
+  if (upper === 'TIE') return null
+  if (upper === 'A' || upper === 'ARTIST_A') return 'artist1'
+  if (upper === 'B' || upper === 'ARTIST_B') return 'artist2'
+  if (artist1Name && raw.trim().toLowerCase() === artist1Name.trim().toLowerCase()) return 'artist1'
+  return null
 }
 
 type ProfileInfo = { profilePictureUrl: string | null; twitterHandle: string | null }
@@ -89,6 +108,19 @@ function toPublicBattle(
   const a1 = resolveArtist(b.artist1_wallet, b.artist1_name, b.artist1_twitter, b.artist1_music_link, profileByWallet, artByKey)
   const a2 = resolveArtist(b.artist2_wallet, b.artist2_name, b.artist2_twitter, b.artist2_music_link, profileByWallet, artByKey)
 
+  const factors = type === 'quick'
+    ? {
+        pollWinner: normalizeFactorSide(b.poll_winner, b.artist1_name),
+        djWavyWinner: normalizeFactorSide(b.dj_wavy_winner, b.artist1_name),
+        djWavyReasoning: b.dj_wavy_reasoning,
+      }
+    : {
+        humanJudgeWinner: normalizeFactorSide(b.main_event_human_judge, b.artist1_name),
+        xPollWinner: normalizeFactorSide(b.main_event_x_poll_winner, b.artist1_name),
+        solVoteWinner: normalizeFactorSide(b.main_event_sol_vote_winner, b.artist1_name),
+        judgedAt: b.main_event_judged_at,
+      }
+
   return {
     battleId: b.battle_id,
     type,
@@ -97,6 +129,7 @@ function toPublicBattle(
     winnerSide,
     artist1: { ...a1, poolSol: round(b.artist1_pool ?? 0), volumeSol: round(b.total_volume_a ?? 0) },
     artist2: { ...a2, poolSol: round(b.artist2_pool ?? 0), volumeSol: round(b.total_volume_b ?? 0) },
+    factors,
     imageUrl: b.image_url,
     createdAt: b.created_at,
     endsAt: new Date(new Date(b.created_at).getTime() + (b.battle_duration ?? 0) * 1000).toISOString(),

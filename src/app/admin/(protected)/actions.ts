@@ -2,8 +2,19 @@
 
 import { createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { scheduleClipToPostiz, isPostizConfigured } from '@/lib/postiz'
 import type { Platform, PlatformCaptions } from '@/lib/postiz'
+
+// Server Actions are callable directly (bypassing the admin layout's redirect
+// check) once their action ID is known — the layout gate alone does not
+// protect them. Every exported action below must call this first.
+async function requireAdmin(): Promise<void> {
+  const cookieStore = await cookies()
+  if (cookieStore.get('admin_authed')?.value !== '1') {
+    throw new Error('Unauthorized')
+  }
+}
 
 // ─── Judging ──────────────────────────────────────────────────────────────────
 
@@ -16,10 +27,18 @@ type JudgingPayload = {
 }
 
 export async function submitJudging(payload: JudgingPayload): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('battles')
-    .update({ winner_artist_a: payload.winner === 'a' ? 1 : 0, winner_decided: true })
+    .update({
+      winner_artist_a: payload.winner === 'a' ? 1 : 0,
+      winner_decided: true,
+      main_event_human_judge: payload.humanJudge === 'a' ? 'artist_a' : 'artist_b',
+      main_event_x_poll_winner: payload.xPoll === 'a' ? 'artist_a' : 'artist_b',
+      main_event_sol_vote_winner: payload.solVote === 'a' ? 'artist_a' : 'artist_b',
+      main_event_judged_at: new Date().toISOString(),
+    })
     .eq('battle_id', payload.battleId)
   if (error) return { ok: false, error: error.message }
   revalidatePath('/admin')
@@ -32,6 +51,7 @@ export async function submitJudging(payload: JudgingPayload): Promise<{ ok: bool
 
 export async function uploadCalendarFlyer(formData: FormData): Promise<{ url?: string; error?: string }> {
   try {
+    await requireAdmin()
     const file = formData.get('file') as File | null
     if (!file || !file.size) return { error: 'No file provided' }
 
@@ -69,6 +89,7 @@ export async function updateBattleMedia(payload: {
   streamLink: string | null
   imageUrl: string | null
 }): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('battles')
@@ -98,6 +119,7 @@ export async function upsertArtistProfile(payload: {
   instagramHandle: string | null
   tiktokHandle: string | null
 }): Promise<{ ok: boolean; artistId?: string; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
 
   const socialLinks = {
@@ -147,6 +169,7 @@ export async function linkWalletToArtist(payload: {
   artistId: string
   walletAddress: string
 }): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('artist_wallets')
@@ -157,6 +180,7 @@ export async function linkWalletToArtist(payload: {
 }
 
 export async function unlinkWallet(walletAddress: string): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('artist_wallets')
@@ -168,6 +192,7 @@ export async function unlinkWallet(walletAddress: string): Promise<{ ok: boolean
 }
 
 export async function deleteArtistProfile(artistId: string): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('artist_profiles')
@@ -189,6 +214,7 @@ export async function setBattleArtistOverride(payload: {
   wallet: string
   artistId: string
 }): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('battle_artist_overrides')
@@ -204,6 +230,7 @@ export async function removeBattleArtistOverride(payload: {
   battleId: number
   wallet: string
 }): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('battle_artist_overrides')
@@ -232,6 +259,7 @@ export async function getMainEventBattlesForWallet(wallet: string): Promise<{
   }[]
   error?: string
 }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { data: battles, error } = await supabase
     .from('battles')
@@ -283,6 +311,7 @@ function formDataToCalendarEvent(fd: FormData) {
 }
 
 export async function addCalendarEvent(fd: FormData): Promise<{ event?: CalendarEventRow; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const payload = formDataToCalendarEvent(fd)
   if (!payload.title || !payload.event_date) return { error: 'Title and date are required.' }
@@ -298,6 +327,7 @@ export async function addCalendarEvent(fd: FormData): Promise<{ event?: Calendar
 }
 
 export async function updateCalendarEvent(id: string, fd: FormData): Promise<{ event?: CalendarEventRow; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const payload = formDataToCalendarEvent(fd)
   if (!payload.title || !payload.event_date) return { error: 'Title and date are required.' }
@@ -314,6 +344,7 @@ export async function updateCalendarEvent(id: string, fd: FormData): Promise<{ e
 }
 
 export async function deleteCalendarEvent(id: string): Promise<{ error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase
     .from('calendar_events')
@@ -333,6 +364,7 @@ export async function approveClip(payload: {
   scheduledAt: string
   captions?: Record<string, string>
 }): Promise<{ ok: boolean; postizId?: string; postizError?: string; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
 
   // Fetch the full clip to get telegram_file_id and existing AI captions as fallback
@@ -391,6 +423,7 @@ export async function approveClip(payload: {
 }
 
 export async function rejectClip(clipId: number): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const { error } = await supabase.from('clips').update({ status: 'rejected' }).eq('id', clipId)
   if (error) return { ok: false, error: error.message }
@@ -404,6 +437,7 @@ export async function saveClipEdits(payload: {
   platforms?: string[]
   scheduledAt?: string
 }): Promise<{ ok: boolean; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const updates: Record<string, unknown> = {}
   if (payload.captions && Object.keys(payload.captions).length > 0) updates.captions = payload.captions
@@ -425,6 +459,7 @@ type PlatformStatsRow = {
 }
 
 export async function updatePlatformStats(fd: FormData): Promise<{ stats?: PlatformStatsRow; error?: string }> {
+  await requireAdmin()
   const supabase = await createAdminClient()
   const payload = {
     spotify_monthly_streams: parseInt(String(fd.get('spotify_monthly_streams') ?? '0')) || 0,

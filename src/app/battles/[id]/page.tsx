@@ -6,6 +6,7 @@ import { getBattleAddress, getBattleVaultAddress, getArtistAMintAddress, getArti
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
+import { ArtistAvatarImg } from '@/components/artist-avatar-img'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -107,8 +108,40 @@ export default async function BattleDetailPage({ params }: Props) {
     ? (Number(battle.winner_artist_a) === 1)
     : p1 >= p2  // pool-based fallback for ended battles missing the flag
 
-  // For display badge — only show ACTIVE if truly not settled and no pool data suggests end
-  const winnerDecided = isSettled
+  // Winner/loser crown styling should only show when a winner is actually
+  // decided — isSettled alone is also true for quick battles that ended
+  // without one (see isSplitTie below), where a1Won is just a pool-based
+  // display fallback, not a real result.
+  const hasRealWinner = battle.winner_decided === true
+  const winnerDecided = hasRealWinner
+
+  // Quick battles that ended without a 2-of-3 majority among poll/charts/DJ
+  // Wavy — flagged distinctly rather than shown as SETTLED (which would imply
+  // a real result) or silently left pending. Covers both tie shapes: a factor
+  // missing entirely (e.g. no DJ Wavy verdict) and a factor recorded as an
+  // explicit TIE, as long as at least one of poll/DJ Wavy has real data (pure
+  // "no data beyond charts" is not treated as a disagreement).
+  const parseQuickBattleFactor = (raw: string | null | undefined, artist1Name: string): boolean | null => {
+    if (!raw) return null
+    const upper = raw.trim().toUpperCase()
+    if (upper === 'TIE') return null
+    if (upper === 'A' || upper === 'ARTIST_A') return true
+    if (upper === 'B' || upper === 'ARTIST_B') return false
+    if (raw.trim().toLowerCase() === artist1Name.trim().toLowerCase()) return true
+    return null
+  }
+  const isSplitTie = isQuick
+    && !hasRealWinner
+    && endedStatuses.includes((battle.status ?? '').toLowerCase())
+    && (() => {
+      const chartsA = p1 >= p2
+      const pollA = parseQuickBattleFactor(battle.poll_winner, battle.artist1_name ?? '')
+      const djA = parseQuickBattleFactor(battle.dj_wavy_winner, battle.artist1_name ?? '')
+      if (pollA === null && djA === null) return false
+      const votesA = (chartsA ? 1 : 0) + (pollA === true ? 1 : 0) + (djA === true ? 1 : 0)
+      const votesB = (chartsA ? 0 : 1) + (pollA === false ? 1 : 0) + (djA === false ? 1 : 0)
+      return votesA < 2 && votesB < 2
+    })()
 
   const { winnerPool, loserPool } = getWinnerLoserPools(p1, p2, a1Won)
 
@@ -170,7 +203,9 @@ export default async function BattleDetailPage({ params }: Props) {
             <Badge style={{ backgroundColor: `${typeColor}20`, color: typeColor, borderColor: `${typeColor}40` }} className="border text-[10px] font-bold tracking-widest">
               {typeLabel.toUpperCase()}
             </Badge>
-            {isSettled ? (
+            {isSplitTie ? (
+              <Badge className="bg-orange-400/20 text-orange-300 border border-orange-400/30 text-[10px] font-bold tracking-widest">SPLIT — TIE</Badge>
+            ) : isSettled ? (
               <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest">SETTLED</Badge>
             ) : (
               <Badge className="bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 text-[10px] font-bold tracking-widest animate-pulse">LIVE</Badge>
@@ -216,11 +251,12 @@ export default async function BattleDetailPage({ params }: Props) {
             musicLink={battle.artist1_music_link}
             artUrl={art1}
             genre={genre1}
+            twitterHandle={battle.artist1_twitter ?? profile1?.twitter_handle ?? null}
             pool={p1}
             volume={vol1}
             isWinner={a1Won}
             isLoser={!a1Won}
-            settled={isSettled}
+            settled={isSettled && !isSplitTie}
             earnings={a1Earn}
             solPrice={solPrice}
             side="left"
@@ -244,11 +280,12 @@ export default async function BattleDetailPage({ params }: Props) {
             musicLink={battle.artist2_music_link}
             artUrl={art2}
             genre={genre2}
+            twitterHandle={battle.artist2_twitter ?? profile2?.twitter_handle ?? null}
             pool={p2}
             volume={vol2}
             isWinner={!a1Won}
             isLoser={a1Won}
-            settled={isSettled}
+            settled={isSettled && !isSplitTie}
             earnings={a2Earn}
             solPrice={solPrice}
             side="right"
@@ -350,15 +387,16 @@ export default async function BattleDetailPage({ params }: Props) {
           <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">Artist Profiles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
-              { p: profile1, name: battle.artist1_name, wallet: battle.artist1_wallet, artUrl: art1, isWinner: a1Won },
-              { p: profile2, name: battle.artist2_name, wallet: battle.artist2_wallet, artUrl: art2, isWinner: !a1Won },
-            ].map(({ p, name, wallet, artUrl: songArt, isWinner }) => (
+              { p: profile1, name: battle.artist1_name, wallet: battle.artist1_wallet, artUrl: art1, isWinner: a1Won, twitterHandle: battle.artist1_twitter ?? profile1?.twitter_handle ?? null },
+              { p: profile2, name: battle.artist2_name, wallet: battle.artist2_wallet, artUrl: art2, isWinner: !a1Won, twitterHandle: battle.artist2_twitter ?? profile2?.twitter_handle ?? null },
+            ].map(({ p, name, wallet, artUrl: songArt, isWinner, twitterHandle }) => (
               <ArtistProfileCard
                 key={wallet ?? name}
                 profile={p}
                 fallbackName={name}
                 wallet={wallet}
                 songArt={songArt}
+                twitterHandle={twitterHandle}
                 isWinner={isWinner && winnerDecided}
               />
             ))}
@@ -487,7 +525,7 @@ export default async function BattleDetailPage({ params }: Props) {
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
 function SidePanel({
-  name, wallet, profile, musicLink, artUrl, genre,
+  name, wallet, profile, musicLink, artUrl, genre, twitterHandle,
   pool, volume, isWinner, isLoser, settled,
   earnings, solPrice, side,
 }: {
@@ -497,6 +535,7 @@ function SidePanel({
   musicLink: string | null
   artUrl: string | null
   genre: string | null
+  twitterHandle: string | null
   pool: number
   volume: number
   isWinner: boolean
@@ -508,25 +547,21 @@ function SidePanel({
 }) {
   const align = side === 'left' ? 'items-start text-left' : 'items-end text-right'
   const initial = (name ?? '?').charAt(0).toUpperCase()
-  const pfpUrl = profile?.profile_picture_url ?? null
+  // Priority: stored profile picture → Twitter avatar via unavatar → letter fallback
+  const pfpUrl = profile?.profile_picture_url ?? (twitterHandle ? `https://unavatar.io/twitter/${twitterHandle}` : null)
   const profileHref = profile?.artist_id ? `/artist/${profile.artist_id}` : wallet ? `/artist/${wallet}` : null
+
+  const avatar = artUrl
+    ? <ArtistAvatarImg imgSrc={artUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20" imgClassName="w-full h-full rounded-lg object-cover border border-border" />
+    : pfpUrl
+    ? <ArtistAvatarImg imgSrc={pfpUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#1f2937] border-2 border-[#95fe7c]/30 flex items-center justify-center overflow-hidden" imgClassName="w-full h-full rounded-full object-cover" />
+    : null
 
   return (
     <div className={`flex flex-col gap-3 p-4 sm:p-5 ${align}`}>
-      {/* Avatar — song art (quick) > artist pfp (main/community) > letter fallback */}
-      {artUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={artUrl} alt={name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover border border-border" />
-      ) : pfpUrl ? (
-        profileHref ? (
-          <Link href={profileHref}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={pfpUrl} alt={name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-[#95fe7c]/30 hover:border-[#95fe7c]/70 transition-colors" />
-          </Link>
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={pfpUrl} alt={name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-2 border-[#95fe7c]/30" />
-        )
+      {/* Avatar — song art (quick) > artist pfp / Twitter avatar (main/community) > letter fallback */}
+      {avatar ? (
+        profileHref && !artUrl ? <Link href={profileHref}>{avatar}</Link> : avatar
       ) : (
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#1f2937] border-2 border-[#95fe7c]/20 flex items-center justify-center">
           <span className="font-rajdhani font-bold text-3xl text-[#95fe7c]">{initial}</span>
@@ -653,34 +688,41 @@ function MetaRow({
 }
 
 function ArtistProfileCard({
-  profile, fallbackName, wallet, songArt, isWinner,
+  profile, fallbackName, wallet, songArt, twitterHandle, isWinner,
 }: {
   profile: ArtistProfile | null
   fallbackName: string
   wallet: string | null
   songArt: string | null
+  twitterHandle: string | null
   isWinner: boolean
 }) {
-  const pfpUrl = profile?.profile_picture_url ?? null
+  // Priority: song art (quick) → stored profile picture → Twitter avatar via unavatar → letter fallback
+  const pfpUrl = profile?.profile_picture_url ?? (twitterHandle ? `https://unavatar.io/twitter/${twitterHandle}` : null)
   const displayName = profile?.display_name ?? fallbackName
   const profileHref = profile?.artist_id ? `/artist/${profile.artist_id}` : wallet ? `/artist/${wallet}` : null
   const initial = (displayName ?? '?').charAt(0).toUpperCase()
   const imgSrc = songArt ?? pfpUrl
+  const rounded = songArt ? 'rounded-lg' : 'rounded-full'
+  const borderColor = isWinner ? 'border-[#95fe7c]/40' : 'border-border'
 
   return (
     <div className={`rounded-lg border p-4 flex gap-4 ${isWinner ? 'border-[#95fe7c]/30 bg-[#95fe7c]/5' : 'border-border bg-[#0d1321]'}`}>
       {/* Avatar */}
       <div className="shrink-0">
         {imgSrc ? (
-          profileHref ? (
-            <Link href={profileHref}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgSrc} alt={displayName} className={`w-14 h-14 ${songArt ? 'rounded-lg' : 'rounded-full'} object-cover border-2 ${isWinner ? 'border-[#95fe7c]/40' : 'border-border'}`} />
-            </Link>
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={imgSrc} alt={displayName} className={`w-14 h-14 ${songArt ? 'rounded-lg' : 'rounded-full'} object-cover border-2 ${isWinner ? 'border-[#95fe7c]/40' : 'border-border'}`} />
-          )
+          (() => {
+            const avatar = (
+              <ArtistAvatarImg
+                imgSrc={imgSrc}
+                alt={displayName}
+                initial={initial}
+                containerClassName={`w-14 h-14 ${rounded} border-2 ${borderColor} flex items-center justify-center overflow-hidden`}
+                imgClassName={`w-full h-full ${rounded} object-cover`}
+              />
+            )
+            return profileHref ? <Link href={profileHref}>{avatar}</Link> : avatar
+          })()
         ) : (
           <div className={`w-14 h-14 rounded-full flex items-center justify-center border-2 ${isWinner ? 'border-[#95fe7c]/40 bg-[#95fe7c]/10' : 'border-border bg-[#1f2937]'}`}>
             <span className="font-rajdhani font-bold text-2xl text-[#95fe7c]">{initial}</span>

@@ -27,6 +27,18 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
+// Normalizes a stored factor value ("A"/"B", "artist_a"/"artist_b", "TIE", or
+// an artist name) to the public API's existing artist1/artist2 convention.
+function normalizeFactorSide(raw: string | null, artist1Name: string | null): 'artist1' | 'artist2' | null {
+  if (!raw) return null
+  const upper = raw.trim().toUpperCase()
+  if (upper === 'TIE') return null
+  if (upper === 'A' || upper === 'ARTIST_A') return 'artist1'
+  if (upper === 'B' || upper === 'ARTIST_B') return 'artist2'
+  if (artist1Name && raw.trim().toLowerCase() === artist1Name.trim().toLowerCase()) return 'artist1'
+  return null
+}
+
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
@@ -38,7 +50,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const supabase = await createClient()
     const { data: b, error } = await supabase
       .from('battles')
-      .select('*')
+      .select('battle_id,is_quick_battle,is_community_battle,created_at,battle_duration,winner_decided,winner_artist_a,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_music_link,artist2_music_link,artist1_twitter,artist2_twitter,image_url,stream_link,poll_winner,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at')
       .eq('battle_id', battleId)
       .maybeSingle()
 
@@ -49,6 +61,18 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const round = (n: number) => Math.round(n * 10000) / 10000
     const type = b.is_quick_battle ? 'quick' : b.is_community_battle ? 'community' : 'main'
+    const factors = type === 'quick'
+      ? {
+          pollWinner: normalizeFactorSide(b.poll_winner, b.artist1_name),
+          djWavyWinner: normalizeFactorSide(b.dj_wavy_winner, b.artist1_name),
+          djWavyReasoning: b.dj_wavy_reasoning,
+        }
+      : {
+          humanJudgeWinner: normalizeFactorSide(b.main_event_human_judge, b.artist1_name),
+          xPollWinner: normalizeFactorSide(b.main_event_x_poll_winner, b.artist1_name),
+          solVoteWinner: normalizeFactorSide(b.main_event_sol_vote_winner, b.artist1_name),
+          judgedAt: b.main_event_judged_at,
+        }
     const now = Date.now()
     const live = isBattleLive({ created_at: b.created_at, battle_duration: b.battle_duration }, now)
 
@@ -109,6 +133,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       live,
       winnerDecided: !!b.winner_decided,
       winnerSide: aWon === null ? null : (aWon ? 'artist1' : 'artist2'),
+      factors,
       artist1: {
         name: b.artist1_name,
         wallet: b.artist1_wallet,

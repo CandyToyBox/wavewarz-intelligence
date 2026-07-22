@@ -169,6 +169,7 @@ export default function ApiDocsPage() {
       "winnerSide": null,
       "artist1": { "name": "STILL DEGEN", "wallet": "HqHj...vvS", "musicLink": "https://audius.co/...", "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://...", "poolSol": 0.0004, "volumeSol": 0.0393 },
       "artist2": { "name": "I'm a Giant", "wallet": "JtcZ...7X", "musicLink": "https://audius.co/...", "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://...", "poolSol": 0.0131, "volumeSol": 0.0246 },
+      "factors": { "pollWinner": "artist2", "djWavyWinner": null, "djWavyReasoning": null },
       "imageUrl": "https://...",
       "createdAt": "2026-07-18T02:56:21.761769+00:00",
       "endsAt": "2026-07-18T03:05:02.761Z",
@@ -182,7 +183,7 @@ export default function ApiDocsPage() {
         id="battles-detail"
         method="GET"
         path="/api/public/battles/:id"
-        summary="Full detail for a single battle by battle_id, including computed artist earnings once a winner is decided (1% trading fee + settlement bonus split, per the immutable fee schedule)."
+        summary={`Full detail for a single battle by battle_id, including computed artist earnings once a winner is decided (1% trading fee + settlement bonus split, per the immutable fee schedule). "factors" holds the breakdown behind the winner: for Quick Battles, the Poll + DJ Wavy (AI judge) picks; for Main/Community Events, the Human Judge + X Poll + SOL vote picks entered through the admin judging panel. Any factor can be null if it hasn't been recorded yet (or was a tie) — winnerSide is always the authoritative final result.`}
         example={`curl https://wavewarz.info/api/public/battles/1784343368`}
         response={`{
   "battleId": 1784343368,
@@ -190,6 +191,7 @@ export default function ApiDocsPage() {
   "live": false,
   "winnerDecided": true,
   "winnerSide": "artist1",
+  "factors": { "pollWinner": "artist1", "djWavyWinner": "artist1", "djWavyReasoning": "Stronger hook and better mix clarity in the second verse." },
   "artist1": { "name": "STILL DEGEN", "wallet": "...", "musicLink": "...", "poolSol": 1.2, "volumeSol": 3.4, "profilePictureUrl": null, "twitterHandle": "r3plic4nt206", "albumArtUrl": "https://..." },
   "artist2": { "name": "I'm a Giant", "wallet": "...", "musicLink": "...", "poolSol": 0.6, "volumeSol": 1.1, "profilePictureUrl": null, "twitterHandle": null, "albumArtUrl": "https://..." },
   "artistEarnings": {
@@ -230,7 +232,7 @@ export default function ApiDocsPage() {
       "startedAt": "2026-07-12T23:44:53.15946+00:00",
       "endsAt": "2026-07-13T00:46:57.808Z",
       "rounds": [
-        { "battleId": 1783899858, "roundNumber": 1, "winnerSide": "artist2", "artist1PoolSol": 0.0712, "artist2PoolSol": 0.3546, "artist1VolumeSol": 0.3655, "artist2VolumeSol": 0.36, "live": false, "url": "https://wavewarz.info/battles/1783899858" }
+        { "battleId": 1783899858, "roundNumber": 1, "winnerSide": "artist2", "artist1PoolSol": 0.0712, "artist2PoolSol": 0.3546, "artist1VolumeSol": 0.3655, "artist2VolumeSol": 0.36, "live": false, "url": "https://wavewarz.info/battles/1783899858", "humanJudgeWinner": "artist2", "xPollWinner": "artist1", "solVoteWinner": "artist2", "judgedAt": "2026-07-13T00:50:12.000Z" }
       ]
     }
   ]
