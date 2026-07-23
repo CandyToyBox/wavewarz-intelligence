@@ -8,7 +8,7 @@ import { getBattleAddress, getBattleVaultAddress } from '@/lib/solana/pda'
 import { groupIntoEvents, pairKey as sharedPairKey } from '@/lib/event-grouping'
 import { Badge } from '@/components/ui/badge'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
-import { QuickBattleCard, type QuickBattleCardData, V2_QB_LAUNCH } from './quick-battle-card'
+import { QuickBattleCard, type QuickBattleCardData } from './quick-battle-card'
 import { BattlesControls } from './battles-controls'
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
@@ -22,6 +22,16 @@ export const metadata: Metadata = {
 
 const SPOTIFY_RATE = 0.003
 const PAGE_SIZE = 20
+
+// V2 winner system launched March 10, 2026 (Poll + Charts + DJ Wavy). V1 was
+// charts-only (larger pool wins). Declared here (a Server Component module),
+// NOT imported from quick-battle-card.tsx: that file is 'use client', and
+// Next.js replaces every export of a client module -- including plain
+// constants, not just components -- with an unusable client-reference stub
+// when accessed from server code. Comparing against that stub silently
+// evaluates to `false` (no exception), which was making every quick battle
+// show "V1 - Charts Only" regardless of its real date.
+const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
 
 type SortKey   = 'newest' | 'oldest' | 'volume'
 type FilterKey = 'all' | 'main' | 'quick' | 'community'
@@ -57,6 +67,10 @@ type RawBattle = {
   is_main_battle: boolean
   event_subtype: string | null
   status: string
+  poll_winner: string | null
+  poll_votes_a: number | null
+  poll_votes_b: number | null
+  dj_wavy_winner: string | null
 }
 
 type FeedItem =
@@ -89,6 +103,19 @@ function marginPct(a: number, b: number): string {
   return Math.round((Math.abs(a - b) / total) * 100).toString()
 }
 
+// Parses a poll/DJ Wavy winner field into true (artist1/song1), false
+// (artist2/song2), or null (no data / explicit tie) -- handles both the
+// 'A'/'B' and 'artist_a'/'artist_b' formats the webhook has sent over time.
+function parseQuickFactor(raw: string | null, artist1Name: string): boolean | null {
+  if (!raw) return null
+  const upper = raw.trim().toUpperCase()
+  if (upper === 'TIE') return null
+  if (upper === 'A' || upper === 'ARTIST_A') return true
+  if (upper === 'B' || upper === 'ARTIST_B') return false
+  if (raw.trim().toLowerCase() === artist1Name.trim().toLowerCase()) return true
+  return null
+}
+
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 async function getBattles(): Promise<RawBattle[]> {
@@ -104,6 +131,7 @@ async function getBattles(): Promise<RawBattle[]> {
       'image_url','stream_link','youtube_replay_link',
       'is_quick_battle','is_community_battle','is_main_battle',
       'event_subtype','status',
+      'poll_winner','poll_votes_a','poll_votes_b','dj_wavy_winner',
     ].join(','))
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
@@ -278,9 +306,19 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
   const s2Earn = calculateArtistEarnings(v2, loserPool, !winnerIsA)
   const platEarn = calculatePlatformRevenue(totalVol, loserPool)
 
+  const pollWinnerIsA = parseQuickFactor(b.poll_winner, b.artist1_name)
+  const djWavyWinnerIsA = parseQuickFactor(b.dj_wavy_winner, b.artist1_name)
+
   const data: QuickBattleCardData = {
     battle_id: b.battle_id,
     dateFormatted: fmtDate(b.created_at, true),
+    // Factor breakdown (V2 only -- null when the data doesn't exist)
+    pollWinnerTitle: pollWinnerIsA === null ? null : pollWinnerIsA ? b.artist1_name : b.artist2_name,
+    pollIsTie: b.poll_winner !== null && pollWinnerIsA === null,
+    pollVotesA: b.poll_votes_a,
+    pollVotesB: b.poll_votes_b,
+    chartsWinnerTitle: winnerIsA ? b.artist1_name : b.artist2_name,
+    djWavyWinnerTitle: djWavyWinnerIsA === null ? null : djWavyWinnerIsA ? b.artist1_name : b.artist2_name,
     // Songs
     song1Title: b.artist1_name,
     song2Title: b.artist2_name,

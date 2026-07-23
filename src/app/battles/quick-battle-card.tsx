@@ -6,14 +6,17 @@ import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
 
-// V2 winner system launched March 10, 2026 (Poll + Charts + DJ Wavy)
-// V1 was charts-only (larger pool wins)
-export const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
-
 export type QuickBattleCardData = {
   battle_id: number
   dateFormatted: string
   isV2?: boolean  // true = Poll + Charts + DJ Wavy; false/absent = Charts Only
+  // Factor breakdown (V2 only -- each is null when that factor has no data)
+  pollWinnerTitle: string | null
+  pollIsTie: boolean
+  pollVotesA: number | null
+  pollVotesB: number | null
+  chartsWinnerTitle: string
+  djWavyWinnerTitle: string | null
   // Songs
   song1Title: string
   song2Title: string
@@ -127,6 +130,43 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
             </Tip>
           )}
         </div>
+        {data.isV2 === true && (
+          <div className="flex items-center gap-4 flex-wrap mt-1.5 text-[11px]">
+            <span>
+              <span className="text-muted-foreground">Charts:</span>{' '}
+              <span className="font-semibold" style={{ color: data.chartsWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
+                {data.chartsWinnerTitle}
+              </span>
+            </span>
+            <span>
+              <span className="text-muted-foreground">Poll:</span>{' '}
+              {data.pollIsTie ? (
+                <span className="text-muted-foreground">Tie</span>
+              ) : data.pollWinnerTitle ? (
+                <>
+                  <span className="font-semibold" style={{ color: data.pollWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
+                    {data.pollWinnerTitle}
+                  </span>
+                  {data.pollVotesA !== null && data.pollVotesB !== null && (
+                    <span className="text-muted-foreground ml-1">({data.pollVotesA}-{data.pollVotesB})</span>
+                  )}
+                </>
+              ) : (
+                <span className="text-muted-foreground">No data</span>
+              )}
+            </span>
+            <span>
+              <span className="text-muted-foreground">DJ Wavy:</span>{' '}
+              {data.djWavyWinnerTitle ? (
+                <span className="font-semibold" style={{ color: data.djWavyWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
+                  {data.djWavyWinnerTitle}
+                </span>
+              ) : (
+                <span className="text-muted-foreground">No data</span>
+              )}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* ── HERO: TWO SIDES ── */}
