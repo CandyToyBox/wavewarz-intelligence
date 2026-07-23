@@ -31,7 +31,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
-const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url,poll_winner,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at'
+const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url,poll_winner,poll_votes_a,poll_votes_b,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at'
 
 type Row = {
   battle_id: number
@@ -56,6 +56,8 @@ type Row = {
   created_at: string
   image_url: string | null
   poll_winner: string | null
+  poll_votes_a: number | null
+  poll_votes_b: number | null
   dj_wavy_winner: string | null
   dj_wavy_reasoning: string | null
   main_event_human_judge: string | null
@@ -111,6 +113,8 @@ function toPublicBattle(
   const factors = type === 'quick'
     ? {
         pollWinner: normalizeFactorSide(b.poll_winner, b.artist1_name),
+        pollVotesArtist1: b.poll_votes_a,
+        pollVotesArtist2: b.poll_votes_b,
         djWavyWinner: normalizeFactorSide(b.dj_wavy_winner, b.artist1_name),
         djWavyReasoning: b.dj_wavy_reasoning,
       }
