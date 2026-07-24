@@ -229,7 +229,7 @@ Losing Traders (Artist B):
 - **Language**: Rust (Anchor framework)
 - **Program ID**: `9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo`
 - **Frontend**: React/TypeScript with Solana Web3.js
-- **RPC**: Helius Enhanced RPC (api-key: 8b84d8d3-59ad-4778-829b-47db8a9149fa)
+- **RPC**: Helius Enhanced RPC (key in `NEXT_PUBLIC_HELIUS_API_KEY`, Vercel env — never hardcode it here)
 - **Database**: Supabase (Postgres) for analytics & historical data
 - **Music Integration**: Audius SDK (for Quick Battle detection & catalog sync)
 
@@ -275,9 +275,10 @@ battle_bump: u8 | artist_a_mint_bump: u8 | artist_b_mint_bump: u8 | battle_vault
 
 ### Helius RPC
 ```typescript
-const HELIUS_API_KEY = "8b84d8d3-59ad-4778-829b-47db8a9149fa";
+const HELIUS_API_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY;
 const RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 ```
+Never hardcode the actual key value in this file or anywhere else committed to git — this repo is public. Current key lives only in Vercel's `NEXT_PUBLIC_HELIUS_API_KEY` env var.
 
 **CRITICAL — Helius API domains (2026-04-27):**
 
