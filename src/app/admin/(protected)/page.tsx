@@ -15,9 +15,17 @@ import { AdminTabs } from './admin-tabs'
 import { CommandCenterPanel } from './command-center-panel'
 
 // Launch/queue fees now live in src/lib/battle-metrics.ts (LAUNCH_FEES),
-// shared with the overview so revenue matches everywhere.
+// shared with the overview so revenue matches everywhere. Note: LAUNCH_FEES.quickQueue
+// still estimates Add to Queue as 1-per-quick-battle — real tracked data below
+// (treasury_fee_events) is more accurate but hasn't replaced that shared formula
+// yet since it also feeds the public overview page. Reconcile before changing it.
+//
 // Skip Queue Fee: variable — 0.02 SOL base, +0.01 per successive skip; 100%
-// WaveWarZ, not auto-tracked (webhook does not send per-battle skip totals).
+// WaveWarZ. Both this and Add to Queue are plain SOL transfers outside the
+// Anchor program (no instruction, no memo), so the trade-parsing webhook can
+// never see them — backfilled/synced separately into treasury_fee_events by
+// scripts/backfill-queue-fees.ts (see src/lib/solana/hydrate.ts for the
+// classification logic). Found 2026-07-29.
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -52,6 +60,21 @@ async function getRevenueData(supabase: Awaited<ReturnType<typeof createAdminCli
     totalNonTest: battles.length,
     totalTrades,
   }
+}
+
+async function getQueueFeeRevenue(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
+  // Real tracked data — see treasury_fee_events comment + scripts/backfill-queue-fees.ts.
+  const rows = await fetchAll<{ fee_type: 'skip_queue' | 'add_to_queue'; amount_sol: number }>((from, to) => supabase
+    .from('treasury_fee_events')
+    .select('fee_type,amount_sol')
+    .range(from, to))
+
+  const skipQueueRevenue = rows.filter(r => r.fee_type === 'skip_queue').reduce((s, r) => s + Number(r.amount_sol), 0)
+  const addToQueueRevenue = rows.filter(r => r.fee_type === 'add_to_queue').reduce((s, r) => s + Number(r.amount_sol), 0)
+  const skipQueueCount = rows.filter(r => r.fee_type === 'skip_queue').length
+  const addToQueueCount = rows.filter(r => r.fee_type === 'add_to_queue').length
+
+  return { skipQueueRevenue, addToQueueRevenue, skipQueueCount, addToQueueCount }
 }
 
 async function getMainEventsForJudging(supabase: Awaited<ReturnType<typeof createAdminClient>>) {
@@ -125,8 +148,9 @@ async function getPlatformStats(supabase: Awaited<ReturnType<typeof createAdminC
 
 export default async function AdminPage() {
   const supabase = await createAdminClient()
-  const [revenue, mainEvents, artistProfiles, mediaBattles, calendarEvents, platformStats, clipsData, solPrice] = await Promise.all([
+  const [revenue, queueFees, mainEvents, artistProfiles, mediaBattles, calendarEvents, platformStats, clipsData, solPrice] = await Promise.all([
     getRevenueData(supabase),
+    getQueueFeeRevenue(supabase),
     getMainEventsForJudging(supabase),
     getArtistProfiles(supabase),
     getBattlesForMedia(supabase),
@@ -169,8 +193,8 @@ export default async function AdminPage() {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Total Platform Revenue (All Time)</p>
-              <p className="text-5xl font-rajdhani font-bold text-[#95fe7c]">{formatSol(revenue.totalRevenue)} SOL</p>
-              <p className="text-lg text-muted-foreground mt-1">{solToUsd(revenue.totalRevenue, solPrice)}</p>
+              <p className="text-5xl font-rajdhani font-bold text-[#95fe7c]">{formatSol(revenue.totalRevenue + queueFees.skipQueueRevenue)} SOL</p>
+              <p className="text-lg text-muted-foreground mt-1">{solToUsd(revenue.totalRevenue + queueFees.skipQueueRevenue, solPrice)}</p>
             </div>
             <div className="text-right text-sm text-muted-foreground space-y-1">
               <p>{revenue.totalBattles} battles counted</p>
@@ -178,9 +202,8 @@ export default async function AdminPage() {
               {revenue.pendingJudging.length > 0 && (
                 <p className="text-amber-400 font-bold text-xs">{revenue.pendingJudging.length} main events pending judging</p>
               )}
-              <p className="text-amber-400/70 text-[10px] font-mono pt-1">
-                ⚠ Skip queue fees not included<br />
-                (webhook doesn&apos;t send per-battle skip totals)
+              <p className="text-[#95fe7c]/70 text-[10px] font-mono pt-1">
+                ✓ Skip Queue now tracked from chain ({queueFees.skipQueueCount} txs since 2026-06-29)
               </p>
             </div>
           </div>
@@ -188,8 +211,12 @@ export default async function AdminPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <RevenueCard label="Trading Fees" value={`${formatSol(revenue.tradingFeeRevenue)} SOL`} usd={solToUsd(revenue.tradingFeeRevenue, solPrice)} detail={`0.5% × ${formatSol(revenue.totalVolume)} SOL`} color="green" />
           <RevenueCard label="Settlement Bonuses" value={`${formatSol(revenue.settlementRevenue)} SOL`} usd={solToUsd(revenue.settlementRevenue, solPrice)} detail="3% of each loser pool" color="green" />
-          <RevenueCard label="Quick Battle Fees" value={`${formatSol(revenue.quickLaunchRevenue)} SOL`} usd={solToUsd(revenue.quickLaunchRevenue, solPrice)} detail={`${revenue.quickCount} × 0.012 SOL`} color="blue" />
+          <RevenueCard label="Quick Battle Fees" value={`${formatSol(revenue.quickLaunchRevenue)} SOL`} usd={solToUsd(revenue.quickLaunchRevenue, solPrice)} detail={`${revenue.quickCount} × 0.012 SOL (est.)`} color="blue" />
           <RevenueCard label="Community Fees" value={`${formatSol(revenue.communityLaunchRevenue)} SOL`} usd={solToUsd(revenue.communityLaunchRevenue, solPrice)} detail={`${revenue.communityCount} × 0.017 SOL`} color="blue" />
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <RevenueCard label="Skip Queue Fees" value={`${formatSol(queueFees.skipQueueRevenue)} SOL`} usd={solToUsd(queueFees.skipQueueRevenue, solPrice)} detail={`${queueFees.skipQueueCount} txs — tracked from chain, since 06/29`} color="green" />
+          <RevenueCard label="Add to Queue Fees (tracked)" value={`${formatSol(queueFees.addToQueueRevenue)} SOL`} usd={solToUsd(queueFees.addToQueueRevenue, solPrice)} detail={`${queueFees.addToQueueCount} txs — real data, not yet reconciled with the estimate above`} color="blue" />
         </div>
         <div className="rounded-xl border border-border bg-[#111827] p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Fee Rate Reference</p>

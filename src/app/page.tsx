@@ -44,7 +44,6 @@ async function getGlobalStats() {
     mainBattles: m.mainBattles,
     quickBattles: m.quickCount,
     totalArtistPayouts: m.artistPayouts,
-    platformRevenue: m.revenue.total,        // ALL revenue: trading + settlement + launch fees
     totalClaimed: c.totalClaimed,
     claimCount: c.claimCount,
   }

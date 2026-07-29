@@ -123,10 +123,6 @@ export async function GET() {
         withdrawalCount: c.claimCount,
         note: 'Real trader withdrawals (claimShares), parsed from onchain vault transactions',
       },
-      platformRevenue: {
-        totalSol: round(m.revenue.total),
-        totalUsd: round(m.revenue.total * solPrice),
-      },
       battles: {
         total: battles.length,
         mainEvents: m.mainEvents,

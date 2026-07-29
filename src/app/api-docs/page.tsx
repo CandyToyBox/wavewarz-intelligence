@@ -131,7 +131,7 @@ export default function ApiDocsPage() {
         id="stats"
         method="GET"
         path="/api/public/stats"
-        summary="Platform-wide totals: volume, live battle, artist payouts, trader claims, platform revenue, battle counts. The same numbers shown on the wavewarz.info homepage."
+        summary="Platform-wide totals: volume, live battle, artist payouts, trader claims, battle counts. The same numbers shown on the wavewarz.info homepage."
         example={`curl https://wavewarz.info/api/public/stats`}
         response={`{
   "updatedAt": "2026-07-18T11:32:05.023Z",
@@ -140,7 +140,6 @@ export default function ApiDocsPage() {
   "liveBattle": null,
   "artistPayouts": { "totalSol": 412.3, "totalUsd": 30902.5, "note": "..." },
   "traderClaims": { "totalSol": 8210.1, "totalUsd": ..., "withdrawalCount": 3140, "note": "..." },
-  "platformRevenue": { "totalSol": 1236.9, "totalUsd": ... },
   "battles": { "total": 1904, "mainEvents": 88, "mainBattles": 264, "quickBattles": 1580, "communityBattles": 60 }
 }`}
       />
