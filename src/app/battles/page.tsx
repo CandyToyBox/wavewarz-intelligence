@@ -71,6 +71,8 @@ type RawBattle = {
   poll_votes_a: number | null
   poll_votes_b: number | null
   dj_wavy_winner: string | null
+  winner_artist_a: number | null
+  winner_decided: boolean
 }
 
 type FeedItem =
@@ -132,6 +134,7 @@ async function getBattles(): Promise<RawBattle[]> {
       'is_quick_battle','is_community_battle','is_main_battle',
       'event_subtype','status',
       'poll_winner','poll_votes_a','poll_votes_b','dj_wavy_winner',
+      'winner_artist_a','winner_decided',
     ].join(','))
     .eq('is_test_battle', false)
     .order('created_at', { ascending: false })
@@ -192,10 +195,19 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
   const totalUsd = totalVolRaw * solPrice
   const streams = totalUsd / SPOTIFY_RATE
 
+  // Main/Community/Charity rounds are decided by the admin judging panel
+  // (Human Judge + X Poll + SOL Vote, 2-of-3 -> winner_artist_a), not by
+  // which side's trading pool is bigger. Only fall back to pool size for a
+  // round that hasn't been judged yet (e.g. still live).
+  function roundWinnerIsA(b: RawBattle): boolean {
+    if (b.winner_decided && b.winner_artist_a !== null) return Number(b.winner_artist_a) >= 1
+    const p1 = b.artist1_pool ?? 0, p2 = b.artist2_pool ?? 0
+    return p1 >= p2
+  }
+
   let a1Wins = 0, a2Wins = 0
   for (const b of battles) {
-    const p1 = b.artist1_pool ?? 0, p2 = b.artist2_pool ?? 0
-    if (p1 >= p2) a1Wins++; else a2Wins++
+    if (roundWinnerIsA(b)) a1Wins++; else a2Wins++
   }
   const overallWinner =
     a1Wins > a2Wins ? first.artist1_name :
@@ -206,7 +218,7 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
     const p1 = b.artist1_pool ?? 0, p2 = b.artist2_pool ?? 0
     const v1 = b.total_volume_a ?? 0, v2 = b.total_volume_b ?? 0
     const totalVol = v1 + v2
-    const winnerIsA = p1 >= p2
+    const winnerIsA = roundWinnerIsA(b)
     const loserPool = winnerIsA ? p2 : p1
 
     const a1Earn = calculateArtistEarnings(v1, loserPool, winnerIsA)
@@ -297,7 +309,16 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
   const p1 = b.artist1_pool ?? 0, p2 = b.artist2_pool ?? 0
   const v1 = b.total_volume_a ?? 0, v2 = b.total_volume_b ?? 0
   const totalVol = v1 + v2
-  const winnerIsA = p1 >= p2
+  // "Charts" is legitimately pool-based (one of the 3 judging factors below).
+  // The overall winner is the decided 2-of-3 result (Poll + Charts + DJ Wavy
+  // -> winner_artist_a), which can differ from Charts alone -- same
+  // winner_decided/winner_artist_a fields Main Events use, synced from the
+  // quick_battles_* factor columns by the webhook. Pool comparison is only a
+  // fallback for battles that haven't been judged yet.
+  const chartsWinnerIsA = p1 >= p2
+  const winnerIsA = b.winner_decided && b.winner_artist_a !== null
+    ? Number(b.winner_artist_a) >= 1
+    : chartsWinnerIsA
   const loserPool = winnerIsA ? p2 : p1
   const totalUsd = totalVol * solPrice
   const streams = totalUsd / SPOTIFY_RATE
@@ -317,7 +338,7 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     pollIsTie: b.poll_winner !== null && pollWinnerIsA === null,
     pollVotesA: b.poll_votes_a,
     pollVotesB: b.poll_votes_b,
-    chartsWinnerTitle: winnerIsA ? b.artist1_name : b.artist2_name,
+    chartsWinnerTitle: chartsWinnerIsA ? b.artist1_name : b.artist2_name,
     djWavyWinnerTitle: djWavyWinnerIsA === null ? null : djWavyWinnerIsA ? b.artist1_name : b.artist2_name,
     // Songs
     song1Title: b.artist1_name,
