@@ -66,8 +66,14 @@ function colorForLetter(letter: string) {
 // ── Trending score formula ───────────────────────────────────────────────────
 // score = velocity × competitiveness × recency_decay × engagement_boost
 // Higher = hotter. Sums across all of a song's battles in the period.
+//
+// Recency decay is skipped for the "all" period: with a ~24h half-life,
+// battles older than a few days round to ~0 contribution, so applying it
+// across a song's entire history just reduces "All Time" to "last couple
+// days" and buries songs with real all-time volume/records behind whatever
+// battled most recently.
 
-function battleTrendingScore(b: SongBattle): number {
+function battleTrendingScore(b: SongBattle, period: Period): number {
   const totalSol    = b.pool1 + b.pool2
   const durationMin = Math.max(b.durationSeconds / 60, 1)
   const velocity    = totalSol / durationMin
@@ -77,8 +83,11 @@ function battleTrendingScore(b: SongBattle): number {
     ? 1 + (1 - Math.abs(b.pool1 - b.pool2) / totalPool) * 0.5
     : 1
 
-  const hoursOld = (Date.now() - new Date(b.createdAt).getTime()) / 3_600_000
-  const recency  = 1 / Math.pow(1 + hoursOld / 24, 1.5)
+  let recency = 1
+  if (period !== 'all') {
+    const hoursOld = (Date.now() - new Date(b.createdAt).getTime()) / 3_600_000
+    recency = 1 / Math.pow(1 + hoursOld / 24, 1.5)
+  }
 
   const engagement = 1 + Math.min(b.uniqueTraders / 100, 0.3)
 
@@ -109,7 +118,7 @@ function aggregateSong(song: SongData, period: Period): RankedSong | null {
   const v2Wins  = fb.filter(b => b.won && isV2Battle(b)).length
   const volume  = fb.reduce((s, b) => s + b.volume1, 0)
   const traders = fb.reduce((s, b) => s + b.uniqueTraders, 0)
-  const score   = fb.reduce((s, b) => s + battleTrendingScore(b), 0)
+  const score   = fb.reduce((s, b) => s + battleTrendingScore(b, period), 0)
   // battles already sorted newest-first from server
   const lastPlayed = fb[0]?.createdAt ?? null
   return {
