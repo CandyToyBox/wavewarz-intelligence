@@ -326,7 +326,7 @@ export default async function HomePage() {
       {/* Pinned event — mirrors the pinned post on @wavewarz (see src/config/pinned-event.ts) */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Live Tournament</h2>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{pinnedEvent.sectionLabel}</h2>
           <div className="flex-1 h-px bg-border" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] border border-[#95fe7c]/30 px-2 py-0.5 rounded">
             {pinnedEvent.badge}
@@ -334,7 +334,7 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* Bracket animation / pinned flyer */}
+          {/* Bracket animation / pinned flyer / matchup card */}
           <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
             className="rounded-2xl border border-[#7ec1fb]/30 overflow-hidden block bg-black">
             {pinnedEvent.mediaType === 'video' ? (
@@ -345,29 +345,50 @@ export default async function HomePage() {
                 className="w-full h-full object-cover"
                 aria-label={`${pinnedEvent.title} bracket animation`}
               />
+            ) : pinnedEvent.mediaType === 'matchup' && pinnedEvent.matchup ? (
+              <div className="relative h-full min-h-[280px] grid grid-cols-2">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={pinnedEvent.matchup.side1.img} alt={pinnedEvent.matchup.side1.name}
+                  className="absolute inset-y-0 left-0 w-1/2 h-full object-cover" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={pinnedEvent.matchup.side2.img} alt={pinnedEvent.matchup.side2.name}
+                  className="absolute inset-y-0 right-0 w-1/2 h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={pinnedEvent.matchup.vsLabel} alt="VS" className="w-24 sm:w-32 drop-shadow-lg" />
+                </div>
+                <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-2">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c]">{pinnedEvent.matchup.side1.role}</p>
+                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{pinnedEvent.matchup.side1.name}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb]">{pinnedEvent.matchup.side2.role}</p>
+                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{pinnedEvent.matchup.side2.name}</p>
+                  </div>
+                </div>
+              </div>
             ) : (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={pinnedEvent.src} alt={`${pinnedEvent.title} flyer`} className="w-full h-full object-cover" />
             )}
           </a>
 
-          {/* AI Artist Tournament */}
+          {/* Pinned event details */}
           <div className="rounded-2xl border border-[#7ec1fb]/30 bg-[#7ec1fb]/5 p-6 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">Single-Elimination Bracket</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">{pinnedEvent.eyebrow}</p>
                 <h3 className="text-2xl font-rajdhani font-bold text-white">{pinnedEvent.title}</h3>
               </div>
-              <span className="text-3xl">🤖</span>
+              <span className="text-3xl">{pinnedEvent.icon}</span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
               {pinnedEvent.subtitle}
             </p>
             <ul className="text-xs text-gray-400 space-y-1">
-              <li>• Semifinal result: GEEK MYTH def. LUI 2–1 — 342 SOL, biggest event ever</li>
-              <li>• Round 3 alone traded 159 SOL — 4x any full event before it</li>
-              <li>• Grand Final: GEEK MYTH vs Stormbourne, then the Stella Estrella gauntlet</li>
-              <li>• Every round is a real onchain battle — trade it live</li>
+              {pinnedEvent.bullets.map(b => <li key={b}>• {b}</li>)}
             </ul>
             <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
               className="inline-flex items-center gap-2 bg-[#7ec1fb] hover:bg-[#5aaae8] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
