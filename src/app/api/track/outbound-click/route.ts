@@ -3,7 +3,9 @@ import { NextResponse } from 'next/server'
 /**
  * Server-side leg of X Ads' Conversion API — fired when a visitor clicks through
  * from the Intelligence dashboard to a tracked destination. Runs alongside the
- * client-side pixel (see root layout) for ad-blocker/ITP resilience.
+ * client-side twq('event', ...) pixel call (see outbound-link.tsx) for
+ * ad-blocker/ITP resilience; both legs share a client-generated conversion_id
+ * so X can dedupe them into a single conversion.
  *
  * Two conversion events share this one route, distinguished by `eventType` in
  * the request body:
@@ -32,10 +34,11 @@ export async function POST(request: Request) {
   try {
     const token = process.env.X_PIXEL_ACCESS_TOKEN
 
-    const { eventType, eventSourceUrl, twclid } = (await request.json().catch(() => ({}))) as {
+    const { eventType, eventSourceUrl, twclid, conversionId } = (await request.json().catch(() => ({}))) as {
       eventType?: string
       eventSourceUrl?: string
       twclid?: string | null
+      conversionId?: string
     }
 
     const eventId = eventIdFor(eventType)
@@ -70,7 +73,7 @@ export async function POST(request: Request) {
             conversion_time: new Date().toISOString(),
             event_id: eventId,
             event_source_url: eventSourceUrl,
-            conversion_id: `owc-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+            conversion_id: conversionId ?? `owc-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
             identifiers: [identifiers],
           },
         ],
