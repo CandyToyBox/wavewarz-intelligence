@@ -12,7 +12,7 @@ import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 import { pinnedEvent } from '@/config/pinned-event'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
-import { OutboundLink, trackOutboundClick } from '@/components/outbound-link'
+import { OutboundLink } from '@/components/outbound-link'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -644,11 +644,11 @@ function ScheduleCard({
   title: string; time: string; desc: string; href: string; titleColor: string
 }) {
   return (
-    <a
+    <OutboundLink
       href={href}
       target="_blank"
       rel="noreferrer"
-      onClick={() => trackOutboundClick(href, 'live_show')}
+      eventType="live_show"
       className="block p-6 border border-border bg-card rounded-xl hover:border-[#7ec1fb] transition-colors group"
     >
       <h3 className={`text-lg font-bold font-rajdhani mb-1 ${titleColor}`}>{title}</h3>
@@ -657,7 +657,7 @@ function ScheduleCard({
       <span className="text-sm font-bold text-[#7ec1fb] group-hover:underline">
         Join X Space →
       </span>
-    </a>
+    </OutboundLink>
   )
 }
 
@@ -673,15 +673,16 @@ function FeatureCard({
       <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
     </div>
   )
+  if (external && trackConversion) {
+    return (
+      <OutboundLink href={href} target="_blank" rel="noreferrer" eventType="live_show" className="block h-full">
+        {inner}
+      </OutboundLink>
+    )
+  }
   if (external) {
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        onClick={trackConversion ? () => trackOutboundClick(href, 'live_show') : undefined}
-        className="block h-full"
-      >
+      <a href={href} target="_blank" rel="noreferrer" className="block h-full">
         {inner}
       </a>
     )
