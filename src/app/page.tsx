@@ -12,6 +12,7 @@ import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 import { pinnedEvent } from '@/config/pinned-event'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
+import { OutboundLink } from '@/components/outbound-link'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -256,10 +257,10 @@ export default async function HomePage() {
           We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans put real money behind the artists they believe in — and lets artists earn directly from that conviction, instantly, every time.
         </p>
         <div className="pt-2 flex flex-wrap gap-3">
-          <a href="https://wavewarz.com" target="_blank" rel="noreferrer"
+          <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer"
             className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
             Enter the Arena ↗
-          </a>
+          </OutboundLink>
           <a href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer"
             className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
             Watch on YouTube ↗

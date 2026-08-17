@@ -4,6 +4,8 @@ import Script from 'next/script'
 import './globals.css'
 import { NavBar } from '@/components/nav-bar'
 import { IgniteRadio } from '@/components/ignite-radio'
+import { AdClickCapture } from '@/components/ad-click-capture'
+import { OutboundLink } from '@/components/outbound-link'
 
 const rajdhani = Rajdhani({
   subsets: ['latin'],
@@ -92,6 +94,7 @@ export default function RootLayout({
           a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
           twq('config','reaex');`}
         </Script>
+        <AdClickCapture />
         <NavBar />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
           {children}
@@ -103,7 +106,7 @@ export default function RootLayout({
             <div className="flex items-center gap-4">
               <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
               <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-              <a href="https://wavewarz.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">wavewarz.com ↗</a>
+              <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">wavewarz.com ↗</OutboundLink>
             </div>
           </div>
         </footer>
