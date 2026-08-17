@@ -2,31 +2,45 @@ import { NextResponse } from 'next/server'
 
 /**
  * Server-side leg of X Ads' Conversion API — fired when a visitor clicks through
- * from the Intelligence dashboard to the trading site (wavewarz.com). Runs
- * alongside the client-side pixel (see root layout) for ad-blocker/ITP resilience.
+ * from the Intelligence dashboard to a tracked destination. Runs alongside the
+ * client-side pixel (see root layout) for ad-blocker/ITP resilience.
  *
- * Requires two env vars (Vercel, server-only — never NEXT_PUBLIC_):
- *   X_PIXEL_ACCESS_TOKEN — from X Ads Conversion API setup, Step 2
- *   X_CONVERSION_EVENT_ID — the tw-reaex-xxxxx id for the specific conversion
- *     event, created in X's Events Manager (Ads > Events > Web Conversions).
- * Until both are set, this route is a no-op that doesn't block navigation.
+ * Two conversion events share this one route, distinguished by `eventType` in
+ * the request body:
+ *   'trade_platform' — clicks to the trading site (wavewarz.com)
+ *   'live_show'       — clicks to join an X Space or watch the livestream
+ *
+ * Requires env vars (Vercel, server-only — never NEXT_PUBLIC_):
+ *   X_PIXEL_ACCESS_TOKEN     — from X Ads Conversion API setup, Step 2
+ *   X_CONVERSION_EVENT_ID       — tw-reaex-xxxxx id for the 'trade_platform' event
+ *   X_CONVERSION_EVENT_ID_LIVE  — tw-reaex-xxxxx id for the 'live_show' event
+ * Each event created in X's Events Manager (Ads > Events > Web Conversions).
+ * Until both the token and the relevant event id are set, this route is a
+ * no-op that doesn't block navigation.
  */
 
 export const dynamic = 'force-dynamic'
 
 const PIXEL_ID = 'reaex'
 
+function eventIdFor(eventType: string | undefined): string | undefined {
+  if (eventType === 'live_show') return process.env.X_CONVERSION_EVENT_ID_LIVE
+  return process.env.X_CONVERSION_EVENT_ID
+}
+
 export async function POST(request: Request) {
   try {
     const token = process.env.X_PIXEL_ACCESS_TOKEN
-    const eventId = process.env.X_CONVERSION_EVENT_ID
-    if (!token || !eventId) {
-      return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 202 })
-    }
 
-    const { eventSourceUrl, twclid } = (await request.json().catch(() => ({}))) as {
+    const { eventType, eventSourceUrl, twclid } = (await request.json().catch(() => ({}))) as {
+      eventType?: string
       eventSourceUrl?: string
       twclid?: string | null
+    }
+
+    const eventId = eventIdFor(eventType)
+    if (!token || !eventId) {
+      return NextResponse.json({ ok: false, reason: 'not_configured' }, { status: 202 })
     }
 
     const forwardedFor = request.headers.get('x-forwarded-for')

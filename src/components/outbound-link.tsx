@@ -2,12 +2,15 @@
 
 import type { AnchorHTMLAttributes } from 'react'
 
+/** Which X conversion event a click maps to — see /api/track/outbound-click for the env var lookup. */
+export type ConversionEventType = 'trade_platform' | 'live_show'
+
 /**
  * Fires an X Ads Conversion API event (server-side, via /api/track/outbound-click)
- * for outbound clicks from the Intelligence dashboard to the trading site.
- * Best-effort — never blocks or breaks navigation if it fails.
+ * for outbound clicks from the Intelligence dashboard. Best-effort — never blocks
+ * or breaks navigation if it fails.
  */
-export function trackOutboundClick(destination: string) {
+export function trackOutboundClick(destination: string, eventType: ConversionEventType = 'trade_platform') {
   if (typeof window === 'undefined') return
   let twclid: string | null = null
   try {
@@ -20,6 +23,7 @@ export function trackOutboundClick(destination: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       destination,
+      eventType,
       eventSourceUrl: window.location.href,
       twclid,
     }),
@@ -31,13 +35,14 @@ export function trackOutboundClick(destination: string) {
 export function OutboundLink({
   onClick,
   href,
+  eventType = 'trade_platform',
   ...props
-}: AnchorHTMLAttributes<HTMLAnchorElement>) {
+}: AnchorHTMLAttributes<HTMLAnchorElement> & { eventType?: ConversionEventType }) {
   return (
     <a
       href={href}
       onClick={e => {
-        if (href) trackOutboundClick(href)
+        if (href) trackOutboundClick(href, eventType)
         onClick?.(e)
       }}
       {...props}

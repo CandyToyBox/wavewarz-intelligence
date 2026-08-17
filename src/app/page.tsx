@@ -12,7 +12,7 @@ import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 import { pinnedEvent } from '@/config/pinned-event'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
-import { OutboundLink } from '@/components/outbound-link'
+import { OutboundLink, trackOutboundClick } from '@/components/outbound-link'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -261,10 +261,10 @@ export default async function HomePage() {
             className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
             Enter the Arena ↗
           </OutboundLink>
-          <a href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer"
+          <OutboundLink href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer" eventType="live_show"
             className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
             Watch on YouTube ↗
-          </a>
+          </OutboundLink>
           <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer"
             className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
             View Program on Solscan ↗
@@ -298,6 +298,7 @@ export default async function HomePage() {
             desc="Join us live Mon–Fri at 8:30 PM EST for the Quick Battle Livestream. Trade the charts in real-time while the music plays."
             href="https://x.com/wavewarz"
             external
+            trackConversion
           />
           <FeatureCard
             icon="📺"
@@ -305,6 +306,7 @@ export default async function HomePage() {
             desc="Quick Battles stream live on YouTube every weeknight at 8:30 PM EST. Two songs battle it out — fans vote and trade in real-time."
             href="https://www.youtube.com/@wavewarz"
             external
+            trackConversion
           />
           <FeatureCard
             icon="📅"
@@ -646,6 +648,7 @@ function ScheduleCard({
       href={href}
       target="_blank"
       rel="noreferrer"
+      onClick={() => trackOutboundClick(href, 'live_show')}
       className="block p-6 border border-border bg-card rounded-xl hover:border-[#7ec1fb] transition-colors group"
     >
       <h3 className={`text-lg font-bold font-rajdhani mb-1 ${titleColor}`}>{title}</h3>
@@ -659,9 +662,9 @@ function ScheduleCard({
 }
 
 function FeatureCard({
-  icon, title, desc, href, external = false,
+  icon, title, desc, href, external = false, trackConversion = false,
 }: {
-  icon: string; title: string; desc: string; href: string; external?: boolean
+  icon: string; title: string; desc: string; href: string; external?: boolean; trackConversion?: boolean
 }) {
   const inner = (
     <div className="h-full p-5 rounded-xl border border-border bg-card hover:border-[#7ec1fb]/40 transition-colors group space-y-2">
@@ -671,7 +674,17 @@ function FeatureCard({
     </div>
   )
   if (external) {
-    return <a href={href} target="_blank" rel="noreferrer" className="block h-full">{inner}</a>
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        onClick={trackConversion ? () => trackOutboundClick(href, 'live_show') : undefined}
+        className="block h-full"
+      >
+        {inner}
+      </a>
+    )
   }
   return <Link href={href} className="block h-full">{inner}</Link>
 }
