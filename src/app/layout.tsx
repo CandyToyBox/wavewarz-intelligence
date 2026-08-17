@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Rajdhani, Inter, Geist_Mono } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import { NavBar } from '@/components/nav-bar'
 import { IgniteRadio } from '@/components/ignite-radio'
@@ -84,6 +85,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* X (Twitter) Ads conversion tracking — pixel ID reaex */}
+        <Script id="x-pixel" strategy="afterInteractive">
+          {`!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+          },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+          a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+          twq('config','reaex');`}
+        </Script>
         <NavBar />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
           {children}
