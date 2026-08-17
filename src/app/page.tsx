@@ -2,7 +2,7 @@ import type React from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
-import { platformMetrics, claimTotals, isBattleLive, type MetricsBattle } from '@/lib/battle-metrics'
+import { platformMetrics, isBattleLive, type MetricsBattle } from '@/lib/battle-metrics'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
@@ -29,24 +29,12 @@ async function getGlobalStats() {
   // Single source of truth — identical to the admin Command Center.
   const m = platformMetrics(battles)
 
-  // Real trader withdrawals (claimShares), backfilled from chain — separate metric
-  // from trading volume. See scripts/backfill-claims-from-chain.ts.
-  const claims = await fetchAll<{ amount_sol: number | null }>((from, to) => supabase
-    .from('trades')
-    .select('amount_sol')
-    .eq('trade_type', 'claim')
-    .range(from, to))
-  const c = claimTotals(claims)
-
   return {
     totalVolume: m.totalVolume,
     totalBattles: battles.length,
     mainEvents: m.mainEvents,
-    mainBattles: m.mainBattles,
     quickBattles: m.quickCount,
     totalArtistPayouts: m.artistPayouts,
-    totalClaimed: c.totalClaimed,
-    claimCount: c.claimCount,
   }
 }
 
@@ -309,10 +297,10 @@ export default async function HomePage() {
             trackConversion
           />
           <FeatureCard
-            icon="📅"
-            title="Events Calendar"
-            desc="Upcoming battles, X Spaces, community events, and tournaments — all in one place."
-            href="/events"
+            icon="🎗️"
+            title="Benefits & Charities"
+            desc="Battles where every trade, vote, and SOL moves directly from the arena to the cause — verifiable onchain."
+            href="/benefits"
           />
           <FeatureCard
             icon="📊"
@@ -415,12 +403,6 @@ export default async function HomePage() {
               sub={`${stats.totalBattles} battles`}
             />
             <StatCard
-              label={<Tip text="Real SOL withdrawn by traders via claimShares — the actual settlement payout, parsed from onchain vault transactions. Distinct from trading volume." wide>Total Claimed</Tip>}
-              primary={`${parseFloat(stats.totalClaimed.toFixed(2))} SOL`}
-              secondary={solToUsd(stats.totalClaimed, solPrice)}
-              sub={`${stats.claimCount} withdrawals`}
-            />
-            <StatCard
               label={<Tip text="1% of trading volume per side, paid per trade. At settlement: winning artist gets 5% of loser pool, losing artist gets 2%. All automatic, instant, onchain." wide>Artist Payouts</Tip>}
               primary={`${parseFloat(stats.totalArtistPayouts.toFixed(2))} SOL`}
               secondary={solToUsd(stats.totalArtistPayouts, solPrice)}
@@ -428,10 +410,14 @@ export default async function HomePage() {
               highlight
             />
             <StatCard
-              label={<Tip text="A Main Event is multiple battles (catalog vs catalog, ~2 songs per artist per round). Quick Battles are individual song vs song." wide>Battle Types</Tip>}
-              primary={`${stats.mainEvents} events · ${stats.mainBattles} battles`}
-              secondary={`${stats.quickBattles} Quick`}
-              sub="main events · battles · quick songs"
+              label={<Tip text="Our flagship format: 3 rounds, human judge + X poll + SOL vote, livestreamed." wide>Main Events</Tip>}
+              primary={`${stats.mainEvents}`}
+              sub="3 rounds · judged · livestreamed"
+            />
+            <StatCard
+              label={<Tip text="Song vs song, running 24/7." wide>Quick Battlez</Tip>}
+              primary={`${stats.quickBattles}`}
+              sub="Song vs song · 24/7"
             />
           </div>
         </section>
@@ -552,7 +538,7 @@ export default async function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide">Upcoming Events</h2>
-            <Link href="/events" className="text-xs text-[#7ec1fb] hover:underline">View all →</Link>
+            <Link href="/benefits" className="text-xs text-[#7ec1fb] hover:underline">View all →</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {calendarEvents.map((evt: {

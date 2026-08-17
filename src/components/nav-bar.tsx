@@ -10,7 +10,7 @@ const NAV_LINKS = [
   { href: '/',             label: 'Overview' },
   { href: '/battles',      label: 'Battles' },
   { href: '/leaderboards', label: 'Leaderboards' },
-  { href: '/events',       label: 'Events' },
+  { href: '/benefits',     label: 'Benefits' },
   { href: '/claim',        label: 'Claim' },
   { href: '/api-docs',     label: 'API' },
 ]

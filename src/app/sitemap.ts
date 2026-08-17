@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/leaderboards/artists',
     '/leaderboards/community',
     '/leaderboards/clippers',
-    '/events',
+    '/benefits',
     '/claim',
     '/contributor',
     '/privacy',

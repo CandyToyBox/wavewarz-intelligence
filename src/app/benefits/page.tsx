@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Events & Philanthropy — WaveWarZ Intelligence',
+  title: 'Benefits & Philanthropy — WaveWarZ Intelligence',
   description: 'Every SOL raised moves directly from the arena to the cause. No overhead. No middlemen. Verifiable onchain.',
 }
 
@@ -129,7 +129,7 @@ async function getSpecialBattles(supabase: Awaited<ReturnType<typeof createClien
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default async function EventsPage() {
+export default async function BenefitsPage() {
   const supabase = await createClient()
   const [battles, solPrice] = await Promise.all([
     getSpecialBattles(supabase),
