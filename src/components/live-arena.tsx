@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { OutboundLink } from '@/components/outbound-link'
 
 export type LiveArenaData = {
   battleId: number
@@ -142,10 +143,10 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
               <span className="text-[#95fe7c]">{data.side2.poolSol.toFixed(2)} SOL</span>
             </div>
           </div>
-          <a href={`/battles/${data.battleId}`}
+          <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer"
             className="inline-flex items-center justify-center gap-2 font-bold rounded-2xl px-8 py-4 text-base bg-[#95fe7c] text-[#08110a] shadow-[0_0_26px_rgba(149,254,124,.35)] hover:scale-105 hover:shadow-[0_0_42px_rgba(149,254,124,.6)] transition-transform duration-300 ease-[cubic-bezier(.34,1.56,.64,1)]">
             Jump into Battle
-          </a>
+          </OutboundLink>
           <span className="font-mono text-[.62rem] text-muted-foreground tracking-wide">verify every trade onchain</span>
         </div>
 

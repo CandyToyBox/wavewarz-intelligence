@@ -11,6 +11,7 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
 import { pinnedEvent } from '@/config/pinned-event'
+import { canonicalSongKey } from '@/lib/song-identity'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
 
@@ -163,9 +164,19 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
     const candidate = data?.[0]
     if (!candidate || !isBattleLive(candidate)) return null
 
-    const [track1, track2] = await Promise.all([
+    // Live-resolve album art from Audius; that call can fail (node rotation,
+    // rate limits, timeouts) with no retry budget on a page render, so fall
+    // back to song_registry -- the same cache the Song Charts leaderboard
+    // uses -- keyed by the identical canonical permalink, before giving up.
+    const [track1, track2, registry1, registry2] = await Promise.all([
       candidate.artist1_music_link ? resolveAudiusTrack(candidate.artist1_music_link) : null,
       candidate.artist2_music_link ? resolveAudiusTrack(candidate.artist2_music_link) : null,
+      candidate.artist1_music_link
+        ? supabase.from('song_registry').select('artwork_url').eq('permalink_key', canonicalSongKey(candidate.artist1_music_link, candidate.artist1_name)).maybeSingle()
+        : null,
+      candidate.artist2_music_link
+        ? supabase.from('song_registry').select('artwork_url').eq('permalink_key', canonicalSongKey(candidate.artist2_music_link, candidate.artist2_name)).maybeSingle()
+        : null,
     ])
 
     return {
@@ -174,7 +185,7 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
       side1: {
         name: candidate.artist1_name ?? 'Side A',
         handle: parseAudiusHandle(candidate.artist1_music_link),
-        artUrl: track1?.artwork?.['480x480'] ?? null,
+        artUrl: track1?.artwork?.['480x480'] ?? registry1?.data?.artwork_url ?? null,
         poolSol: candidate.artist1_pool ?? 0,
         // Only Quick Battles play song1 then song2 sequentially -- Main/Community
         // events don't, so leave duration undefined and the arena falls back to
@@ -184,7 +195,7 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
       side2: {
         name: candidate.artist2_name ?? 'Side B',
         handle: parseAudiusHandle(candidate.artist2_music_link),
-        artUrl: track2?.artwork?.['480x480'] ?? null,
+        artUrl: track2?.artwork?.['480x480'] ?? registry2?.data?.artwork_url ?? null,
         poolSol: candidate.artist2_pool ?? 0,
         durationSec: candidate.is_quick_battle ? (track2?.duration ?? null) : null,
       },
@@ -493,7 +504,7 @@ export default async function HomePage() {
             <>
               <ScheduleCard
                 title="Live Quick Battle Trading"
-                time="Mon–Fri · 8:30 PM EST"
+                time="Mon–Fri · 9:00 PM EST"
                 desc="Join us on X Spaces to trade the charts live. Watch the 30-second final windows play out in real-time."
                 href="https://x.com/wavewarz"
                 titleColor="text-[#95fe7c]"
