@@ -52,8 +52,9 @@ export const pinnedEvent: PinnedEvent = {
     '1,400 battles settled onchain, 13.88 SOL paid to artists — automatically, every time',
     'Winner decided 2-of-3: Human Judge + X Poll + SOL Vote',
   ],
-  mediaType: 'image',
-  src: '/events/founder-challenge/founder-challenge-flyer.jpg',
+  mediaType: 'video',
+  src: '/events/founder-challenge/founder-challenge.mp4',
+  poster: '/events/founder-challenge/founder-challenge-flyer.jpg',
   href: 'https://x.com/wavewarz',
   cta: 'Follow the Founder Challenge on X',
 }
