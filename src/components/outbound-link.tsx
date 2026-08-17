@@ -16,6 +16,7 @@ export type ConversionEventType = 'trade_platform' | 'live_show'
 // for the Conversion API call; keep both in sync when an id changes in X's Events Manager.
 const CLIENT_EVENT_IDS: Partial<Record<ConversionEventType, string>> = {
   live_show: 'tw-reaex-reh9v',
+  trade_platform: 'tw-reaex-reha6',
 }
 
 function newConversionId(): string {
