@@ -52,12 +52,8 @@ export const pinnedEvent: PinnedEvent = {
     '1,400 battles settled onchain, 13.88 SOL paid to artists — automatically, every time',
     'Winner decided 2-of-3: Human Judge + X Poll + SOL Vote',
   ],
-  mediaType: 'matchup',
-  matchup: {
-    side1: { name: 'GODCLOUD', role: 'The Challenger', img: '/events/founder-challenge/godcloud.jpg' },
-    side2: { name: 'Hurric4n3Ike', role: 'Built the Arena', img: '/events/founder-challenge/hurric4n3ike.png' },
-    vsLabel: '/events/founder-challenge/vs-logo.png',
-  },
+  mediaType: 'image',
+  src: '/events/founder-challenge/founder-challenge-flyer.jpg',
   href: 'https://x.com/wavewarz',
   cta: 'Follow the Founder Challenge on X',
 }
