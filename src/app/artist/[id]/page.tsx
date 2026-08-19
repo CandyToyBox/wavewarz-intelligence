@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { canonicalSongKey } from '@/lib/song-identity'
+import { resolveAudiusTrack } from '@/lib/audius'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
+import { getAudiusUser, getUserPfp } from '@/lib/audius'
 import { calculateArtistEarnings, getWinnerLoserPools, formatSol } from '@/lib/wavewarz-math'
 import { groupIntoEvents, pairKey } from '@/lib/event-grouping'
 import { Badge } from '@/components/ui/badge'
@@ -49,6 +51,7 @@ type ArtistStats = {
   socialStats: Record<string, number>
   mainEventBattles: Battle[]
   quickBattles: Battle[]
+  opponentNameOverrides: Map<string, string>
   // Overall (all battle types combined)
   wins: number
   losses: number
@@ -200,6 +203,30 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   )
   const quickBattles = allBattles.filter(b => b.is_quick_battle)
 
+  // Opponent display names — resolve through battle_artist_overrides the same
+  // way the artist leaderboard does (src/lib/leaderboards/artists.ts), so a
+  // wallet that's been re-tagged to a sub-profile (e.g. "AI LUI" sharing a
+  // battle wallet) shows that profile's name instead of the raw battle text.
+  const opponentNameOverrides = new Map<string, string>()
+  if (mainEventBattles.length) {
+    const { data: opponentOverrides } = await supabase
+      .from('battle_artist_overrides')
+      .select('battle_id,wallet,artist_id')
+      .in('battle_id', mainEventBattles.map(b => b.battle_id))
+    const overrideArtistIds = [...new Set((opponentOverrides ?? []).map(o => o.artist_id))]
+    if (overrideArtistIds.length) {
+      const { data: overrideProfiles } = await supabase
+        .from('artist_profiles')
+        .select('artist_id,display_name')
+        .in('artist_id', overrideArtistIds)
+      const nameByArtistId = new Map((overrideProfiles ?? []).map(p => [p.artist_id, p.display_name as string | null]))
+      for (const o of opponentOverrides ?? []) {
+        const name = nameByArtistId.get(o.artist_id)
+        if (name) opponentNameOverrides.set(`${o.battle_id}|${o.wallet}`, name)
+      }
+    }
+  }
+
   // Quick Battles are single-round events, tallied per battle. Main Events
   // are multi-round matches -- a round win isn't an event win, so main-event
   // W/L is tallied per EVENT (round majority within a match), same grouping
@@ -255,6 +282,17 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
   const wins = mainWins + quickWins
   const losses = mainLosses + quickLosses
 
+  // No artist in the database has a manually-set profile_picture_url/custom_pfp_url
+  // yet -- fall back to their Audius profile photo when they've linked a handle,
+  // rather than showing initials for artists who do have a real photo available.
+  let pfpUrl = (profileData?.profile_picture_url as string) ?? (profileData?.custom_pfp_url as string) ?? null
+  const audiusHandle = (profileData?.audius_handle as string) ?? null
+  if (!pfpUrl && audiusHandle) {
+    const audiusUser = await getAudiusUser(audiusHandle)
+    const audiusPfp = getUserPfp(audiusUser)
+    if (audiusUser && !audiusPfp.startsWith('/placeholder')) pfpUrl = audiusPfp
+  }
+
   return {
     displayName,
     // Sub-profiles have no real wallet -- fall back to the profile UUID so
@@ -262,7 +300,7 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     wallet: wallet || profileId || '',
     allWallets,
     profileId,
-    pfpUrl: (profileData?.profile_picture_url as string) ?? (profileData?.custom_pfp_url as string) ?? null,
+    pfpUrl,
     bio: (profileData?.bio as string) ?? null,
     twitterHandle: (profileData?.twitter_handle as string) ?? null,
     audiusHandle: (profileData?.audius_handle as string) ?? null,
@@ -272,6 +310,7 @@ async function getArtistStats(id: string): Promise<ArtistStats | null> {
     socialStats: (profileData?.social_stats as Record<string, number>) ?? {},
     mainEventBattles,
     quickBattles,
+    opponentNameOverrides,
     wins,
     losses,
     mainWins,
@@ -574,7 +613,9 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
               return !(a1IsOwn && a2IsOwn)
             }).map((b) => {
               const isArtistA = stats.allWallets.includes(b.artist1_wallet)
-              const opponent = isArtistA ? b.artist2_name : b.artist1_name
+              const opponentWallet = isArtistA ? b.artist2_wallet : b.artist1_wallet
+              const rawOpponentName = isArtistA ? b.artist2_name : b.artist1_name
+              const opponent = stats.opponentNameOverrides.get(`${b.battle_id}|${opponentWallet}`) ?? rawOpponentName
               const p1 = b.artist1_pool ?? 0
               const p2 = b.artist2_pool ?? 0
               const artistAWon = (b.winner_decided && b.winner_artist_a !== null)
@@ -694,7 +735,7 @@ function SocialIcon({ href, label, color, children }: {
   )
 }
 
-function QuickBattleSongTable({ battles, allWallets, solPrice }: {
+async function QuickBattleSongTable({ battles, allWallets, solPrice }: {
   battles: Battle[]; allWallets: string[]; solPrice: number
 }) {
   // Group by song title (artist's song is the one matching their wallet side)
@@ -722,6 +763,29 @@ function QuickBattleSongTable({ battles, allWallets, solPrice }: {
 
   const songs = Array.from(songMap.values()).sort((a, b) => b.wins - a.wins || b.volume - a.volume)
 
+  // Album art — prefer the cached song_registry table (same source the Song
+  // Charts leaderboard uses) over live Audius calls, which are flaky/rate-limited
+  // (same lesson as src/app/battles/page.tsx). Fall back to a live lookup only
+  // for songs not yet backfilled into the registry.
+  const songKeys = songs.map(s => canonicalSongKey(s.musicLink, s.title))
+  const registryArtByKey = new Map<string, string | null>()
+  if (songKeys.length) {
+    const supabase = await createClient()
+    const { data: registry } = await supabase
+      .from('song_registry')
+      .select('permalink_key, artwork_url')
+      .in('permalink_key', songKeys)
+    for (const r of registry ?? []) registryArtByKey.set(r.permalink_key, r.artwork_url ?? null)
+  }
+  const artByKey = new Map<string, string | null>()
+  await Promise.all(songs.map(async (s, i) => {
+    const key = songKeys[i]
+    if (registryArtByKey.has(key)) { artByKey.set(key, registryArtByKey.get(key) ?? null); return }
+    if (!s.musicLink) { artByKey.set(key, null); return }
+    const track = await resolveAudiusTrack(s.musicLink)
+    artByKey.set(key, track?.artwork?.['480x480'] ?? null)
+  }))
+
   return (
     <div className="rounded-xl border border-border overflow-hidden">
       <table className="w-full text-sm">
@@ -738,22 +802,32 @@ function QuickBattleSongTable({ battles, allWallets, solPrice }: {
           {songs.map((s, i) => {
             const total = s.wins + s.losses
             const rate = total > 0 ? Math.round(s.wins / total * 100) : 0
-            // Extract Audius handle initial for placeholder art
             const initial = s.title.charAt(0).toUpperCase()
+            const artUrl = artByKey.get(songKeys[i]) ?? null
             return (
               <tr key={i} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
                 <td className="px-4 py-3 text-xs text-muted-foreground">{i + 1}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    {/* Album art placeholder — links to Audius */}
+                    {/* Album art — resolved via song_registry/Audius, falls back to an initial */}
                     {s.musicLink ? (
                       <a href={s.musicLink} target="_blank" rel="noreferrer"
-                        className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#7ec1fb]/20 to-[#7ec1fb]/5 border border-[#7ec1fb]/20 flex items-center justify-center shrink-0 hover:border-[#7ec1fb]/50 transition-colors">
-                        <span className="font-rajdhani font-bold text-[#7ec1fb] text-sm">{initial}</span>
+                        className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#7ec1fb]/20 to-[#7ec1fb]/5 border border-[#7ec1fb]/20 flex items-center justify-center shrink-0 hover:border-[#7ec1fb]/50 transition-colors overflow-hidden">
+                        {artUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={artUrl} alt={s.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="font-rajdhani font-bold text-[#7ec1fb] text-sm">{initial}</span>
+                        )}
                       </a>
                     ) : (
-                      <div className="w-9 h-9 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center shrink-0">
-                        <span className="font-rajdhani font-bold text-muted-foreground text-sm">{initial}</span>
+                      <div className="w-9 h-9 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                        {artUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={artUrl} alt={s.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="font-rajdhani font-bold text-muted-foreground text-sm">{initial}</span>
+                        )}
                       </div>
                     )}
                     <div>
