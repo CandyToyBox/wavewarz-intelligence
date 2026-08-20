@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <meta name="description" content="">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" data-aria-label="brandHome">
+        <span class="brand-mark" data-content="brand.mark"></span>
+        <span>
+          <strong data-content="brand.primary"></strong>
+          <small data-content="brand.secondary"></small>
+        </span>
+      </a>
+      <nav class="top-nav" data-aria-label="nav.ariaLabel" data-list="nav.items"></nav>
+    </header>
+
+    <main>
+      <section id="home" class="hero section">
+        <div class="hero-copy">
+          <p class="eyebrow" data-content="home.eyebrow"></p>
+          <p class="time-estimate" data-content="home.time"></p>
+          <h1 data-content="home.title"></h1>
+          <p class="hero-text" data-content="home.body"></p>
+          <div class="hero-actions" data-aria-label="home.actionsAria" data-list="home.actions"></div>
+        </div>
+        <aside class="ready-panel" data-aria-label="readiness.ariaLabel">
+          <div class="progress-ring" aria-hidden="true">
+            <span id="progressPercent">0%</span>
+          </div>
+          <h2 data-content="readiness.title"></h2>
+          <p data-content="readiness.body"></p>
+          <button class="text-button" type="button" id="resetProgress" data-content="readiness.resetLabel"></button>
+        </aside>
+      </section>
+
+      <section class="trust-strip" data-aria-label="trustStrip.ariaLabel" data-list="trustStrip.items"></section>
+
+      <section class="success-callout" data-aria-label="successCallout.ariaLabel">
+        <h2 data-content="successCallout.title"></h2>
+        <p data-content="successCallout.body"></p>
+      </section>
+
+      <section id="why-wallet" class="section lesson" data-section="whyWallet"></section>
+
+      <section id="create-wallet" class="section lesson" data-section="createWallet"></section>
+
+      <section id="add-sol" class="section lesson alt" data-section="addSol"></section>
+
+      <section id="connect-wavewarz" class="section lesson" data-section="connectWavewarz"></section>
+
+      <section id="mission-complete" class="section mission-complete" data-section="missionComplete"></section>
+
+      <section id="battle-night" class="section battle" data-section="battleNight"></section>
+
+      <section id="faq" class="section faq" data-section="faq"></section>
+    </main>
+
+    <footer class="site-footer">
+      <p><strong data-content="footer.titleStrong"></strong> <span data-content="footer.titleRest"></span></p>
+      <p data-content="footer.help"></p>
+    </footer>
+
+    <script src="assets/content-fallback.js"></script>
+    <script src="assets/script.js"></script>
+  </body>
+</html>

@@ -11,6 +11,8 @@ const NAV_LINKS = [
   { href: '/battles',      label: 'Battles' },
   { href: '/leaderboards', label: 'Leaderboards' },
   { href: '/benefits',     label: 'Benefits' },
+  { href: '/voter-guide',  label: 'Voter Guide' },
+  { href: '/wavid',        label: 'WavID' },
   { href: '/claim',        label: 'Claim' },
   { href: '/api-docs',     label: 'API' },
 ]
