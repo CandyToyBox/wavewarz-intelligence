@@ -6,6 +6,7 @@ import { NavBar } from '@/components/nav-bar'
 import { IgniteRadio } from '@/components/ignite-radio'
 import { AdClickCapture } from '@/components/ad-click-capture'
 import { OutboundLink } from '@/components/outbound-link'
+import { Analytics } from '@vercel/analytics/next'
 
 const rajdhani = Rajdhani({
   subsets: ['latin'],
@@ -110,6 +111,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   )
