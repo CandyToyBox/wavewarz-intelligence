@@ -24,6 +24,18 @@ export function CommandCenterPanel({
   return (
     <div className="space-y-8">
 
+      {/* ── LEAGUE HUB ── */}
+      <a
+        href="/hub"
+        className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] to-[#111827] p-4 hover:border-[#95fe7c]/60 transition-colors"
+      >
+        <div>
+          <p className="font-rajdhani font-bold text-white tracking-wide">League Hub →</p>
+          <p className="text-xs text-muted-foreground">Identity Bibles · Battle Theses · Storyline graph · Record Book · Sponsor Inventory</p>
+        </div>
+        <span className="text-[10px] font-bold text-[#95fe7c] border border-[#95fe7c]/40 bg-[#95fe7c]/10 rounded px-2 py-0.5">ENTERTAINMENT OS</span>
+      </a>
+
       {/* ── KPI ROW (live from DB) ── */}
       <section>
         <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-3">Platform KPIs — Live from DB</p>
