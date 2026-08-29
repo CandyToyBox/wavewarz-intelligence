@@ -51,26 +51,43 @@ export type MetricsBattle = {
 }
 
 /**
- * A Main Event is multiple battles (rounds), each catalog-vs-catalog. Group
- * main battle rows that share a wallet-pair within a 6-hour window into one
- * event. Excludes prediction-market rounds.
+ * A round belongs to a Main Event if it's an official (non-quick) main battle
+ * that isn't a prediction-market round. Charity / spotlight events ARE counted
+ * (they're still Main Events on the site) — only prediction rounds are excluded.
  */
-export function countMainEvents(battles: MetricsBattle[]): number {
-  const rounds = battles
-    .filter(b => b.is_main_battle && !b.is_quick_battle && b.event_subtype !== 'prediction')
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
-  const groups: { key: string; latestAt: number }[] = []
-  for (const b of rounds) {
+export function isMainEventRound(
+  b: { is_main_battle: boolean | null; is_quick_battle: boolean | null; event_subtype: string | null },
+): boolean {
+  return !!b.is_main_battle && !b.is_quick_battle && b.event_subtype !== 'prediction'
+}
+
+/**
+ * Groups main-battle rounds that share a RAW wallet-pair within a 6-hour window
+ * into one Main Event. Caller filters to `isMainEventRound` first. This is THE
+ * canonical Main Event grouping — the homepage "Main Events" stat and the
+ * /hub events list both derive from it, so they can never disagree.
+ */
+export function groupMainEventRounds<T extends { artist1_wallet: string | null; artist2_wallet: string | null; created_at: string }>(
+  rounds: T[],
+): T[][] {
+  const sorted = [...rounds].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+  const groups: { key: string; latestAt: number; items: T[] }[] = []
+  for (const b of sorted) {
     const key = [b.artist1_wallet, b.artist2_wallet].sort().join('|')
     const t = new Date(b.created_at).getTime()
     let matched = false
     for (let i = groups.length - 1; i >= 0; i--) {
       if (groups[i].key !== key) continue
-      if (t - groups[i].latestAt <= MAIN_EVENT_WINDOW_MS) { groups[i].latestAt = t; matched = true; break }
+      if (t - groups[i].latestAt <= MAIN_EVENT_WINDOW_MS) { groups[i].latestAt = t; groups[i].items.push(b); matched = true; break }
     }
-    if (!matched) groups.push({ key, latestAt: t })
+    if (!matched) groups.push({ key, latestAt: t, items: [b] })
   }
-  return groups.length
+  return groups.map(g => g.items)
+}
+
+/** A Main Event is multiple battles (rounds), grouped by wallet-pair + 6h window. */
+export function countMainEvents(battles: MetricsBattle[]): number {
+  return groupMainEventRounds(battles.filter(isMainEventRound)).length
 }
 
 /**

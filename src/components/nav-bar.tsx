@@ -15,6 +15,7 @@ const NAV_LINKS = [
   { href: '/wavid',        label: 'WavID' },
   { href: '/claim',        label: 'Claim' },
   { href: '/api-docs',     label: 'API' },
+  { href: 'https://merch.wavewarz.info', label: 'Merch', external: true },
 ]
 
 export function NavBar() {
@@ -40,7 +41,17 @@ export function NavBar() {
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map(({ href, label }) => (
+            {NAV_LINKS.map(({ href, label, external }) => external ? (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-md text-sm font-medium transition-colors text-muted-foreground hover:text-white hover:bg-white/5"
+              >
+                {label} ↗
+              </a>
+            ) : (
               <Link
                 key={href}
                 href={href}
@@ -77,7 +88,18 @@ export function NavBar() {
       {/* Mobile menu drawer */}
       {open && (
         <div className="md:hidden border-t border-border bg-[#04080f] px-4 py-3 space-y-1">
-          {NAV_LINKS.map(({ href, label }) => (
+          {NAV_LINKS.map(({ href, label, external }) => external ? (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-muted-foreground hover:text-white hover:bg-white/5"
+            >
+              {label} ↗
+            </a>
+          ) : (
             <Link
               key={href}
               href={href}
