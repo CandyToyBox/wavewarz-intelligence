@@ -85,20 +85,29 @@ async function main() {
   // cannot fix a battle whose stored list is partial, because it looks "done".
   const force = process.argv.includes('--force')
 
-  // Target battles
-  let q = supabase
-    .from('battles')
-    .select('battle_id, artist1_name, artist2_name, total_volume_a, total_volume_b, created_at')
-    .eq('is_test_battle', false)
-    .order('created_at', { ascending: false })
-  if (idsArg) q = q.in('battle_id', idsArg.replace('--ids=', '').split(',').map(Number).filter(Boolean))
-  if (sinceArg) q = q.gte('created_at', sinceArg.replace('--since=', ''))
-  const { data: battles, error } = await q
-  if (error) { console.error(error.message); process.exit(1) }
+  // Target battles — paginated with fetchAll: a bare select caps at PostgREST's
+  // 1000 rows, so an unpaginated query silently ignored the oldest ~600 battles.
+  const idsFilter = idsArg ? idsArg.replace('--ids=', '').split(',').map(Number).filter(Boolean) : null
+  const battles = await fetchAll<{ battle_id: number; artist1_name: string; artist2_name: string; total_volume_a: number | null; total_volume_b: number | null; created_at: string }>((from, to) => {
+    let q = supabase
+      .from('battles')
+      .select('battle_id, artist1_name, artist2_name, total_volume_a, total_volume_b, created_at')
+      .eq('is_test_battle', false)
+      .order('created_at', { ascending: false })
+      .range(from, to)
+    if (idsFilter) q = q.in('battle_id', idsFilter)
+    if (sinceArg) q = q.gte('created_at', sinceArg.replace('--since=', ''))
+    return q
+  })
 
+  // Default mode trusts total_volume as a cheap "did anything trade" gate.
+  // --force cannot: total_volume is itself repaired separately and some battles
+  // carry a wrong 0 while having real trades on chain, so force checks every
+  // non-test battle and lets the chain say whether there were trades.
   let targets = (battles ?? []).filter(b =>
-    (force || !haveTrades.has(b.battle_id)) &&
-    ((b.total_volume_a ?? 0) + (b.total_volume_b ?? 0)) > 0
+    force
+      ? true
+      : (!haveTrades.has(b.battle_id) && ((b.total_volume_a ?? 0) + (b.total_volume_b ?? 0)) > 0)
   )
   if (limitArg) targets = targets.slice(0, Number(limitArg.replace('--limit=', '')) || targets.length)
 

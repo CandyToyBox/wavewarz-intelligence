@@ -88,18 +88,23 @@ async function main() {
   )
   const haveClaims = new Set(existingClaims.map(r => r.battle_id))
 
-  let q = supabase
-    .from('battles')
-    .select('battle_id, artist1_name, artist2_name, created_at')
-    .eq('is_test_battle', false)
-    .eq('winner_decided', true)
-    .order('created_at', { ascending: false })
-  if (idsArg) q = q.in('battle_id', idsArg.replace('--ids=', '').split(',').map(Number).filter(Boolean))
-  if (sinceArg) q = q.gte('created_at', sinceArg.replace('--since=', ''))
-  const { data: battles, error } = await q
-  if (error) { console.error(error.message); process.exit(1) }
+  // Paginated with fetchAll — a bare select caps at PostgREST's 1000 rows, so
+  // an unpaginated query silently skipped the oldest settled battles.
+  const idsFilter = idsArg ? idsArg.replace('--ids=', '').split(',').map(Number).filter(Boolean) : null
+  const battles = await fetchAll<{ battle_id: number; artist1_name: string; artist2_name: string; created_at: string }>((from, to) => {
+    let q = supabase
+      .from('battles')
+      .select('battle_id, artist1_name, artist2_name, created_at')
+      .eq('is_test_battle', false)
+      .eq('winner_decided', true)
+      .order('created_at', { ascending: false })
+      .range(from, to)
+    if (idsFilter) q = q.in('battle_id', idsFilter)
+    if (sinceArg) q = q.gte('created_at', sinceArg.replace('--since=', ''))
+    return q
+  })
 
-  let targets = resync ? (battles ?? []) : (battles ?? []).filter(b => !haveClaims.has(b.battle_id))
+  let targets = resync ? battles : battles.filter(b => !haveClaims.has(b.battle_id))
   if (limitArg) targets = targets.slice(0, Number(limitArg.replace('--limit=', '')) || targets.length)
 
   console.log(`\nSettled battles to check for claims: ${targets.length}` +
