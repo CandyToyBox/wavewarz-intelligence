@@ -10,6 +10,13 @@ import { getTraderLeaderboard } from '@/lib/leaderboards/traders'
  *
  * No auth required — read-only, aggregate data only. Wallet addresses are
  * public onchain data; no PII is exposed.
+ *
+ * Each trader carries `dataComplete`. When false, that wallet traded in a battle
+ * whose per-trade rows are not yet fully rebuilt from chain, so its
+ * `netPnlSol`, `totalVolumeSol` and win/loss are a lower bound — do not present
+ * its P&L as final. `dataCompleteShare` at the top is the fraction of battles
+ * verified so far. Platform-level figures in /stats are unaffected. See
+ * docs/API-CHANGELOG.md.
  */
 
 export const dynamic = 'force-dynamic'
@@ -32,11 +39,12 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const limit = Math.min(Math.max(Number(searchParams.get('limit')) || 100, 1), 500)
 
-    const { rows, solPrice } = await getTraderLeaderboard()
+    const { rows, solPrice, completeShare } = await getTraderLeaderboard()
 
     return NextResponse.json({
       updatedAt: new Date().toISOString(),
       solPriceUsd: solPrice,
+      dataCompleteShare: Math.round(completeShare * 1000) / 1000,
       count: rows.length,
       traders: rows.slice(0, limit),
     }, { headers: corsHeaders() })

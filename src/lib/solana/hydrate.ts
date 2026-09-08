@@ -120,9 +120,17 @@ export async function fetchBattleTradesFromChain(
 
   const trades: OnchainTrade[] = []
   let cursor: string | undefined
+  // A battle's whole vault history has to be walked or the result is a partial
+  // trade list that reads as complete -- which silently corrupts trader P&L for
+  // exactly the biggest battles (most pages to walk = most likely to hit the
+  // cap). 200 pages = 20,000 transactions of headroom; if we still exit via the
+  // cap rather than reaching the pre-battle floor, we return null so the caller
+  // treats it as a failed fetch, not a complete one.
+  const MAX_PAGES = 200
+  let reachedFloor = false
 
   try {
-    for (let page = 0; page < 20; page++) {  // max 2000 transactions
+    for (let page = 0; page < MAX_PAGES; page++) {
       const url =
         `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
         `?api-key=${apiKey}&limit=100` +
@@ -141,7 +149,7 @@ export async function fetchBattleTradesFromChain(
       }
 
       const txs: HeliusTx[] = await res.json()
-      if (!txs.length) break
+      if (!txs.length) { reachedFloor = true; break }  // ran out of history entirely
 
       let hitFloor = false
 
@@ -191,12 +199,17 @@ export async function fetchBattleTradesFromChain(
         // [startTimeSec, endTimeSec] the way buys/sells are.
       }
 
-      if (hitFloor || txs.length < 100) break
+      if (hitFloor || txs.length < 100) { reachedFloor = true; break }
       cursor = txs[txs.length - 1].signature
     }
   } catch (err) {
     console.error(`[trades] Error fetching trades for battle ${battleId}:`, err)
     return null
+  }
+
+  if (!reachedFloor) {
+    console.warn(`[trades] battle ${battleId} exceeded ${MAX_PAGES} pages — history incomplete, returning null`)
+    return null  // never let a truncated list pass as complete
   }
 
   return trades.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
@@ -229,9 +242,11 @@ export async function fetchBattleClaimsFromChain(
 
   const claims: OnchainTrade[] = []
   let cursor: string | undefined
+  const MAX_PAGES = 200  // 20,000 tx of headroom — see fetchBattleTradesFromChain
+  let reachedFloor = false
 
   try {
-    for (let page = 0; page < 20; page++) {  // max 2000 transactions
+    for (let page = 0; page < MAX_PAGES; page++) {
       const url =
         `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
         `?api-key=${apiKey}&limit=100` +
@@ -249,7 +264,7 @@ export async function fetchBattleClaimsFromChain(
       }
 
       const txs: HeliusTx[] = await res.json()
-      if (!txs.length) break
+      if (!txs.length) { reachedFloor = true; break }
 
       for (const tx of txs) {
         if (endTimeSec && tx.timestamp < endTimeSec) continue  // claims can't precede settlement
@@ -281,11 +296,16 @@ export async function fetchBattleClaimsFromChain(
         }
       }
 
-      if (txs.length < 100) break
+      if (txs.length < 100) { reachedFloor = true; break }
       cursor = txs[txs.length - 1].signature
     }
   } catch (err) {
     console.error(`[claims] Error fetching claims for battle ${battleId}:`, err)
+    return null
+  }
+
+  if (!reachedFloor) {
+    console.warn(`[claims] battle ${battleId} exceeded ${MAX_PAGES} pages — history incomplete, returning null`)
     return null
   }
 

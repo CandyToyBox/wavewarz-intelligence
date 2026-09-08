@@ -16,9 +16,10 @@ export const metadata: Metadata = {
 }
 
 export default async function TradersLeaderboardPage() {
-  const { rows, solPrice } = await getTraderLeaderboard()
+  const { rows, solPrice, completeShare } = await getTraderLeaderboard()
 
   const totalVolume = rows.reduce((s, r) => s + r.totalVolumeSol, 0)
+  const anyIncomplete = rows.some(r => !r.dataComplete)
 
   return (
     <div className="space-y-6">
@@ -26,6 +27,20 @@ export default async function TradersLeaderboardPage() {
 
       {/* Wallet lookup */}
       <TraderLookup />
+
+      {anyIncomplete && (
+        <div className="rounded-xl border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-4 py-3">
+          <p className="text-xs text-[#f59e0b] font-bold uppercase tracking-widest mb-1">Rebuilding from chain</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Per-trade records for the largest battles are being re-fetched from Solana
+            {completeShare > 0 && <> ({(completeShare * 100).toFixed(0)}% verified so far)</>}.
+            Net&nbsp;P&amp;L is hidden for wallets whose trade history is not yet fully verified,
+            and volume for those wallets is a lower bound. Platform volume, artist payouts and
+            settlement figures on the other pages are unaffected — those come from settled
+            battle state, not per-trade data.
+          </p>
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -41,7 +56,7 @@ export default async function TradersLeaderboardPage() {
           <p className="text-sm text-muted-foreground mt-1">Fans and speculators ranked by total SOL traded across all battles.</p>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Trader Volume</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Ranked Trader Volume{anyIncomplete && <span className="text-[#f59e0b]"> ·&nbsp;partial</span>}</p>
           <p className="font-rajdhani font-bold text-2xl text-white">{formatSol(totalVolume)} <span className="text-muted-foreground text-lg font-normal">SOL</span></p>
           <p className="text-xs text-muted-foreground">{solToUsd(totalVolume, solPrice)}</p>
         </div>
@@ -116,7 +131,11 @@ export default async function TradersLeaderboardPage() {
                     )}
                   </td>
                   <td className="px-4 py-3 text-right hidden md:table-cell">
-                    {r.netPnlSol !== 0 ? (
+                    {!r.dataComplete ? (
+                      <Tip text="Hidden until this wallet's full trade history is verified from chain" wide>
+                        <span className="text-[10px] text-[#f59e0b]/80">unverified</span>
+                      </Tip>
+                    ) : r.netPnlSol !== 0 ? (
                       <>
                         <p className={`font-mono text-xs font-bold ${r.netPnlPositive ? 'text-[#95fe7c]' : 'text-red-400'}`}>
                           {r.netPnlPositive ? '+' : '-'}{r.netPnlFmt} SOL

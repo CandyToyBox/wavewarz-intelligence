@@ -11,12 +11,17 @@
  *
  * Usage:
  *   npx tsx scripts/backfill-trades-from-chain.ts                 # all battles missing trades
+ *   npx tsx scripts/backfill-trades-from-chain.ts --force         # re-fetch + replace EVERY battle (full-history repair)
  *   npx tsx scripts/backfill-trades-from-chain.ts --since=2026-05-01
  *   npx tsx scripts/backfill-trades-from-chain.ts --ids=1781142090,1781140240
  *   npx tsx scripts/backfill-trades-from-chain.ts --limit=50      # newest 50 only
  *   npx tsx scripts/backfill-trades-from-chain.ts --dry-run
  *
- * Safe to re-run: battles that already have trades rows are skipped.
+ * Default: battles that already have trades rows are skipped. --force ignores
+ * that and replaces every battle's buy/sell rows via replace_battle_trades
+ * (atomic, no dupes) — the only mode that can fix a battle whose stored list is
+ * partial. Every battle gets a battles.trades_status of complete / incomplete /
+ * no_onchain_trades so trader P&L can exclude anything not fully fetched.
  * Requires .env.local: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
  * NEXT_PUBLIC_HELIUS_API_KEY.
  */
@@ -74,6 +79,12 @@ async function main() {
   )
   const haveTrades = new Set(existing.map(r => r.battle_id))
 
+  // --force re-fetches EVERY battle and replaces its buy/sell rows via the
+  // replace_battle_trades RPC (delete non-claim + insert, atomic, no dupes).
+  // Use it for the full-history repair -- the default skip-if-present mode
+  // cannot fix a battle whose stored list is partial, because it looks "done".
+  const force = process.argv.includes('--force')
+
   // Target battles
   let q = supabase
     .from('battles')
@@ -86,15 +97,24 @@ async function main() {
   if (error) { console.error(error.message); process.exit(1) }
 
   let targets = (battles ?? []).filter(b =>
-    !haveTrades.has(b.battle_id) &&
+    (force || !haveTrades.has(b.battle_id)) &&
     ((b.total_volume_a ?? 0) + (b.total_volume_b ?? 0)) > 0
   )
   if (limitArg) targets = targets.slice(0, Number(limitArg.replace('--limit=', '')) || targets.length)
 
-  console.log(`\nBattles to backfill: ${targets.length} (skipping ${haveTrades.size ? [...haveTrades].length : 0} already populated)\n`)
+  console.log(`\nBattles to ${force ? 're-fetch (force)' : 'backfill'}: ${targets.length}` +
+    (force ? '' : ` (skipping ${haveTrades.size} already populated)`) + '\n')
   if (!targets.length) { console.log('Nothing to do.'); return }
 
-  let done = 0, skipped = 0, failed = 0, totalTrades = 0
+  let done = 0, skipped = 0, failed = 0, incomplete = 0, totalTrades = 0
+
+  // Records this battle's buy/sell completeness so trader P&L can exclude
+  // battles that never fetched cleanly (see battles.trades_status).
+  async function setStatus(battleId: number, status: 'complete' | 'incomplete' | 'no_onchain_trades') {
+    if (dryRun) return
+    const { error: e } = await supabase.from('battles').update({ trades_status: status }).eq('battle_id', battleId)
+    if (e) console.warn(`   (could not set trades_status=${status} for ${battleId}: ${e.message})`)
+  }
 
   for (const b of targets) {
     process.stdout.write(`  #${b.battle_id} ${String(b.artist1_name).slice(0, 18)} vs ${String(b.artist2_name).slice(0, 18)}... `)
@@ -106,18 +126,38 @@ async function main() {
         continue
       }
       const trades = await fetchBattleTradesFromChain(b.battle_id, onchain.start_time_sec, onchain.end_time_sec)
-      if (!trades || trades.length === 0) {
-        console.log('0 trades on chain — skipped')
+      if (trades === null) {
+        // fetch failed or history exceeded the page cap — do NOT touch stored
+        // rows (a partial replace would be worse than a stale-but-known list)
+        console.log('fetch incomplete — marked, rows left as-is')
+        await setStatus(b.battle_id, 'incomplete')
+        incomplete++
+        continue
+      }
+      if (trades.length === 0) {
+        console.log('0 trades on chain')
+        if (force && haveTrades.has(b.battle_id)) {
+          await supabase.rpc('replace_battle_trades', { p_battle_id: b.battle_id, p_trades: [] })
+        }
+        await setStatus(b.battle_id, 'no_onchain_trades')
         skipped++
         continue
       }
       const vol = trades.reduce((s, t) => s + t.amount_sol, 0)
       if (!dryRun) {
-        // chunked insert (PostgREST payload limits)
-        for (let i = 0; i < trades.length; i += 500) {
-          const { error: insErr } = await supabase.from('trades').insert(trades.slice(i, i + 500))
-          if (insErr) throw new Error(insErr.message)
+        if (force || haveTrades.has(b.battle_id)) {
+          // atomic delete-non-claim + insert, advisory-locked per battle
+          const { error: rpcErr } = await supabase.rpc('replace_battle_trades', {
+            p_battle_id: b.battle_id, p_trades: trades,
+          })
+          if (rpcErr) throw new Error(rpcErr.message)
+        } else {
+          for (let i = 0; i < trades.length; i += 500) {
+            const { error: insErr } = await supabase.from('trades').insert(trades.slice(i, i + 500))
+            if (insErr) throw new Error(insErr.message)
+          }
         }
+        await setStatus(b.battle_id, 'complete')
       }
       console.log(`${trades.length} trades, ${vol.toFixed(2)} SOL${dryRun ? ' [dry run]' : ' ✓'}`)
       done++
@@ -130,7 +170,8 @@ async function main() {
   }
 
   console.log('\n' + '─'.repeat(70))
-  console.log(`Backfilled: ${done} battles (${totalTrades} trades)`)
+  console.log(`Written:    ${done} battles (${totalTrades} trades)`)
+  console.log(`Incomplete: ${incomplete} (marked trades_status=incomplete, excluded from P&L)`)
   console.log(`Skipped:    ${skipped}`)
   console.log(`Errors:     ${failed}`)
   console.log('─'.repeat(70))

@@ -41,11 +41,26 @@ export default async function TraderPage({ params }: Props) {
   const battlesRes = battleIds.length > 0
     ? await supabase
         .from('battles')
-        .select('battle_id, artist1_name, artist2_name, artist1_wallet, artist2_wallet, artist1_pool, artist2_pool, total_volume_a, total_volume_b, winner_artist_a, winner_decided, status, created_at, is_quick_battle, is_community_battle, image_url')
+        .select('battle_id, artist1_name, artist2_name, artist1_wallet, artist2_wallet, artist1_pool, artist2_pool, total_volume_a, total_volume_b, winner_artist_a, winner_decided, status, created_at, is_quick_battle, is_community_battle, image_url, trades_status')
         .in('battle_id', battleIds)
     : { data: [] }
 
   const battleMap = new Map((battlesRes.data ?? []).map(b => [b.battle_id, b]))
+
+  // Per-battle buy/claim presence — a claim with no buy in the same battle proves
+  // that battle's buy rows are missing for this wallet, so its P&L is a lower
+  // bound. Also honour battles.trades_status. Mirrors src/lib/leaderboards/traders.ts.
+  const buyByBattle = new Set<number>()
+  const claimByBattle = new Set<number>()
+  for (const t of trades) {
+    if (!t.battle_id) continue
+    if (t.trade_type === 'claim') claimByBattle.add(t.battle_id)
+    else if (t.trade_type?.toLowerCase().includes('buy')) buyByBattle.add(t.battle_id)
+  }
+  let claimedWithoutBuying = false
+  for (const bid of claimByBattle) if (!buyByBattle.has(bid)) { claimedWithoutBuying = true; break }
+  const allBattlesComplete = (battlesRes.data ?? []).every(b => b.trades_status === 'complete')
+  const dataComplete = !claimedWithoutBuying && (battleIds.length === 0 || allBattlesComplete)
 
   // Aggregate stats
   let totalVolume = 0
@@ -126,9 +141,20 @@ export default async function TraderPage({ params }: Props) {
         </div>
       </div>
 
+      {!dataComplete && (
+        <div className="rounded-xl border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-4 py-3">
+          <p className="text-xs text-[#f59e0b] font-bold uppercase tracking-widest mb-1">Trade history being verified</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            This wallet traded in a battle whose per-trade records are still being re-fetched
+            from Solana. Volume and win/loss below are a lower bound and Net&nbsp;P&amp;L is hidden
+            until every battle is verified.
+          </p>
+        </div>
+      )}
+
       {/* Stats grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Total Volume" value={`${formatSol(totalVolume)} SOL`} sub={solToUsd(totalVolume, sp)} accent="#7ec1fb" />
+        <StatCard label={dataComplete ? 'Total Volume' : 'Volume (min.)'} value={`${formatSol(totalVolume)} SOL`} sub={solToUsd(totalVolume, sp)} accent="#7ec1fb" />
         <StatCard label="Battles" value={String(battleIds.length)} sub={`${trades.length} trades`} />
         <StatCard
           label={<Tip text="Win rate across settled battles where side (A/B) is recorded">Win Rate</Tip>}
@@ -137,9 +163,9 @@ export default async function TraderPage({ params }: Props) {
         />
         <StatCard
           label={<Tip text="SOL received back — from mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced directly from onchain vault transactions, including withdrawals claimed after settlement." wide>Net P&L</Tip>}
-          value={netPnl !== 0 ? `${netPnl >= 0 ? '+' : ''}${formatSol(netPnl)} SOL` : '—'}
-          sub={netPnl !== 0 ? solToUsd(Math.abs(netPnl), sp) : 'no buy/sell data'}
-          accent={netPnl > 0 ? '#95fe7c' : netPnl < 0 ? '#ef4444' : undefined}
+          value={!dataComplete ? '—' : netPnl !== 0 ? `${netPnl >= 0 ? '+' : ''}${formatSol(netPnl)} SOL` : '—'}
+          sub={!dataComplete ? 'verifying trade history' : netPnl !== 0 ? solToUsd(Math.abs(netPnl), sp) : 'no buy/sell data'}
+          accent={!dataComplete ? undefined : netPnl > 0 ? '#95fe7c' : netPnl < 0 ? '#ef4444' : undefined}
         />
       </div>
 
