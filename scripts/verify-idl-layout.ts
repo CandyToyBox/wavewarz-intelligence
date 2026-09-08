@@ -79,7 +79,7 @@ async function main() {
     // PDA bumps are found top-down from 255, so usually high but can be lower.
     bump('bumps @16-19 are plausible (>= 0xC0)', [16, 17, 18, 19].every(o => raw[o] >= 0xc0))
     bump('mint_a @132 is a real pubkey', (() => { try { new PublicKey(raw.subarray(132, 164)); return true } catch { return false } })())
-    bump('supply_a @196 == sol_balance_a @212', u64(O.artist_a_supply) !== u64(O.artist_a_sol_balance) || u64(O.artist_a_supply) === 0n) // just record; not an assertion
+    bump('supply_a @196 == sol_balance_a @212', u64(O.artist_a_supply) !== u64(O.artist_a_sol_balance) || u64(O.artist_a_supply) === BigInt(0)) // just record; not an assertion
     bump('sol_balance_a @212 == pool_a @228 (bytes identical)', u64(O.artist_a_sol_balance) === u64(O.artist_a_pool))
     bump('winner_artist_a @244 is 0|1', raw[O.winner_artist_a] <= 1)
     bump('winner_decided @245 is 0|1', raw[O.winner_decided] <= 1)
