@@ -608,144 +608,31 @@ Human judge | X (Twitter) poll | SOL vote
 
 ---
 
-## 14. SOLANA PROGRAM IDL (Frontend Reference)
+## 14. SOLANA PROGRAM — READ-PATH REFERENCE
 
-```json
-{
-  "address": "9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo",
-  "metadata": { "name": "wavewarzvtwo", "version": "0.1.0" },
-  "instructions": [
-    {
-      "name": "initializeBattle",
-      "discriminator": [117, 108, 166, 159, 146, 82, 246, 223],
-      "accounts": [
-        { "name": "battle", "writable": true, "pda": { "seeds": [{"kind": "const", "value": [98,97,116,116,108,101]}, {"kind": "arg", "type": "u64", "path": "params.battle_id"}] } },
-        { "name": "admin", "writable": true, "signer": true },
-        { "name": "artistA" }, { "name": "artistB" }, { "name": "wavewarzWallet" },
-        { "name": "battleVault", "writable": true, "pda": { "seeds": [{"kind": "const", "value": [98,97,116,116,108,101,95,118,97,117,108,116]}, {"kind": "arg", "type": "u64", "path": "params.battle_id"}] } },
-        { "name": "systemProgram", "address": "11111111111111111111111111111111" },
-        { "name": "rent", "address": "SysvarRent111111111111111111111111111111111" }
-      ],
-      "args": [{ "name": "params", "type": { "defined": { "name": "BattleInitParams" } } }]
-    },
-    {
-      "name": "initializeMints",
-      "discriminator": [189, 84, 85, 142, 177, 200, 57, 22],
-      "accounts": [
-        { "name": "battle", "writable": true },
-        { "name": "artistAMint", "writable": true, "pda": { "seeds": [{"kind": "const", "type": "string", "value": "artist_a_mint"}, {"kind": "account", "account": "Battle", "path": "battle.battle_id"}] } },
-        { "name": "artistBMint", "writable": true, "pda": { "seeds": [{"kind": "const", "type": "string", "value": "artist_b_mint"}, {"kind": "account", "account": "Battle", "path": "battle.battle_id"}] } },
-        { "name": "admin", "writable": true, "signer": true },
-        { "name": "tokenProgram" }, { "name": "systemProgram" }, { "name": "rent" }
-      ]
-    },
-    {
-      "name": "buyShares",
-      "discriminator": [40, 239, 138, 154, 8, 37, 106, 108],
-      "accounts": [
-        { "name": "battle", "writable": true },
-        { "name": "artistAMint", "writable": true }, { "name": "artistBMint", "writable": true },
-        { "name": "artistAToken", "writable": true }, { "name": "artistBToken", "writable": true },
-        { "name": "trader", "writable": true, "signer": true },
-        { "name": "wavewarzWallet", "writable": true },
-        { "name": "artistA", "writable": true }, { "name": "artistB", "writable": true },
-        { "name": "battleVault", "writable": true },
-        { "name": "tokenProgram" }, { "name": "systemProgram" }, { "name": "associatedTokenProgram" }
-      ],
-      "args": [
-        { "name": "amount", "type": "u64" }, { "name": "artistA", "type": "bool" },
-        { "name": "minTokensOut", "type": "u64" }, { "name": "deadline", "type": "i64" }
-      ]
-    },
-    {
-      "name": "sellShares",
-      "discriminator": [184, 164, 169, 16, 231, 158, 199, 196],
-      "accounts": [
-        { "name": "battle", "writable": true },
-        { "name": "artist_a_mint", "writable": true }, { "name": "artist_b_mint", "writable": true },
-        { "name": "artist_a_token", "writable": true }, { "name": "artist_b_token", "writable": true },
-        { "name": "trader", "writable": true, "signer": true },
-        { "name": "wavewarz_wallet", "writable": true },
-        { "name": "artist_a", "writable": true }, { "name": "artist_b", "writable": true },
-        { "name": "battle_vault", "writable": true },
-        { "name": "token_program" }, { "name": "system_program" }, { "name": "associated_token_program" }
-      ],
-      "args": [
-        { "name": "amount", "type": "u64" }, { "name": "artistA", "type": "bool" },
-        { "name": "minSolOut", "type": "u64" }, { "name": "deadline", "type": "i64" }
-      ]
-    },
-    {
-      "name": "endBattle",
-      "discriminator": [80, 145, 208, 48, 183, 92, 168, 112],
-      "accounts": [
-        { "name": "battle", "writable": true },
-        { "name": "battle_vault", "writable": true, "pda": { "seeds": [{"kind": "const", "type": "string", "value": "battle_vault"}, {"kind": "account", "account": "Battle", "path": "battle.battle_id"}] } },
-        { "name": "artist_a", "writable": true }, { "name": "artist_b", "writable": true },
-        { "name": "wavewarz_wallet", "writable": true },
-        { "name": "system_program" }, { "name": "rent" }
-      ],
-      "args": []
-    },
-    {
-      "name": "claimShares",
-      "discriminator": [130, 131, 29, 237, 134, 20, 110, 245],
-      "accounts": [
-        { "name": "battle", "writable": true }, { "name": "battleVault", "writable": true },
-        { "name": "trader", "writable": true, "signer": true },
-        { "name": "artistAToken", "writable": true }, { "name": "artistBToken", "writable": true },
-        { "name": "artistAMint", "writable": true }, { "name": "artistBMint", "writable": true },
-        { "name": "tokenProgram" }, { "name": "systemProgram" }
-      ],
-      "args": []
-    }
-  ],
-  "accounts": [
-    { "name": "Battle", "discriminator": [81, 148, 121, 71, 63, 166, 116, 24] }
-  ],
-  "types": [
-    {
-      "name": "Battle",
-      "type": { "kind": "struct", "fields": [
-        { "name": "battle_id", "type": "u64" }, { "name": "battle_bump", "type": "u8" },
-        { "name": "artist_a_mint_bump", "type": "u8" }, { "name": "artist_b_mint_bump", "type": "u8" },
-        { "name": "battle_vault_bump", "type": "u8" }, { "name": "start_time", "type": "i64" },
-        { "name": "end_time", "type": "i64" }, { "name": "artist_a_wallet", "type": "pubkey" },
-        { "name": "artist_b_wallet", "type": "pubkey" }, { "name": "wavewarz_wallet", "type": "pubkey" },
-        { "name": "artist_a_mint", "type": "pubkey" }, { "name": "artist_b_mint", "type": "pubkey" },
-        { "name": "artist_a_supply", "type": "u64" }, { "name": "artist_b_supply", "type": "u64" },
-        { "name": "artist_a_sol_balance", "type": "u64" }, { "name": "artist_b_sol_balance", "type": "u64" },
-        { "name": "artist_a_pool", "type": "u64" }, { "name": "artist_b_pool", "type": "u64" },
-        { "name": "winner_artist_a", "type": "bool" }, { "name": "winner_decided", "type": "bool" },
-        { "name": "transaction_state", "type": { "defined": { "name": "TransactionState" } } },
-        { "name": "is_initialized", "type": "bool" }, { "name": "is_active", "type": "bool" },
-        { "name": "total_distribution_amount", "type": "u64" }, { "name": "admin", "type": "pubkey" }
-      ]}
-    },
-    { "name": "BattleInitParams", "type": { "kind": "struct", "fields": [
-      { "name": "battle_id", "type": "u64" }, { "name": "battle_duration", "type": "i64" },
-      { "name": "start_time", "type": "i64" }
-    ]}},
-    { "name": "TransactionState", "type": { "kind": "enum", "variants": [{"name": "Idle"}, {"name": "InProgress"}] }}
-  ],
-  "errors": [
-    { "code": 6000, "name": "InvalidDuration" }, { "code": 6001, "name": "BattleEnded" },
-    { "code": 6002, "name": "BattleActive" }, { "code": 6003, "name": "BattleNotActive" },
-    { "code": 6004, "name": "InvalidStartTime" }, { "code": 6005, "name": "InsufficientFunds" },
-    { "code": 6006, "name": "InvalidAmount" }, { "code": 6007, "name": "MathOverflow" },
-    { "code": 6008, "name": "InvalidCalculation" }, { "code": 6009, "name": "BattleNotEnded" },
-    { "code": 6010, "name": "WinnerAlreadyDecided" }, { "code": 6011, "name": "BattleAlreadyInitialized" },
-    { "code": 6012, "name": "MintsAlreadyInitialized" }, { "code": 6013, "name": "DeadlineExceeded" },
-    { "code": 6014, "name": "SlippageExceeded" }, { "code": 6015, "name": "InvalidTokenMint" },
-    { "code": 6016, "name": "TieNotAllowed" }, { "code": 6017, "name": "NoTokensToClaim" },
-    { "code": 6018, "name": "InsufficientFundsForTransaction" }, { "code": 6019, "name": "NonZeroBalance" },
-    { "code": 6020, "name": "MathOperationOverflow" }, { "code": 6021, "name": "InvalidVaultOwner" },
-    { "code": 6022, "name": "InvalidTokenAccountOwner" }, { "code": 6023, "name": "InvalidBattleVault" },
-    { "code": 6024, "name": "InsufficientVaultBalance" }, { "code": 6025, "name": "WinnerNotDecided" },
-    { "code": 6026, "name": "TransactionInProgress" }, { "code": 6027, "name": "InvalidTransactionState" }
-  ]
-}
-```
+This repo only ever **reads** the program (never signs its instructions), so this
+section carries only what the read path needs. The full Anchor IDL is **not kept
+in this public repo** — it lives in the private `bettercallzaal/wavewarz-protocol`
+repo (`chain/wavewarz.idl.json`, verified 40/40 against mainnet), alongside the
+upgrade-authority analysis. Ask Samantha, Hurric4n3ike, or Zaal for access.
+
+**Program ID:** `9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo` (Anchor, Solana Mainnet)
+
+**PDA seeds** (`battle_id` as u64 LE — see `src/lib/solana/pda.ts`):
+`["battle", id]` · `["battle_vault", id]` · `["artist_a_mint", id]` · `["artist_b_mint", id]`
+
+**Instruction discriminators the parser matches** (`src/lib/solana/hydrate.ts`):
+`buyShares [40,239,138,154,8,37,106,108]` · `sellShares [184,164,169,16,231,158,199,196]` · `claimShares [130,131,29,237,134,20,110,245]`
+— a BUY carries a u64 LE lamport `amount` at bytes 8–15 and an `is_artist_a` flag at byte 16.
+
+**Battle account** (353 bytes, decoded in `src/lib/solana/parser.ts`): 8-byte
+discriminator, then `battle_id` u64, 4 bump bytes, `start_time`/`end_time` i64,
+`artist_a_wallet`/`artist_b_wallet`/`wavewarz_wallet`/`artist_a_mint`/`artist_b_mint`
+pubkeys, `artist_a/b_supply`, `artist_a/b_sol_balance`, `artist_a/b_pool` (all u64),
+`winner_artist_a`/`winner_decided` bools, `transaction_state` u8,
+`is_initialized`/`is_active` bools, `total_distribution_amount` u64, `admin` pubkey
+(the battle creator). Struct ends at byte 289; 289–352 is a zero reserve.
+`sol_balance` and `pool` are declared as separate fields but hold identical values.
 
 ---
 
