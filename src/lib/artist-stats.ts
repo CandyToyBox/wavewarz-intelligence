@@ -240,7 +240,6 @@ export async function getArtistStats(id: string): Promise<ArtistStats | null> {
     // Skip genuinely live battles — but include ACTIVE battles that have been judged
     if (b.status === 'ACTIVE' && !b.winner_decided) continue
 
-    const isArtistA = allWallets.includes(b.artist1_wallet)
     const p1 = b.artist1_pool ?? 0
     const p2 = b.artist2_pool ?? 0
 
@@ -248,19 +247,39 @@ export async function getArtistStats(id: string): Promise<ArtistStats | null> {
     const artistAWon = (b.winner_decided && b.winner_artist_a !== null)
       ? Boolean(b.winner_artist_a)
       : p1 >= p2
-    const won = isArtistA ? artistAWon : !artistAWon
-    const myVolume = isArtistA ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
     const { loserPool } = getWinnerLoserPools(p1, p2, artistAWon)
 
-    wonByBattleId.set(b.battle_id, won)
-    if (b.is_quick_battle) {
-      if (won) quickWins++; else quickLosses++
-    }
+    // The competitive unit of a Quick Battle is the SONG, and an artist's record
+    // is the sum of their songs' outcomes. Normally the artist has one song in
+    // the battle -> one side is "mine". A self-battle is one artist's two OWN
+    // songs against each other, so BOTH sides are theirs: one song wins, one
+    // loses, and the record honestly carries +1 win AND +1 loss (plus both
+    // sides' volume and earnings). Not a penalty -- the accurate aggregate.
+    // Only Quick Battles are ever self-battles in practice; a self Main Event
+    // stays single-sided (round grouping below can't take a duplicate key).
+    // See docs/API-CHANGELOG.md.
+    const iAmA = allWallets.includes(b.artist1_wallet)
+    const iAmB = allWallets.includes(b.artist2_wallet)
+    const isSelfQuickBattle = iAmA && iAmB && b.is_quick_battle
+    const mySides: Array<'a' | 'b'> = isSelfQuickBattle ? ['a', 'b'] : iAmA ? ['a'] : ['b']
 
-    totalVolumeSol += myVolume
-    const earnings = calculateArtistEarnings(myVolume, loserPool, won)
-    tradingFeesSol += earnings.tradingFees
-    settlementBonusSol += earnings.settlementBonus
+    for (const side of mySides) {
+      const won = side === 'a' ? artistAWon : !artistAWon
+      const myVolume = side === 'a' ? (b.total_volume_a ?? 0) : (b.total_volume_b ?? 0)
+
+      // wonByBattleId feeds the Main Event round grouping below; a self Quick
+      // Battle never reaches that, and writing it twice would just overwrite.
+      if (!isSelfQuickBattle) wonByBattleId.set(b.battle_id, won)
+
+      if (b.is_quick_battle) {
+        if (won) quickWins++; else quickLosses++
+      }
+
+      totalVolumeSol += myVolume
+      const earnings = calculateArtistEarnings(myVolume, loserPool, won)
+      tradingFeesSol += earnings.tradingFees
+      settlementBonusSol += earnings.settlementBonus
+    }
   }
 
   const decidedMainBattles = mainEventBattles.filter(b => wonByBattleId.has(b.battle_id))

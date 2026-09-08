@@ -32,6 +32,7 @@ type RawBattle = {
   winner_artist_a: number | null
   created_at: string
   battle_duration: number | null
+  event_subtype: string | null
 }
 
 type CommunityRow = {
@@ -52,7 +53,7 @@ async function getData() {
     // fetchAll paginates past the 1000-row cap; .then keeps the {data} shape.
     fetchAll((from, to) => supabase
       .from('battles')
-      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a,created_at,battle_duration')
+      .select('battle_id,artist1_name,artist1_wallet,artist2_name,artist2_wallet,artist1_pool,artist2_pool,total_volume_a,total_volume_b,image_url,status,winner_decided,winner_artist_a,created_at,battle_duration,event_subtype')
       .eq('is_community_battle', true)
       // Community = DIY artist/name/brand vs same. A song-vs-song (Audius)
       // battle is a Quick Battle even if it carries the community flag, so
@@ -60,6 +61,11 @@ async function getData() {
       .eq('is_quick_battle', false)
       .eq('is_test_battle', false)
       .range(from, to)).then(data => ({ data })),
+    // NOTE: benefit battles (event_subtype 'charity') are filtered out below in
+    // JS — SQL neq() would also drop the NULL-subtype rows that make up most of
+    // the leaderboard. A Benefit Battle (IndieZ vs ClassicZ, PolyRaiders wallet
+    // on both sides) is a fundraiser, not a competitor rivalry, so it does not
+    // belong in a ranked competitor list.
     supabase
       .from('artist_profiles')
       .select('primary_wallet,profile_picture_url'),
@@ -68,7 +74,10 @@ async function getData() {
 
   const allBattles = (res.data ?? []) as RawBattle[]
   const now = Date.now()
-  const battles = allBattles.filter(b => !isBattleLive(b, now))
+  const battles = allBattles
+    .filter(b => !isBattleLive(b, now))
+    // Benefit Battles are fundraisers, not rivalries — excluded from the ranked list.
+    .filter(b => b.event_subtype !== 'charity')
   const pfpByWallet = new Map<string, string | null>(
     (profilesRes.data ?? []).map(p => [p.primary_wallet, p.profile_picture_url])
   )
