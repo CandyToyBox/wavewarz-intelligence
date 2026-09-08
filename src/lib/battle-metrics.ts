@@ -120,14 +120,17 @@ export function platformMetrics(battles: MetricsBattle[]) {
   const mainEvents = countMainEvents(battles)
 
   // Revenue — every source, shown everywhere (transparent):
-  const tradingFees = totalVolume * 0.005                                  // 0.5% per trade
+  // The trade fee is 1.500% total, split 67/33 artist:platform on chain — so the
+  // platform leg is 0.495%, not 0.50%. Measured, see wavewarz-math.ts.
+  const tradingFees = totalVolume * 0.00495                                // platform leg of the 1.5% trade fee
   const settlement = totalLoserPools * 0.03                                // 3% of loser pool at settlement
   const quickLaunch = quickCount * (LAUNCH_FEES.quickLaunch + LAUNCH_FEES.quickQueue)
   const communityLaunch = communityCount * LAUNCH_FEES.community
   const totalRevenue = tradingFees + settlement + quickLaunch + communityLaunch
 
-  // Artist payouts: 1% of total volume + 5%/2% of loser pools at settlement (= 7%)
-  const artistPayouts = totalVolume * 0.01 + totalLoserPools * 0.07
+  // Artist payouts: 1.005% of total volume (artist leg of the 1.5% trade fee) +
+  // 5%/2% of loser pools at settlement (= 7%)
+  const artistPayouts = totalVolume * 0.01005 + totalLoserPools * 0.07
 
   return {
     totalVolume, totalLoserPools,

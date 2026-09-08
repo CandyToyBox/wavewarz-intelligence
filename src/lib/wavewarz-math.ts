@@ -8,12 +8,20 @@
 // ==========================================
 // ARTIST EARNINGS
 // ==========================================
+// The trade fee is 1.500% of gross buy volume, and the program splits it 67/33
+// artist-to-platform — so the artist leg is 1.005% and the platform leg 0.495%,
+// NOT the 1.00%/0.50% the whitepaper and fee schedule state. Measured on chain:
+// the artist leg lands at exactly 1.0050% across a 223-buy sample (aggregate and
+// per-buy median), the platform leg at 0.4950% (per-buy median). Confirmed
+// against Zaal's decode (bettercallzaal/wavewarz-protocol recon/ARTIST-EARNINGS.md,
+// exact lamports on 14 trades). Always state all three parts — "1.005%" alone
+// reads as a typo for 1.00%.
 export function calculateArtistEarnings(
   artistTotalVolume: number,
   loserPoolTotal: number,
   isWinner: boolean
 ) {
-  const tradingFees = artistTotalVolume * 0.01
+  const tradingFees = artistTotalVolume * 0.01005
   const settlementBonus = loserPoolTotal * (isWinner ? 0.05 : 0.02)
 
   return {
@@ -30,7 +38,9 @@ export function calculatePlatformRevenue(
   totalPlatformVolume: number,
   totalLoserPools: number
 ) {
-  const tradingFees = totalPlatformVolume * 0.005
+  // Platform leg of the 1.500% trade fee — 33% of it, i.e. 0.495% (see
+  // calculateArtistEarnings). Was 0.50%.
+  const tradingFees = totalPlatformVolume * 0.00495
   const settlementBonus = totalLoserPools * 0.03
 
   return {

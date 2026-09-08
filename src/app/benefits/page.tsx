@@ -150,7 +150,7 @@ export default async function BenefitsPage() {
   }, 0)
 
   // Platform redirects 100% of its fees to charity
-  const redirectedTradingFees = totalVolume * 0.005
+  const redirectedTradingFees = totalVolume * 0.00495
   const redirectedSettlement = totalLoserPools * 0.03
   const totalOnchainRedirected = redirectedTradingFees + redirectedSettlement
 
@@ -841,7 +841,7 @@ function HowItWorksCard({ step, title, desc }: { step: string; title: string; de
 function BenefitBattleCard({ battle: b, solPrice }: { battle: BenefitBattle; solPrice: number }) {
   const vol = (b.total_volume_a ?? 0) + (b.total_volume_b ?? 0)
   const loserPool = Math.min(b.artist1_pool ?? 0, b.artist2_pool ?? 0)
-  const redirectedFees = vol * 0.005
+  const redirectedFees = vol * 0.00495
   const redirectedSettlement = loserPool * 0.03
   const totalRedirected = redirectedFees + redirectedSettlement
   const date = new Date(b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })

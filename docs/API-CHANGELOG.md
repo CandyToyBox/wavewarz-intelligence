@@ -27,6 +27,29 @@ changes, performance work.
 
 <!-- newest first -->
 
+## 2026-09-09 — artist trade-fee rate corrected to 1.005% (platform 0.495%) — RECOMPUTE (shipped)
+
+**Endpoints:** `/stats` (`artistPayouts`), `/battles/:id` (`artistEarnings`),
+`/leaderboards/artists` (`totalEarnings`).
+**Type:** RECOMPUTE.
+
+- **What:** the trade fee is **1.500%** of gross buy volume, and the program
+  splits it **67/33 artist-to-platform** on chain — so the **artist leg is
+  1.005%** and the **platform leg 0.495%**, not the 1.00% / 0.50% the whitepaper
+  and fee schedule state. `wavewarz-math.ts` and `battle-metrics.ts` updated
+  (`0.01 → 0.01005`, `0.005 → 0.00495`).
+- **Why:** Zaal's decode (`bettercallzaal/wavewarz-protocol`,
+  `recon/ARTIST-EARNINGS.md`) measured it at exact lamports on 14 trades;
+  confirmed here by decomposing the native transfers on a 223-buy sample — the
+  artist leg lands at **exactly 1.0050%** (aggregate and per-buy median), the
+  platform leg at **0.4950%** (per-buy median). `scripts/verify-fee-split.ts`.
+- **Magnitude:** artist trading-fee figures rise **~0.5% relative** (~9.28 → ~9.33
+  SOL platform-wide), platform figures fall ~1% relative. Small in absolute
+  terms; settlement bonuses (5/2/3%) unchanged.
+- **Note:** always state all three parts — "1.005%" alone reads as a typo for
+  1.00%. Public display copy still says "1%" / "0.5%" and is a separate wording
+  decision.
+
 ## 2026-09-08 — trader leaderboard: P&L suppressed for unverified wallets — CORRECTION (shipped)
 
 **Endpoints:** `/leaderboards/traders` (+ the `/leaderboards/traders` and

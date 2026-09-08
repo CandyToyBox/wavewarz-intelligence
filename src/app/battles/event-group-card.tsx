@@ -326,7 +326,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatPlatformFee(volSol: string): string {
-  return parseFloat((parseFloat(volSol) * 0.005).toFixed(4)).toString()
+  return parseFloat((parseFloat(volSol) * 0.00495).toFixed(4)).toString()
 }
 
 function AggregateStat({ label, value, sub }: { label: ReactNode; value: string; sub: string }) {
