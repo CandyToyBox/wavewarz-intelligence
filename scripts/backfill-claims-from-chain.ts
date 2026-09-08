@@ -92,11 +92,16 @@ async function main() {
   // an unpaginated query silently skipped the oldest settled battles.
   const idsFilter = idsArg ? idsArg.replace('--ids=', '').split(',').map(Number).filter(Boolean) : null
   const battles = await fetchAll<{ battle_id: number; artist1_name: string; artist2_name: string; created_at: string }>((from, to) => {
+    // "Settled" = winner_decided OR a non-zero on-chain distribution amount.
+    // ~150 battles are paid out on chain but carry winner_decided=false in the
+    // DB (the admin judging panel never ran), and their claim rows were being
+    // skipped. total_distribution_amount is a chain fact (byte 249), not a
+    // sanctioned-outcome field, so gating on it is safe.
     let q = supabase
       .from('battles')
       .select('battle_id, artist1_name, artist2_name, created_at')
       .eq('is_test_battle', false)
-      .eq('winner_decided', true)
+      .or('winner_decided.eq.true,total_distribution_amount.gt.0')
       .order('created_at', { ascending: false })
       .range(from, to)
     if (idsFilter) q = q.in('battle_id', idsFilter)
