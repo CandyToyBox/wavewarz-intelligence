@@ -27,6 +27,41 @@ changes, performance work.
 
 <!-- newest first -->
 
+## 2026-09-08 — trader leaderboard: P&L suppressed for unverified wallets — CORRECTION (shipped)
+
+**Endpoints:** `/leaderboards/traders` (+ the `/leaderboards/traders` and
+`/trader/[wallet]` site pages).
+**Type:** CORRECTION + ADDITIVE.
+
+**What changed.** Zaal's complete chain scan (`bettercallzaal/wavewarz-protocol`,
+`recon/PNL-DIAGNOSIS.md`) showed the `trades` table holds only **~43% of buy
+value** and **~46% of sell value** — confirmed here with
+`select trade_type, count(*), sum(amount_sol) from trades group by 1` (buys
+304.8 SOL vs 714 real, sells 99.4 vs 214, claims 1,949 rows vs ~3,390). Buy/sell
+rows are written only on a successful full vault-history fetch, and the biggest
+battles fail most often, so the gap concentrates in the largest battles.
+
+The trader leaderboard's `netPnlSol`, `totalVolumeSol` and win/loss are all
+derived from that table, so they were undercounted — aggregate trader P&L read
+**+204 SOL** when the real figure is about **-17** (that -17 is the fees, paid to
+artists and the platform, working as designed).
+
+Now: each trader carries **`dataComplete`** (new field). It is `true` only when
+every battle the wallet traded has `battles.trades_status = 'complete'` **and**
+the wallet never claimed in a battle where it has no buy row. When `false`,
+`netPnlSol` / `totalVolumeSol` / wins / losses are a **lower bound** and the site
+hides the P&L figure. The response also carries **`dataCompleteShare`** (0–1),
+the fraction of battles verified so far. Self-heals as
+`backfill-trades-from-chain.ts --force` rebuilds the history from chain.
+
+**Expected magnitude.** Immediately: ~79 of 145 wallets read `dataComplete:false`
+and their P&L is null on the site. As the backfill completes over the following
+hours, wallets flip to `true` with corrected (mostly lower / negative) P&L. Final
+aggregate lands near -17 SOL, ~28 wallets in profit (down from a shown 64).
+
+**Not affected:** `/stats` volume, artist payouts, settlement — those read from
+`battles`, independently reconstructed by Zaal to within 0.7%.
+
 ## 2026-09-08 — pending, not yet shipped
 
 The recon pass with the protocol repo (`bettercallzaal/wavewarz-protocol`)
