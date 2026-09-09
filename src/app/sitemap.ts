@@ -17,6 +17,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/benefits',
     '/claim',
     '/contributor',
+    '/api-docs',
+    '/api-docs/changelog',
     '/privacy',
     '/terms',
   ]

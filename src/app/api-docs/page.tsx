@@ -105,6 +105,13 @@ export default function ApiDocsPage() {
           <span className="px-2 py-1 rounded bg-white/5 border border-border">CORS: open (*)</span>
           <span className="px-2 py-1 rounded bg-white/5 border border-border">Cache: 30–60s</span>
         </div>
+        <p className="text-xs text-muted-foreground">
+          Building on this data?{' '}
+          <Link href="/api-docs/changelog" className="text-actiongreen underline decoration-actiongreen/40 hover:decoration-actiongreen">
+            Read the changelog
+          </Link>{' '}
+          — every correction, new field, or recomputed value, with how much your numbers move.
+        </p>
       </div>
 
       {/* Quick start */}
