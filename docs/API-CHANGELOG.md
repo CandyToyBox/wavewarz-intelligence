@@ -18,6 +18,27 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-09-13 — 29 pre-2026-04 battles' volume corrected (pool-fallback bug)
+
+**Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist) — **Type:** CORRECTION
+
+29 battles (24 from 2025-07-21 → 2026-03-10, plus 5 later single-trade battles
+where the values coincidentally matched) had `volumeSol` exactly equal to
+`poolSol` per artist side — a known-bad backfill (`scripts/backfill-volume.ts`,
+retired) had written pool-adjacent chain state into the volume field instead of
+true buy+sell flow, and the correct tool's auto-sweep never caught these because
+they're old enough that a prior Helius pass returned no vault history for them.
+
+Recomputed all 29 directly from vault buy/sell instruction data
+(`scripts/fix-volume-from-chain.ts`). Net effect is small platform-wide (most of
+these are low-volume early battles) but several individual battles move
+meaningfully — e.g. battle `1753061890`: 1.7406 → 2.8110 SOL;
+`1753665241`: 0.6370 → 2.3570 SOL. Full before/after list in the commit.
+
+**Verify:** `GET /api/public/battles/:id` for any of the 29 IDs above — `volumeSol`
+per side should no longer equal `poolSol` unless the battle genuinely had one
+buy and no sell.
+
 ## 2026-09-09 — artist trade-fee rate corrected to 1.005%
 
 **Endpoints:** `/stats` (`artistPayouts`), `/battles/:id` (`artistEarnings`), `/leaderboards/artists` (`totalEarnings`) — **Type:** RECOMPUTE
