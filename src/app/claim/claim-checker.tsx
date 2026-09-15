@@ -8,8 +8,7 @@ import Link from 'next/link'
 import { Search, Loader2, Wallet, Coins, History, AlertTriangle, CheckCircle2, ExternalLink, Zap } from 'lucide-react'
 import { SolscanLink } from '@/components/solscan-link'
 
-const HELIUS_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY ?? ''
-const RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_KEY}`
+const RPC_URL = '/api/rpc'
 const TOKEN_PROGRAM = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
 
 type HoldingStatus = 'ACTIVE' | 'WON' | 'LOST' | 'INACTIVE'

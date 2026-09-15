@@ -280,6 +280,13 @@ const RPC_URL = `https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`;
 ```
 Never hardcode the actual key value in this file or anywhere else committed to git — this repo is public. Current key lives only in Vercel's `NEXT_PUBLIC_HELIUS_API_KEY` env var.
 
+**Server-side only.** The pattern above must stay in server context (API routes, `src/lib/solana/hydrate.ts`, cron/webhook handlers). Never build the Helius URL with the key inline in a `'use client'` component — the key would ship in the browser bundle and appear in plaintext in every outbound RPC request (Network tab, browser history, any proxy in between). Found and fixed 2026-09-15 in `trader-holdings.tsx` + `claim-checker.tsx`, both of which were constructing `RPC_URL` client-side.
+
+Client components that need chain reads (`Connection`, `getProgramAccounts`, etc.) must point at the same-origin proxy instead:
+```typescript
+const RPC_URL = '/api/rpc' // proxies to Helius server-side, see src/app/api/rpc/route.ts
+```
+
 **CRITICAL — Helius API domains (2026-04-27):**
 
 | Purpose | Correct URL |
