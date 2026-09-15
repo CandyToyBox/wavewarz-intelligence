@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 const NAV_LINKS = [
   { href: '/',             label: 'Overview' },
   { href: '/battles',      label: 'Battles' },
+  { href: '/calendar',     label: 'Calendar' },
   { href: '/leaderboards', label: 'Leaderboards' },
   { href: '/benefits',     label: 'Benefits' },
   { href: '/voter-guide',  label: 'Voter Guide' },

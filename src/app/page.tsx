@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
-import { pinnedEvent } from '@/config/pinned-event'
+import { pinnedEvent, type PinnedEvent } from '@/config/pinned-event'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
@@ -52,7 +52,20 @@ async function getSchedule() {
   } catch { return [] }
 }
 
-async function getCalendarEvents() {
+type CalendarEventPreview = {
+  id: string
+  title: string
+  description: string | null
+  event_date: string
+  event_time: string | null
+  event_type: string
+  location_or_link: string | null
+  flyer_url: string | null
+  is_featured: boolean
+  is_active: boolean
+}
+
+async function getCalendarEvents(): Promise<CalendarEventPreview[]> {
   try {
     const supabase = await createClient()
     const today = new Date().toISOString().split('T')[0]
@@ -63,8 +76,46 @@ async function getCalendarEvents() {
       .gte('event_date', today)
       .order('event_date')
       .limit(6)
-    return data ?? []
+    return (data ?? []) as CalendarEventPreview[]
   } catch { return [] }
+}
+
+// Auto-promotes an admin-marked "featured" calendar event (with a flyer) into the
+// homepage hero slot, so uploading a flyer to /admin is enough -- no code edit needed.
+// Falls back to the manually-authored config/pinned-event.ts when nothing qualifies
+// (e.g. no upcoming featured event, or one without a flyer image yet).
+function calendarEventToPinnedEvent(evt: {
+  title: string
+  description: string | null
+  event_date: string
+  event_time: string | null
+  event_type: string
+  location_or_link: string | null
+  flyer_url: string | null
+}): PinnedEvent | null {
+  if (!evt.flyer_url) return null
+  const typeLabels: Record<string, string> = {
+    BATTLE: 'Battle', SPACES: 'X Spaces', COMMUNITY: 'Community Battle', OTHER: 'Event',
+  }
+  const label = typeLabels[evt.event_type] ?? 'Event'
+  const dateFmt = new Date(evt.event_date + 'T12:00:00')
+    .toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    .toUpperCase()
+  const bullets = evt.event_time ? [`${dateFmt} at ${evt.event_time}`, label] : [label]
+
+  return {
+    sectionLabel: label,
+    title: evt.title,
+    subtitle: evt.description ?? '',
+    badge: evt.event_time ? `${dateFmt} · ${evt.event_time}` : dateFmt,
+    eyebrow: label,
+    icon: '',
+    bullets,
+    mediaType: 'image',
+    src: evt.flyer_url,
+    href: evt.location_or_link ?? '/calendar',
+    cta: evt.location_or_link ? 'View Details' : 'View on Calendar',
+  }
 }
 
 async function getSpotifyStats() {
@@ -222,6 +273,9 @@ export default async function HomePage() {
 
   const hasSpotify = spotify && (spotify.spotify_monthly_streams > 0 || spotify.spotify_total_streams > 0)
 
+  const featuredCalendarEvent = calendarEvents.find(e => e.is_featured)
+  const activePinnedEvent = (featuredCalendarEvent && calendarEventToPinnedEvent(featuredCalendarEvent)) ?? pinnedEvent
+
   return (
     <div className="space-y-10">
 
@@ -359,52 +413,52 @@ export default async function HomePage() {
       {/* Pinned event — mirrors the pinned post on @wavewarz (see src/config/pinned-event.ts) */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{pinnedEvent.sectionLabel}</h2>
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{activePinnedEvent.sectionLabel}</h2>
           <div className="flex-1 h-px bg-border" />
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] border border-[#95fe7c]/30 px-2 py-0.5 rounded">
-            {pinnedEvent.badge}
+            {activePinnedEvent.badge}
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* Bracket animation / pinned flyer / matchup card */}
-          <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
+          <a href={activePinnedEvent.href} target="_blank" rel="noreferrer"
             className="rounded-2xl border border-[#7ec1fb]/30 overflow-hidden block bg-black">
-            {pinnedEvent.mediaType === 'video' ? (
+            {activePinnedEvent.mediaType === 'video' ? (
               <video
-                src={pinnedEvent.src}
-                poster={pinnedEvent.poster}
+                src={activePinnedEvent.src}
+                poster={activePinnedEvent.poster}
                 autoPlay muted loop playsInline
                 className="w-full h-full object-cover"
-                aria-label={`${pinnedEvent.title} bracket animation`}
+                aria-label={`${activePinnedEvent.title} bracket animation`}
               />
-            ) : pinnedEvent.mediaType === 'matchup' && pinnedEvent.matchup ? (
+            ) : activePinnedEvent.mediaType === 'matchup' && activePinnedEvent.matchup ? (
               <div className="relative h-full min-h-[280px] grid grid-cols-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={pinnedEvent.matchup.side1.img} alt={pinnedEvent.matchup.side1.name}
+                <img src={activePinnedEvent.matchup.side1.img} alt={activePinnedEvent.matchup.side1.name}
                   className="absolute inset-y-0 left-0 w-1/2 h-full object-cover" />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={pinnedEvent.matchup.side2.img} alt={pinnedEvent.matchup.side2.name}
+                <img src={activePinnedEvent.matchup.side2.img} alt={activePinnedEvent.matchup.side2.name}
                   className="absolute inset-y-0 right-0 w-1/2 h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                 <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={pinnedEvent.matchup.vsLabel} alt="VS" className="w-24 sm:w-32 drop-shadow-lg" />
+                  <img src={activePinnedEvent.matchup.vsLabel} alt="VS" className="w-24 sm:w-32 drop-shadow-lg" />
                 </div>
                 <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-2">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c]">{pinnedEvent.matchup.side1.role}</p>
-                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{pinnedEvent.matchup.side1.name}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c]">{activePinnedEvent.matchup.side1.role}</p>
+                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{activePinnedEvent.matchup.side1.name}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb]">{pinnedEvent.matchup.side2.role}</p>
-                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{pinnedEvent.matchup.side2.name}</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb]">{activePinnedEvent.matchup.side2.role}</p>
+                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{activePinnedEvent.matchup.side2.name}</p>
                   </div>
                 </div>
               </div>
             ) : (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={pinnedEvent.src} alt={`${pinnedEvent.title} flyer`} className="w-full h-full object-cover" />
+              <img src={activePinnedEvent.src} alt={`${activePinnedEvent.title} flyer`} className="w-full h-full object-cover" />
             )}
           </a>
 
@@ -412,20 +466,20 @@ export default async function HomePage() {
           <div className="rounded-2xl border border-[#7ec1fb]/30 bg-[#7ec1fb]/5 p-6 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">{pinnedEvent.eyebrow}</p>
-                <h3 className="text-2xl font-rajdhani font-bold text-white">{pinnedEvent.title}</h3>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">{activePinnedEvent.eyebrow}</p>
+                <h3 className="text-2xl font-rajdhani font-bold text-white">{activePinnedEvent.title}</h3>
               </div>
-              <span className="text-3xl">{pinnedEvent.icon}</span>
+              <span className="text-3xl">{activePinnedEvent.icon}</span>
             </div>
             <p className="text-sm text-gray-300 leading-relaxed">
-              {pinnedEvent.subtitle}
+              {activePinnedEvent.subtitle}
             </p>
             <ul className="text-xs text-gray-400 space-y-1">
-              {pinnedEvent.bullets.map(b => <li key={b}>• {b}</li>)}
+              {activePinnedEvent.bullets.map(b => <li key={b}>• {b}</li>)}
             </ul>
-            <a href={pinnedEvent.href} target="_blank" rel="noreferrer"
+            <a href={activePinnedEvent.href} target="_blank" rel="noreferrer"
               className="inline-flex items-center gap-2 bg-[#7ec1fb] hover:bg-[#5aaae8] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              {pinnedEvent.cta} ↗
+              {activePinnedEvent.cta} ↗
             </a>
           </div>
 
@@ -583,7 +637,7 @@ export default async function HomePage() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide">Upcoming Events</h2>
-            <Link href="/benefits" className="text-xs text-[#7ec1fb] hover:underline">View all →</Link>
+            <Link href="/calendar" className="text-xs text-[#7ec1fb] hover:underline">View all →</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {calendarEvents.map((evt: {
