@@ -286,13 +286,17 @@ export default async function HomePage() {
             DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
           </p>
           <p className="text-gray-400 leading-relaxed max-w-2xl text-sm">
-            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict.
+            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict. Or pull him up in AR and take a photo with him, right from your phone.
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
             <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
               className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
               Get Your DJ Wavy Breakdown ↗
             </OutboundLink>
+            <a href="https://ar.illust.space/web/AttaBotty/djwavy" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 border border-[#95fe7c]/40 hover:border-[#95fe7c] text-[#95fe7c] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Take a Photo with DJ Wavy (AR) ↗
+            </a>
             <Link href="/leaderboards/songs"
               className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
               See His Picks on the Song Leaderboard →
