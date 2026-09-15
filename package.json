@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/model-viewer": "^4.3.1",
     "@solana/web3.js": "^1.98.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.98.0",

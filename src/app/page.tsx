@@ -14,6 +14,7 @@ import { pinnedEvent } from '@/config/pinned-event'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
+import { DJWavyModel } from '@/components/dj-wavy-model'
 
 async function getGlobalStats() {
   const supabase = await createClient()
@@ -268,6 +269,35 @@ export default async function HomePage() {
             className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
             View Program on Solscan ↗
           </a>
+        </div>
+      </section>
+
+      {/* Meet DJ Wavy — AI Judge */}
+      <section className="rounded-2xl border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-6 md:p-8 grid grid-cols-1 md:grid-cols-[minmax(0,220px)_1fr] gap-6 md:gap-8 items-center">
+        <div className="mx-auto md:mx-0 w-48 h-48 md:w-full md:h-56 rounded-xl bg-black/20 border border-[#95fe7c]/20 overflow-hidden">
+          <DJWavyModel className="w-full h-full" />
+        </div>
+        <div className="space-y-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">Your AI Judge</p>
+            <h2 className="text-3xl font-rajdhani font-bold text-white">Meet DJ Wavy</h2>
+          </div>
+          <p className="text-gray-300 leading-relaxed max-w-2xl">
+            DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
+          </p>
+          <p className="text-gray-400 leading-relaxed max-w-2xl text-sm">
+            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Get Your DJ Wavy Breakdown ↗
+            </OutboundLink>
+            <Link href="/leaderboards/songs"
+              className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              See His Picks on the Song Leaderboard →
+            </Link>
+          </div>
         </div>
       </section>
 

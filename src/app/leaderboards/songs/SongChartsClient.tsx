@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import { OutboundLink } from '@/components/outbound-link'
+import { DJWavyModel } from '@/components/dj-wavy-model'
 import Link from 'next/link'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -628,6 +630,21 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
         <p className="text-muted-foreground text-sm mt-1">
           Trending scores factor volume velocity, battle closeness, recency, and trader engagement.
         </p>
+      </div>
+
+      {/* Meet DJ Wavy — AI Judge */}
+      <div className="rounded-xl border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-4 flex items-center gap-4 flex-wrap sm:flex-nowrap">
+        <div className="w-16 h-16 shrink-0 rounded-lg bg-black/20 border border-[#95fe7c]/20 overflow-hidden">
+          <DJWavyModel className="w-full h-full" />
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <p className="text-sm font-rajdhani font-bold text-white">DJ Wavy calls every V2 verdict</p>
+          <p className="text-xs text-muted-foreground">Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. Want his take on your own track?</p>
+        </div>
+        <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
+          className="shrink-0 inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+          Get a DJ Wavy Breakdown ↗
+        </OutboundLink>
       </div>
 
       {/* Period + Category filters */}
