@@ -24,10 +24,50 @@ export default function WavIdPage() {
           WavID is a concept and research paper developed by <strong className="text-white">0xQuan93</strong>, with
           system formalization by REGALIA//89. It proposes turning an artist&apos;s verifiable WaveWarZ battle
           history — battles, wins, catalog, trading volume — into a persistent generative visual identity that
-          evolves as the artist competes. It is a research and product-definition paper, not a shipped WaveWarZ
-          feature, rights opinion, or token prospectus.
+          evolves as the artist competes. The paper itself is a research and product-definition document, not a rights
+          opinion or token prospectus; the studio below is an early developer preview of it, not a finished WaveWarZ feature.
         </p>
       </div>
+
+      <section className="mb-12" aria-labelledby="wavid-studio-heading">
+        <div className="flex items-baseline justify-between gap-4 flex-wrap mb-2">
+          <h2 id="wavid-studio-heading" className="text-xl font-bold text-white">Try the Browser Studio</h2>
+          <a
+            href="/wavid-studio/index.html"
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs uppercase tracking-widest text-actiongreen font-semibold hover:underline"
+          >
+            Open full screen ↗
+          </a>
+        </div>
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+          A developer preview of WavID by <strong className="text-white">0xQuan93</strong>. It turns public
+          WaveWarZ observations into a deterministic visual identity, generated on your own device. The four
+          artists shown are frozen examples; official accounts, artist verification and saved identities are
+          not live yet.
+        </p>
+        <div className="rounded-xl border border-border bg-card overflow-hidden">
+          <iframe
+            src="/wavid-studio/index.html"
+            title="WavID Browser Studio"
+            loading="lazy"
+            className="block w-full h-[720px] border-0"
+          />
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground/70">
+          Open source under the MIT License ·{' '}
+          <a
+            href="https://github.com/0xQuan93/WavID"
+            target="_blank"
+            rel="noreferrer"
+            className="text-actiongreen hover:underline"
+          >
+            github.com/0xQuan93/WavID
+          </a>
+          . File integrity is not artist ownership; public records do not grant rights to the underlying music or artwork.
+        </p>
+      </section>
 
       <article className="font-inter">
         {renderMarkdown(markdown)}
