@@ -1,5 +1,5 @@
 # WaveWarz Platform — Full Reference
-*Last Updated: February 2026 | Version 2.0*
+*Last Updated: September 2026 | Version 2.1*
 
 ---
 
@@ -93,8 +93,23 @@ Decentralized music battle platform on Solana where artists compete in timed bat
 
 ## 2. PAYOUT STRUCTURE
 
+**CORRECTED 2026-09-09** (`docs/API-CHANGELOG.md`, commit `6c07b55`): the per-trade
+fee totals 1.5% as always documented, but the on-chain program splits it **67/33
+artist-to-platform**, not an even 1.0%/0.5%. Verified by decomposing native SOL
+transfers across a 223-buy sample (artist leg lands at exactly 1.0050%, platform
+at 0.4950%) and cross-checked against Zaal's independent decode.
+
+**Display policy (deliberate, not a rounding oversight):** use the exact
+1.005% / 0.495% figures for internal math, backend calculations, and anywhere
+`wavewarz-math.ts` / `battle-metrics.ts` compute real numbers. But **all
+user-facing display — UI copy, marketing, docs, any place a person reads
+"artist gets X%"** — should keep showing the simplified **1% artist / 0.5%
+platform**. The precision doesn't change anything a user needs to act on and
+the round numbers are easier to understand at a glance. Never surface
+"1.005%" in a place a user or artist will read it.
+
 ### Revenue Sources for WaveWarz
-1. **Trading Fees**: 0.5% of all trading volume (artist gets 1.0%, platform gets 0.5%)
+1. **Trading Fees**: 1.5% of all trading volume (artist gets 1.005%, platform gets 0.495%)
 2. **Quick Battle Launch Fee**: ~$0.69 SOL per quick battle
 3. **Community Battle Launch Fee**: ~$4 SOL per community battle
 4. **Settlement Bonus**: 3% from loser's pool per battle (automatic)
@@ -107,8 +122,8 @@ Decentralized music battle platform on Solana where artists compete in timed bat
 
 ### Fee Architecture for Traders
 **Total Platform Fees: 1.5%** (vs 30%+ industry standard)
-- Artist Share: 1.0% of all trading volume (instant SOL payout to artist wallet)
-- Platform Share: 0.5% for operations
+- Artist Share: 1.005% of all trading volume (instant SOL payout to artist wallet)
+- Platform Share: 0.495% for operations
 - **Result**: 98.5% of every trade stays in ecosystem
 
 ### Prize Distribution (When Battle Ends)
@@ -128,12 +143,12 @@ When a battle concludes, the loser's pool is split:
 **All artists receive automatic payouts to their linked SOL wallet**
 
 **Winning Artist Total**:
-- Trading Fees = 1% of their total trading volume during battle
+- Trading Fees = 1.005% of their total trading volume during battle
 - Settlement Bonus = Loser's Pool x 0.05
 - **Total = Trading Fees + Settlement Bonus**
 
 **Losing Artist Total**:
-- Trading Fees = 1% of their total trading volume during battle
+- Trading Fees = 1.005% of their total trading volume during battle
 - Settlement Bonus = Loser's Pool x 0.02
 - **Total = Trading Fees + Settlement Bonus**
 
@@ -191,14 +206,14 @@ Artist A Pool (Winner): $5,500 SOL
 Artist B Pool (Loser): $4,500 SOL
 
 Artist A Earnings (Automatic):
-- Trading Fees: 1% of $5,500 = $55
+- Trading Fees: 1.005% of $5,500 = $55.28
 - Settlement Bonus: $4,500 x 5% = $225
-- Total: $280 SOL
+- Total: $280.28 SOL
 
 Artist B Earnings (Automatic):
-- Trading Fees: 1% of $4,500 = $45
+- Trading Fees: 1.005% of $4,500 = $45.23
 - Settlement Bonus: $4,500 x 2% = $90
-- Total: $135 SOL
+- Total: $135.23 SOL
 
 WaveWarz Platform (Automatic):
 - $4,500 x 3% = $135 SOL
@@ -377,8 +392,8 @@ When detected:
 ## 5. KEY CONSTANTS & PERCENTAGES
 
 ```
-Artist Revenue Per Trade:           1.0%
-Platform Revenue Per Trade:         0.5%
+Artist Revenue Per Trade:           1.005% (67/33 on-chain split, corrected 2026-09-09 — public copy still rounds to "1%")
+Platform Revenue Per Trade:         0.495% (public copy still rounds to "0.5%")
 Total Transaction Fees:             1.5%
 
 Settlement (Loser's Pool):
@@ -407,7 +422,7 @@ Skip Queue base fee:                0.02 SOL (+0.01 each successive skip)
 1. Battle duration NOT fixed — use timestamps
 2. Main/Community winner: 2 of 3 (human + X poll + SOL vote)
 3. Quick Battle winner: 2 of 3 (Poll + Charts + DJ Wavy)
-4. Fee split: 1.0% artist, 0.5% platform (baked into protocol)
+4. Fee split: 1.005% artist, 0.495% platform — 67/33 on-chain split of the 1.5% total (baked into protocol; corrected from an assumed even 1.0%/0.5% split on 2026-09-09, see `docs/API-CHANGELOG.md`)
 5. Settlement matrix: 50/40/5/2/3 (immutable)
 6. Tokens ephemeral — destroyed at settlement
 7. SOL-only trading — no platform tokens
@@ -528,12 +543,25 @@ Human judge | X (Twitter) poll | SOL vote
 ## 10. VISUAL IDENTITY & BRANDING
 
 ### Color Palette
-- **Deep Space Navy**: #0d1321 (background/primary)
-- **Wave Blue**: #7ec1fb (accent/secondary)
-- **Action Green**: #95fe7c (success/active/calls-to-action)
-- **Grey**: #989898 (neutral/disabled)
-- **Ice Blue**: #daecfd (subtle accent)
-- **Black**: #000000 | **White**: #ffffff
+Verified against the live token set in `src/app/globals.css` and `docs/DESIGN-SYSTEM.md` (2026-09-21).
+
+| Token | Hex / value | Usage |
+|---|---|---|
+| Deep Space Navy / `--bg` | `#0d1321` | Page background, everywhere |
+| `--void` | `#080d17` | Deepest ground — empty states, timer-ring backdrop |
+| `--card` | `#111a2c` | Chip backgrounds, small inset surfaces |
+| `--card-2` | `#0f1626` | Primary card surface — panels, queue cards, stat cards |
+| `--line` | `rgba(126,193,251,.14)` | All hairline borders |
+| Action Green / `--green` | `#95fe7c` | Primary accent — CTAs, success, "go," live indicators |
+| `--green-dim` | `rgba(149,254,124,.14)` | Green chip backgrounds |
+| Wave Blue / `--blue` | `#7ec1fb` | Secondary/informational — links, Side A identity, data |
+| `--blue-dim` | `rgba(126,193,251,.12)` | Blue hover backgrounds |
+| Ice Blue / `--ice` | `#daecfd` | Primary body text on dark surfaces |
+| Grey / `--mut` | `#989898` (docs list `#8b97ab`, codebase uses `#989898` — verify against `globals.css` before use) | Secondary/muted text, captions, timestamps |
+| Red / `--destructive` | `#ef4444` | Sell actions & Artist A identity ONLY — never required/positive |
+| Black / White | `#000000` / `#ffffff` | — |
+
+**NO PURPLE — zero purple, in any shade, anywhere.** This has been a real, shipped violation before (Create Quick BattleZ button, battle-explainer modal, Farcaster share button, winner overlays all used purple at one point) — treat any purple found in the current site as a bug to fix, not a style to preserve.
 
 ### Fonts
 - **Rajdhani Bold** — Headlines, prominent text
@@ -560,7 +588,7 @@ Human judge | X (Twitter) poll | SOL vote
 ### Always Verify
 - [ ] Program ID: `9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo`
 - [ ] Solana Mainnet only
-- [ ] Fee percentages hardcoded (1% artist, 0.5% platform)
+- [ ] Fee percentages hardcoded (1.005% artist, 0.495% platform — see `docs/API-CHANGELOG.md` 2026-09-09; public-facing copy still rounds to "1%"/"0.5%")
 - [ ] Settlement math sums to 100%
 - [ ] Duration from timestamps, not constants
 - [ ] Quick Battle detected by Audius link pattern
@@ -643,7 +671,14 @@ pubkeys, `artist_a/b_supply`, `artist_a/b_sol_balance`, `artist_a/b_pool` (all u
 
 ---
 
-## 15. WAVEWARZ BASE PLATFORM (Agents-Only Testing)
+## 15. WAVEWARZ BASE PLATFORM (Agents-Only Testing) — STALE, see note
+
+**STALE as of 2026-09-21**: this section describes a Base L2 agent-testing plan
+staffed by the OpenClaw agents below, but the OpenClaw gateway was retired
+~2026-05-27 and those agents (lil_lob, candy_cookz, merch) are now dormant —
+installed but not run. No replacement agent currently does Base testing; this
+plan has no active owner. Left below for historical reference only — do not
+treat it as a live testing surface without confirming with Samantha first.
 
 WaveWarz operates TWO separate platforms:
 
@@ -655,7 +690,7 @@ WaveWarz operates TWO separate platforms:
 - Trading: Real SOL, real earnings, real consequences
 
 ### WaveWarz Base (L2 Testnet → Mainnet)
-- Users: OpenClaw agents ONLY (lil_lob, candy_cookz, merch)
+- Users: OpenClaw agents ONLY (lil_lob, candy_cookz, merch) — dormant, see note above
 - Network: Base L2 (Ethereum)
 - Purpose: Platform testing, agent trading, volume data collection
 - Trading Mode: Profit-seeking (genuine conviction, not manipulation)
@@ -668,9 +703,15 @@ WaveWarz operates TWO separate platforms:
 
 ---
 
-## 16. OPENCLAW AGENT SETUP (February 2026)
+## 16. OPENCLAW AGENT SETUP — RETIRED ~2026-05-27
 
-### Team Agents
+OpenClaw gateway was retired and migrated to the Hermes Desktop Agent
+(~2026-05-27). The three agents below are still installed but dormant —
+not run day to day. Hermes' current scope is the Clip Engine pipeline + Postiz
+scheduling, not a like-for-like replacement for this trio's Base-testing or
+merch/ops duties. Kept below for historical/config reference only.
+
+### Team Agents (dormant)
 **lil_lob** — Strategic Content (qwen3-vl:8b) | @Lil_Lob_bot
 - X Spaces monitoring, content drafting, knowledge graph building, Base testing
 
@@ -680,7 +721,7 @@ WaveWarz operates TWO separate platforms:
 **merch** — Merchandise Operations (llama3.2-vision:11b) | @WaveWarz_Merch_bot
 - Graphics review, product naming/descriptions, mockup briefs, POD listings
 
-### Model Routing
+### Model Routing (historical — for active routing see project memory)
 | Task | Model |
 |------|-------|
 | Quick text/ops | llama3.2:latest |
@@ -689,8 +730,8 @@ WaveWarz operates TWO separate platforms:
 | Graphics (merch) | llama3.2-vision:11b |
 | Complex reasoning | gpt-oss:120b-cloud |
 
-### Config
+### Config (historical)
 - `openclaw.json` includes all 3 agents
-- Agent brain dirs: `~/claw/{candy_cookz,lil_lob,merch}/brain/`
+- Agent brain dirs: `~/claw/{candy_cookz,lil_lob,merch}/brain/` (historical, not maintained)
 - Daily memory logs per agent
 - `.env.openclaw`: 0600 perms, not committed

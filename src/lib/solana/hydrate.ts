@@ -17,6 +17,49 @@ function matchesDiscriminator(data: Buffer, disc: number[]): boolean {
   return disc.every((b, i) => data[i] === b)
 }
 
+/**
+ * Decode a single Helius Enhanced tx into a trade row, or null if it isn't a
+ * buyShares/sellShares call on this program (endBattle, claimShares,
+ * initializeBattle, or anything not addressed to the vault). Shared by the
+ * full-history backfill (fetchBattleTradesFromChain) and the live incremental
+ * poll (fetchRecentBattleTradesFromChain) so both decode identically.
+ */
+function parseOneHeliusTx(tx: HeliusTx, battleId: number | bigint, vaultAddr: string): OnchainTrade | null {
+  const ix = tx.instructions.find(i => i.programId === WAVEWARZ_PROGRAM)
+  if (!ix?.data) return null
+
+  let data: Buffer
+  try {
+    data = Buffer.from(bs58.decode(ix.data))
+  } catch {
+    return null
+  }
+  if (data.length < 17) return null
+
+  const isArtistA = data[16] !== 0
+  const base = {
+    battle_id: Number(battleId),
+    trader_wallet: tx.feePayer,
+    timestamp: new Date(tx.timestamp * 1000).toISOString(),
+  }
+
+  if (matchesDiscriminator(data, BUY_DISCRIMINATOR)) {
+    const amount = Number(data.readBigUInt64LE(8))
+    return { ...base, trade_type: isArtistA ? 'buy_a' : 'buy_b', amount_sol: amount / LAMPORTS_PER_SOL }
+  }
+
+  if (matchesDiscriminator(data, SELL_DISCRIMINATOR)) {
+    const returned = tx.nativeTransfers
+      .filter(t => t.fromUserAccount === vaultAddr)
+      .reduce((sum, t) => sum + t.amount, 0)
+    if (returned > 0) {
+      return { ...base, trade_type: isArtistA ? 'sell_a' : 'sell_b', amount_sol: returned / LAMPORTS_PER_SOL }
+    }
+  }
+
+  return null
+}
+
 function lamportsToSol(lamports: bigint): number {
   return Number(lamports) / LAMPORTS_PER_SOL
 }
@@ -57,6 +100,8 @@ interface HeliusTx {
   feePayer: string
   nativeTransfers: HeliusNativeTransfer[]
   instructions: HeliusInstruction[]
+  /** Non-null when the transaction failed on chain (no trade happened). */
+  transactionError?: unknown
 }
 
 /** One parsed buy/sell/claim from the vault history, shaped for the trades table. */
@@ -160,43 +205,13 @@ export async function fetchBattleTradesFromChain(
           break
         }
 
-        // Find the WaveWarz outer instruction
-        const ix = tx.instructions.find(i => i.programId === WAVEWARZ_PROGRAM)
-        if (!ix?.data) continue
-
-        let data: Buffer
-        try {
-          data = Buffer.from(bs58.decode(ix.data))
-        } catch {
-          continue
-        }
-        if (data.length < 17) continue
-
-        const isArtistA = data[16] !== 0
-        const base = {
-          battle_id: Number(battleId),
-          trader_wallet: tx.feePayer,
-          timestamp: new Date(tx.timestamp * 1000).toISOString(),
-        }
-
-        if (matchesDiscriminator(data, BUY_DISCRIMINATOR)) {
-          // Gross SOL the buyer committed (lamports, u64 LE at offset 8)
-          const amount = Number(data.readBigUInt64LE(8))
-          trades.push({ ...base, trade_type: isArtistA ? 'buy_a' : 'buy_b', amount_sol: amount / LAMPORTS_PER_SOL })
-
-        } else if (matchesDiscriminator(data, SELL_DISCRIMINATOR)) {
-          // SOL returned from vault to the seller (net of fees)
-          const returned = tx.nativeTransfers
-            .filter(t => t.fromUserAccount === vaultAddr)
-            .reduce((sum, t) => sum + t.amount, 0)
-          if (returned > 0) {
-            trades.push({ ...base, trade_type: isArtistA ? 'sell_a' : 'sell_b', amount_sol: returned / LAMPORTS_PER_SOL })
-          }
-        }
-        // All other discriminators (endBattle, claimShares, initializeBattle, etc.) are ignored here —
-        // claims are fetched separately by fetchBattleClaimsFromChain since they happen after end_time
-        // (sometimes much later, via the claim.wavewarz.info recovery flow) and aren't bounded by
+        // All other discriminators (endBattle, claimShares, initializeBattle, etc.) parse to
+        // null here and are skipped — claims are fetched separately by
+        // fetchBattleClaimsFromChain since they happen after end_time (sometimes much later,
+        // via the claim.wavewarz.info recovery flow) and aren't bounded by
         // [startTimeSec, endTimeSec] the way buys/sells are.
+        const trade = parseOneHeliusTx(tx, battleId, vaultAddr)
+        if (trade) trades.push(trade)
       }
 
       if (hitFloor || txs.length < 100) { reachedFloor = true; break }
@@ -213,6 +228,133 @@ export async function fetchBattleTradesFromChain(
   }
 
   return trades.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+}
+
+// Every viewer of a live battle polls /api/battles/[id]/live-trades every few
+// seconds. Without sharing, N viewers means N Helius calls per tick (and a 429
+// storm that would also starve the webhook and backfills). So concurrent and
+// near-simultaneous callers for the same vault share ONE Helius read, kept for
+// LIVE_PAGE_TTL_MS. 1.5s keeps the arena inside its ~3s lag budget.
+const LIVE_PAGE_TTL_MS = 1500
+const LIVE_PAGE_MAX_ENTRIES = 50
+const LIVE_GAP_MAX_EXTRA_PAGES = 3
+const livePageCache = new Map<string, { at: number; page: Promise<HeliusTx[] | null> }>()
+
+function fetchVaultPageShared(
+  vaultAddr: string, apiKey: string, limit: number, battleId: number | bigint,
+): Promise<HeliusTx[] | null> {
+  const now = Date.now()
+  const key = `${vaultAddr}:${limit}`
+  const hit = livePageCache.get(key)
+  if (hit && now - hit.at < LIVE_PAGE_TTL_MS) return hit.page
+
+  const url =
+    `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
+    `?api-key=${apiKey}&limit=${limit}`
+
+  const page = (async (): Promise<HeliusTx[] | null> => {
+    try {
+      const res = await fetch(url, { next: { revalidate: 0 } })
+      if (!res.ok) {
+        console.warn(`[live-trades] Helius responded ${res.status} for battle ${battleId}`)
+        return null
+      }
+      return (await res.json()) as HeliusTx[]
+    } catch (err) {
+      console.error(`[live-trades] fetch error for battle ${battleId}:`, err)
+      return null
+    }
+  })()
+
+  // A failed read must not be served to everyone for the whole TTL.
+  page.then(r => { if (r === null) livePageCache.delete(key) })
+
+  if (livePageCache.size >= LIVE_PAGE_MAX_ENTRIES) {
+    for (const [k, v] of livePageCache) if (now - v.at >= LIVE_PAGE_TTL_MS) livePageCache.delete(k)
+    if (livePageCache.size >= LIVE_PAGE_MAX_ENTRIES) livePageCache.clear()
+  }
+  livePageCache.set(key, { at: now, page })
+  return page
+}
+
+async function fetchVaultPageBefore(
+  vaultAddr: string, apiKey: string, limit: number, beforeSignature: string,
+): Promise<HeliusTx[] | null> {
+  const url =
+    `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
+    `?api-key=${apiKey}&limit=${limit}&before=${beforeSignature}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 0 } })
+    return res.ok ? ((await res.json()) as HeliusTx[]) : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Poll-friendly sibling of fetchBattleTradesFromChain — for an ACTIVE battle,
+ * not a settled one. Fetches only the single newest page of vault history
+ * (no floor-walking, no MAX_PAGES loop) and returns just the trades newer
+ * than `sinceSignature`, oldest first, ready to replay as buy/sell calls.
+ *
+ * This is the "get trades from the chain ourselves" path — it reads the
+ * WaveWarz program's own instruction data directly off the vault PDA, so it
+ * has no dependency on wavewarz.com's webhook or their Supabase project.
+ *
+ * First call for a battle: pass no `sinceSignature`. It establishes a
+ * baseline (returns `trades: []` plus the current `latestSignature`) rather
+ * than replaying the battle's whole history as a flood of catch-up
+ * animations — the caller is expected to have already backfilled current
+ * totals via setPool. Every call after that returns genuinely new trades.
+ */
+export async function fetchRecentBattleTradesFromChain(
+  battleId: number | bigint,
+  opts: { sinceSignature?: string | null; limit?: number } = {},
+): Promise<{ trades: OnchainTrade[]; latestSignature: string | null } | null> {
+  const apiKey = process.env.NEXT_PUBLIC_HELIUS_API_KEY
+  if (!apiKey) return null
+
+  const vaultPDA  = getBattleVaultAddress(battleId)
+  const vaultAddr = vaultPDA.toBase58()
+  const limit = opts.limit ?? 50
+
+  const txs = await fetchVaultPageShared(vaultAddr, apiKey, limit, battleId)
+  if (!txs) return null  // newest first
+  const latestSignature = txs[0]?.signature ?? null
+
+  if (!opts.sinceSignature) {
+    // First poll — establish the baseline, don't replay history.
+    return { trades: [], latestSignature }
+  }
+
+  // Helius returns newest-first; cut the page down to only what's newer than
+  // sinceSignature before parsing. If sinceSignature has scrolled off this
+  // page entirely (more than `limit` trades landed between polls, unlikely
+  // at this battle's volume), fall back to the whole page — an occasional
+  // double-reported trade beats silently dropping ones that actually happened.
+  let all = txs
+  let idx = all.findIndex(t => t.signature === opts.sinceSignature)
+  // A viewer returning to a backgrounded tab (browsers throttle its timers) can
+  // be further behind than one page. Walk back, a few pages at most, until we
+  // find where they left off, so the catch-up replays exactly the trades they
+  // missed instead of re-playing ones they already saw.
+  for (let extra = 0; idx === -1 && all.length >= limit && extra < LIVE_GAP_MAX_EXTRA_PAGES; extra++) {
+    const more = await fetchVaultPageBefore(vaultAddr, apiKey, limit, all[all.length - 1].signature)
+    if (!more || more.length === 0) break
+    all = all.concat(more)
+    idx = all.findIndex(t => t.signature === opts.sinceSignature)
+  }
+  const fresh = idx !== -1 ? all.slice(0, idx) : txs
+
+  const trades = fresh
+    // A failed transaction moved no money; never animate it as a trade. (Live
+    // path only: the backfill path is deliberately left exactly as it was.)
+    .filter(tx => !tx.transactionError)
+    .map(tx => parseOneHeliusTx(tx, battleId, vaultAddr))
+    .filter((t): t is OnchainTrade => t !== null)
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))  // oldest -> newest for playback order
+
+  return { trades, latestSignature }
 }
 
 /**
