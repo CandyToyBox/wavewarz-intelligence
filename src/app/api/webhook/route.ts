@@ -56,6 +56,18 @@ export async function POST(request: NextRequest) {
 
   const supabase = await createAdminClient()
 
+  // A battle that already has buy/sell rows in the trades table has had its volume
+  // computed from the chain, which is the true figure. wavewarz.com's own volume
+  // number (the payload) and the pool-based fallbacks below are both worse, so a
+  // re-sent webhook must never write either over it. Fails open: if this lookup
+  // errors we behave as before rather than dropping the delivery.
+  const { count: storedTradeRows } = await supabase
+    .from('trades')
+    .select('battle_id', { count: 'exact', head: true })
+    .eq('battle_id', Number(payload.battle_id))
+    .neq('trade_type', 'claim')
+  const keepStoredVolume = (storedTradeRows ?? 0) > 0
+
   // ── Step 1: Store metadata from webhook payload ───────────────────────────
   // Pool/volume values from the payload are wavewarz.com's calculated values.
   // These are correct and will be overwritten by onchain values in Step 2.
@@ -136,9 +148,16 @@ export async function POST(request: NextRequest) {
     quick_battles_winner_artist_a:    qbWinnerArtistA ?? null,
   }
 
+  // Omitted columns are left as stored on conflict, so dropping the keys is enough.
+  const row: Record<string, unknown> = { ...battle }
+  if (keepStoredVolume) {
+    delete row.total_volume_a
+    delete row.total_volume_b
+  }
+
   const { error: upsertError } = await supabase
     .from('battles')
-    .upsert(battle, { onConflict: 'battle_id' })
+    .upsert(row, { onConflict: 'battle_id' })
 
   if (upsertError) {
     console.error('[webhook] upsert error:', upsertError.message)
@@ -210,20 +229,20 @@ export async function POST(request: NextRequest) {
             if (rpcErr) console.warn(`[webhook] replace_battle_trades failed for ${battleId}: ${rpcErr.message}`)
             else console.log(`[webhook] stored ${chainTrades.length} trades for battle ${battleId}`)
           } else {
-            // Fallback to artist_sol_balance (buys only)
-            if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+            // Fallback to artist_sol_balance (buys only), unless chain-derived volume is already stored
+            if (!keepStoredVolume && (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0)) {
               hydrated.total_volume_a = onchain.artist1_sol_balance
               hydrated.total_volume_b = onchain.artist2_sol_balance
             }
           }
         } catch (volErr) {
           console.warn(`[webhook] volume fetch failed for ${battleId}, using sol_balance fallback:`, volErr)
-          if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+          if (!keepStoredVolume && (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0)) {
             hydrated.total_volume_a = onchain.artist1_sol_balance
             hydrated.total_volume_b = onchain.artist2_sol_balance
           }
         }
-      } else if (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0) {
+      } else if (!keepStoredVolume && (onchain.artist1_sol_balance > 0 || onchain.artist2_sol_balance > 0)) {
         // ACTIVE battle or missing timestamps: use sol_balance as best available estimate
         hydrated.total_volume_a = onchain.artist1_sol_balance
         hydrated.total_volume_b = onchain.artist2_sol_balance
