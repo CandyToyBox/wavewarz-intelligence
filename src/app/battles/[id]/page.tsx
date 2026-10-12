@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
 import { ArtistAvatarImg } from '@/components/artist-avatar-img'
+import { LiveArena } from './live-arena'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -188,6 +189,14 @@ export default async function BattleDetailPage({ params }: Props) {
   const typeLabel = isQuick ? 'Quick Battle' : isCommunity ? 'Community Battle' : 'Main Event'
   const typeColor = isQuick ? '#7ec1fb' : isCommunity ? '#f59e0b' : '#95fe7c'
 
+  // Same avatar precedence SidePanel uses below (quick-battle song art > stored
+  // profile picture > Twitter avatar via unavatar), resolved here too since the
+  // live arena needs plain URL strings, not the SidePanel JSX.
+  const twitterHandle1 = battle.artist1_twitter ?? profile1?.twitter_handle ?? null
+  const twitterHandle2 = battle.artist2_twitter ?? profile2?.twitter_handle ?? null
+  const avatar1 = art1 ?? profile1?.profile_picture_url ?? (twitterHandle1 ? `https://unavatar.io/twitter/${twitterHandle1}` : null)
+  const avatar2 = art2 ?? profile2?.profile_picture_url ?? (twitterHandle2 ? `https://unavatar.io/twitter/${twitterHandle2}` : null)
+
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
 
@@ -239,6 +248,23 @@ export default async function BattleDetailPage({ params }: Props) {
           )}
         </div>
       </div>
+
+      {/* Live Arena — real-time fighter viz, driven off Supabase Realtime on
+          the `battles` row (see live-arena.tsx for why that's the feed we
+          have, not a per-trade one). Swaps out once winner_decided lands. */}
+      {!isSettled && (
+        <LiveArena
+          battleId={battleId}
+          artist1Name={battle.artist1_name}
+          artist2Name={battle.artist2_name}
+          artist1Pool={p1}
+          artist2Pool={p2}
+          artist1AvatarUrl={avatar1}
+          artist2AvatarUrl={avatar2}
+          battleDurationSec={battle.battle_duration ?? null}
+          createdAtIso={battle.created_at ?? null}
+        />
+      )}
 
       {/* Head-to-Head */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
