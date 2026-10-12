@@ -1,17 +1,17 @@
 export const dynamic = 'force-dynamic'
 
 import Link from 'next/link'
-import { headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
+import { ADMIN_COOKIE, verifyAdminSessionToken } from '@/lib/admin-session'
 
-// Same cookie gate as /admin — the Hub is an internal tool. Server Actions in
+// Same signed-session gate as /admin (and src/proxy.ts runs before render) — the Hub is an internal tool. Server Actions in
 // ./actions.ts re-check the cookie themselves (the layout gate alone doesn't
 // protect them once an action ID is known).
 export default async function HubLayout({ children }: { children: React.ReactNode }) {
-  const hdrs = await headers()
-  const cookie = hdrs.get('cookie') ?? ''
-  if (!cookie.includes('admin_authed=1')) redirect('/admin/login')
+  const cookieStore = await cookies()
+  if (!(await verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE)?.value))) redirect('/admin/login')
 
   const links = [
     { href: '/hub', label: 'Library' },
