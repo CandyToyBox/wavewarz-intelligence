@@ -18,6 +18,18 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-10-12 — One battle's volume restored; two Quick Battles' winners filled in
+
+**Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist; `winnerDecided` and `winnerSide`), `/leaderboards/songs` where they count wins — **Type:** CORRECTION
+
+**Battle `1760215752` volume.** It served 0.5539 and 0.3058 SOL (0.8597 in all) until September, then dropped to 0.2023 and 0.1905 SOL, exactly its two pools. The cause was the webhook: a re-sent delivery for an old battle replaced the chain-derived volume with the payload figure or the pool (fixed in code the same day, so a battle that already has trade rows keeps its volume). It is back to 0.5539 and 0.3058 SOL, which equals the sum of its 15 trade rows and a fresh read of the vault. `volume.totalSol` in `/stats` rises by 0.4669 SOL, from 980.0881 to 980.5551 SOL (rounded).
+
+**Battles `1789610754` and `1789787083` winners.** Both Quick Battles from September had no stored winner (`winnerDecided` false). wavewarz.com shows artist 1 as the winner of both: poll artist 1, charts artist 1, DJ Wavy artist 2, two of three. Their results were filled in from the wavewarz.com record. `winnerDecided` is now true and `winnerSide` is `artist1` for both; song win and loss counts for the two songs on artist 1's side move by one win each.
+
+**Not changed:** the 30 non-test battles that store 0.0042 on artist 2 against 0 on chain are still as stored, pending a question to the wavewarz.com team.
+
+---
+
 ## 2026-10-12 — Five Quick Battles from October 9-10 added (they were missing from the index)
 
 **Endpoints:** `/stats` (`volume.totalSol`, battle and trade counts), `/battles`, `/battles/:id`, `/leaderboards/*` — **Type:** ADDITIVE (new records)
