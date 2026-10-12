@@ -228,6 +228,52 @@ export async function fetchBattleTradesFromChain(
   return trades.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 }
 
+// Every viewer of a live battle polls /api/battles/[id]/live-trades every few
+// seconds. Without sharing, N viewers means N Helius calls per tick (and a 429
+// storm that would also starve the webhook and backfills). So concurrent and
+// near-simultaneous callers for the same vault share ONE Helius read, kept for
+// LIVE_PAGE_TTL_MS. 1.5s keeps the arena inside its ~3s lag budget.
+const LIVE_PAGE_TTL_MS = 1500
+const LIVE_PAGE_MAX_ENTRIES = 50
+const livePageCache = new Map<string, { at: number; page: Promise<HeliusTx[] | null> }>()
+
+function fetchVaultPageShared(
+  vaultAddr: string, apiKey: string, limit: number, battleId: number | bigint,
+): Promise<HeliusTx[] | null> {
+  const now = Date.now()
+  const key = `${vaultAddr}:${limit}`
+  const hit = livePageCache.get(key)
+  if (hit && now - hit.at < LIVE_PAGE_TTL_MS) return hit.page
+
+  const url =
+    `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
+    `?api-key=${apiKey}&limit=${limit}`
+
+  const page = (async (): Promise<HeliusTx[] | null> => {
+    try {
+      const res = await fetch(url, { next: { revalidate: 0 } })
+      if (!res.ok) {
+        console.warn(`[live-trades] Helius responded ${res.status} for battle ${battleId}`)
+        return null
+      }
+      return (await res.json()) as HeliusTx[]
+    } catch (err) {
+      console.error(`[live-trades] fetch error for battle ${battleId}:`, err)
+      return null
+    }
+  })()
+
+  // A failed read must not be served to everyone for the whole TTL.
+  page.then(r => { if (r === null) livePageCache.delete(key) })
+
+  if (livePageCache.size >= LIVE_PAGE_MAX_ENTRIES) {
+    for (const [k, v] of livePageCache) if (now - v.at >= LIVE_PAGE_TTL_MS) livePageCache.delete(k)
+    if (livePageCache.size >= LIVE_PAGE_MAX_ENTRIES) livePageCache.clear()
+  }
+  livePageCache.set(key, { at: now, page })
+  return page
+}
+
 /**
  * Poll-friendly sibling of fetchBattleTradesFromChain — for an ACTIVE battle,
  * not a settled one. Fetches only the single newest page of vault history
@@ -255,23 +301,8 @@ export async function fetchRecentBattleTradesFromChain(
   const vaultAddr = vaultPDA.toBase58()
   const limit = opts.limit ?? 50
 
-  const url =
-    `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
-    `?api-key=${apiKey}&limit=${limit}`
-
-  let res: Response
-  try {
-    res = await fetch(url, { next: { revalidate: 0 } })
-  } catch (err) {
-    console.error(`[live-trades] fetch error for battle ${battleId}:`, err)
-    return null
-  }
-  if (!res.ok) {
-    console.warn(`[live-trades] Helius responded ${res.status} for battle ${battleId}`)
-    return null
-  }
-
-  const txs: HeliusTx[] = await res.json()  // newest first
+  const txs = await fetchVaultPageShared(vaultAddr, apiKey, limit, battleId)
+  if (!txs) return null  // newest first
   const latestSignature = txs[0]?.signature ?? null
 
   if (!opts.sinceSignature) {

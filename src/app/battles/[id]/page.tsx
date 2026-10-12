@@ -8,6 +8,7 @@ import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
 import { ArtistAvatarImg } from '@/components/artist-avatar-img'
 import { LiveArena } from './live-arena'
+import { isBattleLive } from '@/lib/battle-metrics'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -251,8 +252,9 @@ export default async function BattleDetailPage({ params }: Props) {
 
       {/* Live Arena — real-time fighter viz, driven off Supabase Realtime on
           the `battles` row (see live-arena.tsx for why that's the feed we
-          have, not a per-trade one). Swaps out once winner_decided lands. */}
-      {!isSettled && (
+          have, not a per-trade one). Only while the battle is actually live, so
+          old unsettled battles don't poll the chain. Swaps out once winner_decided lands. */}
+      {!isSettled && isBattleLive({ created_at: battle.created_at, battle_duration: battle.battle_duration ?? null }) && (
         <LiveArena
           battleId={battleId}
           artist1Name={battle.artist1_name}
