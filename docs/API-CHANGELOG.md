@@ -18,6 +18,52 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-10-12 — 33 more pre-2026-04 battles' volume corrected (pool-fallback bug)
+
+**Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist), `/leaderboards/*` where they total volume — **Type:** CORRECTION
+
+A follow-up to the 2026-09-13 correction. 33 more battles (all created before 2026-04-27) still stored volume equal to the pool, an undercount left by the retired `backfill-volume.ts`. The earlier repair's automatic sweep missed them because its query stops at 1,000 rows and these are older than the newest 1,000. Each was recomputed from the vault's buy and sell instructions on chain (`scripts/fix-volume-from-chain.ts`, passing the battle ids), the same method as before. Only `volumeSol` changed; winners, pools and payouts were not touched.
+
+**How much your numbers move:** these 33 battles together go from 7.3034 to 32.3005 SOL (+24.9971). `volume.totalSol` in `/stats` moves from 961.7748 to 986.7719 SOL (+2.6%). Biggest single moves: battle `1757898875` 1.8753 to 6.7992 SOL, `1757207855` 0.0514 to 2.6899 SOL, `1753063414` 0.0816 to 1.6156 SOL.
+
+**Verify:** `GET /api/public/battles/:id` for any id below; `volumeSol` per side should now match the sum of buys and sells on the battle's vault.
+
+| Battle | Old volume (SOL) | New volume (SOL) |
+|---|---|---|
+| 1770949491 | 0.3654 | 0.4286 |
+| 1770516000 | 0.0098 | 0.0100 |
+| 1769988803 | 0.0123 | 0.0274 |
+| 1768529618 | 0.0200 | 0.0693 |
+| 1764207785 | 0.4120 | 0.7812 |
+| 1764205612 | 0.0402 | 0.5751 |
+| 1763864825 | 0.1036 | 0.5514 |
+| 1763042352 | 0.0256 | 0.0260 |
+| 1762740734 | 0.2010 | 1.2093 |
+| 1761788317 | 0.0087 | 0.4756 |
+| 1761438641 | 0.0367 | 0.2809 |
+| 1761437309 | 0.0318 | 0.2262 |
+| 1760666134 | 0.6277 | 0.8611 |
+| 1760663446 | 0.1791 | 0.7340 |
+| 1760576678 | 0.3138 | 1.0460 |
+| 1760574699 | 0.1273 | 1.2622 |
+| 1760226775 | 0.0001 | 0.0198 |
+| 1759715433 | 0.3682 | 2.0237 |
+| 1759452150 | 0.0001 | 0.3969 |
+| 1758505532 | 0.4037 | 2.3058 |
+| 1758503315 | 0.1462 | 2.1584 |
+| 1757898875 | 1.8753 | 6.7992 |
+| 1757211619 | 0.0139 | 0.3156 |
+| 1757207855 | 0.0514 | 2.6899 |
+| 1756689557 | 0.8970 | 2.8626 |
+| 1754876069 | 0.3833 | 1.9035 |
+| 1754605788 | 0.0010 | 0.0050 |
+| 1753856330 | 0.0001 | 0.0595 |
+| 1753063414 | 0.0816 | 1.6156 |
+| 1752335404 | 0.0030 | 0.0089 |
+| 1751837807 | 0.2630 | 0.2670 |
+| 1751421607 | 0.2069 | 0.2100 |
+| 1751420288 | 0.0936 | 0.0950 |
+
 ## 2026-09-13 — 29 pre-2026-04 battles' volume corrected (pool-fallback bug)
 
 **Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist) — **Type:** CORRECTION
