@@ -18,6 +18,107 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-10-12 — 84 older battles' volume lowered to what the chain shows (overstated at save time)
+
+**Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist), `/leaderboards/*` where they total volume — **Type:** CORRECTION
+
+Unlike the two corrections before it, this one moves numbers **down**. 84 battles (created December 2025 to March 2026) stored a volume higher than the buys and sells actually recorded for them. The most likely cause is that these rows kept the volume wavewarz.com calculated and sent with the battle, saved before the chain hydration step, and that figure counts differently from a parse of the vault's buy and sell instructions. For every one of the 84, the chain figure agrees with the sum of the battle's buy and sell rows in our trades table, and 83 of the 84 also match an independent chain read by the protocol team. Each was recomputed from the vault with `scripts/fix-volume-from-chain.ts` (passing the battle ids), the same method as the earlier corrections. Only `volumeSol` changed; winners, pools and payouts were not touched.
+
+**How much your numbers move:** these 84 battles together go from 25.7580 to 18.7709 SOL (-6.9871). `volume.totalSol` in `/stats` falls by the same 6.9871 SOL, to 979.3181 SOL. Biggest single moves: battle `1769653724` 3.5010 to 2.6411 SOL; battle `1767577018` 1.3872 to 0.9062 SOL; battle `1770604952` 3.3119 to 2.8567 SOL.
+
+**Not changed:** battle `1760215752` goes the other way (stored 0.3928, recorded trades 0.8597 SOL). It is an undercount, not part of this group, and was left alone pending review.
+
+**Verify:** `GET /api/public/battles/:id` for any id below; `volumeSol` per side should now match the sum of buys and sells on the battle's vault.
+
+| Battle | Old volume (SOL) | New volume (SOL) |
+|---|---|---|
+| 1773363954 | 0.4441 | 0.2384 |
+| 1773363064 | 0.1431 | 0.0710 |
+| 1773283234 | 0.3441 | 0.2806 |
+| 1773280776 | 0.1638 | 0.0960 |
+| 1770864845 | 0.1855 | 0.1287 |
+| 1770863942 | 0.2702 | 0.2378 |
+| 1770861399 | 0.1914 | 0.1193 |
+| 1770778723 | 0.3982 | 0.2492 |
+| 1770777051 | 0.0555 | 0.0406 |
+| 1770776178 | 0.1815 | 0.0998 |
+| 1770691594 | 0.0417 | 0.0272 |
+| 1770690939 | 0.0732 | 0.0492 |
+| 1770687895 | 0.0535 | 0.0250 |
+| 1770604952 | 3.3119 | 2.8567 |
+| 1770433152 | 0.0968 | 0.0470 |
+| 1770432513 | 0.0929 | 0.0499 |
+| 1770429382 | 0.0594 | 0.0280 |
+| 1770350374 | 0.0377 | 0.0170 |
+| 1770347141 | 0.0515 | 0.0283 |
+| 1770345879 | 0.0456 | 0.0253 |
+| 1770344348 | 0.0633 | 0.0312 |
+| 1770177866 | 0.0259 | 0.0110 |
+| 1770173708 | 0.1274 | 0.0650 |
+| 1770173066 | 0.0535 | 0.0340 |
+| 1770086986 | 0.0358 | 0.0160 |
+| 1770084659 | 0.2328 | 0.1352 |
+| 1770084006 | 0.0732 | 0.0350 |
+| 1770010188 | 0.0633 | 0.0492 |
+| 1769832928 | 0.0850 | 0.0410 |
+| 1769830084 | 0.0535 | 0.0250 |
+| 1769827554 | 0.3982 | 0.2541 |
+| 1769826345 | 0.0929 | 0.0597 |
+| 1769740892 | 0.0791 | 0.0602 |
+| 1769739113 | 0.4751 | 0.2464 |
+| 1769738375 | 0.0929 | 0.0646 |
+| 1769653724 | 3.5010 | 2.6411 |
+| 1769569533 | 0.0633 | 0.0366 |
+| 1769567444 | 0.1226 | 0.1078 |
+| 1769565160 | 0.2603 | 0.1300 |
+| 1769305856 | 0.0732 | 0.0461 |
+| 1769223203 | 0.1323 | 0.0848 |
+| 1769221921 | 0.2406 | 0.1569 |
+| 1769220732 | 0.1815 | 0.1379 |
+| 1769219479 | 0.6622 | 0.4079 |
+| 1769138519 | 0.4475 | 0.2947 |
+| 1769132963 | 0.7331 | 0.6713 |
+| 1769049450 | 0.4770 | 0.3761 |
+| 1769048390 | 0.4475 | 0.2989 |
+| 1769046157 | 0.0929 | 0.0598 |
+| 1768961859 | 0.2152 | 0.1262 |
+| 1768269376 | 0.0947 | 0.0459 |
+| 1768015447 | 0.9301 | 0.6855 |
+| 1767836853 | 0.5007 | 0.4981 |
+| 1767753460 | 0.0535 | 0.0250 |
+| 1767750503 | 0.0830 | 0.0597 |
+| 1767749917 | 0.2899 | 0.2077 |
+| 1767664587 | 0.1165 | 0.0884 |
+| 1767664032 | 0.1520 | 0.1291 |
+| 1767663370 | 0.1480 | 0.1446 |
+| 1767577994 | 0.8021 | 0.5120 |
+| 1767577018 | 1.3872 | 0.9062 |
+| 1767373620 | 0.0574 | 0.0270 |
+| 1767234060 | 0.2525 | 0.1872 |
+| 1767201371 | 0.2170 | 0.1178 |
+| 1767113663 | 0.1934 | 0.1215 |
+| 1766953252 | 0.0082 | 0.0037 |
+| 1766768091 | 0.1362 | 0.0901 |
+| 1766682027 | 0.1737 | 0.0923 |
+| 1766078531 | 0.2249 | 0.1427 |
+| 1765938925 | 0.1027 | 0.0500 |
+| 1765908738 | 0.0062 | 0.0010 |
+| 1765689611 | 0.0062 | 0.0010 |
+| 1765557253 | 1.1271 | 1.0553 |
+| 1765480411 | 0.1027 | 0.0500 |
+| 1765472117 | 0.3644 | 0.3500 |
+| 1765471580 | 0.4846 | 0.4633 |
+| 1765402044 | 0.2012 | 0.1984 |
+| 1765387532 | 0.5558 | 0.3553 |
+| 1765323871 | 0.0161 | 0.0106 |
+| 1765298109 | 0.1618 | 0.1460 |
+| 1765211439 | 0.3194 | 0.1600 |
+| 1765047821 | 0.4278 | 0.2955 |
+| 1765046272 | 0.2111 | 0.1296 |
+| 1765036044 | 0.0062 | 0.0017 |
+
+---
+
 ## 2026-10-12 — 33 more pre-2026-04 battles' volume corrected (pool-fallback bug)
 
 **Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist), `/leaderboards/*` where they total volume — **Type:** CORRECTION
