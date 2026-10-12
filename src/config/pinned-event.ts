@@ -39,22 +39,21 @@ export type PinnedEvent = {
 }
 
 export const pinnedEvent: PinnedEvent = {
-  sectionLabel: 'Main Event',
-  title: 'The Founder Challenge',
+  sectionLabel: 'Community Music Battle',
+  title: 'MB WIF Hitmakerz vs Wave Warriorz',
   subtitle:
-    'GODCLOUD holds the #1 song on WaveWarZ — then he called out the founder. Hurric4n3Ike built this arena; now he steps into it for the first time. Sunday, August 23 · 7PM EST, live on X and YouTube.',
-  badge: 'SUN AUG 23 · 7PM EST',
-  eyebrow: 'Main Event — Founder vs. #1 Song',
-  icon: '⚔️',
+    'Two crews, one stage. MB WIF Hitmakerz take on Wave Warriorz in a Community Music Battle. Sunday, October 18 · 7PM EST, live on Twitch, X and Kick.',
+  badge: 'SUN OCT 18 · 7PM EST',
+  eyebrow: 'Community Music Battle',
+  icon: '',
   bullets: [
-    'GODCLOUD’s #1 song "Fuck Yo Feelingz" is 21–06 across 27 Quick Battlez — the winningest track on the platform',
-    'Hurric4n3Ike has never fought a Main Event before — this is his first time in the arena he built',
-    '1,400 battles settled onchain, 13.88 SOL paid to artists — automatically, every time',
-    'Winner decided 2-of-3: Human Judge + X Poll + SOL Vote',
+    'Sunday, October 18 at 7PM EST',
+    'Live on Twitch, X and Kick',
+    'MB WIF Hitmakerz vs Wave Warriorz',
+    'Every battle settles ONCHAIN on Solana',
   ],
-  mediaType: 'video',
-  src: '/events/founder-challenge/founder-challenge.mp4',
-  poster: '/events/founder-challenge/founder-challenge-flyer.jpg',
-  href: 'https://x.com/wavewarz',
-  cta: 'Follow the Founder Challenge on X',
+  mediaType: 'image',
+  src: '/events/community-battle-oct18/mbwif-vs-wave-warriorz-flyer.jpg',
+  href: 'https://x.com/WaveWarZ/status/2109067564106100771',
+  cta: 'See the announcement on X',
 }
