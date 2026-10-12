@@ -1,7 +1,7 @@
 window.WAVEWARZ_CONTENT = {
   "meta": {
     "title": "WaveWarz Voter Onboarding | W3M Creator Academy",
-    "description": "Beginner-safe onboarding for voting in the August 23 WaveWarZ Featured Battle."
+    "description": "Beginner-safe onboarding for voting in the October 18 WaveWarZ Community Music Battle."
   },
   "brand": {
     "mark": "W",
@@ -29,7 +29,7 @@ window.WAVEWARZ_CONTENT = {
   "home": {
     "eyebrow": "W3M Creator Academy",
     "time": "Estimated total time: 15-25 minutes",
-    "title": "Get ready to vote in the August 23 WaveWarZ Featured Battle.",
+    "title": "Get ready to vote in the October 18 WaveWarZ Community Music Battle.",
     "body": "Voting is free. You do not need crypto experience. Phantom is a wallet app. For this guide, think of it like your voter pass for WaveWarZ. It lets the site confirm a real wallet is participating without asking for your personal info.",
     "actionsAria": "Primary actions",
     "actions": [
@@ -51,7 +51,7 @@ window.WAVEWARZ_CONTENT = {
         "urlKey": "wavewarz"
       },
       {
-        "label": "Set an X Spaces reminder",
+        "label": "Follow the battle on X",
         "href": "#",
         "variant": "secondary",
         "urlKey": "x-spaces"
@@ -70,7 +70,7 @@ window.WAVEWARZ_CONTENT = {
   "readiness": {
     "ariaLabel": "Readiness tracker",
     "title": "Your voter readiness",
-    "body": "Finish each step before August 23. A tiny amount of SOL may be needed for network activity, but voting itself is free.",
+    "body": "Finish each step before October 18. A tiny amount of SOL may be needed for network activity, but voting itself is free.",
     "resetLabel": "Reset progress"
   },
   "trustStrip": {
@@ -229,7 +229,7 @@ window.WAVEWARZ_CONTENT = {
         },
         {
           "title": "Good to know",
-          "body": "If you already have SOL in Phantom, you can skip this step. If you are unsure, ask the official WaveWarz or Web3 Metal community before August 23."
+          "body": "If you already have SOL in Phantom, you can skip this step. If you are unsure, ask the official WaveWarz or Web3 Metal community before October 18."
         }
       ],
       "completion": {
@@ -298,13 +298,13 @@ window.WAVEWARZ_CONTENT = {
       }
     },
     "battleNight": {
-      "step": "August 23",
+      "step": "October 18",
       "time": "Estimated time: 5 minutes once voting opens",
       "title": "Battle Night Mission Checklist",
       "body": "When the live event starts, use this checklist as your action plan for joining, connecting, voting, and enjoying the show.",
       "actions": [
         {
-          "label": "Set an X Spaces reminder",
+          "label": "Follow the battle on X",
           "href": "#",
           "variant": "secondary",
           "urlKey": "x-spaces"
@@ -319,8 +319,8 @@ window.WAVEWARZ_CONTENT = {
       "missions": [
         {
           "id": "battle-x-space",
-          "title": "1. Join the X Space",
-          "body": "Listen for live updates and timing."
+          "title": "1. Join the live stream",
+          "body": "Watch live on Twitch, X or Kick for updates and timing."
         },
         {
           "id": "battle-open-wavewarz",
@@ -335,7 +335,7 @@ window.WAVEWARZ_CONTENT = {
         {
           "id": "battle-vote",
           "title": "4. Vote",
-          "body": "Pick your favorite AI music battle entry."
+          "body": "Pick your favorite entry."
         },
         {
           "id": "battle-enjoy",
@@ -358,17 +358,17 @@ window.WAVEWARZ_CONTENT = {
         "Ready to vote"
       ],
       "event": {
-        "title": "Hurric4n3Ike vs GodCloud",
+        "title": "MB WIF Hitmakerz vs Wave Warriorz",
         "details": [
-          "August 23, 2026",
+          "October 18, 2026",
           "7:00 PM EST",
-          "WaveWarZ Featured Battle"
+          "WaveWarZ Community Music Battle"
         ]
       },
       "actions": [
         {
-          "label": "Set an X Spaces Reminder",
-          "href": "https://x.com/WaveWarZ/status/2087557097168802239?s=20",
+          "label": "Follow the battle on X",
+          "href": "https://x.com/WaveWarZ/status/2109067564106100771?s=20",
           "variant": "primary"
         },
         {
@@ -413,6 +413,6 @@ window.WAVEWARZ_CONTENT = {
   "urls": {
     "phantom": "https://phantom.com/download",
     "wavewarz": "https://wavewarz.com",
-    "x-spaces": "https://x.com/WaveWarZ/status/2087557097168802239?s=20"
+    "x-spaces": "https://x.com/WaveWarZ/status/2109067564106100771?s=20"
   }
 };
