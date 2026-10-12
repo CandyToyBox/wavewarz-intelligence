@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { FullBleed } from '@/components/full-bleed'
 
 export const metadata: Metadata = {
   title: 'Voter Guide — Get Ready to Vote',
@@ -23,14 +24,14 @@ export default function VoterGuidePage() {
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border bg-black/20">
+      <FullBleed>
         <iframe
           src="/voter-guide-embed/index.html"
           title="WaveWarZ Voter Onboarding Guide"
-          className="w-full"
-          style={{ height: 'calc(100vh - 220px)', minHeight: '700px' }}
+          className="block w-full border-0"
+          style={{ height: 'max(700px, calc(100vh - 5rem))' }}
         />
-      </div>
+      </FullBleed>
     </div>
   )
 }
