@@ -18,6 +18,18 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-10-12 — Five Quick Battles from October 9-10 added (they were missing from the index)
+
+**Endpoints:** `/stats` (`volume.totalSol`, battle and trade counts), `/battles`, `/battles/:id`, `/leaderboards/*` — **Type:** ADDITIVE (new records)
+
+Five Quick Battles played on the night of October 9 to 10 UTC never reached the index while its storage was locked (see the status note of 2026-10-10). They have now been imported: `1791598241`, `1791598919`, `1791599596`, `1791600998` and `1791603005`. Their trades and volume were read from the chain, and their poll, DJ Wavy, chart and overall results were taken from the wavewarz.com record. No existing battle was changed.
+
+**How much your numbers move:** `volume.totalSol` in `/stats` rises by 0.7700 SOL, from 979.3181 to 980.0881 SOL (battles: 0.1500, 0.1500, 0.1500, 0.1500 and 0.1700 SOL). Battle and trade counts rise by 5 and 14. Leaderboards that count songs, artists or traders may shift slightly where these songs or wallets appear.
+
+**How to verify:** `GET /api/public/battles/1791603005`, or sum the buy and sell instructions on that battle's vault.
+
+---
+
 ## 2026-10-12 — 84 older battles' volume lowered to what the chain shows (overstated at save time)
 
 **Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist), `/leaderboards/*` where they total volume — **Type:** CORRECTION
