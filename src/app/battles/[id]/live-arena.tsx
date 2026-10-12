@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { OnchainTrade } from '@/lib/solana/hydrate'
 
-// Public API exposed by the embedded fighter arena (public/battle-arena/index.html),
+// Public API exposed by the embedded fighter arena (public/battle-arena/index.html,
+// which is AttaBotty's wavewarz_fighter_v23_traderview.html byte-for-byte; a newer
+// version of his file is a drop-in replacement as long as this API holds),
 // same-origin so we can reach it straight off contentWindow — no postMessage needed.
 // See WAVEWARZ-LIVE-INTEGRATION.md for the full contract.
 type WaveWarzArena = {
@@ -122,7 +124,10 @@ export function LiveArena({
     // signature (no replay flood of the battle's whole history) since
     // setPool above already backfilled current totals; every tick after
     // that plays only genuinely new trades.
+    let inFlight = false
     async function pollTrades() {
+      if (cancelled || inFlight) return
+      inFlight = true
       try {
         const url = `/api/battles/${battleId}/live-trades${lastSignature ? `?since=${encodeURIComponent(lastSignature)}` : ''}`
         const res = await fetch(url, { cache: 'no-store' })
@@ -139,10 +144,23 @@ export function LiveArena({
         }
       } catch {
         // Transient network/RPC hiccup — just retry on the next tick.
+      } finally {
+        inFlight = false
       }
       if (!cancelled) pollTimer = setTimeout(pollTrades, TRADE_POLL_INTERVAL_MS)
     }
     pollTrades()
+
+    // Browsers throttle timers in backgrounded tabs, so a viewer who switches
+    // away and back would otherwise wait out a stale timer (and the server has to
+    // fill the gap). Poll the moment the tab is visible/focused again.
+    function catchUp() {
+      if (cancelled || inFlight || document.visibilityState === 'hidden') return
+      if (pollTimer) clearTimeout(pollTimer)
+      pollTrades()
+    }
+    document.addEventListener('visibilitychange', catchUp)
+    window.addEventListener('focus', catchUp)
 
     // The chain poll above drives the actual trade animations. Realtime on
     // the `battles` row is only used here as the settlement signal, since
@@ -166,6 +184,8 @@ export function LiveArena({
       if (pollTimer) clearTimeout(pollTimer)
       if (initPoll) clearInterval(initPoll)
       iframeEl?.removeEventListener('load', initializeArena)
+      document.removeEventListener('visibilitychange', catchUp)
+      window.removeEventListener('focus', catchUp)
       supabase.removeChannel(channel)
       if (handoffTimerRef.current) clearTimeout(handoffTimerRef.current)
     }

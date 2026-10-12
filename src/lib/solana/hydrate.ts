@@ -100,6 +100,8 @@ interface HeliusTx {
   feePayer: string
   nativeTransfers: HeliusNativeTransfer[]
   instructions: HeliusInstruction[]
+  /** Non-null when the transaction failed on chain (no trade happened). */
+  transactionError?: unknown
 }
 
 /** One parsed buy/sell/claim from the vault history, shaped for the trades table. */
@@ -235,6 +237,7 @@ export async function fetchBattleTradesFromChain(
 // LIVE_PAGE_TTL_MS. 1.5s keeps the arena inside its ~3s lag budget.
 const LIVE_PAGE_TTL_MS = 1500
 const LIVE_PAGE_MAX_ENTRIES = 50
+const LIVE_GAP_MAX_EXTRA_PAGES = 3
 const livePageCache = new Map<string, { at: number; page: Promise<HeliusTx[] | null> }>()
 
 function fetchVaultPageShared(
@@ -272,6 +275,20 @@ function fetchVaultPageShared(
   }
   livePageCache.set(key, { at: now, page })
   return page
+}
+
+async function fetchVaultPageBefore(
+  vaultAddr: string, apiKey: string, limit: number, beforeSignature: string,
+): Promise<HeliusTx[] | null> {
+  const url =
+    `https://api-mainnet.helius-rpc.com/v0/addresses/${vaultAddr}/transactions` +
+    `?api-key=${apiKey}&limit=${limit}&before=${beforeSignature}`
+  try {
+    const res = await fetch(url, { next: { revalidate: 0 } })
+    return res.ok ? ((await res.json()) as HeliusTx[]) : null
+  } catch {
+    return null
+  }
 }
 
 /**
@@ -315,10 +332,24 @@ export async function fetchRecentBattleTradesFromChain(
   // page entirely (more than `limit` trades landed between polls, unlikely
   // at this battle's volume), fall back to the whole page — an occasional
   // double-reported trade beats silently dropping ones that actually happened.
-  const idx = txs.findIndex(t => t.signature === opts.sinceSignature)
-  const fresh = idx !== -1 ? txs.slice(0, idx) : txs
+  let all = txs
+  let idx = all.findIndex(t => t.signature === opts.sinceSignature)
+  // A viewer returning to a backgrounded tab (browsers throttle its timers) can
+  // be further behind than one page. Walk back, a few pages at most, until we
+  // find where they left off, so the catch-up replays exactly the trades they
+  // missed instead of re-playing ones they already saw.
+  for (let extra = 0; idx === -1 && all.length >= limit && extra < LIVE_GAP_MAX_EXTRA_PAGES; extra++) {
+    const more = await fetchVaultPageBefore(vaultAddr, apiKey, limit, all[all.length - 1].signature)
+    if (!more || more.length === 0) break
+    all = all.concat(more)
+    idx = all.findIndex(t => t.signature === opts.sinceSignature)
+  }
+  const fresh = idx !== -1 ? all.slice(0, idx) : txs
 
   const trades = fresh
+    // A failed transaction moved no money; never animate it as a trade. (Live
+    // path only: the backfill path is deliberately left exactly as it was.)
+    .filter(tx => !tx.transactionError)
     .map(tx => parseOneHeliusTx(tx, battleId, vaultAddr))
     .filter((t): t is OnchainTrade => t !== null)
     .sort((a, b) => a.timestamp.localeCompare(b.timestamp))  // oldest -> newest for playback order
