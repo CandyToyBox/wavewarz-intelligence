@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { OnchainTrade } from '@/lib/solana/hydrate'
+import { FullBleed } from '@/components/full-bleed'
 
 // Public API exposed by the embedded fighter arena (public/battle-arena/index.html,
 // which is AttaBotty's wavewarz_fighter_v23_traderview.html byte-for-byte; a newer
@@ -195,14 +196,14 @@ export function LiveArena({
   }, [battleId])
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
+    <FullBleed>
       <iframe
         ref={iframeRef}
         src="/battle-arena/index.html"
         title="WaveWarZ live battle arena"
         className="w-full block"
-        style={{ aspectRatio: '900 / 620', border: 0 }}
+        style={{ height: 'min(calc(100vw * 620 / 900), calc(100vh - 5rem))', border: 0 }}
       />
-    </div>
+    </FullBleed>
   )
 }
