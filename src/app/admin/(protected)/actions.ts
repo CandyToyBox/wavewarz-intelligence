@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
+import { ADMIN_COOKIE, verifyAdminSessionToken } from '@/lib/admin-session'
 import { scheduleClipToPostiz, isPostizConfigured } from '@/lib/postiz'
 import type { Platform, PlatformCaptions } from '@/lib/postiz'
 
@@ -11,7 +12,7 @@ import type { Platform, PlatformCaptions } from '@/lib/postiz'
 // protect them. Every exported action below must call this first.
 async function requireAdmin(): Promise<void> {
   const cookieStore = await cookies()
-  if (cookieStore.get('admin_authed')?.value !== '1') {
+  if (!(await verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE)?.value))) {
     throw new Error('Unauthorized')
   }
 }

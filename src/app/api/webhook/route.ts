@@ -61,6 +61,13 @@ export async function POST(request: NextRequest) {
   // These are correct and will be overwritten by onchain values in Step 2.
   const isQuickBattle = Boolean(payload.is_quick_battle)
   const isEnded = payload.status === 'ENDED' || payload.status === 'ended'
+  // Hydration (true volume + per-trade rows) has to run for every spelling of "finished".
+  // wavewarz.com has sent "Ended" since 2026-03-21, which the exact match above never
+  // recognised, so those battles skipped hydration. The winner-determination block
+  // below deliberately keeps using the strict isEnded, so this does not change how
+  // winners are decided.
+  const statusNorm = String(payload.status ?? '').trim().toLowerCase()
+  const isFinishedForHydration = statusNorm === 'ended' || statusNorm === 'completed' || statusNorm === 'settled'
 
   // If wavewarz.com has already determined the QB winner via 3-factor judging,
   // propagate it to the general winner fields so the app shows the correct result
@@ -167,7 +174,7 @@ export async function POST(request: NextRequest) {
       // Fallback: if the Helius fetch fails or the battle has no valid
       // timestamps, use artist_sol_balance (cumulative buys only — an
       // undercount, but better than nothing).
-      if (isEnded && onchain.start_time_sec > 0 && onchain.end_time_sec > 0) {
+      if (isFinishedForHydration && onchain.start_time_sec > 0 && onchain.end_time_sec > 0) {
         try {
           // One chain scan feeds both: per-trade rows for the trades table
           // AND the gross volume totals (sum of those rows).

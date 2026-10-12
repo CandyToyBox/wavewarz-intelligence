@@ -5,12 +5,13 @@ import { getAudiusUser, getUserPfp } from '@/lib/audius'
 import { getArtistLeaderboard } from '@/lib/leaderboards/artists'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
+import { ADMIN_COOKIE, verifyAdminSessionToken } from '@/lib/admin-session'
 
 // Server Actions are callable directly once their action ID is known — the
 // layout's redirect check does not protect them. Every action re-checks here.
 async function requireAdmin(): Promise<void> {
   const cookieStore = await cookies()
-  if (cookieStore.get('admin_authed')?.value !== '1') {
+  if (!(await verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE)?.value))) {
     throw new Error('Unauthorized')
   }
 }

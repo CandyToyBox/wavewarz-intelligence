@@ -1,13 +1,13 @@
 export const dynamic = 'force-dynamic'
 
-import { headers } from 'next/headers'
+import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { ADMIN_COOKIE, verifyAdminSessionToken } from '@/lib/admin-session'
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  // Simple cookie-based gate — checked on every admin render
-  const hdrs = await headers()
-  const cookie = hdrs.get('cookie') ?? ''
-  const authed = cookie.includes('admin_authed=1')
-  if (!authed) redirect('/admin/login')
+  // Second line of defence: src/proxy.ts already refuses unauthenticated requests
+  // before anything renders. The cookie is a signed session, not a fixed value.
+  const cookieStore = await cookies()
+  if (!(await verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE)?.value))) redirect('/admin/login')
   return <>{children}</>
 }
