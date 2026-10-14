@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveWarz — Built Like A Venture-Grade Exchange</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #07080d;
+      --bg-panel: rgba(14, 17, 28, 0.88);
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff007f;
+      --neon-green: #00ff9d;
+      --neon-amber: #ffb800;
+      --text-main: #f3f6ff;
+      --text-muted: #8b95b0;
+      --border-glow: rgba(0, 240, 255, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Helper spacer for demo purposes */
+    .demo-spacer {
+      height: 45vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ==========================================
+       SCROLL TRACK & STICKY VIEWPORT
+       ========================================== */
+    .exchange-scroll-track {
+      position: relative;
+      height: 480vh; /* Controls how much scroll distance drives the tour */
+      background: radial-gradient(circle at 50% 50%, #101528 0%, #07080d 75%);
+    }
+
+    .exchange-sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem 3rem;
+    }
+
+    /* Subtle cyber grid background */
+    .cyber-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================
+       SECTION HEADER & CONTROLS
+       ========================================== */
+    .exchange-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--neon-cyan);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--border-glow);
+      padding: 0.35rem 0.75rem;
+      border-radius: 99px;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--neon-cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-cyan);
+      animation: pulse 1.5s infinite;
+    }
+
+    .exchange-title {
+      font-size: clamp(1.6rem, 3.2vw, 2.75rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff 0%, var(--neon-cyan) 60%, var(--neon-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tour-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(10, 12, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.6rem 1rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .progress-readout {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .progress-readout strong {
+      color: var(--neon-green);
+    }
+
+    .mode-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255, 0, 127, 0.18);
+      color: #ff6cb6;
+      border: 1px solid rgba(255, 0, 127, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .exchange-sticky-stage.is-complete .mode-pill {
+      background: rgba(0, 255, 157, 0.15);
+      color: var(--neon-green);
+      border-color: var(--neon-green);
+      box-shadow: 0 0 15px rgba(0, 255, 157, 0.25);
+    }
+
+    /* ==========================================
+       MAP BOARD & SVG CIRCUIT PATH
+       ========================================== */
+    .map-board-wrapper {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .map-board {
+      position: relative;
+      width: 100%;
+      height: 72vh;
+      max-height: 640px;
+    }
+
+    .map-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Base unlit road */
+    .path-base {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .path-dashes {
+      fill: none;
+      stroke: rgba(0, 240, 255, 0.18);
+      stroke-width: 2;
+      stroke-dasharray: 8 12;
+    }
+
+    /* Lit active road */
+    .path-active {
+      fill: none;
+      stroke: url(#cyberGradient);
+      stroke-width: 8;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.65));
+      transition: stroke-dashoffset 0.08s linear;
+    }
+
+    /* ==========================================
+       MAP NODES (EXCHANGE PILLARS)
+       ========================================== */
+    .map-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      cursor: pointer;
+    }
+
+    /* Pinpoint circle on the path */
+    .node-pin {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #0c101d;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .map-node.is-visited .node-pin {
+      border-color: var(--neon-cyan);
+      color: var(--text-main);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+    }
+
+    .map-node.is-current .node-pin {
+      transform: scale(1.25);
+      background: var(--neon-cyan);
+      color: #05070c;
+      border-color: #fff;
+      box-shadow: 0 0 28px var(--neon-cyan);
+    }
+
+    /* Node Tag Label (Visible during tour) */
+    .node-tag {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(8, 10, 18, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .map-node.is-visited .node-tag {
+      color: var(--neon-cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+
+    /* ==========================================
+       LINKED INFOGRAPHIC CARD (FINAL STATE)
+       ========================================== */
+    .node-infographic-card {
+      position: absolute;
+      width: 245px;
+      background: var(--bg-panel);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+      border-radius: 14px;
+      padding: 0.95rem 1.1rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.12);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 15px) scale(0.85);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 15;
+    }
+
+    /* Position cards cleanly around pins in final overview */
+    .map-node[data-pos="top"] .node-infographic-card {
+      bottom: 58px;
+      left: 50%;
+    }
+    .map-node[data-pos="bottom"] .node-infographic-card {
+      top: 58px;
+      left: 50%;
+    }
+
+    /* Reveal all cards when scroll tour finishes! */
+    .exchange-sticky-stage.is-complete .node-infographic-card {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .exchange-sticky-stage.is-complete .node-tag {
+      opacity: 0;
+    }
+
+    .node-infographic-card:hover {
+      border-color: var(--neon-pink);
+      box-shadow: 0 14px 35px rgba(255, 0, 127, 0.28);
+      transform: translate(-50%, -4px) scale(1.03) !important;
+    }
+
+    .card-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.25rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-metric {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--neon-green);
+      background: rgba(0, 255, 157, 0.1);
+      border: 1px solid rgba(0, 255, 157, 0.3);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* ==========================================
+       2D DJ WAVY CHARACTER & RPG TALKING BOX
+       ========================================== */
+    .dj-wavy-actor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 84px;
+      height: 84px;
+      margin-left: -42px;
+      margin-top: -58px;
+      z-index: 25;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .dj-wavy-sprite {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 18px rgba(0, 240, 255, 0.55));
+      animation: wavyBob 0.75s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+
+    /* DJ Wavy RPG Talking Bubble */
+    .wavy-talk-box {
+      position: absolute;
+      bottom: 96px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.92);
+      width: 330px;
+      background: rgba(10, 13, 24, 0.95);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 16px;
+      padding: 1rem 1.15rem;
+      box-shadow: 
+        0 18px 40px rgba(0, 0, 0, 0.75),
+        0 0 25px rgba(0, 240, 255, 0.3),
+        inset 0 0 12px rgba(0, 240, 255, 0.1);
+      backdrop-filter: blur(14px);
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: auto;
+    }
+
+    /* Speech bubble pointer triangle */
+    .wavy-talk-box::after {
+      content: '';
+      position: absolute;
+      bottom: -11px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 18px;
+      height: 18px;
+      background: #0a0d18;
+      border-right: 2px solid var(--neon-cyan);
+      border-bottom: 2px solid var(--neon-cyan);
+    }
+
+    /* Hide big talking box in final full-infographic mode so all cards shine */
+    .exchange-sticky-stage.is-complete .wavy-talk-box {
+      opacity: 0;
+      transform: translateX(-50%) translateY(15px) scale(0.75);
+      pointer-events: none;
+    }
+
+    .talk-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.35rem;
+    }
+
+    .speaker-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--neon-pink);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Equalizer bars next to DJ Wavy's name */
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 10px;
+    }
+    .eq-bars span {
+      width: 2px;
+      background: var(--neon-cyan);
+      animation: eqBounce 0.5s ease infinite alternate;
+    }
+    .eq-bars span:nth-child(2) { animation-delay: 0.15s; }
+    .eq-bars span:nth-child(3) { animation-delay: 0.3s; }
+
+    .talk-step-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--neon-cyan);
+    }
+
+    .talk-subject {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.01em;
+    }
+
+    .talk-message {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: #d1d9f0;
+      min-height: 3.4em;
+    }
+
+    .talk-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 13px;
+      background: var(--neon-cyan);
+      vertical-align: middle;
+      margin-left: 3px;
+      animation: blink 0.8s infinite;
+    }
+
+    /* ==========================================
+       BOTTOM HUD / COMPLETE BANNER
+       ========================================== */
+    .exchange-footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .scroll-prompt {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .scroll-mouse {
+      width: 18px;
+      height: 28px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 12px;
+      position: relative;
+    }
+    .scroll-mouse::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 5px;
+      background: var(--neon-cyan);
+      border-radius: 2px;
+      animation: scrollWheel 1.4s infinite;
+    }
+
+    .overview-unlocked-banner {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.4s ease;
+      color: var(--neon-green);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .exchange-sticky-stage.is-complete .overview-unlocked-banner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ==========================================
+       KEYFRAME ANIMATIONS
+       ========================================== */
+    @keyframes wavyBob {
+      0% { transform: translateY(0px) rotate(-3deg); }
+      100% { transform: translateY(-7px) rotate(3deg); }
+    }
+
+    @keyframes eqBounce {
+      0% { height: 3px; }
+      100% { height: 10px; }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    @keyframes scrollWheel {
+      0% { opacity: 1; top: 5px; }
+      100% { opacity: 0; top: 15px; }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .exchange-sticky-stage { padding: 1.25rem; }
+      .wavy-talk-box { width: 260px; padding: 0.8rem; }
+      .node-infographic-card { width: 180px; padding: 0.7rem; }
+      .card-desc { display: none; } /* Keep mobile overview clean */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-spacer">
+    <p>↓ SCROLL DOWN TO ENTER THE WAVEWARZ EXCHANGE TOUR ↓</p>
+  </div>
+
+  <!-- =========================================================
+       MAIN INTERACTIVE SCROLL GRAPHIC SECTION
+       ========================================================= -->
+  <section id="venture-exchange-scroll" class="exchange-scroll-track">
+    <div class="exchange-sticky-stage" id="exchangeStage">
+      <div class="cyber-grid-bg"></div>
+
+      <!-- HEADER -->
+      <header class="exchange-header">
+        <div>
+          <div class="badge-tag">
+            <span class="badge-dot"></span>
+            SYSTEM ARCHITECTURE // DJ WAVY TOUR
+          </div>
+          <h2 class="exchange-title">Built Like A Venture-Grade Exchange</h2>
+        </div>
+
+        <div class="tour-status-bar">
+          <div class="progress-readout">
+            TOUR SYNC: <strong id="tourPercent">0%</strong>
+          </div>
+          <div class="mode-pill" id="modeStatusPill">
+            WALKTHROUGH ACTIVE
+          </div>
+        </div>
+      </header>
+
+      <!-- MAP & LINKED INFOGRAPHIC STAGE -->
+      <div class="map-board-wrapper">
+        <div class="map-board" id="mapBoard">
+
+          <!-- SVG CIRCUIT ROAD -->
+          <svg class="map-svg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cyberGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00f0ff" />
+                <stop offset="50%" stop-color="#ff007f" />
+                <stop offset="100%" stop-color="#00ff9d" />
+              </linearGradient>
+            </defs>
+
+            <!-- Background unlit track -->
+            <path class="path-base" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <path class="path-dashes" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+
+            <!-- Foreground Scroll-Activated Neon Track -->
+            <path id="wavyMotionPath" class="path-active" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+          </svg>
+
+          <!-- NODES CONTAINER (Populated dynamically from JS data) -->
+          <div id="nodesLayer"></div>
+
+          <!-- 2D DJ WAVY CHARACTER + TALKING BOX -->
+          <div class="dj-wavy-actor" id="djWavyActor">
+            <!-- RPG Talking Box -->
+            <div class="wavy-talk-box" id="wavyTalkBox">
+              <div class="talk-header">
+                <span class="speaker-name">
+                  DJ WAVY
+                  <span class="eq-bars"><span></span><span></span><span></span></span>
+                </span>
+                <span class="talk-step-badge" id="talkStepBadge">NODE 01/05</span>
+              </div>
+              <div class="talk-subject" id="talkSubject">Loading...</div>
+              <div class="talk-message">
+                <span id="talkMessageText"></span><span class="talk-cursor"></span>
+              </div>
+            </div>
+
+            <!-- 2D Vector Sprite of DJ Wavy -->
+            <svg class="dj-wavy-sprite" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Outer Aura -->
+              <circle cx="60" cy="64" r="42" fill="rgba(0, 240, 255, 0.12)" />
+              <!-- Headphone Band -->
+              <path d="M22 62 C22 30, 98 30, 98 62" stroke="#00f0ff" stroke-width="7" stroke-linecap="round"/>
+              <!-- Wavy Hair / Crown -->
+              <path d="M32 42 Q45 22 60 35 T88 38" stroke="#ff007f" stroke-width="6" stroke-linecap="round" fill="none"/>
+              <!-- Head Base -->
+              <rect x="30" y="38" width="60" height="50" rx="22" fill="#121629" stroke="#ffffff" stroke-width="3"/>
+              <!-- Left & Right Headphones -->
+              <rect x="14" y="50" width="14" height="28" rx="6" fill="#ff007f" stroke="#fff" stroke-width="2"/>
+              <rect x="92" y="50" width="14" height="28" rx="6" fill="#ff007f" stroke="#fff" stroke-width="2"/>
+              <!-- Cyber Visor Shades -->
+              <path d="M35 54 H85 L80 68 H64 L60 62 L56 68 H40 Z" fill="#00f0ff" stroke="#ffffff" stroke-width="2"/>
+              <!-- Visor Glint -->
+              <line x1="44" y1="57" x2="52" y2="65" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+              <!-- Confident DJ Grin -->
+              <path d="M48 76 Q60 83 72 76" stroke="#00ff9d" stroke-width="3" stroke-linecap="round"/>
+              <!-- Boom Mic -->
+              <path d="M26 74 Q38 86 52 82" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="54" cy="82" r="3.5" fill="#ff007f"/>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="exchange-footer">
+        <div class="scroll-prompt">
+          <div class="scroll-mouse"></div>
+          <span>SCROLL TO WALK THE MAP WITH DJ WAVY</span>
+        </div>
+        <div class="overview-unlocked-banner">
+          <span>★ FULL LINKED INFOGRAPHIC UNLOCKED — HOVER ANY NODE TO INSPECT</span>
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <div class="demo-spacer">
+    <p>↑ SCROLL UP TO REPLAY THE WALKTHROUGH ↑</p>
+  </div>
+
+  <script>
+    /**
+     * WAVEWARZ: "BUILT LIKE A VENTURE-GRADE EXCHANGE" MAP STOPS
+     * Coordinates are mapped to the 1200x600 SVG viewBox.
+     */
+    const EXCHANGE_NODES = [
+      {
+        id: "01",
+        x: 110,
+        y: 460,
+        cardPos: "top",
+        tag: "AMM LIQUIDITY",
+        subject: "Dynamic Bonding Curves",
+        wavySpeech: "Yo! Welcome to the floor. Every track launches with instant, programmatic liquidity—zero gatekeepers, zero order-book lag.",
+        summary: "Automated market-making curves guarantee instant price discovery & continuous liquidity from beat one.",
+        metric: "0ms Slippage Curve"
+      },
+      {
+        id: "02",
+        x: 330,
+        y: 170,
+        cardPos: "bottom",
+        tag: "REAL-TIME SETTLEMENT",
+        subject: "Sub-Second Battle Engine",
+        wavySpeech: "See this turbo node? Every vote, trade, and wager settles on-chain in milliseconds while the crowd goes wild.",
+        summary: "High-frequency execution layer built to handle massive live battle spikes without bottlenecks.",
+        metric: "< 400ms Finality"
+      },
+      {
+        id: "03",
+        x: 600,
+        y: 440,
+        cardPos: "top",
+        tag: "SMART ESCROW",
+        subject: "Trustless Prize Vaults",
+        wavySpeech: "No shady promoters here! Smart contracts lock the stakes and auto-split payouts to artists and backers the second the buzzer hits.",
+        summary: "Audited, non-custodial escrow vaults that automate royalty splits and battle rewards instantaneously.",
+        metric: "100% Verifiable"
+      },
+      {
+        id: "04",
+        x: 870,
+        y: 170,
+        cardPos: "bottom",
+        tag: "CULTURAL TELEMETRY",
+        subject: "Live Hype & Volume Oracles",
+        wavySpeech: "We're piping real-time crowd energy, stream velocity, and conviction straight into venture-grade analytics.",
+        summary: "Live sentiment and volume feeds convert sonic momentum into tradable, transparent market signals.",
+        metric: "Live Alpha Feed"
+      },
+      {
+        id: "05",
+        x: 1090,
+        y: 380,
+        cardPos: "top",
+        tag: "COMPOSABLE FLYWHEEL",
+        subject: "The Full Exchange Ecosystem",
+        wavySpeech: "And boom—the whole machine linked together! Artists, fans, and liquidity moving in one unstoppable loop. Peep the full blueprint!",
+        summary: "Every battle fuels artist treasuries, fan rewards, and protocol depth in one unified exchange graph.",
+        metric: "Full-Stack Protocol"
+      }
+    ];
+
+    const trackSection = document.getElementById('venture-exchange-scroll');
+    const stageEl = document.getElementById('exchangeStage');
+    const mapBoard = document.getElementById('mapBoard');
+    const motionPath = document.getElementById('wavyMotionPath');
+    const nodesLayer = document.getElementById('nodesLayer');
+    const djWavyActor = document.getElementById('djWavyActor');
+
+    const talkStepBadge = document.getElementById('talkStepBadge');
+    const talkSubject = document.getElementById('talkSubject');
+    const talkMessageText = document.getElementById('talkMessageText');
+    const tourPercent = document.getElementById('tourPercent');
+    const modeStatusPill = document.getElementById('modeStatusPill');
+
+    // 1. Render Map Nodes & Linked Infographic Cards
+    const nodeElements = EXCHANGE_NODES.map((node, index) => {
+      const el = document.createElement('div');
+      el.className = 'map-node';
+      el.dataset.pos = node.cardPos;
+      // Convert 1200x600 SVG coords to percentages so pins stay locked on resize
+      el.style.left = `${(node.x / 1200) * 100}%`;
+      el.style.top = `${(node.y / 600) * 100}%`;
+
+      el.innerHTML = `
+        <div class="node-pin">${node.id}</div>
+        <div class="node-tag">${node.tag}</div>
+        <div class="node-infographic-card">
+          <div class="card-kicker">
+            <span>NODE // ${node.id}</span>
+            <span>LINKED</span>
+          </div>
+          <div class="card-title">${node.subject}</div>
+          <div class="card-desc">${node.summary}</div>
+          <span class="card-metric">${node.metric}</span>
+        </div>
+      `;
+
+      nodesLayer.appendChild(el);
+      return el;
+    });
+
+    // 2. Setup SVG Path Dash lengths & Smooth Interpolation State
+    let pathLength = motionPath.getTotalLength();
+    motionPath.style.strokeDasharray = pathLength;
+    motionPath.style.strokeDashoffset = pathLength;
+
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let activeNodeIndex = -1;
+    let typewriterTimer = null;
+
+    // Snappy typewriter effect for DJ Wavy's talking box
+    function triggerTalkBox(index) {
+      const node = EXCHANGE_NODES[index];
+      talkStepBadge.textContent = `STOP ${node.id}/0${EXCHANGE_NODES.length}`;
+      talkSubject.textContent = node.subject;
+      
+      if (typewriterTimer) clearInterval(typewriterTimer);
+      talkMessageText.textContent = '';
+      
+      let charIdx = 0;
+      const fullText = node.wavySpeech;
+      typewriterTimer = setInterval(() => {
+        charIdx += 2; // Type 2 chars per tick for a snappy arcade feel
+        talkMessageText.textContent = fullText.slice(0, charIdx);
+        if (charIdx >= fullText.length) {
+          clearInterval(typewriterTimer);
+        }
+      }, 16);
+    }
+
+    // Read scroll position and clamp between 0 and 1
+    function updateScrollTarget() {
+      const rect = trackSection.getBoundingClientRect();
+      const scrollableDistance = rect.height - window.innerHeight;
+      if (scrollableDistance <= 0) return;
+
+      const scrolled = -rect.top;
+      targetProgress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+    }
+
+    // 60FPS Animation Loop (Smooth Lerp + Snappy Node Triggers)
+    function renderLoop() {
+      // Smoothly lerp currentProgress toward targetProgress
+      currentProgress += (targetProgress - currentProgress) * 0.12;
+
+      // Update percentage HUD
+      const pct = Math.round(currentProgress * 100);
+      tourPercent.textContent = `${pct}%`;
+
+      // Reserve the final 12% of scroll for the "Full Linked Infographic" finale
+      const tourPortion = Math.min(1, currentProgress / 0.88);
+      const isComplete = currentProgress >= 0.91;
+
+      // Draw neon circuit line up to DJ Wavy's feet
+      const drawLength = pathLength * tourPortion;
+      motionPath.style.strokeDashoffset = pathLength - drawLength;
+
+      // Get exact (x, y) point on the SVG bezier path
+      const pt = motionPath.getPointAtLength(drawLength);
+      const boardWidth = mapBoard.clientWidth;
+      const boardHeight = mapBoard.clientHeight;
+
+      const screenX = (pt.x / 1200) * boardWidth;
+      const screenY = (pt.y / 600) * boardHeight;
+
+      // Move DJ Wavy smoothly along the map
+      djWavyActor.style.transform = `translate3d(${screenX}px, ${screenY}px, 0)`;
+
+      // Keep talking box inside viewport edges near far left/right stops
+      const talkBox = document.getElementById('wavyTalkBox');
+      const edgeOffset = ((0.5 - (pt.x / 1200)) * 90);
+      talkBox.style.marginLeft = `${edgeOffset}px`;
+
+      // Determine which subject node DJ Wavy is currently presenting
+      const rawIndex = Math.min(
+        EXCHANGE_NODES.length - 1,
+        Math.floor(tourPortion * EXCHANGE_NODES.length)
+      );
+
+      if (rawIndex !== activeNodeIndex) {
+        activeNodeIndex = rawIndex;
+        triggerTalkBox(activeNodeIndex);
+      }
+
+      // Highlight visited & current pins
+      nodeElements.forEach((nodeEl, idx) => {
+        const nodeThreshold = idx / (EXCHANGE_NODES.length - 1);
+        nodeEl.classList.toggle('is-visited', tourPortion >= nodeThreshold - 0.05 || isComplete);
+        nodeEl.classList.toggle('is-current', idx === activeNodeIndex && !isComplete);
+      });
+
+      // Toggle final Linked Infographic overview state
+      if (isComplete) {
+        stageEl.classList.add('is-complete');
+        modeStatusPill.textContent = 'LINKED INFOGRAPHIC LIVE';
+      } else {
+        stageEl.classList.remove('is-complete');
+        modeStatusPill.textContent = 'WALKTHROUGH ACTIVE';
+      }
+
+      requestAnimationFrame(renderLoop);
+    }
+
+    window.addEventListener('scroll', updateScrollTarget, { passive: true });
+    window.addEventListener('resize', () => {
+      pathLength = motionPath.getTotalLength();
+      motionPath.style.strokeDasharray = pathLength;
+      updateScrollTarget();
+    });
+
+    // Initialize
+    updateScrollTarget();
+    triggerTalkBox(0);
+    requestAnimationFrame(renderLoop);
+  </script>
+</body>
+</html>
