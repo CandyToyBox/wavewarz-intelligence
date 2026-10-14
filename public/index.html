@@ -1760,6 +1760,364 @@
     }
   
   </style>
+
+  <!-- 3D ROYAL DJ WAVY & AR PORTAL STYLES -->
+  <style>
+/* =========================================================================
+       SECTION 1: 3D DJ WAVY — GRAND ROYAL ENTRANCE & AR QR PORTAL
+       (Strictly GPU-accelerated transforms + Opacity, zero expensive CSS blurs)
+       ========================================================================= */
+    .royal-3d-scroll-track {
+      position: relative;
+      height: 250vh; /* Scroll distance that drives the grand entrance reveal */
+      background: #05060a;
+      contain: layout paint;
+    }
+
+    .royal-3d-sticky {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 42%, #1c152e 0%, #090812 55%, #05060a 90%);
+    }
+
+    /* Pause animations when offscreen */
+    .royal-3d-sticky.is-offscreen * {
+      animation-play-state: paused !important;
+    }
+
+    /* Golden Throne Spotlight Cone (Pure gradient, no filter lag) */
+    .throne-spotlight {
+      position: absolute;
+      top: -15%;
+      left: 50%;
+      width: 760px;
+      height: 125vh;
+      margin-left: -380px;
+      background: radial-gradient(ellipse at top, rgba(255, 215, 0, 0.28) 0%, rgba(255, 165, 0, 0.06) 50%, transparent 72%);
+      pointer-events: none;
+      will-change: transform, opacity;
+      z-index: 1;
+    }
+
+    /* Rotating Sovereign Floor Rings under the 3D Model */
+    .throne-pedestal {
+      position: absolute;
+      bottom: 8vh;
+      left: 50%;
+      width: 520px;
+      height: 150px;
+      margin-left: -260px;
+      pointer-events: none;
+      z-index: 2;
+      will-change: transform, opacity;
+    }
+
+    .pedestal-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--royal-gold-dim);
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.15);
+    }
+
+    .pedestal-ring-inner {
+      position: absolute;
+      inset: 22px 45px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(0, 240, 255, 0.4);
+    }
+
+    /* Main 3D Stage Grid */
+    .royal-3d-grid {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      max-width: 1320px;
+      height: 100%;
+      padding: 2rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Left Column: Royal Lore & Prestige Titles */
+    .royal-lore-col {
+      will-change: transform, opacity;
+    }
+
+    .crown-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: #06070b;
+      background: linear-gradient(90deg, var(--royal-gold), #ffae00);
+      padding: 0.35rem 0.85rem;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .royal-3d-title {
+      font-size: clamp(2.1rem, 3.8vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.02;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      background: linear-gradient(180deg, #ffffff 0%, #ffe680 55%, var(--royal-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .royal-3d-Bio {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: #b7c0d8;
+      margin-bottom: 1.5rem;
+      max-width: 38ch;
+    }
+
+    .royal-stats-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .royal-stat-box {
+      background: #0c0e18;
+      border: 1px solid var(--royal-gold-dim);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+    }
+
+    .stat-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .stat-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--royal-gold);
+      margin-top: 0.2rem;
+    }
+
+    /* Center Column: 3D Model Viewer Stage */
+    .royal-model-col {
+      position: relative;
+      height: 76vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform, opacity;
+    }
+
+    model-viewer#wavy3DViewer {
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+      outline: none;
+    }
+
+    .interaction-hint {
+      position: absolute;
+      bottom: 2vh;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--royal-gold);
+      background: #0a0c14;
+      border: 1px solid var(--royal-gold-dim);
+      padding: 0.3rem 0.85rem;
+      border-radius: 99px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    /* Right Column: AR QR Code Portal Card (DJ wavy QR.svg) */
+    .royal-ar-col {
+      display: flex;
+      justify-content: flex-end;
+      will-change: transform, opacity;
+    }
+
+    .ar-portal-card {
+      width: 100%;
+      max-width: 310px;
+      background: linear-gradient(160deg, #111424 0%, #090b13 100%);
+      border: 2px solid var(--royal-gold);
+      border-radius: 18px;
+      padding: 1.25rem;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85);
+      position: relative;
+    }
+
+    .ar-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .ar-live-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--neon-green);
+      background: rgba(0, 255, 157, 0.1);
+      border: 1px solid rgba(0, 255, 157, 0.35);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .ar-crown-icon {
+      color: var(--royal-gold);
+      font-size: 1.1rem;
+    }
+
+    .ar-card-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .ar-card-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    /* High-contrast white frame so the QR code scans Effortlessly from any phone */
+    .qr-frame-wrapper {
+      position: relative;
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 14px;
+      border: 3px solid var(--royal-gold);
+      width: 190px;
+      height: 190px;
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .qr-frame-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Subtle animated laser scanline across QR */
+    .qr-scan-laser {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--neon-pink);
+      box-shadow: 0 0 8px var(--neon-pink);
+      animation: qrScan 2.6s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    .ar-footer-meta {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--royal-gold);
+      letter-spacing: 0.06em;
+    }
+
+    /* Royal Curtain Gates that part on scroll */
+    .royal-gates-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      overflow: hidden;
+    }
+
+    .prestige-gate {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: linear-gradient(135deg, #07060c 0%, #141022 100%);
+      will-change: transform;
+    }
+
+    .prestige-gate-left {
+      left: 0;
+      transform-origin: left center;
+      border-right: 3px solid var(--royal-gold);
+    }
+
+    .prestige-gate-right {
+      right: 0;
+      transform-origin: right center;
+      border-left: 3px solid var(--royal-gold);
+    }
+
+    .prestige-gate::after {
+      content: '';
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+    }
+
+    /* Center Crest on the Gates before they part */
+    .gate-crest-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 25;
+      will-change: transform, opacity;
+    }
+
+    .crest-crown {
+      font-size: 2.8rem;
+      color: var(--royal-gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .crest-title {
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .crest-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--royal-gold);
+      letter-spacing: 0.28em;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 
 <body class="intro-playing">
@@ -2173,35 +2531,88 @@
   <!-- ===================================================================== -->
   <!-- 3D DJ WAVY INTERACTIVE SHOWCASE                                       -->
   <!-- ===================================================================== -->
-  <section id="3d-arena" class="section-container velocity-skew">
-    <div class="spotlight-card labs-reveal reveal-scale" style="padding:48px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;align-items:center;">
-      <div>
-        <div class="section-eyebrow">INTERACTIVE 3D MASCOT</div>
-        <h2 class="section-title">
-          MEET <span class="text-gradient">DJ WAVY</span> IN 3D
-        </h2>
-        <p style="color:var(--brand-neutral);font-size:1.05rem;line-height:1.65;margin-bottom:28px;">
-          The official arbiter of the WaveWarz Arena. Spin, zoom, and inspect DJ Wavy right in your browser—rendered with hardware-accelerated WebGL.
-        </p>
-        <div style="display:flex;flex-wrap:wrap;gap:14px;">
-          <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="btn-primary">
-            Claim Your Arena Pass
-          </a>
-          <a href="https://x.com/WaveWarz" target="_blank" rel="noopener" class="btn-secondary">
-            Join X Community
-          </a>
+  <section id="3d-arena" class="royal-3d-scroll-track">
+    <div class="royal-3d-sticky" id="royal3DSticky">
+
+      <!-- Golden Spotlight & Pedestal -->
+      <div class="throne-spotlight" id="throneSpotlight"></div>
+      <div class="throne-pedestal" id="thronePedestal">
+        <div class="pedestal-ring"></div>
+        <div class="pedestal-ring-inner"></div>
+      </div>
+
+      <!-- Royal Prestige Gates (Part ways as you scroll in) -->
+      <div class="royal-gates-overlay">
+        <div class="prestige-gate prestige-gate-left" id="gate3DLeft"></div>
+        <div class="prestige-gate prestige-gate-right" id="gate3DRight"></div>
+        <div class="gate-crest-banner" id="gateCrestBanner">
+          <div class="crest-crown">♛</div>
+          <div class="crest-title">ENTER THE SOVEREIGN</div>
+          <div class="crest-subtitle">MEET DJ WAVY // 3D & AR EXPERIENCE</div>
         </div>
       </div>
 
-      <div style="height:400px;border-radius:24px;background:radial-gradient(circle, rgba(var(--brand-blue-rgb),0.22) 0%, var(--brand-black) 72%);border:1px solid rgba(var(--brand-blue-rgb),0.2);overflow:hidden;">
-        <model-viewer 
-          src="djwavy.glb" 
-          alt="DJ Wavy 3D Model"
-          auto-rotate 
-          camera-controls 
-          shadow-intensity="1"
-          style="width:100%;height:100%;background:transparent;"
-        ></model-viewer>
+      <!-- 3-Column Throne Room Layout -->
+      <div class="royal-3d-grid">
+
+        <!-- Left Column: Royal Introduction -->
+        <div class="royal-lore-col" id="royalLoreCol">
+          <div class="crown-pill">♛ WAVEWARZ ROYALTY</div>
+          <h2 class="royal-3d-title">All Hail<br>DJ Wavy</h2>
+          <p class="royal-3d-Bio">
+            The sovereign architect of the arena. Presiding over every battle, liquidity pool, and crowd surge in full 3D glory—and ready to drop straight into your physical space.
+          </p>
+          <div class="royal-stats-row">
+            <div class="royal-stat-box">
+              <div class="stat-lbl">STATUS</div>
+              <div class="stat-val">SOVEREIGN</div>
+            </div>
+            <div class="royal-stat-box">
+              <div class="stat-lbl">DIMENSION</div>
+              <div class="stat-val">3D + WEB AR</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center Column: 3D Character (djwavy.glb) -->
+        <div class="royal-model-col" id="royalModelCol">
+          <model-viewer
+            id="wavy3DViewer"
+            src="djwavy.glb"
+            alt="3D Character DJ Wavy"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="0"
+            rotation-per-second="24deg"
+            shadow-intensity="1"
+            exposure="1.1"
+            interaction-prompt="none">
+          </model-viewer>
+          <div class="interaction-hint">DRAG TO ROTATE 3D ROYALTY</div>
+        </div>
+
+        <!-- Right Column: AR QR Code Portal (DJ wavy QR.svg) -->
+        <div class="royal-ar-col" id="royalArCol">
+          <div class="ar-portal-card">
+            <div class="ar-card-header">
+              <span class="ar-live-tag">● AR PORTAL READY</span>
+              <span class="ar-crown-icon">♛</span>
+            </div>
+            <div class="ar-card-title">Summon Wavy in AR</div>
+            <p class="ar-card-sub">
+              Point your phone camera at the royal seal below to project 3D DJ Wavy directly into your room.
+            </p>
+            <div class="qr-frame-wrapper">
+              <div class="qr-scan-laser"></div>
+              <!-- Uses your uploaded DJ wavy QR.svg -->
+              <img src="DJ wavy QR.svg" alt="Scan to view DJ Wavy in AR" loading="lazy" />
+            </div>
+            <div class="ar-footer-meta">
+              [ SCAN WITH IOS OR ANDROID CAMERA ]
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -2977,6 +3388,115 @@
     triggerTalkBox(0);
     requestAnimationFrame(renderLoop);
   
+  </script>
+
+  <!-- 3D ROYAL DJ WAVY & AR PORTAL CONTROLLER -->
+  <script>
+/* =========================================================================
+       CONTROLLER 1: 3D DJ WAVY ROYAL ENTRANCE (STRICTLY OPTIMIZED)
+       ========================================================================= */
+    const royal3DTrack = document.getElementById('3d-arena');
+    const royal3DSticky = document.getElementById('royal3DSticky');
+    const wavy3DViewer = document.getElementById('wavy3DViewer');
+
+    const gate3DLeft = document.getElementById('gate3DLeft');
+    const gate3DRight = document.getElementById('gate3DRight');
+    const gateCrestBanner = document.getElementById('gateCrestBanner');
+    const royalModelCol = document.getElementById('royalModelCol');
+    const royalLoreCol = document.getElementById('royalLoreCol');
+    const royalArCol = document.getElementById('royalArCol');
+    const throneSpotlight = document.getElementById('throneSpotlight');
+    const thronePedestal = document.getElementById('thronePedestal');
+
+    let is3DVisible = false;
+    let raf3D = null;
+    let target3DScroll = 0;
+    let current3DScroll = 0;
+
+    function update3DScrollTarget() {
+      if (!is3DVisible) return;
+      const rect = royal3DTrack.getBoundingClientRect();
+      const maxScroll = rect.height - window.innerHeight;
+      if (maxScroll <= 0) return;
+      target3DScroll = Math.max(0, Math.min(1, -rect.top / maxScroll));
+    }
+
+    function render3DEntrance() {
+      if (!is3DVisible) {
+        raf3D = null;
+        return;
+      }
+
+      current3DScroll += (target3DScroll - current3DScroll) * 0.12;
+
+      // Gates part smoothly during the first 45% of the section's scroll
+      const gateProgress = Math.min(1, current3DScroll / 0.45);
+      const easeOut = 1 - Math.pow(1 - gateProgress, 3);
+
+      // 1. Part the Obsidian & Gold Royal Gates
+      const remainingGate = Math.max(0, 1 - easeOut);
+      gate3DLeft.style.transform = `scaleX(${remainingGate})`;
+      gate3DRight.style.transform = `scaleX(${remainingGate})`;
+
+      // 2. Scale & fade out the Heraldic Crest as the gates open
+      gateCrestBanner.style.opacity = Math.max(0, 1 - gateProgress * 1.85);
+      gateCrestBanner.style.transform = `translate(-50%, -50%) scale(${1 + gateProgress * 0.3})`;
+
+      // 3. Majestic Rise of the 3D DJ Wavy Model & Throne Pedestal
+      const modelScale = 0.78 + (0.22 * easeOut);
+      const modelY = (1 - easeOut) * 60;
+      royalModelCol.style.transform = `translate3d(0, ${modelY}px, 0) scale(${modelScale})`;
+      royalModelCol.style.opacity = Math.min(1, 0.2 + easeOut * 0.8);
+
+      thronePedestal.style.transform = `scale(${0.7 + 0.3 * easeOut})`;
+      throneSpotlight.style.opacity = easeOut;
+
+      // 4. Slide in the Left Lore & Right AR QR Code Card once gates clear
+      const sideProgress = Math.max(0, Math.min(1, (current3DScroll - 0.18) / 0.35));
+      const sideEase = 1 - Math.pow(1 - sideProgress, 3);
+
+      royalLoreCol.style.opacity = sideEase;
+      royalLoreCol.style.transform = `translate3d(${(1 - sideEase) * -40}px, 0, 0)`;
+
+      royalArCol.style.opacity = sideEase;
+      royalArCol.style.transform = `translate3d(${(1 - sideEase) * 40}px, 0, 0)`;
+
+      if (Math.abs(target3DScroll - current3DScroll) > 0.0005) {
+        raf3D = requestAnimationFrame(render3DEntrance);
+      } else {
+        raf3D = null;
+      }
+    }
+
+    // Pause 3D auto-rotation and rAF when user scrolls past the 3D section
+    const observer3D = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        is3DVisible = entry.isIntersecting;
+        royal3DSticky.classList.toggle('is-offscreen', !is3DVisible);
+
+        if (wavy3DViewer) {
+          wavy3DViewer.autoRotate = is3DVisible;
+        }
+
+        if (is3DVisible) {
+          update3DScrollTarget();
+          if (!raf3D) raf3D = requestAnimationFrame(render3DEntrance);
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer3D.observe(royal3DTrack);
+
+    window.addEventListener('scroll', () => {
+      if (typeof is3DVisible !== 'undefined' && is3DVisible) {
+        update3DScrollTarget();
+        if (!raf3D) raf3D = requestAnimationFrame(render3DEntrance);
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (typeof update3DScrollTarget === 'function') update3DScrollTarget();
+    }, { passive: true });
   </script>
 </body>
 </html>
