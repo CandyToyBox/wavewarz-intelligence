@@ -1,0 +1,2594 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WaveWarZ — Music Battlz Meets Music Marketz</title>
+  <meta name="description" content="WaveWarZ is where music battlz meet music marketz on Solana. Two artists collide in real-time audio combat while fans trade the wave. Every trade pays the artist instantly." />
+  <!-- Wave icon used solely for favicon -->
+  <link rel="icon" type="image/png" href="./favicon-transparent.png" />
+  
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- 3D Model Viewer for DJ Wavy -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+  <style>
+    :root {
+      --void: #050811;
+      --bg: #090e1c;
+      --card: rgba(12, 19, 34, 0.72);
+      --card-border: rgba(126, 193, 251, 0.16);
+      --green: #95fe7c;
+      --green-glow: rgba(149, 254, 124, 0.45);
+      --blue: #7ec1fb;
+      --cyan: #38bdf8;
+      --purple: #a855f7;
+      --ice: #daecfd;
+      --mut: #8b97ab;
+      --red: #ff453a;
+      --disp: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+      --body: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --rad: 28px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--void);
+      color: var(--ice);
+      font-family: var(--body);
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient Cyber Background Grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(126,193,251,0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(126,193,251,0.032) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 95% 95% at 50% 0%, #000 30%, transparent 85%);
+    }
+
+    .wrap { max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.2rem, 4vw, 2.5rem); position: relative; z-index: 2; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+      font-family: var(--body); font-weight: 700; font-size: 0.92rem;
+      padding: 0.85rem 2rem; border-radius: 12px; border: 0; cursor: pointer;
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative; overflow: hidden;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      text-decoration: none;
+    }
+    .btn-green {
+      background: linear-gradient(135deg, var(--green), #5fdf49);
+      color: #040905;
+      box-shadow: 0 0 24px rgba(149,254,124,0.28), inset 0 1px 1px rgba(255,255,255,0.6);
+    }
+    .btn-green:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 35px rgba(149,254,124,0.55), inset 0 1px 1px rgba(255,255,255,0.7);
+    }
+    .btn-ghost {
+      background: rgba(126, 193, 251, 0.05);
+      color: var(--blue);
+      border: 1px solid rgba(126, 193, 251, 0.28);
+      backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+      background: rgba(126, 193, 251, 0.14);
+      border-color: rgba(126, 193, 251, 0.6);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    /* ── TOP ANNOUNCEMENT STRIP ── */
+    .strip {
+      background: linear-gradient(90deg, rgba(149,254,124,0.1), rgba(126,193,251,0.1));
+      border-bottom: 1px solid rgba(149,254,124,0.18);
+      font-size: 0.82rem; padding: 0.5rem 0; position: relative; z-index: 60;
+      text-align: center; backdrop-filter: blur(12px);
+    }
+    .strip .wrap { display: flex; gap: 1.5rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .strip b { color: var(--green); font-weight: 700; letter-spacing: 0.05em; }
+    .strip a { color: #fff; font-weight: 600; text-decoration: underline; text-decoration-color: var(--green); text-underline-offset: 4px; }
+    .strip .beta { font-family: var(--mono); color: var(--mut); font-size: 0.72rem; letter-spacing: 0.06em; }
+
+    /* ── FLOATING TRANSPARENT HEADER WITH SILKY SMOOTH GPU REVEAL & SCROLL GLASS ── */
+    header.site {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 55;
+      background: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-bottom: 1px solid transparent;
+      opacity: 0;
+      transform: translate3d(0, -6px, 0);
+      pointer-events: none;
+      will-change: opacity, transform;
+      contain: layout style;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition:
+        opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        background 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    /* Pseudo-element dedicated for frosted glass so backdrop-filter is decoupled from header paint */
+    header.site::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: rgba(7, 12, 22, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateZ(0);
+      will-change: opacity;
+      transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    /* Activated when logo entrance finishes */
+    header.site.header-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
+    }
+    /* When user starts scrolling down, smoothly cross-fade the frosted glass backdrop without jank */
+    header.site.header-scrolled {
+      border-bottom: 1px solid rgba(126,193,251,0.16);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    header.site.header-scrolled::before {
+      opacity: 1;
+    }
+    header.site .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; gap: 2rem; }
+    
+    .brand-logo-link {
+      display: inline-flex; align-items: center;
+      text-decoration: none; transition: transform 0.25s ease;
+    }
+    .brand-logo-link:hover { transform: scale(1.04); }
+    .brand-logo-img {
+      height: 44px; width: auto; object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(149,254,124,0.45)) drop-shadow(0 0 32px rgba(56,189,248,0.25));
+      transition: filter 0.3s ease;
+    }
+    .brand-logo-link:hover .brand-logo-img {
+      filter: drop-shadow(0 0 25px rgba(149,254,124,0.75)) drop-shadow(0 0 45px rgba(56,189,248,0.45));
+    }
+
+    nav.main { display: flex; gap: 1.8rem; font-size: 0.92rem; color: var(--ice); font-weight: 500; }
+    nav.main a { position: relative; padding-bottom: 4px; opacity: 0.85; transition: opacity 0.2s; }
+    nav.main a:hover { opacity: 1; color: #fff; }
+    nav.main a::after {
+      content: ''; position: absolute; left: 0; bottom: 0; width: 0; height: 2px;
+      background: var(--green); transition: width 0.3s ease;
+    }
+    nav.main a:hover::after { width: 100%; }
+
+    .wallet {
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 700;
+      padding: 0.5rem 1.2rem; border-radius: 99px;
+      background: rgba(149,254,124,0.08); border: 1px solid rgba(149,254,124,0.35);
+      color: var(--green); transition: all 0.3s ease;
+    }
+    .wallet:hover { background: var(--green); color: #000; box-shadow: 0 0 20px rgba(149,254,124,0.45); }
+
+    /* ── HERO CONTAINER WITH INTERACTIVE WAVE GRADIENT BACKGROUND ── */
+    .hero-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      height: 100vh;
+      min-height: 620px;
+      max-height: 1020px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      padding: 4.5rem 1.5rem 1rem;
+    }
+
+    /* Interactive Wave Gradient WebGL Canvas in Background */
+    .interactive-wave-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.92;
+    }
+
+    /* ── SECTION 1: MINIMALIST LUXURY HERO PRESENTATION ── */
+    .intro-hero {
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1100px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0.75rem;
+      padding-top: 1.8rem;
+      padding-bottom: 0.8rem;
+    }
+
+    /* Hero Ambient Backlight Aura (Deep Expanded Radiance) */
+    .hero-ambient-aura {
+      position: absolute;
+      top: 34%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 780px; height: 420px;
+      max-width: 95vw;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(149,254,124,0.32), rgba(56,189,248,0.25) 45%, rgba(168,85,247,0.12) 65%, transparent 80%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+      animation: auraPulse 6s ease-in-out infinite alternate;
+    }
+    @keyframes auraPulse {
+      0% { opacity: 0.75; transform: translate(-50%, -50%) scale(0.92); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+    }
+
+    /* ── IMPRESSIVE PROMINENT WAVEWARZ LOGO WITH HIGH-DRAMA CYBER GLITCH ENTRANCE ── */
+    .hero-logo-wrap {
+      position: relative;
+      z-index: 2;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: clamp(360px, 44vw, 560px);
+      flex-shrink: 0;
+      perspective: 1200px;
+    }
+
+    /* Ambient drifting particle canvas strictly behind all logo stages & planes */
+    .logo-particles-canvas {
+      position: absolute;
+      inset: -100px;
+      width: calc(100% + 200px);
+      height: calc(100% + 200px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .logo-stage {
+      position: relative;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      border-radius: 20px;
+    }
+
+    /* Glossy Glass Specular Sheen across Logo Silhouette */
+    .logo-glass-sheen {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.08) 28%, transparent 52%, rgba(149,254,124,0.18) 78%, rgba(56,189,248,0.22) 100%);
+      mix-blend-mode: overlay;
+      opacity: 0.85;
+      -webkit-mask-image: url('./wavewarz-logo-trimmed.png');
+      mask-image: url('./wavewarz-logo-trimmed.png');
+      -webkit-mask-size: contain;
+      mask-size: contain;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      animation: glassShimmer 5s ease-in-out infinite 1.3s;
+    }
+
+    @keyframes glassShimmer {
+      0%, 100% { opacity: 0.75; filter: brightness(1); }
+      50% { opacity: 1; filter: brightness(1.35) drop-shadow(0 0 12px rgba(255,255,255,0.5)); }
+    }
+
+    .intro-hero-logo {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      z-index: 10;
+      /* Modern Glossy Glass Look: Crisp highlights, translucent luminous edge bounce, and chromatic radiance */
+      filter: drop-shadow(0 0 35px rgba(149,254,124,0.65)) drop-shadow(0 0 80px rgba(56,189,248,0.45)) drop-shadow(0 14px 32px rgba(0,0,0,0.95)) brightness(1.12) contrast(1.15);
+      animation: logoGlitchIn 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards, floatLogo 6s ease-in-out infinite 1.3s;
+      transition: transform 0.4s cubic-bezier(0.2, 0.85, 0.25, 1), filter 0.4s ease;
+      cursor: pointer;
+    }
+    .intro-hero-logo:hover {
+      transform: scale(1.04) translateY(-4px);
+      filter: drop-shadow(0 0 55px rgba(149,254,124,0.9)) drop-shadow(0 0 100px rgba(56,189,248,0.65)) drop-shadow(0 20px 45px rgba(0,0,0,0.98)) brightness(1.22) contrast(1.2);
+    }
+
+    /* Chromatic RGB Split Ghost Layers (Accelerated 2x to 1.3s) */
+    .logo-rgb-ghost {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      user-select: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+    }
+    .logo-rgb-cyan {
+      filter: drop-shadow(0 0 16px #38bdf8) brightness(2.2) contrast(1.8) hue-rotate(180deg);
+      animation: rgbCyanGlitch 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 2;
+    }
+    .logo-rgb-magenta {
+      filter: drop-shadow(0 0 16px #e879f9) brightness(2.2) contrast(1.8) hue-rotate(290deg);
+      animation: rgbMagentaGlitch 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      z-index: 3;
+    }
+
+    /* Fractalized Stretched Slice Planes (Accelerated 2x to 1.3s) */
+    .fractal-plane {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 5;
+      mix-blend-mode: overlay;
+    }
+    .fp-1 {
+      clip-path: polygon(0% 12%, 100% 8%, 100% 28%, 0% 34%);
+      animation: fractalSlice1 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      filter: drop-shadow(-18px 0 #38bdf8) brightness(2.6);
+    }
+    .fp-2 {
+      clip-path: polygon(0% 40%, 100% 36%, 100% 58%, 0% 64%);
+      animation: fractalSlice2 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      filter: drop-shadow(20px 0 #95fe7c) brightness(2.8);
+    }
+    .fp-3 {
+      clip-path: polygon(0% 68%, 100% 65%, 100% 88%, 0% 92%);
+      animation: fractalSlice3 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      filter: drop-shadow(-14px 0 #c084fc) brightness(2.4);
+    }
+    .fp-4 {
+      clip-path: polygon(15% 0%, 85% 0%, 95% 100%, 5% 100%);
+      animation: fractalSlice4 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      filter: drop-shadow(0 0 35px rgba(149,254,124,0.9)) brightness(2);
+      mix-blend-mode: screen;
+    }
+
+    /* Master Logo Advanced Cyber / Fractal Entrance */
+    @keyframes logoGlitchIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.62) translateY(55px) rotateX(25deg) skewX(-14deg);
+        filter: drop-shadow(-28px 0 rgba(56,189,248,1)) drop-shadow(28px 0 rgba(149,254,124,1)) blur(28px) brightness(3.2);
+        clip-path: inset(45% 0 45% 0);
+      }
+      10% {
+        opacity: 0.35;
+        transform: scale(0.76) translateY(34px) rotateX(-12deg) skewX(12deg);
+        filter: drop-shadow(22px 0 rgba(232,121,249,0.95)) drop-shadow(-22px 0 rgba(149,254,124,0.95)) blur(16px) brightness(2.8);
+        clip-path: inset(26% 0 32% 0);
+      }
+      18% {
+        opacity: 0.12;
+        transform: scale(0.85) translateY(22px) rotateX(15deg) skewX(-18deg) scaleX(1.35);
+        filter: drop-shadow(-24px 0 rgba(56,189,248,1)) drop-shadow(24px 0 rgba(149,254,124,1)) blur(18px);
+        clip-path: inset(62% 0 12% 0);
+      }
+      28% {
+        opacity: 0.88;
+        transform: scale(1.14) translateY(-14px) rotateX(-6deg) skewX(8deg) scaleY(1.18);
+        filter: drop-shadow(-16px 0 rgba(149,254,124,1)) drop-shadow(16px 0 rgba(56,189,248,1)) blur(8px) brightness(2.2);
+        clip-path: inset(6% 0 10% 0);
+      }
+      38% {
+        opacity: 0.45;
+        transform: scale(0.92) translateY(8px) rotateX(8deg) skewX(-8deg) scaleX(0.9);
+        filter: drop-shadow(18px 0 rgba(232,121,249,0.9)) blur(10px);
+        clip-path: inset(18% 0 4% 0);
+      }
+      52% {
+        opacity: 0.96;
+        transform: scale(1.05) translateY(-6px) rotateX(-2deg) skewX(4deg);
+        filter: drop-shadow(-8px 0 rgba(149,254,124,0.9)) drop-shadow(8px 0 rgba(56,189,248,0.9)) blur(4px) brightness(1.5);
+        clip-path: inset(2% 0 2% 0);
+      }
+      68% {
+        opacity: 0.85;
+        transform: scale(0.985) translateY(3px) skewX(-2deg);
+        filter: drop-shadow(6px 0 rgba(56,189,248,0.8)) blur(2px) brightness(1.25);
+        clip-path: inset(0% 0 0% 0);
+      }
+      82% {
+        opacity: 0.99;
+        transform: scale(1.015) translateY(-2px) skewX(1deg);
+        filter: drop-shadow(0 0 55px rgba(149,254,124,0.75)) blur(0px) brightness(1.1);
+      }
+      92% {
+        opacity: 1;
+        transform: scale(1.004) translateY(-1px) skewX(0deg);
+        filter: drop-shadow(0 0 52px rgba(149,254,124,0.65)) drop-shadow(0 0 95px rgba(56,189,248,0.4));
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotateX(0deg) skewX(0deg);
+        filter: drop-shadow(0 0 50px rgba(149,254,124,0.55)) drop-shadow(0 0 100px rgba(56,189,248,0.35)) drop-shadow(0 20px 45px rgba(0,0,0,0.95));
+      }
+    }
+
+    /* Cyan RGB Split Track */
+    @keyframes rgbCyanGlitch {
+      0% {
+        opacity: 0;
+        transform: translate3d(-35px, 20px, 30px) scale(0.7) skewX(-22deg) scaleX(1.4);
+      }
+      14% {
+        opacity: 0.75;
+        transform: translate3d(-24px, 6px, 20px) scale(0.92) skewX(15deg) scaleX(1.2);
+      }
+      26% {
+        opacity: 0.2;
+        transform: translate3d(-40px, -10px, 40px) scale(1.15) skewX(-25deg) scaleX(1.6);
+      }
+      40% {
+        opacity: 0.85;
+        transform: translate3d(-14px, -4px, 15px) scale(1.05) skewX(8deg);
+      }
+      55% {
+        opacity: 0.4;
+        transform: translate3d(-8px, 2px, 10px) skewX(-5deg);
+      }
+      72% {
+        opacity: 0.6;
+        transform: translate3d(-4px, 0, 5px) skewX(2deg);
+      }
+      88% {
+        opacity: 0.2;
+        transform: translate3d(-1.5px, 0, 2px);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /* Magenta RGB Split Track */
+    @keyframes rgbMagentaGlitch {
+      0% {
+        opacity: 0;
+        transform: translate3d(35px, -20px, -30px) scale(0.7) skewX(22deg) scaleX(1.4);
+      }
+      14% {
+        opacity: 0.75;
+        transform: translate3d(24px, -6px, -20px) scale(0.92) skewX(-15deg) scaleX(1.2);
+      }
+      26% {
+        opacity: 0.25;
+        transform: translate3d(38px, 10px, -40px) scale(1.15) skewX(25deg) scaleX(1.6);
+      }
+      40% {
+        opacity: 0.85;
+        transform: translate3d(14px, 4px, -15px) scale(1.05) skewX(-8deg);
+      }
+      55% {
+        opacity: 0.45;
+        transform: translate3d(8px, -2px, -10px) skewX(5deg);
+      }
+      72% {
+        opacity: 0.65;
+        transform: translate3d(4px, 0, -5px) skewX(-2deg);
+      }
+      88% {
+        opacity: 0.25;
+        transform: translate3d(1.5px, 0, -2px);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0);
+      }
+    }
+
+    /* Fractalized Slices Animation Planes */
+    @keyframes fractalSlice1 {
+      0% { opacity: 0; transform: translate3d(-70px, -15px, 60px) scaleX(1.8) skewX(-30deg); }
+      15% { opacity: 0.95; transform: translate3d(45px, 8px, 40px) scaleX(1.4) skewX(22deg); }
+      32% { opacity: 0.3; transform: translate3d(-35px, -6px, 20px) scaleX(1.2) skewX(-12deg); }
+      50% { opacity: 0.75; transform: translate3d(15px, 2px, 10px) scaleX(1.08) skewX(6deg); }
+      70% { opacity: 0.2; transform: translate3d(-4px, 0, 0) scaleX(1.02); }
+      85%, 100% { opacity: 0; transform: translate3d(0, 0, 0) scaleX(1); }
+    }
+
+    @keyframes fractalSlice2 {
+      0% { opacity: 0; transform: translate3d(80px, 20px, -60px) scaleX(2.0) skewX(35deg); }
+      18% { opacity: 0.9; transform: translate3d(-50px, -12px, -30px) scaleX(1.5) skewX(-25deg); }
+      36% { opacity: 0.4; transform: translate3d(30px, 6px, -15px) scaleX(1.2) skewX(14deg); }
+      54% { opacity: 0.8; transform: translate3d(-18px, -2px, -5px) scaleX(1.06) skewX(-6deg); }
+      72% { opacity: 0.25; transform: translate3d(5px, 0, 0) scaleX(1.02); }
+      88%, 100% { opacity: 0; transform: translate3d(0, 0, 0) scaleX(1); }
+    }
+
+    @keyframes fractalSlice3 {
+      0% { opacity: 0; transform: translate3d(-90px, 25px, 80px) scaleX(2.2) skewX(-40deg); }
+      20% { opacity: 0.85; transform: translate3d(60px, -10px, 45px) scaleX(1.6) skewX(28deg); }
+      40% { opacity: 0.35; transform: translate3d(-30px, 5px, 20px) scaleX(1.25) skewX(-15deg); }
+      60% { opacity: 0.7; transform: translate3d(12px, -2px, 8px) scaleX(1.08) skewX(8deg); }
+      78% { opacity: 0.15; transform: translate3d(-3px, 0, 0) scaleX(1.01); }
+      90%, 100% { opacity: 0; transform: translate3d(0, 0, 0) scaleX(1); }
+    }
+
+    @keyframes fractalSlice4 {
+      0% { opacity: 0; transform: scale(0.4) rotateZ(-12deg); filter: blur(30px) brightness(3); }
+      22% { opacity: 0.7; transform: scale(1.3) rotateZ(6deg); filter: blur(14px) brightness(2.5); }
+      45% { opacity: 0.2; transform: scale(0.9) rotateZ(-3deg); filter: blur(8px); }
+      65% { opacity: 0.5; transform: scale(1.05) rotateZ(1deg); filter: blur(3px); }
+      82% { opacity: 0.1; transform: scale(1); filter: blur(0px); }
+      95%, 100% { opacity: 0; transform: scale(1); }
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ── TAGLINE CONTAINER: "MUSIC BATTLZ MEETS MUSIC MARKETZ" (SILKY SMOOTH GPU REVEAL) ── */
+    .hero-tagline-container {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto;
+      cursor: default;
+      z-index: 2;
+      padding: 0 1rem;
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+      pointer-events: none;
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition:
+        opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-tagline-container.tagline-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
+    }
+
+    .tagline-phrase {
+      font-family: var(--disp);
+      font-weight: 900;
+      font-size: clamp(1.4rem, 2.7vw, 2.5rem);
+      line-height: 1.18;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+      user-select: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    .tagline-line {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      width: 100%;
+    }
+
+    .tagline-line-connector {
+      margin-block: -0.15rem;
+    }
+
+    .tagline-word {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      margin-inline: 0.22rem;
+    }
+    .tagline-word.word-highlight-green .char {
+      color: var(--green);
+      text-shadow: 0 0 20px rgba(149, 254, 124, 0.45);
+    }
+    .tagline-word.word-highlight-cyan .char {
+      color: var(--cyan);
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
+    }
+    .tagline-word.word-connector .char {
+      color: rgba(149, 254, 124, 0.85);
+      font-size: 0.68em;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+    }
+
+    /* ── CHARACTER IN-ANIMATION, HOVER & SCROLL-OUT MOTION ── */
+    .char {
+      display: inline-block;
+      position: relative;
+      padding: 0.1rem 0.06rem;
+      cursor: default;
+      user-select: none;
+      will-change: transform, opacity, filter, text-shadow;
+      opacity: 0;
+      transform: translateX(-40px) scale(0.88);
+      filter: blur(14px);
+      /* In-animation: Starts cleanly AFTER the 1.3s WaveWarZ logo glitch & fractal sequence finishes */
+      animation: charDriftIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(var(--char-idx, 0) * 0.038s + 1.35s);
+      transition:
+        color 0.2s ease,
+        text-shadow 0.2s ease;
+    }
+
+    @keyframes charDriftIn {
+      0% {
+        opacity: 0;
+        transform: translateX(-40px) scale(0.86);
+        filter: blur(14px);
+      }
+      65% {
+        opacity: 0.95;
+        transform: translateX(4px) scale(1.04);
+        filter: blur(1.5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0px) scale(1);
+        filter: blur(0px);
+      }
+    }
+
+    /* Direct Character Hover Pop-Out with Proximity (combined with scroll transform) */
+    .char.char-active {
+      color: #ffffff !important;
+      font-weight: 900 !important;
+      text-shadow:
+        0 0 25px rgba(149, 254, 124, 0.95),
+        0 0 50px rgba(56, 189, 248, 0.85),
+        0 0 75px rgba(149, 254, 124, 0.5) !important;
+      z-index: 5;
+    }
+    .char.char-near-1 {
+      color: #ffffff;
+      font-weight: 850;
+      text-shadow: 0 0 20px rgba(149, 254, 124, 0.75), 0 0 35px rgba(56, 189, 248, 0.6);
+      z-index: 4;
+    }
+    .char.char-near-2 {
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 800;
+      text-shadow: 0 0 12px rgba(149, 254, 124, 0.5);
+      z-index: 3;
+    }
+
+
+
+    /* ── SOUND WAVES MIXED WITH WATER WAVES (SILKY SMOOTH GPU REVEAL) ── */
+    .sound-water-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      height: 48px;
+      margin: 2.2rem auto 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translate3d(0, 10px, 0);
+      pointer-events: none;
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition:
+        opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .sound-water-wrap.sound-water-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
+    }
+    .sound-water-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 0 14px rgba(149,254,124,0.35));
+    }
+
+    /* ── MINIMALIST LUXURY SCROLL DOWN INDICATOR (SILKY SMOOTH GPU REVEAL) ── */
+    .hero-scroll-cue {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 3;
+      margin-top: auto;
+      margin-bottom: 2.4rem;
+      padding-top: 1.5rem;
+      flex-shrink: 0;
+      opacity: 0;
+      transform: translate3d(0, 12px, 0);
+      pointer-events: none;
+      will-change: opacity, transform;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition:
+        opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .hero-scroll-cue.scroll-cue-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+      pointer-events: auto;
+    }
+    .hero-scroll-cue:hover {
+      transform: translate3d(0, 3px, 0);
+    }
+
+    .scroll-cue-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.45rem 1.2rem;
+      border-radius: 99px;
+      background: rgba(10, 18, 32, 0.85);
+      border: 1px solid rgba(149, 254, 124, 0.35);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 25px rgba(149, 254, 124, 0.15), inset 0 0 15px rgba(149, 254, 124, 0.08);
+      transition: all 0.28s ease;
+    }
+    .hero-scroll-cue:hover .scroll-cue-capsule {
+      border-color: rgba(149, 254, 124, 0.7);
+      box-shadow: 0 0 35px rgba(149, 254, 124, 0.35), inset 0 0 20px rgba(149, 254, 124, 0.15);
+      background: rgba(14, 26, 46, 0.95);
+    }
+
+    .cue-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      color: var(--ice);
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+    }
+    .hero-scroll-cue:hover .cue-label {
+      color: var(--green);
+    }
+
+    .cue-sound-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulseDot 1.4s infinite;
+    }
+
+    .scroll-cue-arrow {
+      color: var(--green);
+      animation: scrollBounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 8px rgba(149,254,124,0.6));
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(5px); opacity: 1; }
+    }
+
+    /* ── HERO CHARACTER OVERLAY WITH PARALLAX & RETRO CYBER ENERGY ── */
+    .hero-character-wrap {
+      position: absolute;
+      right: clamp(-160px, -7vw, -40px);
+      bottom: -40px;
+      height: clamp(660px, 100vh, 1120px);
+      max-height: 106%;
+      width: auto;
+      z-index: 1;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      opacity: 0;
+      transform: translate3d(60px, 0, 0);
+      will-change: transform, opacity;
+      transition:
+        opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Coordinated reveal after WaveWarZ logo entrance completes */
+    .hero-character-wrap.character-visible {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    .hero-character-img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      mix-blend-mode: normal;
+      opacity: 0.70 !important;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    /* ── BIDIRECTIONAL ULTRA-SMOOTH GPU LIQUID SCROLL ANIMATION SYSTEM ── */
+    .scroll-liquid {
+      opacity: 0;
+      transform: translate3d(0, 26px, 0);
+      will-change: transform, opacity;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition:
+        opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scroll-liquid.liquid-in {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+    .scroll-liquid.liquid-out-top {
+      opacity: 0.22;
+      transform: translate3d(0, -20px, 0);
+    }
+
+    /* ── SECTION 2: QUICK LIVE BATTLE ARENA ── */
+    .arena-section {
+      padding-block: 2.5rem 5rem;
+      position: relative;
+      z-index: 2;
+      scroll-margin-top: 86px; /* Perfect header clearance when navigating to #arenaSection */
+      contain: layout style;
+      transform: translateZ(0); /* Hardware compositing layer isolation */
+    }
+    .hero-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .live-chip {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.15em;
+      color: var(--green); border: 1px solid rgba(149,254,124,0.4); border-radius: 99px;
+      padding: 0.45rem 1.15rem; background: rgba(149,254,124,0.07);
+      box-shadow: 0 0 30px rgba(149,254,124,0.2), inset 0 0 20px rgba(149,254,124,0.08);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .live-chip:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 40px rgba(149,254,124,0.35), inset 0 0 24px rgba(149,254,124,0.15);
+    }
+    .settled { font-family: var(--mono); font-size: 0.78rem; color: var(--mut); letter-spacing: 0.05em; }
+    .settled b { color: var(--ice); font-weight: 700; }
+
+    /* Arena Card: Clean GPU-Smooth Hover & Layer Isolation */
+    .arena {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 340px 1fr;
+      gap: 2.2rem; align-items: center;
+      background: rgba(10, 16, 30, 0.74);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(126, 193, 251, 0.2); border-radius: 32px;
+      padding: 2.8rem;
+      box-shadow: 0 35px 100px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.08);
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .arena:hover {
+      border-color: rgba(149,254,124,0.35);
+      box-shadow: 0 45px 120px rgba(0,0,0,0.8), 0 0 45px rgba(149,254,124,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .fighter { display: flex; flex-direction: column; gap: 1.4rem; }
+    .fighter.right { align-items: flex-end; text-align: right; }
+    
+    .art {
+      position: relative; width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 24px; overflow: hidden;
+      border: 2px solid rgba(126,193,251,0.25);
+      box-shadow: -15px 15px 45px rgba(0,0,0,0.6);
+      background: #090e1a; transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .fighter.right .art {
+      border-color: rgba(149,254,124,0.25);
+      box-shadow: 15px 15px 45px rgba(0,0,0,0.6);
+    }
+    .art img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .arena:hover .art img { transform: scale(1.04); }
+    
+    .side-tag {
+      position: absolute; top: 16px; left: 16px; z-index: 2;
+      font-family: var(--mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em;
+      padding: 0.35rem 0.8rem; border-radius: 99px;
+      background: rgba(10,15,28,0.85); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15); color: #fff;
+    }
+    .fighter.right .side-tag { left: auto; right: 16px; }
+    
+    .now-playing { font-family: var(--mono); font-size: 0.78rem; color: var(--green); letter-spacing: 0.1em; margin-bottom: 0.35rem; }
+    .song-t { font-family: var(--disp); font-size: 1.45rem; font-weight: 700; color: #fff; margin-bottom: 0.2rem; }
+    .song-a { color: var(--mut); font-size: 0.95rem; }
+    .song-a b { color: var(--ice); }
+    
+    .eq {
+      position: absolute; bottom: 16px; left: 16px; right: 16px; z-index: 2;
+      display: flex; gap: 4px; height: 30px; align-items: flex-end;
+      background: rgba(10,15,28,0.7); backdrop-filter: blur(8px);
+      padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);
+    }
+    .eq span {
+      flex: 1; background: var(--green); border-radius: 2px;
+      animation: eqDance 1.2s ease-in-out infinite alternate;
+    }
+    .eq span:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+    .eq span:nth-child(2) { animation-delay: 0.4s; height: 80%; }
+    .eq span:nth-child(3) { animation-delay: 0.2s; height: 60%; }
+    .eq span:nth-child(4) { animation-delay: 0.6s; height: 100%; }
+    .eq span:nth-child(5) { animation-delay: 0.3s; height: 30%; }
+    .eq span:nth-child(6) { animation-delay: 0.5s; height: 70%; }
+    .eq span:nth-child(7) { animation-delay: 0.15s; height: 90%; }
+    .eq span:nth-child(8) { animation-delay: 0.45s; height: 50%; }
+    .eq span:nth-child(9) { animation-delay: 0.25s; height: 75%; }
+    @keyframes eqDance {
+      0% { height: 15%; }
+      100% { height: 100%; }
+    }
+
+    /* Center Timer & Tug of War */
+    .center { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; }
+    
+    .timer-ring { position: relative; width: 150px; height: 150px; }
+    .timer-ring svg { transform: rotate(-90deg); }
+    .timer-ring .track { stroke: rgba(126,193,251,0.1); }
+    .timer-ring .prog {
+      stroke: var(--green);
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 10px rgba(149,254,124,0.6));
+      transition: stroke-dashoffset 1s linear;
+    }
+    .timer-txt {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center;
+    }
+    .timer-txt b { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
+    .timer-txt span { font-family: var(--mono); font-size: 0.68rem; color: var(--mut); letter-spacing: 0.15em; }
+    
+    .vs {
+      font-family: var(--disp); font-weight: 900; font-size: 1.4rem;
+      color: var(--mut); opacity: 0.5; letter-spacing: 0.2em;
+    }
+    
+    .tug { width: 100%; max-width: 250px; }
+    .tug-nums { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.82rem; font-weight: 700; }
+    .tug-nums .an { color: var(--blue); }
+    .tug-nums .bn { color: var(--green); }
+    .tug-bar {
+      height: 8px; border-radius: 99px; background: rgba(255,255,255,0.06);
+      overflow: hidden; display: flex;
+    }
+    .tug-bar .a { width: 44%; background: var(--blue); box-shadow: 0 0 10px var(--blue); transition: width 0.5s ease; }
+    .tug-bar .b { flex: 1; background: var(--green); box-shadow: 0 0 10px var(--green); }
+
+    /* ── VALUE / HOW IT WORKS ── */
+    .value { padding-block: 5rem 4.5rem; }
+    .value h1 {
+      font-family: var(--disp); font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+      line-height: 1.08; font-weight: 900; margin-bottom: 1.2rem; text-transform: uppercase;
+    }
+    .value h1 em { font-style: normal; color: var(--green); }
+    .value .subtitle { font-size: 1.15rem; color: var(--mut); max-width: 600px; margin-bottom: 3.5rem; }
+    
+    .steps-container {
+      position: relative; display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem; margin-top: 2.5rem;
+    }
+    .steps-line {
+      position: absolute; top: 20px; left: 10%; right: 10%; height: 2px;
+      background: rgba(126,193,251,0.15); z-index: 0;
+    }
+    .steps-line-fill {
+      position: absolute; top: 20px; left: 10%; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      box-shadow: 0 0 10px var(--green); z-index: 0; width: 0%;
+      transition: width 0.5s ease;
+    }
+    .scroll-step {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 0.9rem;
+      background: rgba(14, 22, 38, 0.58); border: 1px solid rgba(126,193,251,0.16);
+      border-radius: 20px; padding: 2.2rem 1.8rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .scroll-step:hover {
+      transform: translateY(-4px); border-color: rgba(149,254,124,0.4);
+    }
+    .step-dot {
+      width: 14px; height: 14px; border-radius: 50%; background: var(--bg);
+      border: 3px solid var(--blue); margin-bottom: 0.4rem;
+      box-shadow: 0 0 10px var(--blue);
+    }
+    .scroll-step:hover .step-dot { border-color: var(--green); box-shadow: 0 0 12px var(--green); }
+    .step-num { font-family: var(--mono); font-size: 1.7rem; font-weight: 900; color: rgba(126,193,251,0.25); }
+    .scroll-step h3 { font-family: var(--disp); font-size: 1.25rem; font-weight: 700; color: #fff; }
+    .scroll-step p { color: var(--mut); font-size: 0.92rem; line-height: 1.6; }
+
+    /* ── TRANSPARENCY / ONCHAIN SPLIT ── */
+    .block { padding-block: 4.8rem; }
+    .section-header { margin-bottom: 3rem; }
+    .section-header h2 {
+      font-family: var(--disp); font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+      font-weight: 900; text-transform: uppercase; margin-top: 0.4rem;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2.2rem; }
+    .glass-panel {
+      background: rgba(14, 22, 38, 0.68); border: 1px solid rgba(126, 193, 251, 0.18);
+      border-radius: var(--rad); padding: 2.6rem; backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .money-flow { display: flex; flex-direction: column; gap: 0.9rem; }
+    .flow-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.1rem 1.5rem; border-radius: 16px;
+      background: rgba(8, 14, 24, 0.7); border: 1px solid rgba(255,255,255,0.06);
+    }
+    .flow-row.green { border-color: rgba(149,254,124,0.3); background: rgba(149,254,124,0.05); }
+    .flow-row.blue { border-color: rgba(126,193,251,0.3); background: rgba(126,193,251,0.05); }
+    .flow-desc { font-weight: 700; color: #fff; font-size: 0.95rem; }
+    .flow-sub { font-size: 0.78rem; color: var(--mut); display: block; }
+    .flow-val { font-family: var(--mono); font-size: 1.7rem; font-weight: 900; }
+    .flow-row.green .flow-val { color: var(--green); }
+    .flow-row.blue .flow-val { color: var(--blue); }
+
+    /* ── LIVE DATA CARDS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
+    .stat-card {
+      background: rgba(14, 22, 38, 0.68); border: 1px solid rgba(126, 193, 251, 0.18);
+      border-radius: 20px; padding: 1.8rem; backdrop-filter: blur(16px);
+      display: flex; flex-direction: column; gap: 0.45rem;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-4px); border-color: rgba(149,254,124,0.4); }
+    .stat-label { font-family: var(--mono); font-size: 0.78rem; color: var(--mut); letter-spacing: 0.1em; text-transform: uppercase; }
+    .stat-value { font-family: var(--mono); font-size: 2.1rem; font-weight: 900; color: #fff; line-height: 1.1; }
+    .stat-sub { font-size: 0.82rem; color: var(--green); font-family: var(--mono); }
+    .stat-badge {
+      margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.72rem; color: var(--mut); display: flex; align-items: center; gap: 0.4rem;
+    }
+
+    /* ── DJ WAVY 3D SECTION ── */
+    .wavy-grid {
+      display: grid; grid-template-columns: 1fr 1fr; border-radius: var(--rad);
+      overflow: hidden; background: rgba(14, 22, 38, 0.68);
+      border: 1px solid rgba(126, 193, 251, 0.2); backdrop-filter: blur(20px);
+    }
+    .wavy-content { padding: 3.5rem; display: flex; flex-direction: column; justify-content: center; }
+    .wavy-content h2 {
+      font-family: var(--disp); font-size: 2.6rem; line-height: 1.1;
+      font-weight: 900; text-transform: uppercase; margin-bottom: 1.3rem;
+    }
+    .wavy-content p { color: var(--mut); font-size: 1.05rem; margin-bottom: 1.8rem; line-height: 1.65; }
+    
+    .wavy-3d-box {
+      position: relative; min-height: 460px; width: 100%;
+      background: radial-gradient(circle at center, rgba(149,254,124,0.08) 0%, rgba(6,9,19,0.95) 75%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    model-viewer {
+      width: 100%; height: 100%; min-height: 460px;
+      --poster-color: transparent;
+    }
+    .wavy-quote-badge {
+      position: absolute; bottom: 1.6rem; left: 1.6rem; right: 1.6rem;
+      background: rgba(10, 16, 28, 0.88); backdrop-filter: blur(16px);
+      padding: 1.1rem 1.5rem; border-radius: 16px;
+      border: 1px solid rgba(149,254,124,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    .wavy-quote-badge p {
+      font-family: var(--disp); font-weight: 700; font-size: 1rem; margin: 0; color: #fff;
+    }
+
+    /* ── FOOTER ── */
+    footer.site {
+      border-top: 1px solid rgba(126,193,251,0.12); padding-block: 3.2rem;
+      background: rgba(6, 9, 19, 0.95);
+    }
+    footer.site .wrap {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    footer.site nav { display: flex; gap: 1.8rem; color: var(--mut); font-size: 0.88rem; }
+    footer.site nav a:hover { color: var(--green); }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .hero-character-wrap {
+        right: -100px;
+        height: 82vh;
+      }
+      .hero-character-wrap.character-visible {
+        opacity: 0.70;
+      }
+    }
+    @media (max-width: 1000px) {
+      .hero-character-wrap { display: none; }
+      .intro-hero-logo { max-width: 360px; }
+      .arena { grid-template-columns: 1fr; text-align: center; }
+      .fighter, .fighter.right { align-items: center; text-align: center; }
+      .center { order: -1; }
+      .steps-container { grid-template-columns: 1fr; }
+      .steps-line, .steps-line-fill { display: none; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .wavy-grid { grid-template-columns: 1fr; }
+      .wavy-content { padding: 2.5rem; }
+      .wavy-3d-box { min-height: 360px; }
+    }
+    @media (max-width: 600px) {
+      .intro-hero-logo { max-width: 300px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      nav.main { display: none; }
+      .tagline-phrase { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STICKY SITE HEADER (CLEAN STANDALONE LOGO & MENU ONLY) -->
+  <header class="site">
+    <div class="wrap">
+      <a href="/" class="brand-logo-link" aria-label="WaveWarZ Home">
+        <img src="./wavewarz-logo-trimmed.png" alt="WaveWarZ Logo" class="brand-logo-img" />
+      </a>
+      <nav class="main">
+        <a href="#arenaSection">Live Battles</a>
+        <a href="#howItWorks">How it Works</a>
+        <a href="#statsSection">Onchain Data</a>
+        <a href="#djWavy">DJ Wavy AI</a>
+        <a href="#">Docs</a>
+      </nav>
+      <a class="wallet" href="#">6BKX..jKko</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SECTION 1: HERO CONTAINER WITH MINIMALIST HIGH-IMPACT BRANDING
+         ══════════════════════════════════════════════════════════════════════ -->
+    <div class="hero-container" id="heroContainer">
+      <!-- Interactive Wave Gradient WebGL Canvas in Background -->
+      <canvas id="interactiveWaveBg" class="interactive-wave-bg"></canvas>
+
+      <section class="intro-hero wrap" id="introHero">
+        <div class="hero-ambient-aura"></div>
+
+        <!-- Prominent Brand Logo with Advanced Fractalized & RGB Split Glitch-In Entrance -->
+        <div class="hero-logo-wrap">
+          <canvas id="logoParticlesCanvas" class="logo-particles-canvas"></canvas>
+          <div class="logo-stage" id="logoStage">
+            <!-- Chromatic RGB Split Ghost Layers -->
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo logo-rgb-ghost logo-rgb-cyan" aria-hidden="true" />
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo logo-rgb-ghost logo-rgb-magenta" aria-hidden="true" />
+            <!-- Fractalized Stretched Slice Planes -->
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo fractal-plane fp-1" aria-hidden="true" />
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo fractal-plane fp-2" aria-hidden="true" />
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo fractal-plane fp-3" aria-hidden="true" />
+            <img src="./wavewarz-logo-trimmed.png" alt="" class="intro-hero-logo fractal-plane fp-4" aria-hidden="true" />
+            <!-- Core Brand Logo with Glossy Glass Specular Sheen -->
+            <img src="./wavewarz-logo-trimmed.png" alt="WaveWarZ" class="intro-hero-logo" id="heroBrandLogo" />
+            <div class="logo-glass-sheen" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <!-- OFFICIAL HERO TAGLINE: "MUSIC BATTLZ MEETS MUSIC MARKETZ" WITH LIQUID CHAR HOVER -->
+        <div class="hero-tagline-container" id="heroTaglineContainer">
+          <h1 class="tagline-phrase" id="heroTaglinePhrase">
+            <!-- Line 1: MUSIC BATTLZ -->
+            <div class="tagline-line">
+              <span class="tagline-word" data-word="MUSIC">
+                <span class="char" data-char="M" style="--char-idx: 0;">M</span><span class="char" data-char="U" style="--char-idx: 1;">U</span><span class="char" data-char="S" style="--char-idx: 2;">S</span><span class="char" data-char="I" style="--char-idx: 3;">I</span><span class="char" data-char="C" style="--char-idx: 4;">C</span>
+              </span>
+              <span class="tagline-word word-highlight-green" data-word="BATTLZ">
+                <span class="char" data-char="B" style="--char-idx: 5;">B</span><span class="char" data-char="A" style="--char-idx: 6;">A</span><span class="char" data-char="T" style="--char-idx: 7;">T</span><span class="char" data-char="T" style="--char-idx: 8;">T</span><span class="char" data-char="L" style="--char-idx: 9;">L</span><span class="char" data-char="Z" style="--char-idx: 10;">Z</span>
+              </span>
+            </div>
+
+            <!-- Line 2: MEETS (Centered Connector) -->
+            <div class="tagline-line tagline-line-connector">
+              <span class="tagline-word word-connector" data-word="MEETS">
+                <span class="char" data-char="M" style="--char-idx: 11;">M</span><span class="char" data-char="E" style="--char-idx: 12;">E</span><span class="char" data-char="E" style="--char-idx: 13;">E</span><span class="char" data-char="T" style="--char-idx: 14;">T</span><span class="char" data-char="S" style="--char-idx: 15;">S</span>
+              </span>
+            </div>
+
+            <!-- Line 3: MUSIC MARKETZ -->
+            <div class="tagline-line">
+              <span class="tagline-word" data-word="MUSIC">
+                <span class="char" data-char="M" style="--char-idx: 16;">M</span><span class="char" data-char="U" style="--char-idx: 17;">U</span><span class="char" data-char="S" style="--char-idx: 18;">S</span><span class="char" data-char="I" style="--char-idx: 19;">I</span><span class="char" data-char="C" style="--char-idx: 20;">C</span>
+              </span>
+              <span class="tagline-word word-highlight-cyan" data-word="MARKETZ">
+                <span class="char" data-char="M" style="--char-idx: 21;">M</span><span class="char" data-char="A" style="--char-idx: 22;">A</span><span class="char" data-char="R" style="--char-idx: 23;">R</span><span class="char" data-char="K" style="--char-idx: 24;">K</span><span class="char" data-char="E" style="--char-idx: 25;">E</span><span class="char" data-char="T" style="--char-idx: 26;">T</span><span class="char" data-char="Z" style="--char-idx: 27;">Z</span>
+              </span>
+            </div>
+          </h1>
+        </div>
+
+        <!-- SOUND WAVES MIXED WITH WATER WAVES (MUSICAL HARMONIC FREQUENCY RIBBON) -->
+        <div class="sound-water-wrap">
+          <canvas id="soundWaterCanvas" class="sound-water-canvas"></canvas>
+        </div>
+
+        <!-- SLEEK SCROLL DOWN CALL TO ACTION (ENTERS LIVE ARENA) -->
+        <a class="hero-scroll-cue" href="#arenaSection" id="heroScrollCue" aria-label="Scroll to enter live battle arena">
+          <div class="scroll-cue-capsule">
+            <span class="cue-sound-dot"></span>
+            <span class="cue-label">SCROLL TO ENTER LIVE BATTLEZ</span>
+            <span class="cue-sound-dot"></span>
+          </div>
+          <div class="scroll-cue-arrow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+          </div>
+        </a>
+      </section>
+
+      <!-- HERO RIGHT-SIDE CHARACTER AS-IS WITH NORMAL BLEND AND PARALLAX -->
+      <div class="hero-character-wrap" id="heroCharacterWrap">
+        <img src="./hero-character.png" alt="WaveWarZ Live Rock Vocalist" class="hero-character-img" id="heroCharacterImg" />
+      </div>
+    </div> <!-- /hero-container -->
+
+
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SECTION 2: QUICK LIVE BATTLE ARENA
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="arena-section wrap scroll-liquid" id="arenaSection">
+      <div class="hero-head">
+        <span class="live-chip"><span class="ticker-live-dot"></span>LIVE QUICK BATTLEZ</span>
+        <span class="settled" style="color: var(--green);"><b>SKIP QUEUE:</b> 0.02 SOL</span>
+        <span class="settled"><b id="heroCount">—</b> BATTLES SETTLED ONCHAIN</span>
+      </div>
+
+      <!-- Quick Battle Arena Card -->
+      <div class="arena">
+        <!-- Fighter Left: Blue Side -->
+        <div class="fighter">
+          <div class="art">
+            <span class="side-tag">CHALLENGER A</span>
+            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" alt="Stormbourne" />
+            <div class="eq">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="track-info">
+            <div class="now-playing">NOW PLAYING (ROUND 2)</div>
+            <div class="song-t">Apex Cyber</div>
+            <div class="song-a">by <b>Stormbourne</b> · Los Angeles</div>
+          </div>
+          <button class="btn btn-ghost" style="border-color: rgba(126,193,251,0.5); width: 100%;" onclick="alert('Backing Stormbourne with 0.1 SOL...')">
+            Back Stormbourne · 1.84x
+          </button>
+        </div>
+
+        <!-- Center VS / Live Timer / Tug of War -->
+        <div class="center">
+          <div class="timer-ring">
+            <svg width="150" height="150">
+              <circle class="track" cx="75" cy="75" r="62" stroke-width="6" fill="none" />
+              <circle class="prog" id="ring" cx="75" cy="75" r="62" stroke-width="6" fill="none" stroke-dasharray="389.5" stroke-dashoffset="0" />
+            </svg>
+            <div class="timer-txt">
+              <b id="clock">06:12</b>
+              <span>ROUND REMAINING</span>
+            </div>
+          </div>
+
+          <div class="vs">VS</div>
+
+          <div class="tug">
+            <div class="tug-nums">
+              <span class="an">44%</span>
+              <span class="bn">56%</span>
+            </div>
+            <div class="tug-bar">
+              <div class="a" id="tugA"></div>
+              <div class="b" id="tugB"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fighter Right: Green Side -->
+        <div class="fighter right">
+          <div class="art">
+            <span class="side-tag">CHALLENGER B</span>
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&auto=format&fit=crop&q=80" alt="Kate Murphy" />
+            <div class="eq" style="filter: hue-rotate(90deg);">
+              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="track-info">
+            <div class="now-playing">NOW PLAYING (ROUND 2)</div>
+            <div class="song-t">Emerald Glitch</div>
+            <div class="song-a">by <b>Kate Murphy</b> · Berlin</div>
+          </div>
+          <button class="btn btn-green" style="width: 100%;" onclick="alert('Backing Kate Murphy with 0.1 SOL...')">
+            Back Kate Murphy · 2.15x
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         HOW IT WORKS
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="value wrap scroll-liquid" id="howItWorks">
+      <p style="font-family: var(--mono); color: var(--green); letter-spacing: 0.15em; font-size: 0.82rem; font-weight: 700; margin-bottom: 0.5rem;">THE MUSIC PREDICTION PROTOCOL</p>
+      <h1>EVERY SECOND TRADED. <em>EVERY ARTIST PAID.</em></h1>
+      <p class="subtitle">No middleman record labels. No streaming fractions of a penny. Just pure raw musical combat backed by Solana smart contracts.</p>
+
+      <div class="steps-container">
+        <div class="steps-line"></div>
+        <div class="steps-line-fill" id="scrollLine"></div>
+
+        <div class="scroll-step">
+          <div class="step-dot"></div>
+          <span class="step-num">01</span>
+          <h3>Two Songs Drop In Live</h3>
+          <p>Challengers upload unreleased music and stake their claim. Skip the queue for 0.02 SOL or battle through community rank.</p>
+        </div>
+
+        <div class="scroll-step">
+          <div class="step-dot"></div>
+          <span class="step-num">02</span>
+          <h3>Fans Trade the Wave</h3>
+          <p>Real-time automated market maker curves adjust with every backer. Buy low on raw underground heat and ride the volume crest.</p>
+        </div>
+
+        <div class="scroll-step">
+          <div class="step-dot"></div>
+          <span class="step-num">03</span>
+          <h3>Instant Payouts & Judgments</h3>
+          <p>Smart contracts settle at zero seconds. 70% pays the winning artist immediately; traders claim pool returns on Solana.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         ONCHAIN SPLIT / TRANSPARENCY
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="block wrap scroll-liquid" id="statsSection">
+      <div class="section-header">
+        <p style="font-family: var(--mono); color: var(--blue); letter-spacing: 0.15em; font-size: 0.82rem; font-weight: 700;">TRANSPARENT REVENUE FLOW</p>
+        <h2>WHERE DOES EVERY SOL GO?</h2>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-panel">
+          <h3 style="font-family: var(--disp); font-size: 1.4rem; color: #fff; margin-bottom: 1.5rem;">Automated Smart Contract Split</h3>
+          <div class="money-flow">
+            <div class="flow-row green">
+              <div>
+                <span class="flow-desc">Artist Payout Pool</span>
+                <span class="flow-sub">Direct to creator wallet instantly</span>
+              </div>
+              <span class="flow-val">70%</span>
+            </div>
+            <div class="flow-row blue">
+              <div>
+                <span class="flow-desc">Trader Winning Pool</span>
+                <span class="flow-sub">Distributed to winning prediction backers</span>
+              </div>
+              <span class="flow-val">20%</span>
+            </div>
+            <div class="flow-row">
+              <div>
+                <span class="flow-desc">Protocol & Liquidity Reserve</span>
+                <span class="flow-sub">Platform maintenance & DJ Wavy AI</span>
+              </div>
+              <span class="flow-val" style="color: var(--mut);">10%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="display: flex; flex-direction: column; justify-content: center;">
+          <h3 style="font-family: var(--disp); font-size: 1.4rem; color: #fff; margin-bottom: 1rem;">Real-Time Comparison</h3>
+          <p style="color: var(--mut); margin-bottom: 1.5rem; line-height: 1.6;">
+            A single 10-minute WaveWarZ battle regularly generates more direct income for an indie creator than 100,000 traditional DSP streams.
+          </p>
+          <div style="background: rgba(8, 14, 24, 0.7); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(149,254,124,0.2);">
+            <div style="font-family: var(--mono); font-size: 0.8rem; color: var(--green); margin-bottom: 0.5rem;">STREAMING VS WAVEWARZ</div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="font-size: 0.95rem; color: var(--mut);">100k Spotify Streams</span>
+              <span style="font-family: var(--mono); font-size: 1.1rem; color: #fff;">~$300 (Net 90 Days)</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.08);">
+              <span style="font-size: 0.95rem; color: var(--green); font-weight: 700;">1 WaveWarZ Battle</span>
+              <span style="font-family: var(--mono); font-size: 1.4rem; color: var(--green); font-weight: 900;">~$1,800+ (Instant SOL)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         LIVE ONCHAIN DATA CARDS
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="wrap scroll-liquid" style="padding-bottom: 5rem;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Total Volume</span>
+          <span class="stat-value" id="statVol">142.8 SOL</span>
+          <span class="stat-sub" id="statVolUsd">$21,205 USD</span>
+          <div class="stat-badge"><span>⚡</span> Verified on Solana Mainnet</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Artist Earnings</span>
+          <span class="stat-value" id="statPayouts" style="color: var(--green);">12.1 SOL</span>
+          <span class="stat-sub" id="statPayoutsUsd">$1,797 USD Paid</span>
+          <div class="stat-badge"><span>💰</span> Direct Creator Wallets</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Equivalent Streams</span>
+          <span class="stat-value" id="statStreams" style="color: var(--blue);">599,000</span>
+          <span class="stat-sub" id="statStreamsSub">Across 48 battles</span>
+          <div class="stat-badge"><span>🎧</span> Traditional DSP equivalent</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Battles Settled</span>
+          <span class="stat-value" id="statBattles">48</span>
+          <span class="stat-sub" id="statBattlesSub">100% onchain Solana</span>
+          <div class="stat-badge"><span>🔒</span> Zero chargebacks</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         DJ WAVY 3D JUDGE SECTION
+         ══════════════════════════════════════════════════════════════════════ -->
+    <section class="wrap scroll-liquid" id="djWavy" style="padding-bottom: 6rem;">
+      <div class="wavy-grid">
+        <div class="wavy-content">
+          <span style="font-family: var(--mono); color: var(--green); letter-spacing: 0.15em; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.8rem; display: block;">THE UNBIASED AI ARBITER</span>
+          <h2>MEET DJ WAVY</h2>
+          <p>
+            Trained on 40,000 hours of underground bass, stems, harmonic theory, and mix mastering. DJ Wavy monitors every live battle, detecting crowd sentiment, rhythm fidelity, and real-time audio dynamics.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn btn-green" onclick="alert('DJ Wavy: Analyzing current stems. Challenger B currently holding dynamic tension!')">
+              Ask DJ Wavy For Analysis
+            </button>
+            <button class="btn btn-ghost" onclick="alert('Demo battle audio loaded into DJ Wavy virtual judge rack.')">
+              Upload Track to Analyze
+            </button>
+          </div>
+        </div>
+
+        <div class="wavy-3d-box">
+          <!-- Interactive 3D Model of DJ Wavy -->
+          <model-viewer 
+            src="./djwavy.glb" 
+            alt="DJ Wavy 3D Character" 
+            auto-rotate 
+            rotation-per-second="25deg"
+            camera-controls 
+            touch-action="pan-y" 
+            shadow-intensity="1.5"
+            exposure="1.1"
+            loading="lazy"
+            disable-zoom
+            camera-orbit="0deg 75deg 105%"
+          >
+          </model-viewer>
+
+          <div class="wavy-quote-badge">
+            <p>"BASS DYNAMICS: HIGH &bull; STEREO SPREAD: 92% &bull; VERDICT: CHANGER B IS COOKING."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SITE FOOTER (SEPARATED BRANDING)
+       ══════════════════════════════════════════════════════════════════════ -->
+  <footer class="site">
+    <div class="wrap">
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <img src="./wavewarz-logo-cutout.png" alt="WaveWarZ" style="height: 28px; width: auto;" />
+        <span style="font-size: 0.85rem; color: var(--mut);">The Onchain Music Battleground &bull; Built on Solana</span>
+      </div>
+      <nav>
+        <a href="#arenaSection">Live Battles</a>
+        <a href="#howItWorks">Protocol</a>
+        <a href="#djWavy">DJ Wavy AI</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SCRIPTS: LIQUID CHARACTER HOVER, SOUND/WATER WAVE VISUALIZER, WEBGL, SCROLL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    // ── 1. INTERACTIVE WAVE GRADIENT WEBGL SHADER BACKGROUND ───────────
+    (function initInteractiveWaveBg() {
+      const canvas = document.getElementById("interactiveWaveBg");
+      if (!canvas) return;
+
+      const gl = canvas.getContext("webgl", { antialias: false, alpha: true }) || canvas.getContext("experimental-webgl");
+      if (!gl) return;
+
+      const vsSource = `
+        attribute vec2 a_pos;
+        void main() {
+          gl_Position = vec4(a_pos, 0.0, 1.0);
+        }
+      `;
+
+      const fsSource = `
+        precision mediump float;
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec2 u_mouse;
+
+        void main() {
+          vec2 uv = gl_FragCoord.xy / u_resolution;
+          vec2 m = u_mouse;
+          
+          float d = distance(uv, m);
+          float ripple = sin(d * 18.0 - u_time * 2.5) * exp(-d * 2.8) * 0.12;
+
+          float w1 = sin(uv.x * 3.5 + u_time * 0.7 + ripple) * 0.5 + 0.5;
+          float w2 = cos(uv.y * 4.2 - u_time * 0.9 + uv.x * 2.5) * 0.5 + 0.5;
+          float w3 = sin((uv.x + uv.y) * 5.0 + u_time * 1.2) * 0.5 + 0.5;
+
+          vec3 voidBg = vec3(0.024, 0.035, 0.065);
+          vec3 green = vec3(0.58, 0.99, 0.48);
+          vec3 blue = vec3(0.49, 0.76, 0.98);
+          vec3 cyan = vec3(0.22, 0.74, 0.97);
+
+          vec3 col = voidBg;
+          col += green * (w1 * 0.12);
+          col += blue * (w2 * 0.14);
+          col += cyan * (w3 * 0.09);
+
+          float mouseGlow = smoothstep(0.45, 0.0, d) * 0.22;
+          col += mix(blue, green, sin(u_time) * 0.5 + 0.5) * mouseGlow;
+
+          col *= smoothstep(1.2, 0.45, distance(uv, vec2(0.5, 0.45)));
+
+          gl_FragColor = vec4(col, 0.88);
+        }
+      `;
+
+      function compile(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+      }
+
+      const vs = compile(gl.VERTEX_SHADER, vsSource);
+      const fs = compile(gl.FRAGMENT_SHADER, fsSource);
+      if (!vs || !fs) return;
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vs);
+      gl.attachShader(program, fs);
+      gl.linkProgram(program);
+
+      const quadPos = new Float32Array([
+        -1, -1,  1, -1, -1,  1,
+        -1,  1,  1, -1,  1,  1
+      ]);
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, quadPos, gl.STATIC_DRAW);
+
+      const aPos = gl.getAttribLocation(program, "a_pos");
+      const uRes = gl.getUniformLocation(program, "u_resolution");
+      const uTime = gl.getUniformLocation(program, "u_time");
+      const uMouse = gl.getUniformLocation(program, "u_mouse");
+
+      let width = 0, height = 0;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        width = (rect.width || window.innerWidth) * dpr;
+        height = (rect.height || 680) * dpr;
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      let mouse = { x: 0.5, y: 0.5 };
+      let targetMouse = { x: 0.5, y: 0.5 };
+
+      const hero = document.getElementById("heroContainer") || window;
+      hero.addEventListener("mousemove", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        targetMouse.x = (e.clientX - rect.left) / rect.width;
+        targetMouse.y = 1.0 - (e.clientY - rect.top) / rect.height;
+      });
+
+      const startTime = performance.now();
+      function render() {
+        const t = (performance.now() - startTime) * 0.001;
+        mouse.x += (targetMouse.x - mouse.x) * 0.08;
+        mouse.y += (targetMouse.y - mouse.y) * 0.08;
+
+        gl.useProgram(program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform1f(uTime, t);
+        gl.uniform2f(uMouse, mouse.x, mouse.y);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+      }
+      render();
+    })();
+
+    // ── 1.5. LOGO PARTICLES DRIFT ENGINE (EMITTING PRECISELY FROM LOGO SILHOUETTE & EDGES) ──
+    (function initLogoParticlesEngine() {
+      const canvas = document.getElementById("logoParticlesCanvas");
+      const wrap = document.querySelector(".hero-logo-wrap");
+      const logoImg = document.getElementById("heroBrandLogo");
+      if (!canvas || !wrap || !logoImg) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      let width = 0, height = 0;
+      let dpr = 1;
+      let edgePoints = [];
+
+      // Extract edge points from logo alpha channel
+      function sampleLogoEdges() {
+        if (!logoImg.complete || !logoImg.naturalWidth) {
+          logoImg.addEventListener("load", sampleLogoEdges, { once: true });
+          return;
+        }
+
+        const offCanvas = document.createElement("canvas");
+        const offW = 320;
+        const offH = Math.round(offW * (logoImg.naturalHeight / logoImg.naturalWidth));
+        offCanvas.width = offW;
+        offCanvas.height = offH;
+        const offCtx = offCanvas.getContext("2d");
+        if (!offCtx) return;
+
+        offCtx.drawImage(logoImg, 0, 0, offW, offH);
+        let imgData;
+        try {
+          imgData = offCtx.getImageData(0, 0, offW, offH).data;
+        } catch (e) {
+          // Fallback if cross-origin or local restriction
+          generateFallbackEdges();
+          return;
+        }
+
+        const pts = [];
+        const step = 3;
+        for (let y = 1; y < offH - 1; y += step) {
+          for (let x = 1; x < offW - 1; x += step) {
+            const idx = (y * offW + x) * 4 + 3; // Alpha
+            const alpha = imgData[idx];
+
+            if (alpha > 45) {
+              // Check neighbor transparency to identify perimeter/edge
+              const aLeft = imgData[(y * offW + (x - 1)) * 4 + 3];
+              const aRight = imgData[(y * offW + (x + 1)) * 4 + 3];
+              const aUp = imgData[((y - 1) * offW + x) * 4 + 3];
+              const aDown = imgData[((y + 1) * offW + x) * 4 + 3];
+
+              const isEdge = aLeft < 40 || aRight < 40 || aUp < 40 || aDown < 40;
+              if (isEdge || Math.random() < 0.15) {
+                // Normalized coordinates relative to center (-0.5 to 0.5)
+                const nx = (x / offW) - 0.5;
+                const ny = (y / offH) - 0.5;
+                // Compute edge normal vector pointing outward
+                const dx = (aRight - aLeft) / 255;
+                const dy = (aDown - aUp) / 255;
+                const len = Math.hypot(dx, dy) || 1;
+                pts.push({
+                  x: nx,
+                  y: ny,
+                  nx: -dx / len,
+                  ny: -dy / len
+                });
+              }
+            }
+          }
+        }
+
+        if (pts.length > 20) {
+          edgePoints = pts;
+        } else {
+          generateFallbackEdges();
+        }
+      }
+
+      function generateFallbackEdges() {
+        edgePoints = [];
+        // Geometric wide-crest wave silhouette approximating "WAVEWARZ"
+        for (let i = 0; i < 180; i++) {
+          const u = (i / 180) * 2 - 1; // -1 to 1
+          const curve = Math.sin(u * Math.PI * 2.5) * 0.18;
+          edgePoints.push({
+            x: u * 0.46,
+            y: curve + (Math.random() - 0.5) * 0.12,
+            nx: (Math.random() - 0.5) * 1.5,
+            ny: (Math.random() - 0.5) * 1.5
+          });
+        }
+      }
+
+      sampleLogoEdges();
+
+      function resize() {
+        const rect = wrap.getBoundingClientRect();
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = (rect.width + 200) * dpr;
+        height = (rect.height + 200) * dpr;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      // Cyber edge particle system
+      const COUNT = 85;
+      const particles = [];
+      const colors = [
+        "rgba(149, 254, 124, ",  // Neon green
+        "rgba(56, 189, 248, ",   // Cyber cyan
+        "rgba(192, 132, 252, ",  // Holographic violet
+        "rgba(255, 255, 255, "    // Pure radiant white
+      ];
+
+      for (let i = 0; i < COUNT; i++) {
+        resetParticle(i, true);
+      }
+
+      function resetParticle(i, initial = false) {
+        const logoRect = logoImg.getBoundingClientRect();
+        const logoW = (logoRect.width || 420) * dpr;
+        const logoH = (logoRect.height || 140) * dpr;
+
+        let spawnX = 0, spawnY = 0, normX = 0, normY = 0;
+        if (edgePoints.length > 0) {
+          const pt = edgePoints[Math.floor(Math.random() * edgePoints.length)];
+          spawnX = pt.x * logoW;
+          spawnY = pt.y * logoH;
+          normX = pt.nx || (Math.random() - 0.5);
+          normY = pt.ny || (Math.random() - 0.5);
+        } else {
+          const angle = Math.random() * Math.PI * 2;
+          spawnX = Math.cos(angle) * (logoW * 0.42);
+          spawnY = Math.sin(angle) * (logoH * 0.38);
+          normX = Math.cos(angle);
+          normY = Math.sin(angle);
+        }
+
+        const speed = 0.5 + Math.random() * 1.4;
+        const jitter = (Math.random() - 0.5) * 0.8;
+        const lifeInit = initial ? Math.random() : 0;
+
+        particles[i] = {
+          x: spawnX,
+          y: spawnY,
+          vx: (normX + jitter) * speed * 0.8,
+          vy: (normY + jitter) * speed * 0.8 - (0.15 + Math.random() * 0.25), // buoyant drift
+          size: 1.4 + Math.random() * 2.8,
+          life: lifeInit,
+          maxLife: 2.0 + Math.random() * 2.2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          isSpark: Math.random() < 0.25
+        };
+      }
+
+      let lastT = performance.now();
+      function loop(now) {
+        const dt = Math.min(0.05, (now - lastT) / 1000);
+        lastT = now;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const centerX = width * 0.5;
+        const centerY = height * 0.5;
+
+        // Ambient edge aura
+        const flareGrad = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, width * 0.38);
+        flareGrad.addColorStop(0, "rgba(149, 254, 124, 0.09)");
+        flareGrad.addColorStop(0.35, "rgba(56, 189, 248, 0.05)");
+        flareGrad.addColorStop(1, "transparent");
+        ctx.fillStyle = flareGrad;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, width * 0.38, 0, Math.PI * 2);
+        ctx.fill();
+
+        for (let i = 0; i < COUNT; i++) {
+          const p = particles[i];
+          p.life += dt;
+          if (p.life >= p.maxLife) {
+            resetParticle(i);
+            continue;
+          }
+
+          p.x += p.vx * 60 * dt;
+          p.y += p.vy * 60 * dt;
+
+          const progress = p.life / p.maxLife;
+          // Fast edge burst, linger, then smooth fade
+          const alpha = progress < 0.15
+            ? (progress / 0.15) * 0.95
+            : Math.pow(1 - progress, 1.4) * 0.95;
+
+          const px = centerX + p.x;
+          const py = centerY + p.y;
+
+          ctx.beginPath();
+          const sz = p.size * (1 - progress * 0.35);
+          ctx.arc(px, py, sz, 0, Math.PI * 2);
+          ctx.fillStyle = `${p.color}${alpha.toFixed(3)})`;
+          ctx.shadowColor = p.color.includes("149") ? "#95fe7c" : "#38bdf8";
+          ctx.shadowBlur = p.isSpark ? 14 : 7;
+          ctx.fill();
+
+          // Connect nearby edge particles with subtle energy micro-filaments
+          if (p.isSpark && i % 3 === 0) {
+            for (let j = i + 1; j < Math.min(i + 5, COUNT); j++) {
+              const p2 = particles[j];
+              const ddx = (centerX + p2.x) - px;
+              const ddy = (centerY + p2.y) - py;
+              const dist = Math.hypot(ddx, ddy);
+              if (dist < 38 * dpr) {
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(centerX + p2.x, centerY + p2.y);
+                ctx.strokeStyle = `rgba(149, 254, 124, ${(alpha * 0.25 * (1 - dist / (38 * dpr))).toFixed(3)})`;
+                ctx.lineWidth = 0.8 * dpr;
+                ctx.stroke();
+              }
+            }
+          }
+        }
+        ctx.shadowBlur = 0;
+
+        // Strict Masking: erase any particle pixel that falls within the solid interior of the logo
+        if (logoImg.complete && logoImg.naturalWidth) {
+          const logoRect = logoImg.getBoundingClientRect();
+          const wrapRect = wrap.getBoundingClientRect();
+          const ox = (logoRect.left - wrapRect.left + 100) * dpr;
+          const oy = (logoRect.top - wrapRect.top + 100) * dpr;
+          const ow = logoRect.width * dpr;
+          const oh = logoRect.height * dpr;
+
+          ctx.save();
+          ctx.globalCompositeOperation = "destination-out";
+          ctx.drawImage(logoImg, ox, oy, ow, oh);
+          ctx.restore();
+        }
+
+        requestAnimationFrame(loop);
+      }
+      requestAnimationFrame(loop);
+    })();
+
+    // ── 2. HIGH-PERFORMANCE PROXIMITY POP-OUT, SUBTLE IDLE WAVE & SCROLL EXIT ENGINE ──
+    (function initCharacterKineticEngine() {
+      const container = document.getElementById("heroTaglineContainer");
+      const phrase = document.getElementById("heroTaglinePhrase");
+      const chars = Array.from(document.querySelectorAll(".char"));
+      if (!container || !phrase || !chars.length) return;
+
+      let inAnimationReady = false;
+      // Tagline entrance starts cleanly after 1.35s and completes at ~2.35s
+      setTimeout(() => {
+        inAnimationReady = true;
+        chars.forEach((c) => {
+          c.style.animation = "none";
+          c.style.opacity = "1";
+          c.style.transform = "translate3d(0, 0, 0)";
+          c.style.filter = "blur(0px)";
+        });
+        measureCenters();
+        requestAnimationFrame(updateKineticFrame);
+      }, 2450);
+
+      const totalChars = chars.length;
+      const RADIUS = 150; // Cursor proximity radius in pixels
+
+      // Pre-allocated arrays and cached coordinates for 120fps GPU performance
+      const centersX = new Float32Array(totalChars);
+      const centersY = new Float32Array(totalChars);
+      const charHeats = new Float32Array(totalChars); // smoothed hover heat (0 -> 1)
+      const idleWaveY = new Float32Array(totalChars);
+
+      function measureCenters() {
+        for (let i = 0; i < totalChars; i++) {
+          const r = chars[i].getBoundingClientRect();
+          centersX[i] = r.left + r.width * 0.5;
+          centersY[i] = r.top + r.height * 0.5;
+        }
+      }
+
+      window.addEventListener("resize", () => {
+        if (inAnimationReady) measureCenters();
+      }, { passive: true });
+
+      let pointer = { x: -1e5, y: -1e5, active: false };
+      let lastMoveTime = performance.now();
+      let lastFrameTime = performance.now();
+      let clock = 0;
+
+      container.addEventListener("pointermove", (e) => {
+        if (!inAnimationReady) return;
+        pointer.x = e.clientX;
+        pointer.y = e.clientY;
+        pointer.active = true;
+        lastMoveTime = performance.now();
+      });
+
+      container.addEventListener("pointerleave", () => {
+        pointer.active = false;
+      });
+
+      function updateKineticFrame(now) {
+        const dt = Math.min(0.05, (now - lastFrameTime) / 1000);
+        lastFrameTime = now;
+        clock += dt;
+
+        if (inAnimationReady) {
+          const scrollY = window.scrollY;
+          // Normalised scroll progress: stays stable and crisp in hero fold, starts drifting past 120px, fully vanished at 420px
+          const scrollProgress = Math.max(0, Math.min(1, (scrollY - 120) / 300));
+          const isScrolled = scrollProgress > 0.08;
+          const isPointerMoving = pointer.active && (now - lastMoveTime < 1800) && !isScrolled;
+
+          // Smooth interpolation factor (crisp, snappy 0.18 response - zero sluggish lag)
+          const k = 1 - Math.exp(-22 * dt);
+
+          for (let i = 0; i < totalChars; i++) {
+            const c = chars[i];
+
+            // 1. Calculate proximity target heat
+            let targetHeat = 0;
+            if (isPointerMoving) {
+              const dx = pointer.x - centersX[i];
+              const dy = pointer.y - centersY[i];
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < RADIUS) {
+                const norm = 1 - dist / RADIUS;
+                targetHeat = norm * norm * (3 - 2 * norm); // Smooth cubic proximity curve
+              }
+            }
+            charHeats[i] += (targetHeat - charHeats[i]) * k;
+            const heat = charHeats[i];
+
+            // 2. Subtle, elegant idle wave (very gentle vertical undulating wave, never tacky)
+            let waveOffset = 0;
+            if (!isScrolled) {
+              // 3.5px maximum wave crest, slow rhythmic ocean cycle
+              const waveAmt = 3.5 * (1 - heat);
+              waveOffset = Math.sin(clock * 1.8 - i * 0.28) * waveAmt;
+            }
+
+            // 3. Proximity pop-out: vertical lift, scale-up, and radiant glow
+            const popY = -18 * heat;
+            const popScale = 1 + 0.32 * heat;
+
+            // 4. Staggered scroll-down exit drift
+            const startStagger = (i / totalChars) * 0.45;
+            const rawP = (scrollProgress - startStagger) / 0.52;
+            const charP = Math.max(0, Math.min(1, rawP));
+            const easeP = charP < 0.5
+              ? 4 * charP * charP * charP
+              : 1 - Math.pow(-2 * charP + 2, 3) / 2;
+
+            const driftX = easeP * 64;
+            const scrollScale = 1 - easeP * 0.14;
+            const opacity = (1 - easeP).toFixed(3);
+            const blur = (easeP * 18).toFixed(1);
+
+            const finalX = driftX.toFixed(1);
+            const finalY = (popY + waveOffset).toFixed(2);
+            const finalScale = (scrollScale * popScale).toFixed(3);
+
+            // Fast GPU transform
+            c.style.transform = `translate3d(${finalX}px, ${finalY}px, 0) scale(${finalScale})`;
+            c.style.opacity = opacity;
+            c.style.filter = `blur(${blur}px)`;
+            c.style.pointerEvents = scrollProgress > 0.4 ? "none" : "auto";
+
+            // Direct proximity pop-out classes for glow & neon styling
+            if (heat > 0.6) {
+              c.classList.add("char-active");
+              c.classList.remove("char-near-1", "char-near-2");
+            } else if (heat > 0.28) {
+              c.classList.add("char-near-1");
+              c.classList.remove("char-active", "char-near-2");
+            } else if (heat > 0.08) {
+              c.classList.add("char-near-2");
+              c.classList.remove("char-active", "char-near-1");
+            } else {
+              c.classList.remove("char-active", "char-near-1", "char-near-2");
+            }
+          }
+        }
+
+        requestAnimationFrame(updateKineticFrame);
+      }
+    })();
+
+    // ── 3. SOUND WAVES MIXED WITH WATER WAVES (HARMONIC SINE + AUDIO VISUALIZER) ──
+    (function initSoundWaterCanvas() {
+      const canvas = document.getElementById("soundWaterCanvas");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      let width = 0, height = 0;
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = rect.width * dpr;
+        height = rect.height * dpr;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      let mouseDistort = 0;
+      let targetDistort = 0;
+      const hero = document.getElementById("heroContainer") || window;
+      hero.addEventListener("mousemove", () => {
+        targetDistort = 1.0;
+      });
+
+      let time = 0;
+      function animate() {
+        time += 0.035;
+        mouseDistort += (targetDistort - mouseDistort) * 0.05;
+        targetDistort *= 0.96; // spring decay
+
+        ctx.clearRect(0, 0, width, height);
+
+        const midY = height * 0.5;
+        const totalBars = 48;
+        const barWidth = width / totalBars;
+
+        // 1. Fluid Soundwave EQ Bars (Pulsing underneath)
+        for (let i = 0; i < totalBars; i++) {
+          const normX = i / totalBars;
+          const centerDist = 1 - Math.abs(normX - 0.5) * 2;
+          const freq1 = Math.sin(normX * 12 + time * 1.8) * 0.5 + 0.5;
+          const freq2 = Math.cos(normX * 24 - time * 2.4) * 0.5 + 0.5;
+          const amp = (freq1 * 0.6 + freq2 * 0.4) * (centerDist * 0.8 + 0.2) * (18 + mouseDistort * 22);
+
+          const bx = i * barWidth + barWidth * 0.25;
+          const bw = barWidth * 0.5;
+          const bh = Math.max(4, amp);
+
+          const grad = ctx.createLinearGradient(0, midY - bh, 0, midY + bh);
+          grad.addColorStop(0, "rgba(56, 189, 248, 0.7)");
+          grad.addColorStop(0.5, "rgba(149, 254, 124, 0.85)");
+          grad.addColorStop(1, "rgba(56, 189, 248, 0.7)");
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(bx, midY - bh * 0.5, bw, bh);
+        }
+
+        // 2. Harmonic Water Sine Waves (Curved fluid ribbons over the frequencies)
+        function drawWaterWave(freq, speed, amp, color, lineWidth, phase) {
+          ctx.beginPath();
+          ctx.lineWidth = lineWidth;
+          ctx.strokeStyle = color;
+
+          for (let x = 0; x <= width; x += 4) {
+            const normX = x / width;
+            const envelope = Math.sin(normX * Math.PI); // Pinches at the ends
+            const y = midY + Math.sin(normX * freq + time * speed + phase) * (amp + mouseDistort * 15) * envelope
+                           + Math.cos(normX * freq * 1.5 - time * speed * 0.7) * (amp * 0.4) * envelope;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+
+        // Layered undulating water-sound frequencies
+        drawWaterWave(10, 1.2, 14, "rgba(149, 254, 124, 0.9)", 2.5, 0);
+        drawWaterWave(16, -1.5, 10, "rgba(56, 189, 248, 0.75)", 1.8, Math.PI * 0.4);
+        drawWaterWave(24, 2.0, 7, "rgba(126, 193, 251, 0.5)", 1.2, Math.PI * 0.8);
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ── 4. BIDIRECTIONAL PREMIUM LIQUID SCROLL SYSTEM (DEBOUNCED & ISOLATED) ──
+    (function initBidirectionalLiquidScroll() {
+      const scrollEls = document.querySelectorAll(".scroll-liquid");
+      if (!scrollEls.length) return;
+
+      let ticking = false;
+
+      function updatePositions() {
+        const wh = window.innerHeight;
+
+        scrollEls.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          
+          // In Viewport (Active) - generous bounds for buttery soft entry
+          if (rect.top < wh * 0.90 && rect.bottom > wh * 0.10) {
+            if (!el.classList.contains("liquid-in")) {
+              el.classList.add("liquid-in");
+            }
+            if (el.classList.contains("liquid-out-top")) {
+              el.classList.remove("liquid-out-top");
+            }
+          } 
+          // Scrolled past the top
+          else if (rect.bottom <= wh * 0.10) {
+            if (el.classList.contains("liquid-in")) {
+              el.classList.remove("liquid-in");
+            }
+            if (!el.classList.contains("liquid-out-top")) {
+              el.classList.add("liquid-out-top");
+            }
+          } 
+          // Below the viewport
+          else {
+            if (el.classList.contains("liquid-in")) {
+              el.classList.remove("liquid-in");
+            }
+            if (el.classList.contains("liquid-out-top")) {
+              el.classList.remove("liquid-out-top");
+            }
+          }
+        });
+
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updatePositions);
+        }
+      }
+
+      window.addEventListener("scroll", requestTick, { passive: true });
+      window.addEventListener("resize", requestTick, { passive: true });
+      // Initial check
+      requestAnimationFrame(updatePositions);
+    })();
+
+    // ── 5. 3D VOLUMETRIC WAVE TRANSITION (LEFT TO RIGHT CREST SURGE) ───
+    (function init3DWaveTransition() {
+      const canvas = document.getElementById("wave3dCanvas");
+      const progressFill = document.getElementById("waveProgressFill");
+      if (!canvas) return;
+
+      const gl = canvas.getContext("webgl", { antialias: true, alpha: true }) || canvas.getContext("experimental-webgl");
+      if (!gl) return;
+
+      const vsSource = `
+        attribute vec2 a_pos;
+        uniform float u_time;
+        uniform float u_scrollProgress;
+        varying vec3 v_normal;
+        varying vec3 v_worldPos;
+        varying float v_waveHeight;
+        varying float v_crest;
+
+        void main() {
+          float x = a_pos.x;
+          float z = (a_pos.y + 1.0) * 0.5;
+          
+          float crestX = mix(-1.4, 1.4, u_scrollProgress);
+          float distToCrest = x - crestX;
+          float crestAmp = exp(-distToCrest * distToCrest * 5.2);
+          
+          float swell1 = sin(x * 5.2 - u_time * 2.2 + z * 3.4) * 0.16;
+          float swell2 = cos(x * 8.8 + u_time * 2.8 - z * 4.8) * 0.08;
+          float swell3 = sin((x + z) * 11.0 - u_time * 3.5) * 0.035;
+          
+          float waveHeight = (swell1 + swell2 + swell3) * (0.6 + crestAmp * 2.2) + crestAmp * 0.7;
+          
+          float camY = 1.35;
+          float depth = z * 2.3 + 1.15;
+          
+          vec3 worldPos = vec3(x * (1.15 + z * 0.45), waveHeight - camY + (1.0 - z) * 0.45, depth);
+          vec4 pos = vec4(worldPos.x / depth, worldPos.y / depth, z * 0.5, 1.0);
+          
+          v_normal = vec3(-distToCrest * crestAmp * 2.8 + cos(x * 5.0 - u_time * 2.0) * 0.3, 1.0, -0.45);
+          v_worldPos = worldPos;
+          v_waveHeight = waveHeight;
+          v_crest = crestAmp;
+          
+          gl_Position = pos;
+        }
+      `;
+
+      const fsSource = `
+        precision mediump float;
+        varying vec3 v_normal;
+        varying vec3 v_worldPos;
+        varying float v_waveHeight;
+        varying float v_crest;
+        uniform float u_time;
+
+        void main() {
+          vec3 norm = normalize(v_normal);
+          vec3 lightDir = normalize(vec3(0.5, 1.0, -0.65));
+          vec3 viewDir = normalize(vec3(0.0, 0.8, -1.0));
+          
+          float diff = max(dot(norm, lightDir), 0.0);
+          vec3 reflectDir = reflect(-lightDir, norm);
+          float spec = pow(max(dot(viewDir, reflectDir), 0.0), 26.0);
+          float fresnel = pow(1.0 - max(dot(norm, viewDir), 0.0), 3.0);
+          
+          vec3 deepColor = vec3(0.025, 0.065, 0.14);
+          vec3 cyanColor = vec3(0.49, 0.76, 0.98);
+          vec3 greenColor = vec3(0.58, 0.99, 0.48);
+          vec3 foamColor = vec3(0.96, 1.0, 0.96);
+          
+          vec3 base = mix(deepColor, cyanColor, smoothstep(-0.25, 0.28, v_waveHeight));
+          base = mix(base, greenColor, smoothstep(0.22, 0.58, v_waveHeight));
+          base = mix(base, foamColor, smoothstep(0.55, 0.82, v_waveHeight) * (0.45 + v_crest * 0.85));
+          
+          float grid = abs(sin(v_worldPos.x * 26.0)) * abs(sin(v_worldPos.z * 22.0));
+          grid = smoothstep(0.72, 0.95, grid) * 0.28;
+          
+          vec3 finalColor = base * (0.38 + diff * 0.62) + spec * vec3(1.0, 1.0, 0.92) * 0.9 + fresnel * cyanColor * 0.55 + grid * greenColor;
+          
+          float edgeFade = smoothstep(1.0, 0.78, abs(v_worldPos.x / 1.55));
+          gl_FragColor = vec4(finalColor, 0.92 * edgeFade);
+        }
+      `;
+
+      function compileShader(type, src) {
+        const s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
+      }
+
+      const vs = compileShader(gl.VERTEX_SHADER, vsSource);
+      const fs = compileShader(gl.FRAGMENT_SHADER, fsSource);
+      if (!vs || !fs) return;
+
+      const program = gl.createProgram();
+      gl.attachShader(program, vs);
+      gl.attachShader(program, fs);
+      gl.linkProgram(program);
+
+      const COLS = 120, ROWS = 42;
+      const positions = [], indices = [];
+      for (let r = 0; r <= ROWS; r++) {
+        const yNorm = (r / ROWS) * 2 - 1;
+        for (let c = 0; c <= COLS; c++) {
+          positions.push((c / COLS) * 2 - 1, yNorm);
+        }
+      }
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const i0 = r * (COLS + 1) + c;
+          const i1 = i0 + 1;
+          const i2 = (r + 1) * (COLS + 1) + c;
+          const i3 = i2 + 1;
+          indices.push(i0, i1, i2, i1, i3, i2);
+        }
+      }
+
+      const posBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+      const idxBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+
+      const aPos = gl.getAttribLocation(program, "a_pos");
+      const uTime = gl.getUniformLocation(program, "u_time");
+      const uScrollProgress = gl.getUniformLocation(program, "u_scrollProgress");
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = (rect.width || window.innerWidth) * dpr;
+        canvas.height = (rect.height || 300) * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      let scrollProgress = 0.0, targetProgress = 0.0;
+      function updateScroll() {
+        const wrap = document.getElementById("waveTransitionWrap");
+        if (!wrap) return;
+        const rect = wrap.getBoundingClientRect();
+        const wh = window.innerHeight;
+        targetProgress = Math.max(0, Math.min(1, (wh - rect.top) / (wh + rect.height)));
+      }
+      window.addEventListener("scroll", updateScroll, { passive: true });
+      updateScroll();
+
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+      const startTime = performance.now();
+      function render() {
+        const t = (performance.now() - startTime) * 0.001;
+        scrollProgress += (targetProgress - scrollProgress) * 0.08;
+
+        if (progressFill) progressFill.style.width = `${(scrollProgress * 100).toFixed(1)}%`;
+
+        gl.clearColor(0.025, 0.045, 0.07, 0.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.useProgram(program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+        gl.enableVertexAttribArray(aPos);
+        gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idxBuffer);
+        gl.uniform1f(uTime, t);
+        gl.uniform1f(uScrollProgress, scrollProgress);
+
+        gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+        requestAnimationFrame(render);
+      }
+      render();
+    })();
+
+    // ── 6. SCROLL PROGRESS TIMELINE LINE ───────────────────────────────
+    (function initScrollLine() {
+      const lineFill = document.getElementById("scrollLine");
+      const container = document.querySelector(".steps-container");
+      if (!lineFill || !container) return;
+
+      function updateLine() {
+        const rect = container.getBoundingClientRect();
+        const wh = window.innerHeight;
+        const p = Math.max(0, Math.min(1, (wh - rect.top) / (rect.height + wh * 0.4)));
+        lineFill.style.width = `${(p * 80).toFixed(1)}%`;
+      }
+      window.addEventListener("scroll", updateLine, { passive: true });
+      updateLine();
+    })();
+
+    // ── 7. LIVE COUNTDOWN TIMER & TUG OF WAR ───────────────────────────
+    (function initBattleTimer() {
+      let seconds = 372; // 06:12
+      const clockEl = document.getElementById("clock");
+      const ring = document.getElementById("ring");
+      const tugA = document.getElementById("tugA");
+      const circumference = 389.5;
+
+      setInterval(() => {
+        if (seconds > 0) seconds--;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        if (clockEl) clockEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        
+        if (ring) {
+          const offset = circumference * (1 - seconds / 372);
+          ring.style.strokeDashoffset = offset;
+        }
+
+        if (tugA && Math.random() > 0.6) {
+          const newA = Math.min(65, Math.max(35, 44 + (Math.random() - 0.5) * 8));
+          tugA.style.width = `${newA.toFixed(1)}%`;
+        }
+      }, 1000);
+    })();
+
+    // ── 8. LIVE STATS API WITH RESILIENT FALLBACK ─────────────────────
+    (function initLiveStats() {
+      const STATS_URL = "https://wavewarz.info/api/public/stats";
+      const FALLBACK = {
+        totalVolumeSol: 142.84,
+        volume24hSol: 18.42,
+        artistPayoutsSol: 12.15,
+        traderClaimsSol: 114.32,
+        battlesSettled: 48,
+        solUsdPrice: 148.50,
+      };
+
+      function updateUI(d) {
+        const solPrice = d.solUsdPrice || 148.5;
+        const volUsd = (d.totalVolumeSol * solPrice).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        const payoutUsd = (d.artistPayoutsSol * solPrice).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+        const streams = Math.round((d.artistPayoutsSol * solPrice) / 0.003).toLocaleString("en-US");
+
+        const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+        setTxt("tickerVol", `${d.totalVolumeSol.toFixed(1)} SOL`);
+        setTxt("tickerVol2", `${d.totalVolumeSol.toFixed(1)} SOL`);
+        setTxt("ticker24h", `${d.volume24hSol.toFixed(1)} SOL`);
+        setTxt("ticker24h2", `${d.volume24hSol.toFixed(1)} SOL`);
+        setTxt("tickerPayouts", `${d.artistPayoutsSol.toFixed(1)} SOL`);
+        setTxt("tickerPayouts2", `${d.artistPayoutsSol.toFixed(1)} SOL`);
+        setTxt("tickerClaims", `${d.traderClaimsSol.toFixed(1)} SOL`);
+        setTxt("tickerClaims2", `${d.traderClaimsSol.toFixed(1)} SOL`);
+        setTxt("tickerSol", `$${solPrice.toFixed(2)}`);
+        setTxt("tickerSol2", `$${solPrice.toFixed(2)}`);
+        setTxt("heroCount", d.battlesSettled);
+
+        setTxt("statVol", `${d.totalVolumeSol.toFixed(1)} SOL`);
+        setTxt("statVolUsd", volUsd);
+        setTxt("statPayouts", `${d.artistPayoutsSol.toFixed(1)} SOL`);
+        setTxt("statPayoutsUsd", payoutUsd);
+        setTxt("statStreams", streams);
+        setTxt("statStreamsSub", `Across ${d.battlesSettled} battles`);
+        setTxt("statBattles", d.battlesSettled);
+        setTxt("statBattlesSub", "100% onchain Solana");
+      }
+
+      updateUI(FALLBACK);
+
+      fetch(STATS_URL)
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(data => updateUI(data))
+        .catch(() => { /* Clean fallback retained */ });
+    })();
+
+    // ── SILKY SMOOTH ENTRANCE SEQUENCER & SCROLL-TRIGGERED FROSTED GLASS HEADER ──
+    (function initUIRevealAndScroll() {
+      const header = document.querySelector("header.site");
+      const tagline = document.querySelector(".hero-tagline-container");
+      const wave = document.querySelector(".sound-water-wrap");
+      const cue = document.querySelector(".hero-scroll-cue");
+      const heroChar = document.getElementById("heroCharacterWrap");
+
+      // Silky coordinated reveal immediately when logo entrance completes (1.35s)
+      setTimeout(() => {
+        if (header) header.classList.add("header-visible");
+        if (tagline) tagline.classList.add("tagline-visible");
+        if (heroChar) heroChar.classList.add("character-visible");
+      }, 1350);
+
+      setTimeout(() => {
+        if (wave) wave.classList.add("sound-water-visible");
+      }, 1450);
+
+      setTimeout(() => {
+        if (cue) cue.classList.add("scroll-cue-visible");
+      }, 1550);
+
+      // Smooth scroll glass trigger with hysteresis + Mouse & Scroll Parallax for Hero Character
+      let isScrolled = false;
+      let mouseX = 0, mouseY = 0;
+      let curMouseX = 0, curMouseY = 0;
+      let targetMouseX = 0, targetMouseY = 0;
+      let lastScrollY = window.scrollY || 0;
+
+      // Track mouse across the window for interactive parallax
+      window.addEventListener("pointermove", (e) => {
+        const nx = (e.clientX / window.innerWidth) - 0.5; // -0.5 to 0.5
+        const ny = (e.clientY / window.innerHeight) - 0.5;
+        targetMouseX = nx * 32; // max 32px mouse parallax swing
+        targetMouseY = ny * 24;
+      }, { passive: true });
+
+      function onScroll() {
+        lastScrollY = window.scrollY || window.pageYOffset;
+        if (!isScrolled && lastScrollY > 35) {
+          isScrolled = true;
+          if (header) header.classList.add("header-scrolled");
+        } else if (isScrolled && lastScrollY < 15) {
+          isScrolled = false;
+          if (header) header.classList.remove("header-scrolled");
+        }
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      // Continuous 60fps render loop for butter-smooth mouse & scroll parallax
+      function animateCharacterParallax() {
+        if (heroChar && heroChar.classList.contains("character-visible")) {
+          // Smooth spring damping for mouse parallax
+          curMouseX += (targetMouseX - curMouseX) * 0.08;
+          curMouseY += (targetMouseY - curMouseY) * 0.08;
+
+          // Scroll parallax
+          const scrollParallaxY = lastScrollY * 0.38;
+          const scrollParallaxX = lastScrollY * 0.10;
+
+          // Scroll fade-out (starts fading at 60px, fully vanished by 460px)
+          const charFadeP = Math.max(0, Math.min(1, (lastScrollY - 60) / 400));
+          const charWrapOpacity = Math.max(0, 1.0 - charFadeP);
+
+          const totalX = (curMouseX + scrollParallaxX).toFixed(1);
+          const totalY = (curMouseY + scrollParallaxY).toFixed(1);
+
+          heroChar.style.transform = `translate3d(${totalX}px, ${totalY}px, 0)`;
+          heroChar.style.opacity = charWrapOpacity.toFixed(3);
+        }
+
+        requestAnimationFrame(animateCharacterParallax);
+      }
+      requestAnimationFrame(animateCharacterParallax);
+
+      // Smooth programmatic scroll for the hero scroll cue without jarring layout hash jump
+      if (cue) {
+        cue.addEventListener("click", (e) => {
+          const target = document.getElementById("arenaSection");
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
