@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaveWarz — DJ Wavy Royal Entrance & Venture Exchange</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #06070b;
+      --bg-panel: #0d101b; /* Solid opaque for zero GPU blur cost */
+      --royal-gold: #ffd700;
+      --royal-amber: #ff9900;
+      --neon-cyan: #00f0ff;
+      --neon-pink: #ff007f;
+      --neon-green: #00ff9d;
+      --text-main: #f5f7ff;
+      --text-muted: #8b95b0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .demo-spacer {
+      height: 55vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px dashed rgba(255, 215, 0, 0.2);
+      color: var(--royal-gold);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ==========================================
+       SCROLL TRACK & GPU-CONTAINED STAGE
+       ========================================== */
+    .exchange-scroll-track {
+      position: relative;
+      height: 540vh; /* Extra scroll room for the Royal Entrance + Map Tour + Finale */
+      background: #06070b;
+      contain: layout paint;
+    }
+
+    .exchange-sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      width: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem 3rem;
+      background: radial-gradient(circle at 50% 35%, #161324 0%, #06070b 75%);
+    }
+
+    /* Pause all infinite animations when offscreen */
+    .exchange-sticky-stage.is-paused * {
+      animation-play-state: paused !important;
+    }
+
+    .cyber-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================
+       ROYAL ENTRANCE GATES & SPOTLIGHT (GPU ONLY)
+       ========================================== */
+    .royal-entrance-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+      overflow: hidden;
+    }
+
+    /* Left & Right Prestige Gates - animated strictly via transform: scaleX */
+    .royal-gate {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: linear-gradient(135deg, #09070f 0%, #151022 90%);
+      border-bottom: 2px solid var(--royal-gold);
+      will-change: transform;
+    }
+
+    .royal-gate-left {
+      left: 0;
+      transform-origin: left center;
+      border-right: 2px solid var(--royal-gold);
+    }
+
+    .royal-gate-right {
+      right: 0;
+      transform-origin: right center;
+      border-left: 2px solid var(--royal-gold);
+    }
+
+    /* Subtle gold filigree lines on gates */
+    .royal-gate::before {
+      content: '';
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(255, 215, 0, 0.22);
+    }
+
+    /* Center Royal Heraldic Banner that fades & scales up as gates part */
+    .royal-herald {
+      position: absolute;
+      top: 22%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      will-change: transform, opacity;
+      z-index: 32;
+    }
+
+    .royal-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.35em;
+      color: var(--royal-gold);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .royal-announce {
+      font-size: clamp(2rem, 4.5vw, 4rem);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      text-shadow: 0 4px 24px rgba(255, 215, 0, 0.35);
+    }
+
+    .royal-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #d4c598;
+      margin-top: 0.4rem;
+    }
+
+    /* Golden Spotlight Cone behind DJ Wavy during entrance */
+    .royal-spotlight {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      width: 520px;
+      height: 120vh;
+      margin-left: -260px;
+      background: radial-gradient(ellipse at top, rgba(255, 215, 0, 0.26) 0%, rgba(255, 153, 0, 0.05) 55%, transparent 75%);
+      transform-origin: top center;
+      will-change: transform, opacity;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    /* ==========================================
+       HEADER & STATUS BAR
+       ========================================== */
+    .exchange-header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--royal-gold);
+      background: rgba(255, 215, 0, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+      padding: 0.35rem 0.8rem;
+      border-radius: 99px;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--royal-gold);
+      border-radius: 50%;
+    }
+
+    .exchange-title {
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff 0%, var(--royal-gold) 45%, var(--neon-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tour-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #0d101b;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      padding: 0.6rem 1rem;
+      border-radius: 10px;
+    }
+
+    .progress-readout {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .progress-readout strong {
+      color: var(--royal-gold);
+    }
+
+    .mode-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255, 215, 0, 0.12);
+      color: var(--royal-gold);
+      border: 1px solid rgba(255, 215, 0, 0.4);
+    }
+
+    .exchange-sticky-stage.is-complete .mode-pill {
+      background: rgba(0, 255, 157, 0.14);
+      color: var(--neon-green);
+      border-color: var(--neon-green);
+    }
+
+    /* ==========================================
+       MAP BOARD & SVG CIRCUIT PATH
+       ========================================== */
+    .map-board-wrapper {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .map-board {
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      max-height: 620px;
+    }
+
+    .map-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .path-base {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .path-dashes {
+      fill: none;
+      stroke: rgba(255, 215, 0, 0.22);
+      stroke-width: 2;
+      stroke-dasharray: 8 12;
+    }
+
+    /* Optimized path: no costly SVG filter, uses crisp dual-stroke illusion */
+    .path-active {
+      fill: none;
+      stroke: url(#royalCyberGradient);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    /* ==========================================
+       MAP NODES & LINKED INFOGRAPHIC CARDS
+       ========================================== */
+    .map-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      cursor: pointer;
+    }
+
+    .node-pin {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #0b0e18;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .map-node.is-visited .node-pin {
+      border-color: var(--royal-gold);
+      color: var(--royal-gold);
+    }
+
+    .map-node.is-current .node-pin {
+      transform: scale(1.25);
+      background: var(--royal-gold);
+      color: #06070b;
+      border-color: #fff;
+    }
+
+    .node-tag {
+      position: absolute;
+      top: 52px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      background: #0b0e18;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .map-node.is-visited .node-tag {
+      color: var(--royal-gold);
+      border-color: rgba(255, 215, 0, 0.4);
+    }
+
+    /* Linked Infographic Card (Opaque & GPU-friendly) */
+    .node-infographic-card {
+      position: absolute;
+      width: 240px;
+      background: var(--bg-panel);
+      border: 1px solid rgba(255, 215, 0, 0.45);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px) scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+      z-index: 15;
+    }
+
+    .map-node[data-pos="top"] .node-infographic-card { bottom: 56px; left: 50%; }
+    .map-node[data-pos="bottom"] .node-infographic-card { top: 56px; left: 50%; }
+
+    .exchange-sticky-stage.is-complete .node-infographic-card {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, 0) scale(1);
+    }
+
+    .exchange-sticky-stage.is-complete .node-tag {
+      opacity: 0;
+    }
+
+    .node-infographic-card:hover {
+      border-color: var(--neon-cyan);
+      transform: translate(-50%, -4px) scale(1.03) !important;
+    }
+
+    .card-kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--royal-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.25rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-desc {
+      font-size: 0.76rem;
+      line-height: 1.4;
+      color: var(--text-muted);
+      margin-bottom: 0.55rem;
+    }
+
+    .card-metric {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--neon-green);
+      background: rgba(0, 255, 157, 0.08);
+      border: 1px solid rgba(0, 255, 157, 0.3);
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    /* ==========================================
+       ROYAL 2D DJ WAVY & TALKING BOX
+       ========================================== */
+    .dj-wavy-actor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 96px;
+      height: 96px;
+      margin-left: -48px;
+      margin-top: -64px;
+      z-index: 25;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    /* Rotating Royal Halo behind DJ Wavy */
+    .royal-halo {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255, 215, 0, 0.55);
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%);
+      animation: spinSlow 10s linear infinite;
+    }
+
+    .dj-wavy-sprite {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      animation: wavyBob 0.8s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+
+    /* Royal Talking Box */
+    .wavy-talk-box {
+      position: absolute;
+      bottom: 106px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 340px;
+      background: #0b0d17;
+      border: 2px solid var(--royal-gold);
+      border-radius: 14px;
+      padding: 0.95rem 1.1rem;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.8);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: auto;
+    }
+
+    .wavy-talk-box::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(45deg);
+      width: 16px;
+      height: 16px;
+      background: #0b0d17;
+      border-right: 2px solid var(--royal-gold);
+      border-bottom: 2px solid var(--royal-gold);
+    }
+
+    /* Hide talking box during the very beginning of the curtain open AND at the final overview */
+    .exchange-sticky-stage.is-entering .wavy-talk-box,
+    .exchange-sticky-stage.is-complete .wavy-talk-box {
+      opacity: 0;
+      transform: translateX(-50%) translateY(12px) scale(0.85);
+      pointer-events: none;
+    }
+
+    .talk-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      padding-bottom: 0.3rem;
+    }
+
+    .speaker-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--royal-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .talk-step-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--neon-cyan);
+    }
+
+    .talk-subject {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .talk-message {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #d6def2;
+      min-height: 3.3em;
+    }
+
+    .talk-cursor {
+      display: inline-block;
+      width: 6px;
+      height: 12px;
+      background: var(--royal-gold);
+      vertical-align: middle;
+      margin-left: 3px;
+    }
+
+    /* ==========================================
+       FOOTER
+       ========================================== */
+    .exchange-footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .overview-unlocked-banner {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      color: var(--royal-gold);
+    }
+
+    .exchange-sticky-stage.is-complete .overview-unlocked-banner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes wavyBob {
+      0% { transform: translate3d(0, 0px, 0) rotate(-2deg); }
+      100% { transform: translate3d(0, -6px, 0) rotate(2deg); }
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 900px) {
+      .exchange-sticky-stage { padding: 1.25rem; }
+      .wavy-talk-box { width: 250px; padding: 0.75rem; }
+      .node-infographic-card { width: 175px; padding: 0.65rem; }
+      .card-desc { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-spacer">
+    <span>↓ SCROLL DOWN FOR DJ WAVY'S ROYAL ENTRANCE ↓</span>
+  </div>
+
+  <!-- =========================================================
+       MAIN INTERACTIVE SCROLL GRAPHIC SECTION
+       ========================================================= -->
+  <section id="venture-exchange-scroll" class="exchange-scroll-track">
+    <div class="exchange-sticky-stage is-entering" id="exchangeStage">
+      <div class="cyber-grid-bg"></div>
+
+      <!-- ROYAL SPOTLIGHT -->
+      <div class="royal-spotlight" id="royalSpotlight"></div>
+
+      <!-- ROYAL ENTRANCE CURTAIN GATES (First 18% of scroll) -->
+      <div class="royal-entrance-layer" id="royalEntranceLayer">
+        <div class="royal-gate royal-gate-left" id="gateLeft"></div>
+        <div class="royal-gate royal-gate-right" id="gateRight"></div>
+        <div class="royal-herald" id="royalHerald">
+          <div class="royal-kicker">♛ ALL HAIL THE ARCHITECT OF SOUND ♛</div>
+          <div class="royal-announce">HIS ROYAL WAVINESS</div>
+          <div class="royal-sub">DESCENDING TO THE EXCHANGE FLOOR</div>
+        </div>
+      </div>
+
+      <!-- HEADER -->
+      <header class="exchange-header">
+        <div>
+          <div class="badge-tag">
+            <span class="badge-dot"></span>
+            ROYAL ARCHITECTURE // DJ WAVY TOUR
+          </div>
+          <h2 class="exchange-title">Built Like A Venture-Grade Exchange</h2>
+        </div>
+
+        <div class="tour-status-bar">
+          <div class="progress-readout">
+            TOUR SYNC: <strong id="tourPercent">0%</strong>
+          </div>
+          <div class="mode-pill" id="modeStatusPill">
+            ROYAL ENTRANCE
+          </div>
+        </div>
+      </header>
+
+      <!-- MAP & LINKED INFOGRAPHIC STAGE -->
+      <div class="map-board-wrapper">
+        <div class="map-board" id="mapBoard">
+
+          <!-- SVG CIRCUIT ROAD -->
+          <svg class="map-svg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="royalCyberGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffd700" />
+                <stop offset="50%" stop-color="#00f0ff" />
+                <stop offset="100%" stop-color="#00ff9d" />
+              </linearGradient>
+            </defs>
+
+            <path class="path-base" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <path class="path-dashes" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <path id="wavyMotionPath" class="path-active" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+          </svg>
+
+          <!-- NODES CONTAINER -->
+          <div id="nodesLayer"></div>
+
+          <!-- 2D ROYAL DJ WAVY CHARACTER + TALKING BOX -->
+          <div class="dj-wavy-actor" id="djWavyActor">
+            <div class="royal-halo"></div>
+
+            <!-- RPG Talking Box -->
+            <div class="wavy-talk-box" id="wavyTalkBox">
+              <div class="talk-header">
+                <span class="speaker-name">♛ KING WAVY</span>
+                <span class="talk-step-badge" id="talkStepBadge">NODE 01/05</span>
+              </div>
+              <div class="talk-subject" id="talkSubject">Loading...</div>
+              <div class="talk-message">
+                <span id="talkMessageText"></span><span class="talk-cursor"></span>
+              </div>
+            </div>
+
+            <!-- 2D Vector Sprite of Royal DJ Wavy (Crown + Cape + Shades) -->
+            <svg class="dj-wavy-sprite" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Royal Crimson & Gold Cape Collar -->
+              <path d="M20 96 L28 66 L60 76 L92 66 L100 96 Z" fill="#5e0828" stroke="#ffd700" stroke-width="2.5"/>
+              <path d="M28 66 L18 52 L36 58 Z" fill="#ffd700"/>
+              <path d="M92 66 L102 52 L84 58 Z" fill="#ffd700"/>
+
+              <!-- Gold Headphone Band -->
+              <path d="M22 66 C22 36, 98 36, 98 66" stroke="#ffd700" stroke-width="6" stroke-linecap="round"/>
+
+              <!-- Head Base -->
+              <rect x="30" y="42" width="60" height="48" rx="20" fill="#121629" stroke="#ffd700" stroke-width="2.5"/>
+
+              <!-- Left & Right Gold-Trimmed Headphones -->
+              <rect x="14" y="54" width="14" height="26" rx="6" fill="#ff007f" stroke="#ffd700" stroke-width="2"/>
+              <rect x="92" y="54" width="14" height="26" rx="6" fill="#ff007f" stroke="#ffd700" stroke-width="2"/>
+
+              <!-- 24K Floating Sovereign Crown -->
+              <path d="M35 36 L31 16 L48 26 L60 11 L72 26 L89 16 L85 36 Z" fill="#ffd700" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round"/>
+              <!-- Crown Jewels -->
+              <circle cx="60" cy="26" r="3" fill="#ff007f"/>
+              <circle cx="44" cy="29" r="2.2" fill="#00f0ff"/>
+              <circle cx="76" cy="29" r="2.2" fill="#00f0ff"/>
+
+              <!-- Cyber Visor Shades -->
+              <path d="M35 56 H85 L80 70 H64 L60 64 L56 70 H40 Z" fill="#00f0ff" stroke="#ffd700" stroke-width="2"/>
+              <line x1="44" y1="59" x2="51" y2="66" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+
+              <!-- Royal Smirk -->
+              <path d="M49 79 Q60 85 71 79" stroke="#ffd700" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="exchange-footer">
+        <div>SCROLL TO PART THE GATES & WALK THE FLOOR WITH KING WAVY</div>
+        <div class="overview-unlocked-banner">
+          ★ ROYAL BLUEPRINT COMPLETE — HOVER ANY PILLAR TO INSPECT
+        </div>
+      </footer>
+    </div>
+  </section>
+
+  <div class="demo-spacer">
+    <span>↑ SCROLL UP TO REPLAY THE ROYAL ENTRANCE ↑</span>
+  </div>
+
+  <script>
+    const EXCHANGE_NODES = [
+      {
+        id: "01",
+        x: 110,
+        y: 460,
+        cardPos: "top",
+        tag: "AMM LIQUIDITY",
+        subject: "Dynamic Bonding Curves",
+        wavySpeech: "Welcome to my court! Every track launches with royal, programmatic liquidity—zero gatekeepers, instant action.",
+        summary: "Automated market-making curves guarantee instant price discovery & continuous liquidity from beat one.",
+        metric: "0ms Slippage Curve"
+      },
+      {
+        id: "02",
+        x: 330,
+        y: 170,
+        cardPos: "bottom",
+        tag: "REAL-TIME SETTLEMENT",
+        subject: "Sub-Second Battle Engine",
+        wavySpeech: "Observe the speed of the crown. Every vote, trade, and wager settles on-chain in milliseconds while the arena roars.",
+        summary: "High-frequency execution layer built to handle massive live battle spikes without bottlenecks.",
+        metric: "< 400ms Finality"
+      },
+      {
+        id: "03",
+        x: 600,
+        y: 440,
+        cardPos: "top",
+        tag: "SMART ESCROW",
+        subject: "Sovereign Prize Vaults",
+        wavySpeech: "The Royal Treasury never misses. Smart contracts lock the stakes and auto-split payouts the second the battle ends.",
+        summary: "Audited, non-custodial escrow vaults that automate royalty splits and battle rewards instantaneously.",
+        metric: "100% Verifiable"
+      },
+      {
+        id: "04",
+        x: 870,
+        y: 170,
+        cardPos: "bottom",
+        tag: "CULTURAL TELEMETRY",
+        subject: "Live Hype & Volume Oracles",
+        wavySpeech: "We pipe real-time crowd conviction and stream velocity straight into venture-grade market signals.",
+        summary: "Live sentiment and volume feeds convert sonic momentum into tradable, transparent market analytics.",
+        metric: "Live Alpha Feed"
+      },
+      {
+        id: "05",
+        x: 1090,
+        y: 380,
+        cardPos: "top",
+        tag: "COMPOSABLE FLYWHEEL",
+        subject: "The Unified Empire",
+        wavySpeech: "Behold the full kingdom! Artists, fans, and liquidity linked in one unstoppable loop. Inspect the blueprint!",
+        summary: "Every battle fuels artist treasuries, fan rewards, and protocol depth in one unified exchange graph.",
+        metric: "Full-Stack Protocol"
+      }
+    ];
+
+    const trackSection = document.getElementById('venture-exchange-scroll');
+    const stageEl = document.getElementById('exchangeStage');
+    const mapBoard = document.getElementById('mapBoard');
+    const motionPath = document.getElementById('wavyMotionPath');
+    const nodesLayer = document.getElementById('nodesLayer');
+    const djWavyActor = document.getElementById('djWavyActor');
+    const wavyTalkBox = document.getElementById('wavyTalkBox');
+
+    const gateLeft = document.getElementById('gateLeft');
+    const gateRight = document.getElementById('gateRight');
+    const royalHerald = document.getElementById('royalHerald');
+    const royalSpotlight = document.getElementById('royalSpotlight');
+
+    const talkStepBadge = document.getElementById('talkStepBadge');
+    const talkSubject = document.getElementById('talkSubject');
+    const talkMessageText = document.getElementById('talkMessageText');
+    const tourPercent = document.getElementById('tourPercent');
+    const modeStatusPill = document.getElementById('modeStatusPill');
+
+    // 1. Build DOM Nodes once
+    const nodeElements = EXCHANGE_NODES.map((node) => {
+      const el = document.createElement('div');
+      el.className = 'map-node';
+      el.dataset.pos = node.cardPos;
+      el.style.left = `${(node.x / 1200) * 100}%`;
+      el.style.top = `${(node.y / 600) * 100}%`;
+
+      el.innerHTML = `
+        <div class="node-pin">${node.id}</div>
+        <div class="node-tag">${node.tag}</div>
+        <div class="node-infographic-card">
+          <div class="card-kicker">
+            <span>PILLAR // ${node.id}</span>
+            <span>♛ LINKED</span>
+          </div>
+          <div class="card-title">${node.subject}</div>
+          <div class="card-desc">${node.summary}</div>
+          <span class="card-metric">${node.metric}</span>
+        </div>
+      `;
+      nodesLayer.appendChild(el);
+      return el;
+    });
+
+    // 2. Cache geometry & state for zero-layout-thrash loop
+    let pathLength = motionPath.getTotalLength();
+    let boardWidth = mapBoard.clientWidth;
+    let boardHeight = mapBoard.clientHeight;
+    let firstNodePt = motionPath.getPointAtLength(0);
+
+    motionPath.style.strokeDasharray = pathLength;
+    motionPath.style.strokeDashoffset = pathLength;
+
+    let targetProgress = 0;
+    let currentProgress = 0;
+    let activeNodeIndex = -1;
+    let typewriterTimer = null;
+    let isSectionVisible = false;
+    let rafId = null;
+
+    function triggerTalkBox(index) {
+      const node = EXCHANGE_NODES[index];
+      talkStepBadge.textContent = `STOP ${node.id}/0${EXCHANGE_NODES.length}`;
+      talkSubject.textContent = node.subject;
+
+      if (typewriterTimer) clearInterval(typewriterTimer);
+      talkMessageText.textContent = '';
+
+      let charIdx = 0;
+      const fullText = node.wavySpeech;
+      typewriterTimer = setInterval(() => {
+        charIdx += 3;
+        talkMessageText.textContent = fullText.slice(0, charIdx);
+        if (charIdx >= fullText.length) clearInterval(typewriterTimer);
+      }, 16);
+    }
+
+    function updateScrollTarget() {
+      if (!isSectionVisible) return;
+      const rect = trackSection.getBoundingClientRect();
+      const scrollableDistance = rect.height - window.innerHeight;
+      if (scrollableDistance <= 0) return;
+      targetProgress = Math.max(0, Math.min(1, -rect.top / scrollableDistance));
+    }
+
+    // 3. Ultra-lightweight 60fps loop (Runs ONLY when section is in viewport)
+    function renderLoop() {
+      if (!isSectionVisible) {
+        rafId = null;
+        return;
+      }
+
+      // Smooth interpolation
+      currentProgress += (targetProgress - currentProgress) * 0.12;
+      tourPercent.textContent = `${Math.round(currentProgress * 100)}%`;
+
+      /* ---------------------------------------------------------
+         PHASE 1: THE GRAND ROYAL ENTRANCE (0.00 -> 0.18 of scroll)
+         --------------------------------------------------------- */
+      const entrancePhase = Math.min(1, currentProgress / 0.18);
+      const isEntering = currentProgress < 0.14;
+      stageEl.classList.toggle('is-entering', isEntering);
+
+      // Part the twin Royal Gates using GPU scaleX
+      const gateScale = Math.max(0, 1 - entrancePhase);
+      gateLeft.style.transform = `scaleX(${gateScale})`;
+      gateRight.style.transform = `scaleX(${gateScale})`;
+
+      // Fade out royal herald banner as gates open
+      royalHerald.style.opacity = Math.max(0, 1 - entrancePhase * 1.6);
+      royalHerald.style.transform = `translate(-50%, -50%) scale(${1 + entrancePhase * 0.25})`;
+
+      /* ---------------------------------------------------------
+         PHASE 2: THE MAP WALKTHROUGH (0.18 -> 0.88 of scroll)
+         --------------------------------------------------------- */
+      const tourPortion = Math.max(0, Math.min(1, (currentProgress - 0.18) / 0.70));
+      const isComplete = currentProgress >= 0.90;
+
+      // Draw circuit path
+      const drawLength = pathLength * tourPortion;
+      motionPath.style.strokeDashoffset = pathLength - drawLength;
+
+      // Calculate DJ Wavy's position:
+      // During Entrance (0 -> 0.18), he descends from Center-Top Throne (50% X, 18% Y) to Node 01!
+      let screenX, screenY, wavyScale;
+
+      if (entrancePhase < 1) {
+        const startX = boardWidth * 0.5;
+        const startY = boardHeight * 0.15;
+        const endX = (firstNodePt.x / 1200) * boardWidth;
+        const endY = (firstNodePt.y / 600) * boardHeight;
+
+        // Smooth ease-out descent
+        const ease = 1 - Math.pow(1 - entrancePhase, 3);
+        screenX = startX + (endX - startX) * ease;
+        screenY = startY + (endY - startY) * ease;
+        wavyScale = 1.65 - (0.65 * ease); // Starts larger & majestic, lands at 1.0x scale
+      } else {
+        const pt = motionPath.getPointAtLength(drawLength);
+        screenX = (pt.x / 1200) * boardWidth;
+        screenY = (pt.y / 600) * boardHeight;
+        wavyScale = 1;
+
+        const edgeOffset = ((0.5 - (pt.x / 1200)) * 90);
+        wavyTalkBox.style.marginLeft = `${edgeOffset}px`;
+      }
+
+      djWavyActor.style.transform = `translate3d(${screenX}px, ${screenY}px, 0) scale(${wavyScale})`;
+
+      // Follow DJ Wavy softly with the royal spotlight
+      const spotOffset = screenX - (boardWidth * 0.5);
+      royalSpotlight.style.transform = `translate3d(${spotOffset * 0.6}px, 0, 0)`;
+      royalSpotlight.style.opacity = isComplete ? '0.25' : '0.85';
+
+      // Trigger Talking Box per stop
+      if (!isEntering) {
+        const rawIndex = Math.min(
+          EXCHANGE_NODES.length - 1,
+          Math.floor(tourPortion * EXCHANGE_NODES.length)
+        );
+        if (rawIndex !== activeNodeIndex) {
+          activeNodeIndex = rawIndex;
+          triggerTalkBox(activeNodeIndex);
+        }
+      }
+
+      // Update Node Pin states
+      nodeElements.forEach((nodeEl, idx) => {
+        const nodeThreshold = idx / (EXCHANGE_NODES.length - 1);
+        nodeEl.classList.toggle('is-visited', (!isEntering && tourPortion >= nodeThreshold - 0.04) || isComplete);
+        nodeEl.classList.toggle('is-current', !isEntering && idx === activeNodeIndex && !isComplete);
+      });
+
+      /* ---------------------------------------------------------
+         PHASE 3: FULL LINKED INFOGRAPHIC FINALE (0.90 -> 1.00)
+         --------------------------------------------------------- */
+      if (isComplete) {
+        stageEl.classList.add('is-complete');
+        modeStatusPill.textContent = '♛ EMPIRE BLUEPRINT LIVE';
+      } else {
+        stageEl.classList.remove('is-complete');
+        modeStatusPill.textContent = isEntering ? '♛ ROYAL ENTRANCE' : 'WALKTHROUGH ACTIVE';
+      }
+
+      // Stop rAF if we've settled on target to save battery/GPU
+      if (Math.abs(targetProgress - currentProgress) > 0.0005) {
+        rafId = requestAnimationFrame(renderLoop);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function requestTick() {
+      if (!rafId && isSectionVisible) {
+        rafId = requestAnimationFrame(renderLoop);
+      }
+    }
+
+    // 4. IntersectionObserver: Completely sleeps the section when off-screen
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        isSectionVisible = entry.isIntersecting;
+        stageEl.classList.toggle('is-paused', !isSectionVisible);
+        if (isSectionVisible) {
+          updateScrollTarget();
+          requestTick();
+        }
+      });
+    }, { threshold: 0.01 });
+
+    observer.observe(trackSection);
+
+    window.addEventListener('scroll', () => {
+      if (isSectionVisible) {
+        updateScrollTarget();
+        requestTick();
+      }
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      pathLength = motionPath.getTotalLength();
+      boardWidth = mapBoard.clientWidth;
+      boardHeight = mapBoard.clientHeight;
+      firstNodePt = motionPath.getPointAtLength(0);
+      motionPath.style.strokeDasharray = pathLength;
+      updateScrollTarget();
+      requestTick();
+    }, { passive: true });
+
+    // Initial setup
+    triggerTalkBox(0);
+  </script>
+</body>
+</html>
