@@ -52,12 +52,12 @@
       background-color: var(--brand-black);
       color: var(--text-main);
       font-family: 'Space Grotesk', sans-serif;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
 
     body {
       background-color: var(--brand-black);
-      overflow-x: hidden;
+      overflow-x: clip;
       position: relative;
     }
 
@@ -1186,7 +1186,7 @@
       padding: 0;
     }
 
-    /* body {
+    /* body-reset {
       background-color: var(--bg-dark);
       color: var(--text-main);
       font-family: 'Space Grotesk', sans-serif;
@@ -1218,8 +1218,10 @@
     }
 
     .exchange-sticky-stage {
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
+      z-index: 20;
       height: 100vh;
       width: 100%;
       overflow: hidden;
@@ -2898,6 +2900,7 @@
 
     // 60FPS Animation Loop (Smooth Lerp + Snappy Node Triggers)
     function renderLoop() {
+      updateScrollTarget();
       // Snappy and responsive lerp so animation always keeps up with user scroll
       currentProgress += (targetProgress - currentProgress) * 0.28;
       if (Math.abs(targetProgress - currentProgress) < 0.001) {
