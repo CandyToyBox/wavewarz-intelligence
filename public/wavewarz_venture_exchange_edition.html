@@ -1213,7 +1213,7 @@
        ========================================== */
     .exchange-scroll-track {
       position: relative;
-      height: 480vh; /* Controls how much scroll distance drives the tour */
+      height: 600vh; /* Extended distance for comfortable pace & full reveal dwell */
       background: radial-gradient(circle at 50% 50%, #101528 0%, #07080d 75%);
     }
 
@@ -2898,16 +2898,19 @@
 
     // 60FPS Animation Loop (Smooth Lerp + Snappy Node Triggers)
     function renderLoop() {
-      // Smoothly lerp currentProgress toward targetProgress
-      currentProgress += (targetProgress - currentProgress) * 0.12;
+      // Snappy and responsive lerp so animation always keeps up with user scroll
+      currentProgress += (targetProgress - currentProgress) * 0.28;
+      if (Math.abs(targetProgress - currentProgress) < 0.001) {
+        currentProgress = targetProgress;
+      }
 
       // Update percentage HUD
       const pct = Math.round(currentProgress * 100);
       tourPercent.textContent = `${pct}%`;
 
-      // Reserve the final 12% of scroll for the "Full Linked Infographic" finale
-      const tourPortion = Math.min(1, currentProgress / 0.88);
-      const isComplete = currentProgress >= 0.91;
+      // Reach 100% of the tour by 72% scroll, reserving the remaining 28% for full infographic review
+      const tourPortion = Math.min(1, currentProgress / 0.72);
+      const isComplete = currentProgress >= 0.72;
 
       // Draw neon circuit line up to DJ Wavy's feet
       const drawLength = pathLength * tourPortion;
