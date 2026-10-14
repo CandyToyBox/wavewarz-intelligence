@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WAVEWARZ | Musical Prediction Markets on Solana</title>
+  <meta name="description" content="Enter the Arena. Vote with SOL. Shape the Charts. Live Music Battles & Prediction Markets on Solana." />
+
+  <!-- Dynamic Non-Stretched Favicon Reference -->
+  <link id="dynamic-favicon" rel="icon" type="image/png" href="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" />
+
+  <!-- Google Fonts: Space Grotesk, Chakra Petch & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#05070B',
+            panel: '#0B101B',
+            neonGreen: '#00FF87',
+            neonCyan: '#00E5FF',
+            neonBlue: '#1E6BFF',
+            neonRed: '#FF2A54',
+            neonGold: '#FFB800'
+          },
+          fontFamily: {
+            display: ['"Chakra Petch"', 'sans-serif'],
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Model Viewer for djwavy.glb (Deferred for Lean Load) -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <style>
+    :root {
+      --neon-green: #00FF87;
+      --neon-cyan: #00E5FF;
+      --neon-blue: #1E6BFF;
+      --neon-red: #FF2A54;
+    }
+
+    * {
+      box-sizing: border-box;
+      selection-background-color: #00FF87;
+      selection-color: #05070B;
+    }
+
+    body {
+      background-color: #05070B;
+      color: #F3F6FA;
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* High-FPS GPU Cyber Grid Background */
+    .arena-bg {
+      background-image: 
+        radial-gradient(circle at 18% 28%, rgba(0, 229, 255, 0.11) 0%, transparent 45%),
+        radial-gradient(circle at 82% 28%, rgba(255, 42, 84, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(0, 255, 135, 0.08) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+    }
+
+    /* Sleek Glassmorphic Cards */
+    .glass-card {
+      background: rgba(11, 16, 27, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(0, 229, 255, 0.32);
+    }
+
+    /* Character Rim Glows */
+    .lui-glow {
+      filter: drop-shadow(-10px 10px 28px rgba(0, 229, 255, 0.35)) drop-shadow(0 0 12px rgba(0, 255, 135, 0.25));
+      will-change: transform;
+    }
+
+    .geek-glow {
+      filter: drop-shadow(10px 10px 28px rgba(255, 42, 84, 0.38)) drop-shadow(0 0 12px rgba(255, 184, 0, 0.25));
+      will-change: transform;
+    }
+
+    .logo-glow {
+      filter: drop-shadow(0 10px 30px rgba(0, 229, 255, 0.45));
+    }
+
+    /* Skewed Esports Badges */
+    .skew-tag {
+      transform: skewX(-10deg);
+    }
+    .unskew {
+      transform: skewX(10deg);
+    }
+
+    /* Custom Tug-of-War Shimmer */
+    @keyframes pulseBar {
+      0%, 100% { opacity: 0.85; }
+      50% { opacity: 1; }
+    }
+    .bar-glow {
+      animation: pulseBar 2s infinite ease-in-out;
+    }
+
+    /* Infinite Marquee */
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    .animate-ticker {
+      display: flex;
+      width: max-content;
+      animation: ticker 28s linear infinite;
+    }
+    .animate-ticker:hover {
+      animation-play-state: paused;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #05070B; }
+    ::-webkit-scrollbar-thumb { background: #1B2436; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00E5FF; }
+  </style>
+</head>
+
+<body class="arena-bg antialiased selection:bg-neonGreen selection:text-obsidian">
+
+  <!-- TOP LIVE SOLANA PREDICTION TICKER -->
+  <div class="w-full bg-[#070B12] border-b border-white/10 py-1.5 overflow-hidden text-xs font-mono">
+    <div class="animate-ticker flex items-center space-x-8">
+      <div class="flex items-center space-x-8 shrink-0">
+        <span class="flex items-center gap-2 text-neonGreen"><span class="w-2 h-2 rounded-full bg-neonGreen animate-ping"></span> SOLANA MAINNET: ONLINE</span>
+        <span class="text-slate-400">🔥 <strong class="text-white">LUI vs. GEEK</strong> POOL: <strong class="text-neonCyan">42.85 SOL</strong> (+18% 1H)</span>
+        <span class="text-slate-400">⚡ RECENT PAYOUT: <strong class="text-neonGreen">8.42 SOL</strong> TO <span class="underline">7xKX...9bPq</span></span>
+        <span class="text-slate-400">🎵 ARTIST SETTLEMENT: <strong class="text-white">1% INSTANT PER TRADE</strong></span>
+        <span class="text-slate-400">🏆 SEASON 1 FINALS: <strong class="text-neonGold">WAVEWARZ CHAMPIONSHIP</strong></span>
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="flex items-center space-x-8 shrink-0" aria-hidden="true">
+        <span class="flex items-center gap-2 text-neonGreen"><span class="w-2 h-2 rounded-full bg-neonGreen animate-ping"></span> SOLANA MAINNET: ONLINE</span>
+        <span class="text-slate-400">🔥 <strong class="text-white">LUI vs. GEEK</strong> POOL: <strong class="text-neonCyan">42.85 SOL</strong> (+18% 1H)</span>
+        <span class="text-slate-400">⚡ RECENT PAYOUT: <strong class="text-neonGreen">8.42 SOL</strong> TO <span class="underline">7xKX...9bPq</span></span>
+        <span class="text-slate-400">🎵 ARTIST SETTLEMENT: <strong class="text-white">1% INSTANT PER TRADE</strong></span>
+        <span class="text-slate-400">🏆 SEASON 1 FINALS: <strong class="text-neonGold">WAVEWARZ CHAMPIONSHIP</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STICKY NAVIGATION -->
+  <header class="sticky top-0 z-50 backdrop-blur-xl bg-obsidian/80 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <!-- Brand New Logo -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-none">
+        <img 
+          src="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" 
+          alt="WaveWarz Logo" 
+          class="h-12 sm:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105 logo-glow"
+        />
+      </a>
+
+      <!-- Center Nav Links -->
+      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
+        <a href="#quick-battles" class="hover:text-neonGreen transition-colors flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-neonRed animate-pulse"></span> Quick Battles
+        </a>
+        <a href="#how-it-works" class="hover:text-neonCyan transition-colors">How It Works</a>
+        <a href="#analytics" class="hover:text-neonCyan transition-colors">Ecosystem Stats</a>
+        <a href="#calendar" class="hover:text-neonCyan transition-colors">Events</a>
+        <a href="#faq" class="hover:text-neonCyan transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Action CTAs -->
+      <div class="flex items-center gap-3">
+        <button id="soundToggleBtn" onclick="toggleArenaSynth()" class="px-3.5 py-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-slate-300 flex items-center gap-2 transition">
+          <span id="soundDot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+          <span id="soundLabel">AUDIO: OFF</span>
+        </button>
+
+        <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-neonGreen via-neonCyan to-neonBlue text-obsidian font-display font-bold text-sm tracking-wider uppercase shadow-[0_0_25px_rgba(0,255,135,0.4)] hover:shadow-[0_0_35px_rgba(0,229,255,0.7)] hover:scale-[1.02] active:scale-95 transition-all">
+          Enter Arena
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- HERO SECTION: LUI (LEFT) vs. WAVEWARZ (CENTER) vs. GEEK (RIGHT)   -->
+  <!-- ================================================================= -->
+  <section id="heroArena" class="relative pt-6 pb-16 md:py-16 lg:py-20 overflow-hidden border-b border-white/10">
+    <!-- Ambient Spotlight Beams -->
+    <div class="pointer-events-none absolute -top-40 left-1/4 w-96 h-96 bg-neonCyan/15 rounded-full blur-[130px]"></div>
+    <div class="pointer-events-none absolute -top-40 right-1/4 w-96 h-96 bg-neonRed/15 rounded-full blur-[130px]"></div>
+
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Top Arena Status Pill -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs font-mono uppercase tracking-widest text-neonCyan">
+          <span class="px-2 py-0.5 rounded bg-neonGreen/20 text-neonGreen font-bold">SOLANA DAPP</span>
+          <span>Musical Prediction Markets</span>
+        </div>
+      </div>
+
+      <!-- 3-COLUMN ARENA STAGE -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        
+        <!-- LEFT FIGHTER: LUI -->
+        <div class="lg:col-span-3 order-2 lg:order-1 flex flex-col items-center lg:items-end relative group">
+          <div class="relative w-64 sm:w-72 lg:w-full max-w-[330px] flex justify-center">
+            <!-- Aura Ring -->
+            <div class="absolute inset-x-4 bottom-6 h-56 rounded-full bg-gradient-to-t from-neonCyan/25 via-neonGreen/10 to-transparent blur-2xl"></div>
+            
+            <!-- LUI Cutout Image -->
+            <img 
+              id="heroLui"
+              src="LUI.png" 
+              alt="LUI - WaveWarz Challenger" 
+              class="relative z-10 w-full h-[340px] sm:h-[400px] lg:h-[460px] object-contain object-bottom lui-glow transition-transform duration-300 select-none"
+            />
+
+            <!-- Floating Fighter HUD Card -->
+            <div class="absolute bottom-3 left-2 right-2 z-20 glass-card rounded-xl p-3 border-l-4 border-l-neonCyan">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-neonCyan block">LEFT CORNER // CHALLENGER</span>
+                  <h3 class="font-display font-bold text-lg text-white leading-tight">LUI</h3>
+                </div>
+                <div class="text-right font-mono">
+                  <span class="text-xs text-slate-400 block">WIN ODDS</span>
+                  <span class="text-sm font-bold text-neonGreen">1.84x</span>
+                </div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono text-slate-300 border-t border-white/10 pt-1.5">
+                <span>STYLE: VIBE / TRAP WAVE</span>
+                <button onclick="scrollToBattleAndSelect(0, 'A')" class="text-neonCyan hover:underline font-semibold">BACK LUI →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER COMMAND STAGE: NEW LOGO + HEADLINE + CTAS + 3D MODEL -->
+        <div class="lg:col-span-6 order-1 lg:order-2 flex flex-col items-center text-center px-2">
+          <!-- Main Chrome WaveWarz Logo -->
+          <div class="relative mb-4">
+            <img 
+              id="heroLogo"
+              src="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" 
+              alt="WaveWarz Official Chrome Logo" 
+              class="w-72 sm:w-96 md:w-[430px] h-auto object-contain mx-auto logo-glow transition-transform duration-300"
+            />
+          </div>
+
+          <h1 class="font-display font-bold text-3xl sm:text-5xl lg:text-[54px] tracking-tight leading-[1.05] uppercase text-white max-w-2xl">
+            Vote With <span class="text-transparent bg-clip-text bg-gradient-to-r from-neonGreen via-neonCyan to-neonBlue">SOL.</span><br />
+            Shape The Charts.
+          </h1>
+
+          <p class="mt-4 text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed">
+            Real-time head-to-head music battles on Solana. Stream unreleased tracks, back the winning artist in live prediction pools, and claim instant on-chain payouts when the timer hits zero.
+          </p>
+
+          <!-- Primary Hero CTAs -->
+          <div class="mt-7 flex flex-wrap items-center justify-center gap-4">
+            <a href="#quick-battles" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-neonGreen to-neonCyan text-obsidian font-display font-bold text-base tracking-wider uppercase shadow-[0_0_30px_rgba(0,255,135,0.45)] hover:shadow-[0_0_45px_rgba(0,229,255,0.75)] hover:-translate-y-0.5 transition-all flex items-center gap-2">
+              <span>⚡ Jump Into Quick Battles</span>
+            </a>
+            <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="px-6 py-3.5 rounded-xl glass-card hover:bg-white/10 text-white font-display font-bold text-base tracking-wider uppercase border border-white/15 transition-all flex items-center gap-2">
+              <span>Launch Full DApp</span>
+              <svg class="w-4 h-4 text-neonCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+
+          <!-- Interactive 3D DJ Wavy Mascot Dock (Lean Toggleable View) -->
+          <div class="mt-7 w-full max-w-md glass-card rounded-2xl p-3 border border-white/10 flex items-center justify-between gap-4">
+            <div class="w-20 h-20 rounded-xl bg-obsidian/90 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
+              <model-viewer 
+                src="djwavy.glb" 
+                alt="DJ Wavy 3D Mascot"
+                auto-rotate 
+                camera-controls 
+                disable-zoom
+                rotation-per-second="35deg"
+                shadow-intensity="1"
+                style="width: 100%; height: 100%; background: transparent;"
+              ></model-viewer>
+            </div>
+            <div class="text-left flex-1">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neonGreen animate-pulse"></span>
+                <span class="font-mono text-[11px] uppercase tracking-wider text-neonGreen">3D MASCOT // DJ WAVY</span>
+              </div>
+              <p class="text-xs text-slate-300 mt-0.5">Drag to spin DJ Wavy in 3D or test live audio synthesis in the battle deck below.</p>
+            </div>
+            <a href="#quick-battles" class="px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-neonCyan border border-neonCyan/30 shrink-0">
+              LIVE DECK ↓
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT FIGHTER: GEEK (NEW CUTOUT) -->
+        <div class="lg:col-span-3 order-3 flex flex-col items-center lg:items-start relative group">
+          <div class="relative w-64 sm:w-72 lg:w-full max-w-[330px] flex justify-center">
+            <!-- Aura Ring -->
+            <div class="absolute inset-x-4 bottom-6 h-56 rounded-full bg-gradient-to-t from-neonRed/25 via-neonGold/10 to-transparent blur-2xl"></div>
+            
+            <!-- Geek New Cutout Image -->
+            <img 
+              id="heroGeek"
+              src="Geek cutout new.png" 
+              alt="Geek - WaveWarz Rockstar" 
+              class="relative z-10 w-full h-[340px] sm:h-[400px] lg:h-[460px] object-contain object-bottom geek-glow transition-transform duration-300 select-none"
+            />
+
+            <!-- Floating Fighter HUD Card -->
+            <div class="absolute bottom-3 left-2 right-2 z-20 glass-card rounded-xl p-3 border-r-4 border-r-neonRed">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-[10px] font-mono uppercase tracking-widest text-neonRed block">RIGHT CORNER // HEAVYWEIGHT</span>
+                  <h3 class="font-display font-bold text-lg text-white leading-tight">GEEK</h3>
+                </div>
+                <div class="text-right font-mono">
+                  <span class="text-xs text-slate-400 block">WIN ODDS</span>
+                  <span class="text-sm font-bold text-neonGold">2.12x</span>
+                </div>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] font-mono text-slate-300 border-t border-white/10 pt-1.5">
+                <span>STYLE: ARENA ROCK / HYPE</span>
+                <button onclick="scrollToBattleAndSelect(0, 'B')" class="text-neonRed hover:underline font-semibold">BACK GEEK →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- REVAMPED LIVE QUICK BATTLES TERMINAL                              -->
+  <!-- ================================================================= -->
+  <section id="quick-battles" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header + Mode Switcher -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-neonRed/15 border border-neonRed/30 text-neonRed text-xs font-mono uppercase mb-3">
+            <span class="w-2 h-2 rounded-full bg-neonRed animate-ping"></span>
+            LIVE QUICK BATTLES ENGINE v2.4
+          </div>
+          <h2 class="font-display font-bold text-3xl sm:text-5xl uppercase tracking-tight text-white">
+            Interactive <span class="text-neonCyan">Quick Battles</span> Deck
+          </h2>
+          <p class="text-slate-400 mt-2 max-w-2xl">
+            Fast-paced 3-minute rounds. Preview both tracks with our built-in audio synth, watch the real-time SOL pool tug-of-war, and test-stake your prediction.
+          </p>
+        </div>
+
+        <!-- View Mode Switcher (Interactive Simulator vs Live Mainnet Embed) -->
+        <div class="inline-flex p-1 rounded-xl bg-panel border border-white/10 self-start">
+          <button id="modeSimBtn" onclick="switchBattleView('simulator')" class="px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase bg-neonCyan text-obsidian transition">
+            ⚡ Interactive Arena Deck
+          </button>
+          <button id="modeEmbedBtn" onclick="switchBattleView('embed')" class="px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase text-slate-300 hover:text-white transition">
+            🌐 Live Mainnet Iframe
+          </button>
+        </div>
+      </div>
+
+      <!-- BATTLE SELECTOR TABS -->
+      <div id="battleSelectorTabs" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- INTERACTIVE BATTLE SIMULATOR VIEW -->
+      <div id="battleSimulatorContainer" class="glass-card rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/15 relative overflow-hidden">
+        
+        <!-- Top Status Bar: Round Timer, Pool Total, Audio Visualizer -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-lg bg-neonRed/20 border border-neonRed/40 text-neonRed font-mono font-bold text-xs flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-neonRed animate-ping"></span>
+              <span id="activeBattleStatus">ROUND LIVE</span>
+            </span>
+            <span id="activeBattleGenre" class="font-mono text-xs text-slate-400">GENRE: BASS / CROSSOVER</span>
+          </div>
+
+          <!-- Center Countdown Timer -->
+          <div class="flex items-center gap-2 bg-obsidian/90 px-4 py-2 rounded-xl border border-white/10">
+            <span class="text-xs font-mono text-slate-400 uppercase">CLOSES IN:</span>
+            <span id="battleCountdown" class="font-mono font-bold text-xl text-neonGold tracking-wider">02:14</span>
+          </div>
+
+          <!-- Total Pool Readout -->
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span class="text-[11px] font-mono text-slate-400 block">TOTAL LIQUIDITY POOL</span>
+              <span id="totalPoolSol" class="font-display font-bold text-2xl text-neonGreen">42.85 SOL</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HEAD-TO-HEAD FIGHTER CARDS + CENTER WAVEFORM -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 my-8 items-center">
+          
+          <!-- SIDE A ARTIST CARD -->
+          <div id="cardArtistA" class="lg:col-span-4 rounded-2xl bg-obsidian/80 border-2 border-neonCyan/50 p-5 relative transition-all">
+            <div class="flex items-center gap-4">
+              <img id="imgArtistA" src="LUI.png" alt="Artist A" class="w-20 h-20 rounded-xl object-cover object-top bg-neonCyan/10 border border-neonCyan/40 shrink-0" />
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-neonCyan">SIDE A // BLUE POOL</span>
+                <h3 id="nameArtistA" class="font-display font-bold text-2xl text-white truncate">LUI</h3>
+                <p id="trackArtistA" class="text-xs font-mono text-slate-300 truncate">"PINK BUCKET FREESTYLE"</p>
+              </div>
+            </div>
+
+            <!-- Audio Preview Trigger -->
+            <div class="mt-4 flex items-center justify-between bg-white/[0.03] rounded-xl p-3 border border-white/10">
+              <button onclick="playTrackPreview('A')" id="playBtnA" class="px-3.5 py-2 rounded-lg bg-neonCyan text-obsidian font-mono font-bold text-xs flex items-center gap-2 hover:opacity-90 transition">
+                <span>▶ PREVIEW TRACK A</span>
+              </button>
+              <div class="text-right font-mono">
+                <span class="text-[10px] text-slate-400 block">POOL SHARE</span>
+                <span id="pctArtistA" class="text-base font-bold text-neonCyan">54.2%</span>
+              </div>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>STAKED: <strong id="solArtistA" class="text-white">23.22 SOL</strong></span>
+              <span>EST. PAYOUT: <strong id="multArtistA" class="text-neonGreen">1.84x</strong></span>
+            </div>
+          </div>
+
+          <!-- CENTER REAL-TIME AUDIO VISUALIZER & BET TERMINAL -->
+          <div class="lg:col-span-4 flex flex-col items-center justify-center p-5 rounded-2xl bg-obsidian/90 border border-white/10">
+            <div class="w-full flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+              <span id="nowPlayingIndicator">SYNTH DECK: READY</span>
+              <span class="text-neonGreen">1% ARTIST FEE</span>
+            </div>
+
+            <!-- HTML5 Canvas Audio Visualizer -->
+            <canvas id="battleWaveformCanvas" width="320" height="86" class="w-full h-20 rounded-lg bg-[#040609] border border-white/5 mb-4"></canvas>
+
+            <!-- Stake Amount Selector -->
+            <div class="w-full">
+              <label class="text-[11px] font-mono uppercase text-slate-400 block mb-2 text-center">SELECT SOL STAKE AMOUNT</label>
+              <div class="grid grid-cols-4 gap-2 mb-3">
+                <button onclick="setStakeAmount(0.1)" class="stake-chip py-1.5 rounded-lg font-mono text-xs border border-white/15 bg-white/5 hover:border-neonCyan text-white">0.1 SOL</button>
+                <button onclick="setStakeAmount(0.5)" class="stake-chip py-1.5 rounded-lg font-mono text-xs border border-neonCyan bg-neonCyan/20 text-neonCyan font-bold">0.5 SOL</button>
+                <button onclick="setStakeAmount(1.0)" class="stake-chip py-1.5 rounded-lg font-mono text-xs border border-white/15 bg-white/5 hover:border-neonCyan text-white">1.0 SOL</button>
+                <button onclick="setStakeAmount(5.0)" class="stake-chip py-1.5 rounded-lg font-mono text-xs border border-white/15 bg-white/5 hover:border-neonCyan text-white">5.0 SOL</button>
+              </div>
+
+              <!-- Instant Vote Buttons -->
+              <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="placeQuickPrediction('A')" class="py-3 px-3 rounded-xl bg-gradient-to-r from-neonCyan to-neonBlue text-obsidian font-display font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition shadow-[0_0_20px_rgba(0,229,255,0.35)]">
+                  ⚡ Back <span class="btnLabelA">LUI</span>
+                </button>
+                <button onclick="placeQuickPrediction('B')" class="py-3 px-3 rounded-xl bg-gradient-to-r from-neonRed to-neonGold text-obsidian font-display font-bold text-xs uppercase tracking-wider hover:brightness-110 active:scale-95 transition shadow-[0_0_20px_rgba(255,42,84,0.35)]">
+                  🔥 Back <span class="btnLabelB">GEEK</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDE B ARTIST CARD -->
+          <div id="cardArtistB" class="lg:col-span-4 rounded-2xl bg-obsidian/80 border-2 border-neonRed/50 p-5 relative transition-all">
+            <div class="flex items-center gap-4">
+              <img id="imgArtistB" src="Geek cutout new.png" alt="Artist B" class="w-20 h-20 rounded-xl object-cover object-top bg-neonRed/10 border border-neonRed/40 shrink-0" />
+              <div class="flex-1 min-w-0">
+                <span class="text-[10px] font-mono uppercase tracking-widest text-neonRed">SIDE B // RED POOL</span>
+                <h3 id="nameArtistB" class="font-display font-bold text-2xl text-white truncate">GEEK</h3>
+                <p id="trackArtistB" class="text-xs font-mono text-slate-300 truncate">"LEOPARD MIC RIOT"</p>
+              </div>
+            </div>
+
+            <!-- Audio Preview Trigger -->
+            <div class="mt-4 flex items-center justify-between bg-white/[0.03] rounded-xl p-3 border border-white/10">
+              <button onclick="playTrackPreview('B')" id="playBtnB" class="px-3.5 py-2 rounded-lg bg-neonRed text-white font-mono font-bold text-xs flex items-center gap-2 hover:opacity-90 transition">
+                <span>▶ PREVIEW TRACK B</span>
+              </button>
+              <div class="text-right font-mono">
+                <span class="text-[10px] text-slate-400 block">POOL SHARE</span>
+                <span id="pctArtistB" class="text-base font-bold text-neonRed">45.8%</span>
+              </div>
+            </div>
+
+            <div class="mt-4 flex justify-between items-center text-xs font-mono text-slate-400">
+              <span>STAKED: <strong id="solArtistB" class="text-white">19.63 SOL</strong></span>
+              <span>EST. PAYOUT: <strong id="multArtistB" class="text-neonGold">2.12x</strong></span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LIVE TUG-OF-WAR PROBABILITY BAR -->
+        <div class="mt-2">
+          <div class="flex justify-between text-xs font-mono mb-2">
+            <span class="text-neonCyan font-bold" id="barLabelA">LUI DOMINANCE (54.2%)</span>
+            <span class="text-slate-400">LIVE POOL EQUILIBRIUM</span>
+            <span class="text-neonRed font-bold" id="barLabelB">GEEK DOMINANCE (45.8%)</span>
+          </div>
+          <div class="w-full h-4 rounded-full bg-obsidian overflow-hidden flex border border-white/15 p-0.5">
+            <div id="barFillA" style="width: 54.2%" class="h-full rounded-l-full bg-gradient-to-r from-neonGreen to-neonCyan transition-all duration-500 bar-glow"></div>
+            <div id="barFillB" style="width: 45.8%" class="h-full rounded-r-full bg-gradient-to-r from-neonGold to-neonRed transition-all duration-500 bar-glow"></div>
+          </div>
+        </div>
+
+        <!-- Live Activity Feed Footer -->
+        <div class="mt-6 pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
+          <div id="liveTradeToast" class="text-slate-300 flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-neonGreen/20 text-neonGreen">TX CONFIRMED</span>
+            <span>Wallet <strong class="text-white">4mKp...8xQa</strong> backed <strong class="text-neonCyan">LUI</strong> with <strong class="text-neonGreen">0.50 SOL</strong></span>
+          </div>
+          <a href="https://explicit-fall-328.notion.site/ebd//295543f4635380f4b7e6f95f9797822e" target="_blank" rel="noopener" class="text-neonCyan hover:underline">
+            View Full Quick Battles Ledger →
+          </a>
+        </div>
+      </div>
+
+      <!-- OPTIONAL LIVE EMBED CONTAINER (Hidden by default, toggled via button) -->
+      <div id="battleEmbedContainer" class="hidden glass-card rounded-3xl p-4 border border-white/15">
+        <div class="flex items-center justify-between px-4 py-2 border-b border-white/10 mb-3 text-xs font-mono text-slate-400">
+          <span>WAVEWARZ LIVE QUICK BATTLES NOTION FEED</span>
+          <a href="https://explicit-fall-328.notion.site/ebd//295543f4635380f4b7e6f95f9797822e" target="_blank" class="text-neonCyan hover:underline">Open in New Tab ↗</a>
+        </div>
+        <iframe 
+          id="notionQuickBattlesIframe"
+          data-src="https://explicit-fall-328.notion.site/ebd//295543f4635380f4b7e6f95f9797822e" 
+          class="w-full h-[550px] rounded-2xl border border-white/10 bg-obsidian"
+          title="WaveWarz Live Quick Battles"
+        ></iframe>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- HOW IT WORKS: 3-ROLE INTERACTIVE SYSTEM                           -->
+  <!-- ================================================================= -->
+  <section id="how-it-works" class="py-20 border-t border-white/10 bg-[#070B12]/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="font-mono text-xs uppercase tracking-widest text-neonGreen">THE ECOSYSTEM ENGINE</span>
+        <h2 class="font-display font-bold text-3xl sm:text-5xl uppercase mt-2 text-white">
+          Every Battle Pays <span class="text-neonCyan">All Three Sides</span>
+        </h2>
+        <p class="text-slate-400 mt-3">
+          Unlike traditional streaming where artists wait months for fractions of a cent, WaveWarz settles on-chain in seconds.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Card 1: Artists -->
+        <div class="glass-card rounded-2xl p-7 border-t-2 border-t-neonGreen hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-neonGreen/15 border border-neonGreen/40 flex items-center justify-center font-mono font-bold text-neonGreen text-xl mb-5">
+            01
+          </div>
+          <span class="font-mono text-xs text-neonGreen uppercase tracking-wider">FOR ARTISTS</span>
+          <h3 class="font-display font-bold text-2xl text-white mt-1">1% Per Trade, Instant</h3>
+          <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+            Win or lose the battle, both competing artists automatically earn <strong>1% of total trading volume</strong> plus a <strong>5–7% bonus</strong> from the losing pool settled directly to their Solana wallet.
+          </p>
+          <ul class="mt-5 space-y-2 text-xs font-mono text-slate-400 border-t border-white/10 pt-4">
+            <li class="flex items-center gap-2"><span class="text-neonGreen">✓</span> Zero label middlemen</li>
+            <li class="flex items-center gap-2"><span class="text-neonGreen">✓</span> Automated smart-contract split</li>
+          </ul>
+        </div>
+
+        <!-- Card 2: Fans & Traders -->
+        <div class="glass-card rounded-2xl p-7 border-t-2 border-t-neonCyan hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-neonCyan/15 border border-neonCyan/40 flex items-center justify-center font-mono font-bold text-neonCyan text-xl mb-5">
+            02
+          </div>
+          <span class="font-mono text-xs text-neonCyan uppercase tracking-wider">FOR FANS & TRADERS</span>
+          <h3 class="font-display font-bold text-2xl text-white mt-1">Back Catalogues & Win SOL</h3>
+          <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+            Buy Artist A or Artist B battle tokens during live rounds. If your side wins the hybrid judge + community vote, you claim your proportional share of the entire losing pool.
+          </p>
+          <ul class="mt-5 space-y-2 text-xs font-mono text-slate-400 border-t border-white/10 pt-4">
+            <li class="flex items-center gap-2"><span class="text-neonCyan">✓</span> Dynamic real-time odds</li>
+            <li class="flex items-center gap-2"><span class="text-neonCyan">✓</span> 40% downside consolation protection</li>
+          </ul>
+        </div>
+
+        <!-- Card 3: Battle Hosts -->
+        <div class="glass-card rounded-2xl p-7 border-t-2 border-t-neonGold hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 rounded-xl bg-neonGold/15 border border-neonGold/40 flex items-center justify-center font-mono font-bold text-neonGold text-xl mb-5">
+            03
+          </div>
+          <span class="font-mono text-xs text-neonGold uppercase tracking-wider">FOR CURATORS & HOSTS</span>
+          <h3 class="font-display font-bold text-2xl text-white mt-1">Launch Custom Matchups</h3>
+          <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+            Set up community exhibitions on X Spaces, YouTube, or Twitch. Curate the bracket, bring the hype, and earn protocol fees from the volume generated in your arena.
+          </p>
+          <ul class="mt-5 space-y-2 text-xs font-mono text-slate-400 border-t border-white/10 pt-4">
+            <li class="flex items-center gap-2"><span class="text-neonGold">✓</span> Stream-ready OBS overlays</li>
+            <li class="flex items-center gap-2"><span class="text-neonGold">✓</span> Instant X Space co-hosting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- LIVE ANALYTICS & CALENDAR HUB (LAZY-LOADED FOR PERFORMANCE)       -->
+  <!-- ================================================================= -->
+  <section id="analytics" class="py-20 border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-neonCyan">VERIFIED ON-CHAIN TELEMETRY</span>
+          <h2 class="font-display font-bold text-3xl sm:text-5xl uppercase text-white mt-1">
+            WaveWarz <span class="text-neonGreen">Intelligence</span> Hub
+          </h2>
+        </div>
+
+        <!-- Tab Buttons for Heavy Dashboards (Only loads iframe when clicked) -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="loadDashboardTab('stats')" id="tabBtn-stats" class="px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase bg-neonGreen text-obsidian transition">
+            📊 Global Analytics
+          </button>
+          <button onclick="loadDashboardTab('artists')" id="tabBtn-artists" class="px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10 transition">
+            🎤 Artist Profiles
+          </button>
+          <button onclick="loadDashboardTab('calendar')" id="tabBtn-calendar" class="px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10 transition">
+            📅 Event Calendar
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick KPI Counters -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-mono text-slate-400">ARTIST FEE PER TRADE</span>
+          <div class="font-display font-bold text-3xl text-neonGreen mt-1">1.0%</div>
+          <span class="text-[11px] font-mono text-slate-500">Paid instantly in SOL</span>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-mono text-slate-400">BONUS LOSING POOL CUT</span>
+          <div class="font-display font-bold text-3xl text-neonCyan mt-1">5–7%</div>
+          <span class="text-[11px] font-mono text-slate-500">Split to battling artists</span>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-mono text-slate-400">TRADER CONSOLATION</span>
+          <div class="font-display font-bold text-3xl text-white mt-1">40%</div>
+          <span class="text-[11px] font-mono text-slate-500">Returned to losing side</span>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-mono text-slate-400">DAILY X SPACES</span>
+          <div class="font-display font-bold text-3xl text-neonGold mt-1">8PM EST</div>
+          <span class="text-[11px] font-mono text-slate-500">Mon – Fri Live Broadcast</span>
+        </div>
+      </div>
+
+      <!-- Dynamic Lazy-Loaded Iframe Viewport -->
+      <div id="calendar" class="glass-card rounded-3xl p-4 border border-white/15">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/10 mb-3">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-neonGreen"></span>
+            <span id="activeDashboardTitle" class="font-mono text-xs text-slate-300 uppercase">WAVEWARZ GLOBAL ANALYTICS TERMINAL</span>
+          </div>
+          <a id="activeDashboardLink" href="https://wavewarz-analytics.vercel.app/" target="_blank" rel="noopener" class="text-xs font-mono text-neonCyan hover:underline">
+            Open Fullscreen ↗
+          </a>
+        </div>
+        <div class="relative w-full h-[540px] rounded-2xl overflow-hidden bg-obsidian border border-white/10">
+          <iframe 
+            id="hubIframe"
+            src="https://wavewarz-analytics.vercel.app/" 
+            class="w-full h-full border-0"
+            loading="lazy"
+            title="WaveWarz Live Data Terminal"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- FAQ SECTION                                                       -->
+  <!-- ================================================================= -->
+  <section id="faq" class="py-20 border-t border-white/10 bg-[#070B12]/60">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <span class="font-mono text-xs uppercase tracking-widest text-neonGreen">KNOWLEDGE BASE</span>
+        <h2 class="font-display font-bold text-3xl sm:text-4xl uppercase text-white mt-1">
+          Frequently Asked Questions
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <details class="glass-card rounded-2xl p-6 group open:border-neonCyan/40">
+          <summary class="font-display font-bold text-lg text-white cursor-pointer flex items-center justify-between list-none">
+            <span>How is a WaveWarz battle winner decided?</span>
+            <span class="text-neonCyan font-mono group-open:rotate-45 transition-transform text-xl">+</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-300 leading-relaxed">
+            Main Event battles use a hybrid system combining verified panel judges, live X Space audience polls, and on-chain SOL pool support so neither pure whale volume nor bot voting can rig a result. Quick Battles resolve via fast-action community & chart momentum.
+          </p>
+        </details>
+
+        <details class="glass-card rounded-2xl p-6 group open:border-neonCyan/40">
+          <summary class="font-display font-bold text-lg text-white cursor-pointer flex items-center justify-between list-none">
+            <span>What happens if the artist I backed loses the round?</span>
+            <span class="text-neonCyan font-mono group-open:rotate-45 transition-transform text-xl">+</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-300 leading-relaxed">
+            WaveWarz is built to keep traders in the game: 40% of the losing pool is returned proportionally to losing side holders, while 50% goes to winning traders and 5–7% rewards the battling artists.
+          </p>
+        </details>
+
+        <details class="glass-card rounded-2xl p-6 group open:border-neonCyan/40">
+          <summary class="font-display font-bold text-lg text-white cursor-pointer flex items-center justify-between list-none">
+            <span>How do I submit my music to battle LUI, Geek, or other roster artists?</span>
+            <span class="text-neonCyan font-mono group-open:rotate-45 transition-transform text-xl">+</span>
+          </summary>
+          <p class="mt-3 text-sm text-slate-300 leading-relaxed">
+            Connect your Solana wallet (Phantom, Solflare, or Backpack) on the WaveWarz DApp or join our weekday 8:00 PM EST X Spaces to claim an open Quick Battle slot.
+          </p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/10 py-12 bg-obsidian text-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <img src="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" alt="WaveWarz Logo" class="h-10 w-auto object-contain" />
+        <span class="text-slate-400 font-mono text-xs">© 2026 WAVEWARZ. BUILT ON SOLANA.</span>
+      </div>
+      <div class="flex items-center gap-6 font-mono text-xs text-slate-400">
+        <a href="https://x.com/WaveWarz" target="_blank" rel="noopener" class="hover:text-neonCyan transition">X (TWITTER)</a>
+        <a href="https://www.youtube.com/@WaveWarz" target="_blank" rel="noopener" class="hover:text-neonCyan transition">YOUTUBE</a>
+        <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="hover:text-neonGreen transition">LAUNCH DAPP</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT ENGINE: FAVICON FIX, QUICK BATTLES & WEB AUDIO SYNTH   -->
+  <!-- ================================================================= -->
+  <script>
+    /* -----------------------------------------------------------------
+       1. AUTOMATIC NON-STRETCHED SQUARE FAVICON GENERATOR
+       Draws the wide rectangular logo centered inside a 64x64 square
+       canvas so browsers never stretch or squash the tab icon.
+    ----------------------------------------------------------------- */
+    (function fixFaviconAspectRatio() {
+      const logoSrc = "ChatGPT Image Oct 13, 2026, 07_12_16 PM.png";
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = function () {
+        const size = 64;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        // Calculate aspect-ratio-preserving dimensions
+        const scale = Math.min(size / img.width, size / img.height);
+        const w = img.width * scale;
+        const h = img.height * scale;
+        const x = (size - w) / 2;
+        const y = (size - h) / 2;
+
+        ctx.clearRect(0, 0, size, size);
+        ctx.drawImage(img, x, y, w, h);
+
+        const link = document.getElementById("dynamic-favicon");
+        if (link) link.href = canvas.toDataURL("image/png");
+      };
+      img.src = logoSrc;
+    })();
+
+    /* -----------------------------------------------------------------
+       2. HERO MOUSE PARALLAX (GPU ACCELERATED)
+    ----------------------------------------------------------------- */
+    const heroArena = document.getElementById("heroArena");
+    const heroLui = document.getElementById("heroLui");
+    const heroGeek = document.getElementById("heroGeek");
+    const heroLogo = document.getElementById("heroLogo");
+
+    if (heroArena && window.matchMedia("(min-width: 1024px)").matches) {
+      heroArena.addEventListener("mousemove", (e) => {
+        const rect = heroArena.getBoundingClientRect();
+        const relX = (e.clientX - rect.left) / rect.width - 0.5;
+        const relY = (e.clientY - rect.top) / rect.height - 0.5;
+
+        requestAnimationFrame(() => {
+          if (heroLui) heroLui.style.transform = `translate3d(${relX * -18}px, ${relY * -10}px, 0)`;
+          if (heroGeek) heroGeek.style.transform = `translate3d(${relX * 18}px, ${relY * -10}px, 0)`;
+          if (heroLogo) heroLogo.style.transform = `translate3d(${relX * 8}px, ${relY * 6}px, 0)`;
+        });
+      });
+
+      heroArena.addEventListener("mouseleave", () => {
+        if (heroLui) heroLui.style.transform = "translate3d(0,0,0)";
+        if (heroGeek) heroGeek.style.transform = "translate3d(0,0,0)";
+        if (heroLogo) heroLogo.style.transform = "translate3d(0,0,0)";
+      });
+    }
+
+    /* -----------------------------------------------------------------
+       3. QUICK BATTLES STATE & INTERACTIVE ENGINE
+    ----------------------------------------------------------------- */
+    const battlesData = [
+      {
+        id: 0,
+        title: "MAIN ARENA SHOWDOWN",
+        status: "ROUND 1 // LIVE",
+        genre: "TRAP WAVE vs. ARENA ROCK",
+        secondsLeft: 134,
+        artistA: {
+          name: "LUI",
+          track: '"PINK BUCKET FREESTYLE"',
+          img: "LUI.png",
+          sol: 23.22,
+          bpm: 140,
+          freqBase: 110
+        },
+        artistB: {
+          name: "GEEK",
+          track: '"LEOPARD MIC RIOT"',
+          img: "Geek cutout new.png",
+          sol: 19.63,
+          bpm: 128,
+          freqBase: 165
+        }
+      },
+      {
+        id: 1,
+        title: "SOLANA CYPHER #42",
+        status: "CLOSING SOON",
+        genre: "HYPERPOP vs. DRILL",
+        secondsLeft: 48,
+        artistA: {
+          name: "NOVA PULSE",
+          track: '"ZERO GRAVITY"',
+          img: "LUI.png",
+          sol: 14.80,
+          bpm: 155,
+          freqBase: 130
+        },
+        artistB: {
+          name: "KRYPTIK",
+          track: '"VALIDATOR FLOW"',
+          img: "Geek cutout new.png",
+          sol: 18.10,
+          bpm: 144,
+          freqBase: 95
+        }
+      },
+      {
+        id: 2,
+        title: "CHAMPIONSHIP WARMUP",
+        status: "HIGH STAKES",
+        genre: "SYNTHWAVE vs. BASSLINE",
+        secondsLeft: 205,
+        artistA: {
+          name: "DJ WAVY",
+          track: '"GENESIS BLOCK VIP"',
+          img: "ChatGPT Image Oct 13, 2026, 07_12_16 PM.png",
+          sol: 31.50,
+          bpm: 126,
+          freqBase: 123
+        },
+        artistB: {
+          name: "GEEK",
+          track: '"SHRED THE LEDGER"',
+          img: "Geek cutout new.png",
+          sol: 27.40,
+          bpm: 132,
+          freqBase: 146
+        }
+      }
+    ];
+
+    let activeBattleIndex = 0;
+    let selectedStakeSol = 0.5;
+    let activeAudioSide = null; // 'A' or 'B' or null
+
+    function renderBattleTabs() {
+      const container = document.getElementById("battleSelectorTabs");
+      if (!container) return;
+      container.innerHTML = battlesData.map((b, idx) => {
+        const total = (b.artistA.sol + b.artistB.sol).toFixed(2);
+        const isActive = idx === activeBattleIndex;
+        return `
+          <button onclick="selectBattle(${idx})" class="text-left p-4 rounded-2xl transition-all border ${isActive ? 'bg-panel border-neonCyan shadow-[0_0_25px_rgba(0,229,255,0.2)]' : 'bg-obsidian/60 border-white/10 hover:border-white/25'}">
+            <div class="flex items-center justify-between text-[11px] font-mono mb-1">
+              <span class="${isActive ? 'text-neonCyan font-bold' : 'text-slate-400'}">${b.title}</span>
+              <span class="text-neonGreen">${total} SOL</span>
+            </div>
+            <div class="font-display font-bold text-lg text-white flex items-center justify-between">
+              <span>${b.artistA.name} <span class="text-slate-500 text-xs">vs</span> ${b.artistB.name}</span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded bg-white/5 text-slate-300">${formatTime(b.secondsLeft)}</span>
+            </div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function updateBattleHUD() {
+      const b = battlesData[activeBattleIndex];
+      const totalSol = b.artistA.sol + b.artistB.sol;
+      const pctA = ((b.artistA.sol / totalSol) * 100).toFixed(1);
+      const pctB = (100 - parseFloat(pctA)).toFixed(1);
+      const multA = (totalSol / b.artistA.sol * 0.95).toFixed(2);
+      const multB = (totalSol / b.artistB.sol * 0.95).toFixed(2);
+
+      document.getElementById("activeBattleStatus").textContent = b.status;
+      document.getElementById("activeBattleGenre").textContent = `GENRE: ${b.genre}`;
+      document.getElementById("battleCountdown").textContent = formatTime(b.secondsLeft);
+      document.getElementById("totalPoolSol").textContent = `${totalSol.toFixed(2)} SOL`;
+
+      // Artist A
+      document.getElementById("imgArtistA").src = b.artistA.img;
+      document.getElementById("nameArtistA").textContent = b.artistA.name;
+      document.getElementById("trackArtistA").textContent = b.artistA.track;
+      document.getElementById("pctArtistA").textContent = `${pctA}%`;
+      document.getElementById("solArtistA").textContent = `${b.artistA.sol.toFixed(2)} SOL`;
+      document.getElementById("multArtistA").textContent = `${multA}x`;
+      document.querySelectorAll(".btnLabelA").forEach(el => el.textContent = b.artistA.name);
+
+      // Artist B
+      document.getElementById("imgArtistB").src = b.artistB.img;
+      document.getElementById("nameArtistB").textContent = b.artistB.name;
+      document.getElementById("trackArtistB").textContent = b.artistB.track;
+      document.getElementById("pctArtistB").textContent = `${pctB}%`;
+      document.getElementById("solArtistB").textContent = `${b.artistB.sol.toFixed(2)} SOL`;
+      document.getElementById("multArtistB").textContent = `${multB}x`;
+      document.querySelectorAll(".btnLabelB").forEach(el => el.textContent = b.artistB.name);
+
+      // Tug-of-war bar
+      document.getElementById("barLabelA").textContent = `${b.artistA.name} (${pctA}%)`;
+      document.getElementById("barLabelB").textContent = `${b.artistB.name} (${pctB}%)`;
+      document.getElementById("barFillA").style.width = `${pctA}%`;
+      document.getElementById("barFillB").style.width = `${pctB}%`;
+
+      renderBattleTabs();
+    }
+
+    function selectBattle(idx) {
+      activeBattleIndex = idx;
+      stopAudioSynth();
+      updateBattleHUD();
+    }
+
+    function scrollToBattleAndSelect(idx, side) {
+      selectBattle(idx);
+      document.getElementById("quick-battles").scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => playTrackPreview(side), 500);
+    }
+
+    function setStakeAmount(amt) {
+      selectedStakeSol = amt;
+      document.querySelectorAll(".stake-chip").forEach(btn => {
+        if (btn.textContent.includes(amt.toString())) {
+          btn.className = "stake-chip py-1.5 rounded-lg font-mono text-xs border border-neonCyan bg-neonCyan/20 text-neonCyan font-bold";
+        } else {
+          btn.className = "stake-chip py-1.5 rounded-lg font-mono text-xs border border-white/15 bg-white/5 hover:border-neonCyan text-white";
+        }
+      });
+    }
+
+    function placeQuickPrediction(side) {
+      const b = battlesData[activeBattleIndex];
+      const chosenArtist = side === 'A' ? b.artistA : b.artistB;
+      chosenArtist.sol += selectedStakeSol;
+
+      updateBattleHUD();
+
+      // Visual pulse on backed card
+      const card = document.getElementById(side === 'A' ? "cardArtistA" : "cardArtistB");
+      if (card) {
+        card.classList.add("scale-[1.03]");
+        setTimeout(() => card.classList.remove("scale-[1.03]"), 260);
+      }
+
+      // Update live toast
+      const toast = document.getElementById("liveTradeToast");
+      const colorClass = side === 'A' ? 'text-neonCyan' : 'text-neonRed';
+      if (toast) {
+        toast.innerHTML = `
+          <span class="px-2 py-0.5 rounded bg-neonGreen/20 text-neonGreen font-bold">YOUR PREDICTION SENT</span>
+          <span>You backed <strong class="${colorClass}">${chosenArtist.name}</strong> with <strong class="text-neonGreen">${selectedStakeSol.toFixed(2)} SOL</strong> (Artist earned ${(selectedStakeSol * 0.01).toFixed(4)} SOL instant fee!)</span>
+        `;
+      }
+    }
+
+    function formatTime(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    // Countdown interval
+    setInterval(() => {
+      battlesData.forEach(b => {
+        b.secondsLeft = b.secondsLeft > 1 ? b.secondsLeft - 1 : 180;
+      });
+      const cdEl = document.getElementById("battleCountdown");
+      if (cdEl) cdEl.textContent = formatTime(battlesData[activeBattleIndex].secondsLeft);
+    }, 1000);
+
+    /* -----------------------------------------------------------------
+       4. WEB AUDIO API BEAT SYNTHESIZER & CANVAS WAVEFORM VISUALIZER
+       Zero external MP3 bloat—generates real-time basslines for Side A/B
+    ----------------------------------------------------------------- */
+    let audioCtx = null;
+    let synthInterval = null;
+
+    function playTrackPreview(side) {
+      if (activeAudioSide === side) {
+        stopAudioSynth();
+        return;
+      }
+
+      stopAudioSynth();
+      activeAudioSide = side;
+
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+
+      const b = battlesData[activeBattleIndex];
+      const fighter = side === 'A' ? b.artistA : b.artistB;
+
+      // Update UI buttons
+      const btnA = document.getElementById("playBtnA");
+      const btnB = document.getElementById("playBtnB");
+      if (btnA) btnA.innerHTML = side === 'A' ? "<span>⏹ STOP PREVIEW</span>" : "<span>▶ PREVIEW TRACK A</span>";
+      if (btnB) btnB.innerHTML = side === 'B' ? "<span>⏹ STOP PREVIEW</span>" : "<span>▶ PREVIEW TRACK B</span>";
+      
+      const indicator = document.getElementById("nowPlayingIndicator");
+      if (indicator) indicator.textContent = `PLAYING: ${fighter.name} - ${fighter.track}`;
+      
+      const dot = document.getElementById("soundDot");
+      const label = document.getElementById("soundLabel");
+      if (dot) dot.className = "w-2 h-2 rounded-full bg-neonGreen animate-ping";
+      if (label) label.textContent = `PLAYING: ${fighter.name}`;
+
+      let step = 0;
+      const notes = side === 'A' ? [1, 1.2, 1.5, 1.33, 1, 1.5, 1.25, 0.8] : [1, 1.12, 1.33, 1.5, 1.6, 1.33, 1.12, 1];
+      const intervalMs = (60 / fighter.bpm) * 500;
+
+      synthInterval = setInterval(() => {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = side === 'A' ? "sawtooth" : "triangle";
+        osc.frequency.setValueAtTime(fighter.freqBase * notes[step % notes.length], audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.11, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.23);
+        step++;
+      }, intervalMs);
+    }
+
+    function stopAudioSynth() {
+      if (synthInterval) clearInterval(synthInterval);
+      synthInterval = null;
+      activeAudioSide = null;
+      const btnA = document.getElementById("playBtnA");
+      const btnB = document.getElementById("playBtnB");
+      if (btnA) btnA.innerHTML = "<span>▶ PREVIEW TRACK A</span>";
+      if (btnB) btnB.innerHTML = "<span>▶ PREVIEW TRACK B</span>";
+      const indicator = document.getElementById("nowPlayingIndicator");
+      if (indicator) indicator.textContent = "SYNTH DECK: READY";
+      const dot = document.getElementById("soundDot");
+      const label = document.getElementById("soundLabel");
+      if (dot) dot.className = "w-2 h-2 rounded-full bg-slate-500";
+      if (label) label.textContent = "AUDIO: OFF";
+    }
+
+    function toggleArenaSynth() {
+      if (activeAudioSide) {
+        stopAudioSynth();
+      } else {
+        playTrackPreview('A');
+      }
+    }
+
+    // Canvas Waveform Loop
+    const waveCanvas = document.getElementById("battleWaveformCanvas");
+    const waveCtx = waveCanvas ? waveCanvas.getContext("2d") : null;
+    let phase = 0;
+
+    function animateWaveform() {
+      if (!waveCtx || !waveCanvas) return;
+      waveCtx.clearRect(0, 0, waveCanvas.width, waveCanvas.height);
+      const bars = 38;
+      const barWidth = 5;
+      const gap = (waveCanvas.width - bars * barWidth) / (bars - 1);
+
+      for (let i = 0; i < bars; i++) {
+        const amp = activeAudioSide ? 32 : 9;
+        const speed = activeAudioSide ? 0.16 : 0.04;
+        const h = Math.max(6, Math.abs(Math.sin(phase + i * 0.32)) * amp + (activeAudioSide ? Math.random() * 14 : 2));
+        const x = i * (barWidth + gap);
+        const y = (waveCanvas.height - h) / 2;
+
+        if (activeAudioSide === 'B') {
+          waveCtx.fillStyle = i % 2 === 0 ? "#FF2A54" : "#FFB800";
+        } else {
+          waveCtx.fillStyle = i % 2 === 0 ? "#00FF87" : "#00E5FF";
+        }
+        waveCtx.fillRect(x, y, barWidth, h);
+      }
+      phase += activeAudioSide ? 0.14 : 0.03;
+      requestAnimationFrame(animateWaveform);
+    }
+
+    /* -----------------------------------------------------------------
+       5. LAZY-LOADED VIEW & DASHBOARD SWITCHERS
+    ----------------------------------------------------------------- */
+    function switchBattleView(mode) {
+      const sim = document.getElementById("battleSimulatorContainer");
+      const embed = document.getElementById("battleEmbedContainer");
+      const simBtn = document.getElementById("modeSimBtn");
+      const embedBtn = document.getElementById("modeEmbedBtn");
+      const iframe = document.getElementById("notionQuickBattlesIframe");
+
+      if (mode === "embed") {
+        if (sim) sim.classList.add("hidden");
+        if (embed) embed.classList.remove("hidden");
+        if (iframe && !iframe.src) iframe.src = iframe.getAttribute("data-src");
+        if (embedBtn) embedBtn.className = "px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase bg-neonCyan text-obsidian transition";
+        if (simBtn) simBtn.className = "px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase text-slate-300 hover:text-white transition";
+      } else {
+        if (embed) embed.classList.add("hidden");
+        if (sim) sim.classList.remove("hidden");
+        if (simBtn) simBtn.className = "px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase bg-neonCyan text-obsidian transition";
+        if (embedBtn) embedBtn.className = "px-4 py-2 rounded-lg text-xs font-mono font-bold uppercase text-slate-300 hover:text-white transition";
+      }
+    }
+
+    const dashboards = {
+      stats: {
+        title: "WAVEWARZ GLOBAL ANALYTICS TERMINAL",
+        url: "https://wavewarz-analytics.vercel.app/"
+      },
+      artists: {
+        title: "WAVEWARZ VERIFIED ARTIST PROFILES",
+        url: "https://wavewarz-artists-profiles.vercel.app/"
+      },
+      calendar: {
+        title: "WAVEWARZ LIVE BATTLE CALENDAR (LUMA)",
+        url: "https://lu.ma/embed/calendar/cal-WaveWarz/events"
+      }
+    };
+
+    function loadDashboardTab(key) {
+      const item = dashboards[key];
+      if (!item) return;
+      const iframe = document.getElementById("hubIframe");
+      if (iframe) iframe.src = item.url;
+      const title = document.getElementById("activeDashboardTitle");
+      if (title) title.textContent = item.title;
+      const link = document.getElementById("activeDashboardLink");
+      if (link) link.href = item.url;
+
+      ["stats", "artists", "calendar"].forEach(k => {
+        const btn = document.getElementById(`tabBtn-${k}`);
+        if (btn) {
+          if (k === key) {
+            btn.className = "px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase bg-neonGreen text-obsidian transition";
+          } else {
+            btn.className = "px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10 transition";
+          }
+        }
+      });
+    }
+
+    // Initialize Arena
+    updateBattleHUD();
+    animateWaveform();
+  </script>
+</body>
+</html>
