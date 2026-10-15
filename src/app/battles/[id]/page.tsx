@@ -40,9 +40,6 @@ type ArtistProfile = {
   bio: string | null
   twitter_handle: string | null
   audius_handle: string | null
-  youtube_url: string | null
-  instagram_handle: string | null
-  tiktok_handle: string | null
   display_name: string | null
 }
 
@@ -52,7 +49,7 @@ async function getProfilesForWallets(wallets: (string | null)[]): Promise<Map<st
   const supabase = await createClient()
   const { data } = await supabase
     .from('artist_profiles')
-    .select('primary_wallet,artist_id,profile_picture_url,bio,twitter_handle,audius_handle,youtube_url,instagram_handle,tiktok_handle,display_name')
+    .select('primary_wallet,artist_id,profile_picture_url,bio,twitter_handle,audius_handle,display_name')
     .in('primary_wallet', valid)
   const map = new Map<string, ArtistProfile>()
   for (const p of data ?? []) {
@@ -791,24 +788,6 @@ function ArtistProfileCard({
             <a href={`https://audius.co/${profile.audius_handle}`} target="_blank" rel="noreferrer"
               className="text-[10px] text-[#7ec1fb] hover:text-white transition-colors border border-[#7ec1fb]/20 rounded px-1.5 py-0.5">
               Audius ↗
-            </a>
-          )}
-          {profile?.youtube_url && (
-            <a href={profile.youtube_url} target="_blank" rel="noreferrer"
-              className="text-[10px] text-red-400 hover:text-white transition-colors border border-red-500/20 rounded px-1.5 py-0.5">
-              YouTube ↗
-            </a>
-          )}
-          {profile?.instagram_handle && (
-            <a href={`https://instagram.com/${profile.instagram_handle}`} target="_blank" rel="noreferrer"
-              className="text-[10px] text-[#989898] hover:text-white transition-colors border border-white/10 rounded px-1.5 py-0.5">
-              Instagram ↗
-            </a>
-          )}
-          {profile?.tiktok_handle && (
-            <a href={`https://tiktok.com/@${profile.tiktok_handle}`} target="_blank" rel="noreferrer"
-              className="text-[10px] text-[#989898] hover:text-white transition-colors border border-white/10 rounded px-1.5 py-0.5">
-              TikTok ↗
             </a>
           )}
         </div>
