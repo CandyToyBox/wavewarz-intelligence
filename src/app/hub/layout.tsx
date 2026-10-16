@@ -34,7 +34,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           </Badge>
         </div>
         <p className="text-muted-foreground text-sm">
-          Identity · History · Story · Content · Sponsorship, with the whole family: WavID, Wave Station, The ZAO and ZAO Festivals.
+          Identity · History · Story · Content · Sponsorship, with the whole family: WavID, WaveZStation, The ZAO and ZAO Festivals.
         </p>
         <nav className="flex flex-wrap gap-1 mt-3">
           {links.map(l => (
