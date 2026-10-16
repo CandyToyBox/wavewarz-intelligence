@@ -886,7 +886,7 @@
   "familyNotes": {
     "WaveWarZ": "The live music battles and the league around them.",
     "WavID": "The musician identity layer for WaveWarZ, created by Quan (0xQuan93). It turns an artist's verifiable WaveWarZ battle history into a visual identity that grows as they compete. It is built from real battle data, so it only exists for artists who have actually battled. A developer preview is at wavewarz.info/wavid.",
-    "WaveZStation": "The music marketplace for community-supported music, at wavezstation.com. Fans discover songs and choose what to pay for the music they believe in, and artists can apply to have their music on it.",
+    "WaveZStation": "The new music marketplace for community-supported music, at wavezstation.com: fan-powered songs. Fans discover and support the music they love, paying what they want for music they believe in, and rewards are shared proportionally with existing supporters as new fans buy in. Artists can apply to have their music on it.",
     "The ZAO": "A music community (DAO) for independent artists.",
     "ZAO Festivals": "The live events from the ZAO, including ZAO-PALOOZA and ZAO-CHELLA."
   }
