@@ -8,9 +8,9 @@ import { getBookerCard, type BookerCard } from '@/lib/booker-card'
 import { ThesisEditor, type Thesis } from './thesis-editor'
 import { RunwayChecklist } from './runway-checklist'
 import { AssetManager, type Asset } from '@/app/hub/asset-manager'
+import { ModuleGroup } from '@/app/hub/module-group'
 import { HubAvatar } from '@/app/hub/hub-avatar'
-
-const EVENT_CATEGORIES = ['Raw', 'Promo', 'Livestream', 'Results', 'Clips', 'Screenshots', 'Stats', 'Sponsors', 'Reactions', 'Press']
+import { ASSET_COLUMNS, EVENT_MODULES, subjectKey, toStateMap } from '@/lib/hub-modules'
 
 export default async function HubEventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
@@ -19,16 +19,56 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
   const event = await getHubEvent(slug)
   if (!event) notFound()
 
-  const [thesisRes, assetsRes, cardA, cardB] = await Promise.all([
+  const subject = subjectKey('event', slug)
+  const [thesisRes, assetsRes, cardA, cardB, modulesRes] = await Promise.all([
     supabase.from('battle_theses').select('*').eq('event_slug', slug).maybeSingle(),
-    supabase.from('content_assets').select('id,category,franchise,title,url,asset_type,notes').eq('event_slug', slug),
+    supabase.from('content_assets').select(ASSET_COLUMNS).eq('event_slug', slug),
     event.a.artistId ? getBookerCard(event.a.artistId) : Promise.resolve(null),
     event.b.artistId ? getBookerCard(event.b.artistId) : Promise.resolve(null),
+    supabase.from('hub_modules').select('module_key,status,checklist').eq('subject', subject),
   ])
 
   const thesis = (thesisRes.data ?? null) as Thesis | null
   const assets = (assetsRes.data ?? []) as Asset[]
   const runway = (thesisRes.data?.runway as Record<string, boolean>) ?? {}
+  const states = toStateMap(modulesRes.data)
+
+  // Promo runway items grouped by flywheel stage; progress comes from them.
+  const autoProgress = Object.fromEntries(EVENT_MODULES.map(m => {
+    const keys = m.runway ?? []
+    return [m.key, { done: keys.filter(k => runway[k]).length, total: keys.length }]
+  }))
+  const nodes = Object.fromEntries(EVENT_MODULES.map(m => [
+    m.key,
+    <div key={m.key} className="space-y-4">
+      {m.key === 'announce' && (
+        <ThesisEditor
+          slug={slug}
+          thesis={thesis}
+          eventMeta={{ artistAId: event.a.artistId, artistBId: event.b.artistId, label: event.label, date: event.date }}
+        />
+      )}
+      {m.key === 'faceoff' && (
+        <div>
+          <h3 className="text-sm font-rajdhani font-bold text-white tracking-wide mb-1">Tale of the Track</h3>
+          <p className="text-xs text-muted-foreground mb-3">Auto-generated matchup comparison from both Booker Cards. Use it for the Fight Card.</p>
+          <TaleOfTheTrack event={event} a={cardA} b={cardB} />
+        </div>
+      )}
+      {m.runway && (
+        <RunwayChecklist slug={slug} runway={runway} keys={m.runway} title="Promo steps for this stage" />
+      )}
+      <AssetManager
+        scope="event"
+        eventSlug={slug}
+        categories={m.categories}
+        assets={assets.filter(a => m.categories.includes(a.category))}
+        revalidate={`/hub/events/${slug}`}
+        moduleKey={m.key}
+        heading="Files and links"
+      />
+    </div>,
+  ]))
 
   return (
     <div className="space-y-8">
@@ -63,38 +103,15 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
         </div>
       </div>
 
-      {/* Tale of the Track */}
-      <section>
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-1">Tale of the Track</h2>
-        <p className="text-xs text-muted-foreground mb-3">
-          Auto-generated matchup comparison (Phase 26) from both Booker Cards.
-        </p>
-        <TaleOfTheTrack event={event} a={cardA} b={cardB} />
-      </section>
-
-      {/* Thesis */}
-      <section>
-        <ThesisEditor
-          slug={slug}
-          thesis={thesis}
-          eventMeta={{ artistAId: event.a.artistId, artistBId: event.b.artistId, label: event.label, date: event.date }}
-        />
-      </section>
-
-      {/* Runway */}
-      <section>
-        <RunwayChecklist slug={slug} runway={runway} />
-      </section>
-
-      {/* Assets */}
-      <section>
-        <AssetManager
-          scope="event"
-          eventSlug={slug}
-          categories={EVENT_CATEGORIES}
-          assets={assets}
-          revalidate={`/hub/events/${slug}`}
-        />
+      {/* The flywheel, one stage at a time */}
+      <section className="space-y-3">
+        <div>
+          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">The Battle Flywheel</h2>
+          <p className="text-xs text-muted-foreground">
+            Announce, interview, Face-Off, battle, aftermath, then the next battle is announced. Finish a stage and it tucks away.
+          </p>
+        </div>
+        <ModuleGroup subject={subject} modules={EVENT_MODULES} states={states} nodes={nodes} autoProgress={autoProgress} />
       </section>
     </div>
   )

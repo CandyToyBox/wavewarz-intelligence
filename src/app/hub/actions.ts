@@ -18,7 +18,7 @@ async function requireAdmin(): Promise<void> {
 
 type Result = { ok: boolean; error?: string }
 
-// ─── League Bible ─────────────────────────────────────────────────────────────
+// ─── League Archive ───────────────────────────────────────────────────────────────
 
 export async function upsertLeagueBible(payload: Record<string, unknown>): Promise<Result> {
   await requireAdmin()
@@ -33,7 +33,7 @@ export async function upsertLeagueBible(payload: Record<string, unknown>): Promi
   return { ok: true }
 }
 
-// ─── Artist Bible ─────────────────────────────────────────────────────────────
+// ─── Artist Archive ───────────────────────────────────────────────────────────────
 
 export async function upsertArtistBible(
   artistId: string,
@@ -44,6 +44,20 @@ export async function upsertArtistBible(
   const { error } = await supabase
     .from('artist_bibles')
     .upsert({ artist_id: artistId, ...payload, updated_at: new Date().toISOString() })
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/hub/artists/${artistId}`)
+  revalidatePath('/hub/artists')
+  revalidatePath('/hub')
+  return { ok: true }
+}
+
+// Founding-artist flag and rollout batch (who gets the Playbook first).
+export async function setArtistRollout(artistId: string, founding: boolean, batch: number | null): Promise<Result> {
+  await requireAdmin()
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('artist_bibles')
+    .upsert({ artist_id: artistId, founding, batch, updated_at: new Date().toISOString() })
   if (error) return { ok: false, error: error.message }
   revalidatePath(`/hub/artists/${artistId}`)
   revalidatePath('/hub/artists')
@@ -77,6 +91,65 @@ export async function setRunwayItem(eventSlug: string, runway: Record<string, bo
     .upsert({ event_slug: eventSlug, runway, updated_at: new Date().toISOString() }, { onConflict: 'event_slug' })
   if (error) return { ok: false, error: error.message }
   revalidatePath(`/hub/events/${eventSlug}`)
+  return { ok: true }
+}
+
+// Toggle ONE runway item. Merges server-side so several checklists on one page
+// (one per flywheel stage) cannot overwrite each other with stale state.
+export async function setRunwayKey(eventSlug: string, key: string, value: boolean): Promise<Result> {
+  await requireAdmin()
+  const supabase = createAdminClient()
+  const { data } = await supabase.from('battle_theses').select('runway').eq('event_slug', eventSlug).maybeSingle()
+  const next = { ...((data?.runway as Record<string, boolean>) ?? {}), [key]: value }
+  const { error } = await supabase
+    .from('battle_theses')
+    .upsert({ event_slug: eventSlug, runway: next, updated_at: new Date().toISOString() }, { onConflict: 'event_slug' })
+  if (error) return { ok: false, error: error.message }
+  revalidatePath(`/hub/events/${eventSlug}`)
+  return { ok: true }
+}
+
+// ─── Modules ──────────────────────────────────────────────────────────────────
+// Progress per module per subject ('league' | 'artist:<id>' | 'event:<slug>').
+// Done modules are hidden in the Hub by default; their saved links stay put.
+
+const MODULE_STATUSES = ['not_started', 'in_progress', 'done']
+
+function revalidateSubject(subject: string) {
+  revalidatePath('/hub')
+  if (subject === 'league') revalidatePath('/hub/league')
+  else if (subject.startsWith('artist:')) { revalidatePath(`/hub/artists/${subject.slice(7)}`); revalidatePath('/hub/artists') }
+  else if (subject.startsWith('event:')) { revalidatePath(`/hub/events/${subject.slice(6)}`); revalidatePath('/hub/events') }
+}
+
+export async function setModuleStatus(subject: string, moduleKey: string, status: string): Promise<Result> {
+  await requireAdmin()
+  if (!MODULE_STATUSES.includes(status)) return { ok: false, error: 'Unknown status' }
+  const supabase = createAdminClient()
+  const now = new Date().toISOString()
+  const { error } = await supabase.from('hub_modules').upsert({
+    subject,
+    module_key: moduleKey,
+    status,
+    completed_at: status === 'done' ? now : null,
+    updated_at: now,
+  }, { onConflict: 'subject,module_key' })
+  if (error) return { ok: false, error: error.message }
+  revalidateSubject(subject)
+  return { ok: true }
+}
+
+export async function setModuleChecklistItem(subject: string, moduleKey: string, itemKey: string, value: boolean): Promise<Result> {
+  await requireAdmin()
+  const supabase = createAdminClient()
+  const { data } = await supabase.from('hub_modules').select('checklist,status').eq('subject', subject).eq('module_key', moduleKey).maybeSingle()
+  const checklist = { ...((data?.checklist as Record<string, boolean>) ?? {}), [itemKey]: value }
+  const status = data?.status && data.status !== 'not_started' ? data.status : 'in_progress'
+  const { error } = await supabase.from('hub_modules').upsert({
+    subject, module_key: moduleKey, checklist, status, updated_at: new Date().toISOString(),
+  }, { onConflict: 'subject,module_key' })
+  if (error) return { ok: false, error: error.message }
+  revalidateSubject(subject)
   return { ok: true }
 }
 
@@ -142,8 +215,16 @@ export async function addContentAsset(payload: {
   url?: string | null
   assetType?: string
   notes?: string | null
+  whyAdded: string
+  moduleKey?: string | null
+  familyTags?: string[]
 }): Promise<Result> {
   await requireAdmin()
+  // Every piece of content must say why it is here and what it adds to the
+  // WaveWarZ lore, archive or history.
+  if (!payload.whyAdded?.trim()) {
+    return { ok: false, error: 'Say why this is being added and what it brings to the WaveWarZ lore, archive or history.' }
+  }
   const supabase = createAdminClient()
   const { error } = await supabase.from('content_assets').insert({
     scope: payload.scope,
@@ -155,6 +236,9 @@ export async function addContentAsset(payload: {
     url: payload.url ?? null,
     asset_type: payload.assetType ?? 'link',
     notes: payload.notes ?? null,
+    why_added: payload.whyAdded.trim(),
+    module_key: payload.moduleKey ?? null,
+    family_tags: payload.familyTags ?? [],
   })
   if (error) return { ok: false, error: error.message }
   if (payload.artistId) revalidatePath(`/hub/artists/${payload.artistId}`)
@@ -174,7 +258,7 @@ export async function deleteContentAsset(id: string, revalidate?: string): Promi
 
 // ─── Roster + avatar sync ─────────────────────────────────────────────────────
 // Keeps the Hub roster in lock-step with the live Artist Leaderboard: creates an
-// artist_profiles row (the DB trigger adds the empty Identity Bible) for any
+// artist_profiles row (the DB trigger adds the empty Artist Archive) for any
 // leaderboard artist that doesn't have one yet, then resolves + persists avatars.
 // Records, events, rankings and stats are already live-synced (every /hub page is
 // force-dynamic and reuses the same shared libs as wavewarz.info / the API), so

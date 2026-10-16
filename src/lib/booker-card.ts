@@ -46,6 +46,9 @@ export type ArtistBible = {
   community_name: string | null
   sponsor_fit: string[]
   canonical_clips: { title: string; url: string; note?: string }[]
+  stage_character: string | null
+  founding: boolean
+  batch: number | null
   needs_review: boolean
   updated_at: string
 }
@@ -83,7 +86,8 @@ const EMPTY_BIBLE = (artistId: string): ArtistBible => ({
   victory_phrase: null, challenge_phrase: null, signoff: null, announcer_intro: null,
   short_bio: null, long_bio: null, voice_tone: null, trashtalk_boundaries: null,
   signature_weapon: null, memeable_phrase: null, artist_emoji: null, community_name: null,
-  sponsor_fit: [], canonical_clips: [], needs_review: false, updated_at: '',
+  sponsor_fit: [], canonical_clips: [], stage_character: null, founding: false, batch: null,
+  needs_review: false, updated_at: '',
 })
 
 export async function getArtistBible(artistId: string): Promise<ArtistBible> {

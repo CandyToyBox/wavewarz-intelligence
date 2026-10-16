@@ -15,7 +15,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
 
   const links = [
     { href: '/hub', label: 'Library' },
-    { href: '/hub/league', label: 'League Bible' },
+    { href: '/hub/league', label: 'WaveWarZ Archives' },
     { href: '/hub/artists', label: 'Artists' },
     { href: '/hub/events', label: 'Events' },
     { href: '/hub/storylines', label: 'Storylines' },
@@ -34,7 +34,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           </Badge>
         </div>
         <p className="text-muted-foreground text-sm">
-          Identity · History · Story · Content · Sponsorship — the WaveWarZ entertainment operating system.
+          Identity · History · Story · Content · Sponsorship, with the whole family: Wave ID, Wave Station, The ZAO and ZAO Festivals.
         </p>
         <nav className="flex flex-wrap gap-1 mt-3">
           {links.map(l => (

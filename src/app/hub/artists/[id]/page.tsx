@@ -4,29 +4,44 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createAdminClient } from '@/lib/supabase/server'
 import { getBookerCard } from '@/lib/booker-card'
-import { ArtistBibleEditor } from './artist-bible-editor'
+import { ArtistArchiveEditor, NeedsReviewToggle, RolloutControl } from './artist-archive-editor'
 import { AssetManager, type Asset } from '@/app/hub/asset-manager'
+import { ModuleGroup } from '@/app/hub/module-group'
 import { HubAvatar } from '@/app/hub/hub-avatar'
-
-const ARTIST_CATEGORIES = [
-  'Identity Bible', 'Photos', 'Logos', 'Music', 'Video', 'Battles', 'Interviews',
-  'Quotes', 'Memes', 'Community', 'Sponsors', 'Merch', 'THE WALK', 'Career Record',
-]
+import { ARTIST_MODULES, ASSET_COLUMNS, subjectKey, toStateMap } from '@/lib/hub-modules'
 
 export default async function HubArtistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = createAdminClient()
 
-  const [card, assetsRes, storylinesRes] = await Promise.all([
+  const subject = subjectKey('artist', id)
+  const [card, assetsRes, storylinesRes, modulesRes] = await Promise.all([
     getBookerCard(id),
-    supabase.from('content_assets').select('id,category,franchise,title,url,asset_type,notes').eq('artist_id', id),
+    supabase.from('content_assets').select(ASSET_COLUMNS).eq('artist_id', id),
     supabase.from('storylines').select('*').or(`artist_a_id.eq.${id},artist_b_id.eq.${id}`),
+    supabase.from('hub_modules').select('module_key,status,checklist').eq('subject', subject),
   ])
   if (!card) notFound()
 
   const assets = (assetsRes.data ?? []) as Asset[]
   const storylines = storylinesRes.data ?? []
   const b = card.bible
+  const states = toStateMap(modulesRes.data)
+  const nodes = Object.fromEntries(ARTIST_MODULES.map(m => [
+    m.key,
+    <div key={m.key} className="space-y-4">
+      {m.fields && m.fields.length > 0 && <ArtistArchiveEditor artistId={id} bible={b} fields={m.fields} />}
+      <AssetManager
+        scope="artist"
+        artistId={id}
+        categories={m.categories}
+        assets={assets.filter(a => m.categories.includes(a.category))}
+        revalidate={`/hub/artists/${id}`}
+        moduleKey={m.key}
+        heading="Files and links"
+      />
+    </div>,
+  ]))
 
   return (
     <div className="space-y-8">
@@ -76,7 +91,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
           </div>
 
           <div className="grid gap-4 md:grid-cols-4 mt-6">
-            <MiniField label="Identity Bible" value={`${card.completeness}% complete`} />
+            <MiniField label="Artist Archive" value={`${card.completeness}% complete`} />
             <MiniField label="Signature color" value={b.colors?.signature ?? null} />
             <MiniField label="Catchphrase" value={b.catchphrase} />
             <MiniField label="Signature weapon" value={b.signature_weapon} />
@@ -100,7 +115,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
 
           {b.needs_review && (
             <p className="mt-4 text-[11px] text-amber-400 border border-amber-500/30 bg-amber-500/10 rounded px-3 py-1.5">
-              This bible is flagged for review — confirm the details before anything ships from it.
+              This archive is flagged for review — confirm the details before anything ships from it.
             </p>
           )}
         </div>
@@ -158,17 +173,20 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
         </section>
       )}
 
-      {/* ── IDENTITY BIBLE EDITOR ── */}
-      <ArtistBibleEditor artistId={id} bible={b} />
-
-      {/* ── ASSET FOLDERS ── */}
-      <AssetManager
-        scope="artist"
-        artistId={id}
-        categories={ARTIST_CATEGORIES}
-        assets={assets}
-        revalidate={`/hub/artists/${id}`}
-      />
+      {/* ── MODULES ── */}
+      <section className="space-y-3">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div>
+            <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Artist Archive</h2>
+            <p className="text-xs text-muted-foreground">Nine modules. Finish one, save it, and it moves out of the way.</p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <RolloutControl artistId={id} founding={b.founding} batch={b.batch} />
+            <NeedsReviewToggle artistId={id} needsReview={b.needs_review} />
+          </div>
+        </div>
+        <ModuleGroup subject={subject} modules={ARTIST_MODULES} states={states} nodes={nodes} />
+      </section>
     </div>
   )
 }

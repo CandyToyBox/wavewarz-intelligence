@@ -31,7 +31,7 @@ export function CommandCenterPanel({
       >
         <div>
           <p className="font-rajdhani font-bold text-white tracking-wide">League Hub →</p>
-          <p className="text-xs text-muted-foreground">Identity Bibles · Battle Theses · Storyline graph · Record Book · Sponsor Inventory</p>
+          <p className="text-xs text-muted-foreground">Artist Archives · Battle Theses · Storyline graph · Record Book · Sponsor Inventory</p>
         </div>
         <span className="text-[10px] font-bold text-[#95fe7c] border border-[#95fe7c]/40 bg-[#95fe7c]/10 rounded px-2 py-0.5">ENTERTAINMENT OS</span>
       </a>
