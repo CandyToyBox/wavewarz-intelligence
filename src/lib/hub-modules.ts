@@ -29,6 +29,8 @@ export type HubModuleSpec = {
 export type ModuleState = { status: ModuleStatus; checklist: Record<string, boolean> }
 
 export const FAMILY: string[] = spec.family
+// One-line descriptions, only where we have a confirmed one.
+export const FAMILY_NOTES: Record<string, string> = spec.familyNotes
 export const ARTIST_MODULES = spec.artist as HubModuleSpec[]
 export const EVENT_MODULES = spec.event as HubModuleSpec[]
 export const LEAGUE_MODULES = spec.league as HubModuleSpec[]

@@ -173,7 +173,7 @@ function ModuleCard({ subject, spec, state, progress, defaultOpen, children }: {
             </div>
             {spec.familyTie && (
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Family tie-in (Wave ID, Wave Station, The ZAO, ZAO Festivals)</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-0.5">Family tie-in (WavID, Wave Station, The ZAO, ZAO Festivals)</p>
                 <p className="text-sm text-white/90">{spec.familyTie}</p>
               </div>
             )}

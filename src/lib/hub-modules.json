@@ -1,6 +1,6 @@
 {
   "family": [
-    "Wave ID",
+    "WavID",
     "Wave Station",
     "WaveWarZ",
     "The ZAO",
@@ -15,7 +15,7 @@
       "minutes": 30,
       "blurb": "The basics, in your own words. This is the first thing a new listener learns about you.",
       "why": "It becomes your first docu-slice and the opening line of every card, poster and intro that carries your name.",
-      "familyTie": "Write one line a stranger could read on any of our family pages: WaveWarZ, Wave ID, Wave Station or the ZAO.",
+      "familyTie": "Write one line a stranger could read on any of our family pages: WaveWarZ, WavID, Wave Station or the ZAO.",
       "fields": [
         "nickname",
         "archetype_primary",
@@ -402,7 +402,7 @@
       "minutes": 60,
       "blurb": "The places people land when they look you up, set up so a new fan can binge you.",
       "why": "When someone loves one artist, they go looking for the next. A polished home base turns a single listener into a binge listener.",
-      "familyTie": "Link your Wave ID, Wave Station page and ZAO profile where they apply, so the family finds you from anywhere.",
+      "familyTie": "Link your WavID, Wave Station page and ZAO profile where they apply, so the family finds you from anywhere.",
       "fields": [],
       "categories": [
         "Home Base",
@@ -462,7 +462,7 @@
       "minutes": 30,
       "blurb": "Who you belong to, what you care about and which brands or causes genuinely fit you.",
       "why": "Matching you with partners who truly fit is how we find the right fit later, without forcing it.",
-      "familyTie": "This is the family module. Note your connection to Wave ID, Wave Station, the ZAO and ZAO Festivals, and who you would want us to introduce you to.",
+      "familyTie": "This is the family module. Note your connection to WavID, Wave Station, the ZAO and ZAO Festivals, and who you would want us to introduce you to.",
       "fields": [
         "sponsor_fit"
       ],
@@ -487,7 +487,7 @@
         },
         {
           "key": "family",
-          "label": "How are you connected to Wave ID, Wave Station, the ZAO or ZAO Festivals? Who should we introduce you to?"
+          "label": "How are you connected to WavID, Wave Station, the ZAO or ZAO Festivals? Who should we introduce you to?"
         }
       ],
       "checklist": [
@@ -566,7 +566,7 @@
       "title": "Announce and Set the Story",
       "blurb": "The battle is announced, the story is set and the artists are introduced.",
       "why": "A clear story before the battle is what makes people care about the result.",
-      "familyTie": "Tell the family first: Wave ID, Wave Station and the ZAO should hear about it before the public.",
+      "familyTie": "Tell the family first: WavID, Wave Station and the ZAO should hear about it before the public.",
       "categories": [
         "Promo"
       ],
@@ -657,7 +657,7 @@
       "title": "Identity and Ethos",
       "blurb": "What WaveWarZ is, in the words we all use: mission, one-liners, tagline and the ethos.",
       "why": "Everyone telling the same story is how a new audience understands us quickly.",
-      "familyTie": "Write how Wave ID, Wave Station and the ZAO fit into this sentence.",
+      "familyTie": "Write how WavID, Wave Station and the ZAO fit into this sentence.",
       "sections": [
         "Core Identity",
         "Ethos"
@@ -714,7 +714,7 @@
       "title": "Brand, Logos and Templates",
       "blurb": "Logos, brand guide, slogans and the reusable templates for flyers and cards.",
       "why": "Reusable brand pieces mean every new piece of content starts from a finished base.",
-      "familyTie": "Include co-branding versions for Wave ID, Wave Station and the ZAO.",
+      "familyTie": "Include co-branding versions for WavID, Wave Station and the ZAO.",
       "sections": [],
       "categories": [
         "Logos",
@@ -743,8 +743,8 @@
     {
       "key": "family",
       "order": 4,
-      "title": "The Family: Wave ID, Wave Station, The ZAO and ZAO Festivals",
-      "blurb": "The people and projects that are one team with WaveWarZ. Keep reaching out, keep including them.",
+      "title": "The Family: WavID, Wave Station, The ZAO and ZAO Festivals",
+      "blurb": "The people and projects that are one team with WaveWarZ. Keep reaching out, keep including them. WavID is built from each artist's real WaveWarZ battle history, so every artist's battles feed it.",
       "why": "They are part of the story. Recording each touchpoint keeps the relationship active and the history accurate.",
       "familyTie": "This module is the family itself.",
       "sections": [],
@@ -754,7 +754,7 @@
       "checklist": [
         {
           "key": "wave_id",
-          "label": "Wave ID: introduction written and shared"
+          "label": "WavID: introduction written and shared"
         },
         {
           "key": "wave_station",
@@ -882,5 +882,11 @@
         }
       ]
     }
-  ]
+  ],
+  "familyNotes": {
+    "WaveWarZ": "The live music battles and the league around them.",
+    "WavID": "The musician identity layer for WaveWarZ, created by Quan (0xQuan93). It turns an artist's verifiable WaveWarZ battle history into a visual identity that grows as they compete. It is built from real battle data, so it only exists for artists who have actually battled. A developer preview is at wavewarz.info/wavid.",
+    "The ZAO": "A music community (DAO) for independent artists.",
+    "ZAO Festivals": "The live events from the ZAO, including ZAO-PALOOZA and ZAO-CHELLA."
+  }
 }

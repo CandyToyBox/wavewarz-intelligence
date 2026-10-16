@@ -8,7 +8,7 @@ import type { LeagueBible } from './league-archive-editor'
 import { RecordMarkEditor } from './record-mark-editor'
 import { AssetManager, type Asset } from '@/app/hub/asset-manager'
 import { ModuleGroup } from '@/app/hub/module-group'
-import { ASSET_COLUMNS, LEAGUE_MODULES, subjectKey, toStateMap } from '@/lib/hub-modules'
+import { ASSET_COLUMNS, FAMILY, FAMILY_NOTES, LEAGUE_MODULES, subjectKey, toStateMap } from '@/lib/hub-modules'
 
 export default async function HubLeaguePage() {
   const supabase = createAdminClient()
@@ -45,6 +45,19 @@ export default async function HubLeaguePage() {
     <div key={m.key} className="space-y-4">
       {m.sections && m.sections.filter(s => s !== 'Record Book').length > 0 && (
         <LeagueArchiveEditor bible={bible} only={m.sections} />
+      )}
+
+      {m.key === 'family' && (
+        <dl className="grid gap-2 sm:grid-cols-2">
+          {FAMILY.map(f => (
+            <div key={f} className="rounded-lg border border-border bg-[#0d1321]/40 p-3">
+              <dt className="font-rajdhani font-bold text-white">{f}</dt>
+              <dd className={`text-xs mt-0.5 ${FAMILY_NOTES[f] ? 'text-muted-foreground' : 'text-amber-400'}`}>
+                {FAMILY_NOTES[f] ?? 'Description needed.'}
+              </dd>
+            </div>
+          ))}
+        </dl>
       )}
 
       {m.key === 'sponsors' && (
