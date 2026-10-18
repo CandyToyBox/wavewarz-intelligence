@@ -57,20 +57,21 @@ export type PlaybookModule = {
   rgb: string
 }
 
-// Module accent colors. The prototype used two violet shades (Your Entrance and
-// Your Community); the WaveWarZ brand allows no purple anywhere, so those two are
-// ice and lime here. Change them in this one place.
+// Module accent colors. Only the three WaveWarZ brand tones, in rotation (green, blue,
+// ice), so the page reads as navy and green. The module number tells them apart. The
+// prototype used a rainbow including two violets; no purple, and no off-brand hues.
+// Change them in this one place.
 export const MODULE_COLORS: Record<string, string> = {
   who: '#95fe7c',
-  look: '#ff79c6',
-  story: '#ffc857',
-  music: '#7ec1fb',
-  voice: '#ff8a65',
+  look: '#7ec1fb',
+  story: '#daecfd',
+  music: '#95fe7c',
+  voice: '#7ec1fb',
   walk: '#daecfd',
-  home: '#5eead4',
-  community: '#bef264',
-  archive: '#67e8f9',
-  merch: '#fb7185',
+  home: '#95fe7c',
+  community: '#7ec1fb',
+  archive: '#daecfd',
+  merch: '#95fe7c',
 }
 
 // Which question (0-based) carries the "Family tie-in" callout, per module.
