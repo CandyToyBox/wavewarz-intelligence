@@ -15,7 +15,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/leaderboards/community',
     '/leaderboards/clippers',
     '/benefits',
-    '/claim',
     '/contributor',
     '/api-docs',
     '/api-docs/changelog',

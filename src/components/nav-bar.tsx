@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { href: '/benefits',     label: 'Benefits' },
   { href: '/voter-guide',  label: 'Voter Guide' },
   { href: '/wavid',        label: 'WavID' },
-  { href: '/claim',        label: 'Claim' },
+  { href: 'https://claim.wavewarz.info', label: 'Claim', external: true },
   { href: '/api-docs',     label: 'API' },
   { href: 'https://merch.wavewarz.info', label: 'Merch', external: true },
 ]
