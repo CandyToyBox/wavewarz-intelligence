@@ -9,6 +9,7 @@ import { AssetManager, type Asset } from '@/app/hub/asset-manager'
 import { ModuleGroup } from '@/app/hub/module-group'
 import { HubAvatar } from '@/app/hub/hub-avatar'
 import { ARTIST_MODULES, ASSET_COLUMNS, subjectKey, toStateMap } from '@/lib/hub-modules'
+import { EXTRA_LABELS } from '@/lib/playbook/hub-map'
 
 export default async function HubArtistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -26,6 +27,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
   const assets = (assetsRes.data ?? []) as Asset[]
   const storylines = storylinesRes.data ?? []
   const b = card.bible
+  const extras = Object.entries(b.playbook_extras ?? {}).filter(([, val]) => val && String(val).trim())
   const states = toStateMap(modulesRes.data)
   const nodes = Object.fromEntries(ARTIST_MODULES.map(m => [
     m.key,
@@ -120,6 +122,34 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
           )}
         </div>
       </div>
+
+      {/* ── PLAYBOOK ── */}
+      <section className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h2 className="text-sm font-rajdhani font-bold text-white tracking-wide">Founding Artists Playbook</h2>
+          <p className="text-xs text-muted-foreground">
+            The guided questions this artist fills in from a private link. Review their answers and accept them into the Archive and Assets.
+          </p>
+        </div>
+        <Link href={`/hub/artists/${id}/playbook`} className="text-xs font-bold px-3 py-1.5 rounded-md border border-[#7ec1fb] text-[#7ec1fb] hover:bg-[#7ec1fb]/10">
+          Open playbook review →
+        </Link>
+      </section>
+
+      {extras.length > 0 && (
+        <section className="space-y-2">
+          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Playbook extras</h2>
+          <p className="text-xs text-muted-foreground">Accepted playbook answers that have no Artist Archive field of their own.</p>
+          <dl className="grid gap-2 sm:grid-cols-2">
+            {extras.map(([k, val]) => (
+              <div key={k} className="rounded-lg border border-border bg-[#0d1321]/40 p-3">
+                <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">{EXTRA_LABELS[k] ?? k}</dt>
+                <dd className="text-sm text-white whitespace-pre-wrap break-words mt-0.5">{val}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
 
       {/* ── OPEN STORYLINES ── */}
       {storylines.length > 0 && (
