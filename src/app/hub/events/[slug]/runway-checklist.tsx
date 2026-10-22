@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { setRunwayItem } from '@/app/hub/actions'
+import { setRunwayKey } from '@/app/hub/actions'
 
 // The 21-day hybrid promotion cadence (WWE/UFC playbook, Master Checklist Phase 27).
 export const RUNWAY_ITEMS: { key: string; when: string; label: string }[] = [
@@ -24,19 +24,25 @@ export const RUNWAY_ITEMS: { key: string; when: string; label: string }[] = [
   { key: 'recap', when: '+1 day', label: 'Recap + stats + clips + NEXT ON WAVEWARZ seed' },
 ]
 
-export function RunwayChecklist({ slug, runway }: { slug: string; runway: Record<string, boolean> }) {
+export function RunwayChecklist({ slug, runway, keys, title = 'Promotion Runway' }: {
+  slug: string
+  runway: Record<string, boolean>
+  keys?: string[]
+  title?: string
+}) {
   const router = useRouter()
   const [state, setState] = useState<Record<string, boolean>>(runway)
   const [pending, startTransition] = useTransition()
 
-  const done = RUNWAY_ITEMS.filter(i => state[i.key]).length
-  const pct = Math.round((done / RUNWAY_ITEMS.length) * 100)
+  const items = keys ? RUNWAY_ITEMS.filter(i => keys.includes(i.key)) : RUNWAY_ITEMS
+  const done = items.filter(i => state[i.key]).length
+  const pct = Math.round((done / Math.max(items.length, 1)) * 100)
 
   function toggle(key: string) {
-    const next = { ...state, [key]: !state[key] }
-    setState(next)
+    const value = !state[key]
+    setState(s => ({ ...s, [key]: value }))
     startTransition(async () => {
-      await setRunwayItem(slug, next)
+      await setRunwayKey(slug, key, value)
       router.refresh()
     })
   }
@@ -44,14 +50,14 @@ export function RunwayChecklist({ slug, runway }: { slug: string; runway: Record
   return (
     <div className="rounded-xl border border-border bg-[#111827]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">Promotion Runway</h3>
-        <span className="text-xs text-muted-foreground">{done}/{RUNWAY_ITEMS.length} · {pct}%{pending ? ' · saving…' : ''}</span>
+        <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">{title}</h3>
+        <span className="text-xs text-muted-foreground">{done}/{items.length} · {pct}%{pending ? ' · saving…' : ''}</span>
       </div>
       <div className="h-1 w-full bg-[#0d1321]">
         <div className="h-full bg-[#95fe7c] transition-all" style={{ width: `${pct}%` }} />
       </div>
       <ul className="divide-y divide-border">
-        {RUNWAY_ITEMS.map(item => (
+        {items.map(item => (
           <li key={item.key}>
             <button
               onClick={() => toggle(item.key)}

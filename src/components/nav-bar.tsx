@@ -23,6 +23,9 @@ export function NavBar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
+  // The artist Playbook is a focused private form with its own header.
+  if (pathname.startsWith('/playbook')) return null
+
   function isActive(href: string) {
     return href === '/' ? pathname === href : pathname.startsWith(href)
   }

@@ -1,0 +1,1090 @@
+[
+ {
+  "key": "who",
+  "order": 1,
+  "title": "Who You Are",
+  "tier": "start",
+  "tierLabel": "Starter Pack",
+  "mins": "about 30 min",
+  "blurb": "The basics, in your own words. This is the first thing a new listener learns about you.",
+  "why": "It becomes your first docu-slice and the opening line of every card, poster and intro that carries your name.",
+  "qs": [
+   {
+    "label": "Who are you in one sentence?",
+    "hint": "A stranger should get you from this line alone.",
+    "parts": [
+     {
+      "id": "who_one_line",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What music do you make, and what makes it yours?",
+    "parts": [
+     {
+      "id": "who_genre",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Your short bio: 3 or 4 sentences you would be proud to see on every platform.",
+    "parts": [
+     {
+      "id": "who_short_bio",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What do you want right now, with your music?",
+    "parts": [
+     {
+      "id": "who_want",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What are you trying to prove, to yourself or anyone else?",
+    "parts": [
+     {
+      "id": "who_prove",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What is your greatest strength as an artist?",
+    "parts": [
+     {
+      "id": "who_strength",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Where can people find you online?",
+    "opt": true,
+    "hint": "Instagram, X, Audius, YouTube, your website. Add as many as you like.",
+    "parts": [
+     {
+      "id": "who_links",
+      "t": "urls",
+      "max": 6,
+      "rows": 2
+     }
+    ]
+   }
+  ],
+  "fam": "Write one line a stranger could read on any of our family pages: WaveWarZ, WavID, WaveZStation or the ZAO.",
+  "checks": [
+   {
+    "l": "One-line identity written",
+    "all": [
+     "who_one_line"
+    ]
+   },
+   {
+    "l": "Short bio written",
+    "all": [
+     "who_short_bio"
+    ]
+   },
+   {
+    "l": "What you want and what you are proving written",
+    "all": [
+     "who_want",
+     "who_prove"
+    ]
+   }
+  ],
+  "skip": "Long bio, core belief and archetype can wait. Candy can suggest an archetype with you later."
+ },
+ {
+  "key": "look",
+  "order": 2,
+  "title": "Your Look",
+  "tier": "start",
+  "tierLabel": "Starter Pack",
+  "mins": "about 45 min",
+  "blurb": "Colors, logo, symbol and the full character: the look, the costume, the stage presence.",
+  "why": "Every poster, Face-Off card and clip uses these. Once they are set, nobody has to ask you again.",
+  "qs": [
+   {
+    "label": "Your logo",
+    "hint": "A PNG with a transparent background if you have one. No logo yet? Skip this and say so in the symbol question.",
+    "parts": [
+     {
+      "id": "look_logo",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 1,
+      "img": true
+     }
+    ]
+   },
+   {
+    "label": "Your 3 to 5 best photos",
+    "hint": "Full resolution. Pick the ones that look most like you on stage.",
+    "parts": [
+     {
+      "id": "look_photos",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 5,
+      "min": 3,
+      "img": true
+     }
+    ]
+   },
+   {
+    "label": "Your color palette",
+    "hint": "Pick a signature color, a second color and an accent. Use the color wheel, type a hex code, use the eyedropper, or pick colors straight from your logo or a photo.",
+    "parts": [
+     {
+      "id": "look_palette",
+      "t": "palette"
+     }
+    ]
+   },
+   {
+    "label": "Do you have a symbol, monogram or mark? If not, what would it be?",
+    "parts": [
+     {
+      "id": "look_symbol",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Your full character: the look, the costume, the stage presence. Describe it like a movie character.",
+    "parts": [
+     {
+      "id": "look_character",
+      "t": "text"
+     },
+     {
+      "id": "look_ref",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 3,
+      "img": true,
+      "cap": "Costume or character reference (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Any signature visual effect or style you love (grain, glitch, neon, hand-drawn)?",
+    "parts": [
+     {
+      "id": "look_effect",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What should we never do to your image?",
+    "parts": [
+     {
+      "id": "look_avoid",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "Send your logo as a clean file. The same file travels to WaveWarZ, WaveZStation and ZAO pages.",
+  "checks": [
+   {
+    "l": "Logo file received",
+    "all": [
+     "look_logo"
+    ]
+   },
+   {
+    "l": "3 to 5 best photos received",
+    "all": [
+     "look_photos"
+    ]
+   },
+   {
+    "l": "Character described",
+    "all": [
+     "look_character"
+    ]
+   },
+   {
+    "l": "Colors chosen",
+    "all": [
+     "look_palette"
+    ]
+   }
+  ],
+  "skip": "No logo yet? Say so and we will plan one. Do not rush it."
+ },
+ {
+  "key": "story",
+  "order": 3,
+  "title": "Your Story, In Your Own Words",
+  "tier": "start",
+  "tierLabel": "Starter Pack",
+  "mins": "about 90 min",
+  "blurb": "Short answers recorded once, each as its own clip. We stack them into interviews, docu-slices and flashbacks.",
+  "why": "Every cut we make later (the interview, the pre-battle slice, the flashback) is built from these blocks, so a plain answer today becomes episodes later.",
+  "gather": [
+   "3 core answers, each recorded as its own short clip",
+   "At least 1 block of your choice (history, hobbies, current work)",
+   "Any older footage that tells part of your story (we credit third-party creators with simple text)"
+  ],
+  "qs": [
+   {
+    "label": "Core answer 1: What music do you play?",
+    "hint": "Record it as its own 30 to 60 second clip. It must make sense without any other clip. Upload the clip or paste a link to it.",
+    "parts": [
+     {
+      "id": "story_core1_clip",
+      "t": "files",
+      "accept": "video/*",
+      "max": 1,
+      "cap": "Your clip"
+     },
+     {
+      "id": "story_core1",
+      "t": "text",
+      "cap": "Notes (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Core answer 2: How long have you been playing?",
+    "parts": [
+     {
+      "id": "story_core2_clip",
+      "t": "files",
+      "accept": "video/*",
+      "max": 1,
+      "cap": "Your clip"
+     },
+     {
+      "id": "story_core2",
+      "t": "text",
+      "cap": "Notes (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Core answer 3: Where did you grow up?",
+    "parts": [
+     {
+      "id": "story_core3_clip",
+      "t": "files",
+      "accept": "video/*",
+      "max": 1,
+      "cap": "Your clip"
+     },
+     {
+      "id": "story_core3",
+      "t": "text",
+      "cap": "Notes (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Your picks: which of these do you want the world to see? History, hobbies, what you are working on now, anything else you choose.",
+    "parts": [
+     {
+      "id": "story_pick",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Docu-slice plan: what would you share, in order? Basics, childhood, training, free time, then your pick.",
+    "parts": [
+     {
+      "id": "story_slice_plan",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Got an idea for a meme promo or a funny short about yourself? Describe it.",
+    "opt": true,
+    "parts": [
+     {
+      "id": "story_meme",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Older footage that tells part of your story",
+    "opt": true,
+    "hint": "We credit third-party creators with simple text. Say who filmed it in Module 9.",
+    "parts": [
+     {
+      "id": "story_footage_links",
+      "t": "urls",
+      "max": 5,
+      "rows": 1,
+      "cap": "Links"
+     },
+     {
+      "id": "story_footage",
+      "t": "files",
+      "accept": "image/*,video/*,application/pdf,.svg",
+      "max": 4,
+      "cap": "Upload"
+     }
+    ]
+   }
+  ],
+  "fam": "Mention where we found each other: Wave Wars, the ZAO, a festival, a Space. These are the threads that make the history real.",
+  "checks": [
+   {
+    "l": "Core answer 1 recorded",
+    "all": [
+     "story_core1_clip"
+    ]
+   },
+   {
+    "l": "Core answer 2 recorded",
+    "all": [
+     "story_core2_clip"
+    ]
+   },
+   {
+    "l": "Core answer 3 recorded",
+    "all": [
+     "story_core3_clip"
+    ]
+   },
+   {
+    "l": "At least 1 of your own picks recorded",
+    "all": [
+     "story_pick"
+    ]
+   },
+   {
+    "l": "Docu-slice order chosen",
+    "all": [
+     "story_slice_plan"
+    ]
+   }
+  ],
+  "skip": "Anything personal you are not comfortable sharing stays out. You choose what the world sees."
+ },
+ {
+  "key": "music",
+  "order": 4,
+  "title": "Your Music and Best Videos",
+  "tier": "start",
+  "tierLabel": "Starter Pack",
+  "mins": "about 30 min",
+  "blurb": "Your hits, the music you are proudest of, and your best videos.",
+  "why": "Your music is the reason anyone clicks. Having your hits and links ready makes every battle and clip faster to produce.",
+  "gather": [
+   "Your go-to song",
+   "3 to 5 of your hits",
+   "2 or 3 best video links",
+   "Live footage links, if any"
+  ],
+  "qs": [
+   {
+    "label": "What is your go-to song?",
+    "hint": "The song you play when you want to show someone your music. Paste the link (Audius, SoundCloud, Spotify, YouTube, anywhere).",
+    "parts": [
+     {
+      "id": "music_goto",
+      "t": "urls",
+      "max": 1,
+      "rows": 1,
+      "ph": "https://"
+     }
+    ]
+   },
+   {
+    "label": "What are your hits?",
+    "hint": "The best music you have made, and what you consider your hits. Add 3 to 5 links. Audio files cannot be uploaded here, so paste links from Audius, SoundCloud, Google Drive or Dropbox.",
+    "parts": [
+     {
+      "id": "music_hits",
+      "t": "urls",
+      "max": 5,
+      "min": 3,
+      "rows": 3,
+      "ph": "https://"
+     }
+    ]
+   },
+   {
+    "label": "Which 2 or 3 videos show you at your best?",
+    "hint": "Paste links, or upload the video files.",
+    "parts": [
+     {
+      "id": "music_videos",
+      "t": "urls",
+      "max": 3,
+      "min": 2,
+      "rows": 2,
+      "cap": "Links"
+     },
+     {
+      "id": "music_videos_files",
+      "t": "files",
+      "accept": "video/*",
+      "max": 3,
+      "cap": "Upload (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Any live performance footage? Where is it?",
+    "opt": true,
+    "parts": [
+     {
+      "id": "music_live_links",
+      "t": "urls",
+      "max": 4,
+      "rows": 1,
+      "cap": "Links"
+     },
+     {
+      "id": "music_live",
+      "t": "files",
+      "accept": "video/*",
+      "max": 3,
+      "cap": "Upload (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Do you own these tracks fully, or is anyone else involved? (Producers, features, samples.)",
+    "parts": [
+     {
+      "id": "music_rights",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "Artists can apply to have music on WaveZStation (wavezstation.com). Note which tracks you own fully so we know what is free to list.",
+  "checks": [
+   {
+    "l": "Go-to song added",
+    "all": [
+     "music_goto"
+    ]
+   },
+   {
+    "l": "Hits listed (3 to 5)",
+    "all": [
+     "music_hits"
+    ]
+   },
+   {
+    "l": "Best videos listed",
+    "any": [
+     "music_videos",
+     "music_videos_files"
+    ]
+   },
+   {
+    "l": "Ownership noted",
+    "all": [
+     "music_rights"
+    ]
+   }
+  ],
+  "skip": "If you are unsure about ownership on a track, flag it. We will not feature it until it is clear."
+ },
+ {
+  "key": "voice",
+  "order": 5,
+  "title": "Your Voice and Lines",
+  "tier": "next",
+  "tierLabel": "Next",
+  "mins": "about 30 min",
+  "blurb": "Catchphrases and how you talk about a battle: a winner and a loser, with the anger kept in the music.",
+  "why": "These are the lines clips and graphics quote. They become part of your recognizable voice.",
+  "qs": [
+   {
+    "label": "Your catchphrase.",
+    "parts": [
+     {
+      "id": "voice_catch",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What do you say when you win?",
+    "parts": [
+     {
+      "id": "voice_win",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "How do you challenge an opponent?",
+    "parts": [
+     {
+      "id": "voice_challenge",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "How do you sign off?",
+    "parts": [
+     {
+      "id": "voice_signoff",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "How would you describe your voice and tone?",
+    "parts": [
+     {
+      "id": "voice_tone",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Your signature weapon: bars, melody, production, storytelling, genre mixing?",
+    "parts": [
+     {
+      "id": "voice_weapon",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What is fair game in a rivalry, and what is off limits?",
+    "parts": [
+     {
+      "id": "voice_limits",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What do you call your fans or community?",
+    "parts": [
+     {
+      "id": "voice_fans",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "Pick a line that works on any family stage, not only in a battle.",
+  "checks": [
+   {
+    "l": "Catchphrase chosen",
+    "all": [
+     "voice_catch"
+    ]
+   },
+   {
+    "l": "Win and challenge lines written",
+    "all": [
+     "voice_win",
+     "voice_challenge"
+    ]
+   },
+   {
+    "l": "Rivalry limits written",
+    "all": [
+     "voice_limits"
+    ]
+   }
+  ],
+  "skip": "One strong catchphrase is enough to start."
+ },
+ {
+  "key": "walk",
+  "order": 6,
+  "title": "Your Entrance (THE WALK)",
+  "tier": "next",
+  "tierLabel": "Next",
+  "mins": "about 30 min",
+  "blurb": "The moment before your first song: the sound, the words and the beats of your entrance.",
+  "why": "The entrance is often the most shareable clip of any event. A ready entrance means every battle starts strong.",
+  "qs": [
+   {
+    "label": "Is there a few-second sound or sting that should play when you enter? Link it.",
+    "hint": "Paste a link (Audius, Google Drive, Dropbox). Audio files cannot be uploaded here.",
+    "parts": [
+     {
+      "id": "walk_sound",
+      "t": "urls",
+      "max": 2,
+      "rows": 1
+     }
+    ]
+   },
+   {
+    "label": "How should the announcer introduce you? Write it the way you want to hear it.",
+    "parts": [
+     {
+      "id": "walk_intro",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Describe the beats of your entrance, step by step.",
+    "parts": [
+     {
+      "id": "walk_beats",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "Tell us if your entrance can play at ZAO Festivals and other family stages too.",
+  "checks": [
+   {
+    "l": "Entrance sound chosen",
+    "all": [
+     "walk_sound"
+    ]
+   },
+   {
+    "l": "Announcer intro written",
+    "all": [
+     "walk_intro"
+    ]
+   },
+   {
+    "l": "Entrance beats described",
+    "all": [
+     "walk_beats"
+    ]
+   }
+  ],
+  "skip": "No sound yet? Write the intro first. We can find the sound together."
+ },
+ {
+  "key": "home",
+  "order": 7,
+  "title": "Your Home Base",
+  "tier": "next",
+  "tierLabel": "Next",
+  "mins": "about 60 min",
+  "blurb": "The places people land when they look you up, set up so a new fan can binge you.",
+  "why": "When someone loves one artist, they go looking for the next. A polished home base turns a single listener into a binge listener.",
+  "qs": [
+   {
+    "label": "Do you have a website? Link it, or note what you need.",
+    "parts": [
+     {
+      "id": "home_website",
+      "t": "urls",
+      "max": 1,
+      "rows": 1
+     },
+     {
+      "id": "home_website_note",
+      "t": "text",
+      "cap": "Notes (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Do you have a YouTube channel with your best videos on it? Link it.",
+    "parts": [
+     {
+      "id": "home_youtube",
+      "t": "urls",
+      "max": 1,
+      "rows": 1
+     }
+    ]
+   },
+   {
+    "label": "Does the same bio appear on every platform? List the platforms.",
+    "parts": [
+     {
+      "id": "home_bio",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Do your profile picture and cover image match across platforms?",
+    "parts": [
+     {
+      "id": "home_images_note",
+      "t": "text"
+     },
+     {
+      "id": "home_images",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 2,
+      "img": true,
+      "cap": "Your profile picture and cover image (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Do your video thumbnails catch the eye? Share an example you like or are unsure about.",
+    "parts": [
+     {
+      "id": "home_thumbs_note",
+      "t": "text"
+     },
+     {
+      "id": "home_thumbs",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 3,
+      "img": true,
+      "cap": "Example thumbnails (optional)"
+     }
+    ]
+   }
+  ],
+  "fam": "Link your WavID, WaveZStation page and ZAO profile where they apply, so the family finds you from anywhere.",
+  "checks": [
+   {
+    "l": "Website in place (or planned)",
+    "any": [
+     "home_website",
+     "home_website_note"
+    ]
+   },
+   {
+    "l": "YouTube channel with best videos",
+    "all": [
+     "home_youtube"
+    ]
+   },
+   {
+    "l": "Same bio on every platform",
+    "all": [
+     "home_bio"
+    ]
+   },
+   {
+    "l": "Profile picture and cover image match",
+    "any": [
+     "home_images_note",
+     "home_images"
+    ]
+   },
+   {
+    "l": "Video thumbnails polished",
+    "any": [
+     "home_thumbs_note",
+     "home_thumbs"
+    ]
+   }
+  ],
+  "skip": "Do these in batches. Tell us which one you need help with first."
+ },
+ {
+  "key": "community",
+  "order": 8,
+  "title": "Your Community, Causes and Family",
+  "tier": "later",
+  "tierLabel": "Later",
+  "mins": "about 30 min",
+  "blurb": "Who you belong to, what you care about and which brands or causes genuinely fit you.",
+  "why": "Matching you with partners who truly fit is how we find the right fit later, without forcing it.",
+  "qs": [
+   {
+    "label": "Which communities are you part of?",
+    "parts": [
+     {
+      "id": "community_community",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Which kinds of brands, genres or causes genuinely fit you? (This is a wish list. Nothing is promised.)",
+    "parts": [
+     {
+      "id": "community_fit",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "How are you connected to WavID, WaveZStation, the ZAO or ZAO Festivals? Who should we introduce you to?",
+    "parts": [
+     {
+      "id": "community_family",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "This is the family module. Note your connection to WavID, WaveZStation, the ZAO and ZAO Festivals, and who you would want us to introduce you to.",
+  "checks": [
+   {
+    "l": "Communities listed",
+    "all": [
+     "community_community"
+    ]
+   },
+   {
+    "l": "Brand and cause fit listed",
+    "all": [
+     "community_fit"
+    ]
+   },
+   {
+    "l": "Family connections listed",
+    "all": [
+     "community_family"
+    ]
+   }
+  ],
+  "skip": "Leave anything blank that you are not sure about."
+ },
+ {
+  "key": "archive",
+  "order": 9,
+  "title": "Your Archive: History and Footage",
+  "tier": "later",
+  "tierLabel": "Later",
+  "mins": "about 60 min",
+  "blurb": "Older footage, press, photos from past shows and anything that tells your history.",
+  "why": "Old footage becomes flashbacks and era remixes: the same footage in a new context. Every item we keep needs a reason, and that reason is how it becomes part of WaveWarZ lore.",
+  "qs": [
+   {
+    "label": "What older footage or photos do you have, and where are they?",
+    "parts": [
+     {
+      "id": "archive_footage_note",
+      "t": "text",
+      "cap": "Notes"
+     },
+     {
+      "id": "archive_footage_links",
+      "t": "urls",
+      "max": 6,
+      "rows": 1,
+      "cap": "Links"
+     },
+     {
+      "id": "archive_footage",
+      "t": "files",
+      "accept": "image/*,video/*,application/pdf,.svg",
+      "max": 6,
+      "cap": "Upload"
+     }
+    ]
+   },
+   {
+    "label": "Any press, interviews or features about you? Links.",
+    "parts": [
+     {
+      "id": "archive_press",
+      "t": "urls",
+      "max": 8,
+      "rows": 2
+     }
+    ]
+   },
+   {
+    "label": "What are the 3 moments from your career you would most want people to see?",
+    "parts": [
+     {
+      "id": "archive_moments",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Who filmed or made anything you are sharing, so we can credit them?",
+    "parts": [
+     {
+      "id": "archive_credits",
+      "t": "text"
+     }
+    ]
+   }
+  ],
+  "fam": "Footage from ZAO Festivals or other family events belongs here too. Tag which family stage it came from.",
+  "checks": [
+   {
+    "l": "Footage and photos located",
+    "any": [
+     "archive_footage_note",
+     "archive_footage_links",
+     "archive_footage"
+    ]
+   },
+   {
+    "l": "Press and features listed",
+    "all": [
+     "archive_press"
+    ]
+   },
+   {
+    "l": "Top 3 moments chosen",
+    "all": [
+     "archive_moments"
+    ]
+   },
+   {
+    "l": "Creators to credit noted",
+    "all": [
+     "archive_credits"
+    ]
+   }
+  ],
+  "skip": "This module is ongoing. Share what you have and add more over time."
+ },
+ {
+  "key": "merch",
+  "order": 10,
+  "title": "Your Merch",
+  "tier": "later",
+  "tierLabel": "Later",
+  "mins": "about 30 min",
+  "blurb": "A couple of items with your name and style on them, ready to release on the WaveWarZ merch shop when you are.",
+  "why": "We want to make one or two pieces with you for the WaveWarZ merch shop. Tell us what you would love to wear or sell and how you want it to look. Some items take time to source, so a wish list is perfect. Nothing is released until you say you are ready.",
+  "link": {
+   "t": "See the WaveWarZ merch shop",
+   "u": "https://merch.wavewarz.info"
+  },
+  "qs": [
+   {
+    "label": "Which items would you want your logo or designs on?",
+    "hint": "Pick as many as you like, including audio merch like vinyl, CDs, iPods and Walkmans.",
+    "parts": [
+     {
+      "id": "merch_items",
+      "t": "choice",
+      "multi": true,
+      "opts": [
+       "T-shirt",
+       "Long sleeve",
+       "Hoodie",
+       "Hat or cap",
+       "Beanie",
+       "Sticker pack",
+       "Poster or print",
+       "Tote bag",
+       "Mug",
+       "Phone case",
+       "Vinyl records",
+       "CDs",
+       "iPods",
+       "Walkmans (portable players)"
+      ]
+     },
+     {
+      "id": "merch_other",
+      "t": "text",
+      "cap": "Something else? Tell us (optional)"
+     }
+    ]
+   },
+   {
+    "label": "Whose design goes on it?",
+    "hint": "Choose one. You can change your mind later.",
+    "parts": [
+     {
+      "id": "merch_source",
+      "t": "choice",
+      "multi": false,
+      "opts": [
+       "I will submit my own design",
+       "Use my logo as it is",
+       "Create something from my palette, logo and vibe",
+       "Surprise me: a mix of both"
+      ]
+     }
+    ]
+   },
+   {
+    "label": "Your design files",
+    "opt": true,
+    "hint": "Print-ready art if you have it. A PNG with a transparent background works best. Skip this if you want us to create it.",
+    "parts": [
+     {
+      "id": "merch_files",
+      "t": "files",
+      "accept": "image/*,application/pdf,.svg",
+      "max": 4,
+      "img": true
+     }
+    ]
+   },
+   {
+    "label": "Any specific item, color or fit?",
+    "opt": true,
+    "hint": "For example: black oversized hoodie, cropped tee, white cap with a small logo, unisex or women's cut.",
+    "parts": [
+     {
+      "id": "merch_details",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "Words or a line to print on it",
+    "opt": true,
+    "hint": "A catchphrase, your name, a slogan. Anything you never want printed, tell us too.",
+    "parts": [
+     {
+      "id": "merch_words",
+      "t": "text"
+     }
+    ]
+   },
+   {
+    "label": "What is your ideal merch?",
+    "hint": "A wish list with no limits. Describe the dream item, where people would wear it, what it should feel like.",
+    "parts": [
+     {
+      "id": "merch_ideal",
+      "t": "text"
+     },
+     {
+      "id": "merch_inspo",
+      "t": "files",
+      "accept": "image/*,.svg",
+      "max": 4,
+      "img": true,
+      "cap": "Inspiration pictures (optional)"
+     }
+    ]
+   }
+  ],
+  "fam": "Tell us if you also want your merch at ZAO Festivals or on your own site.",
+  "checks": [
+   {
+    "l": "Items chosen",
+    "any": [
+     "merch_items",
+     "merch_other"
+    ]
+   },
+   {
+    "l": "Design direction chosen",
+    "all": [
+     "merch_source"
+    ]
+   },
+   {
+    "l": "Ideal merch described",
+    "all": [
+     "merch_ideal"
+    ]
+   }
+  ],
+  "skip": "Not sure yet? Pick \"Surprise me\" and we will propose options. We may not have an item right away, and sourcing takes time."
+ }
+]

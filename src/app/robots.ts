@@ -23,12 +23,12 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin', '/hub', '/api/'],
+        disallow: ['/admin', '/hub', '/playbook', '/api/'],
       },
       ...AI_AGENT_USER_AGENTS.map((userAgent) => ({
         userAgent,
         allow: ['/', '/api/public/'],
-        disallow: ['/admin', '/hub', '/api/admin', '/api/webhook'],
+        disallow: ['/admin', '/hub', '/playbook', '/api/admin', '/api/webhook'],
       })),
     ],
     sitemap: 'https://wavewarz.info/sitemap.xml',

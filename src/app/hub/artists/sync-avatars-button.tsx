@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { syncRoster, syncArtistAvatars } from '@/app/hub/actions'
 
 // Reconciles the Hub roster with the live Artist Leaderboard: adds any missing
-// artists (the DB trigger creates their Identity Bible), then persists avatars.
+// artists (the DB trigger creates their Artist Archive), then persists avatars.
 // Everything else in the Hub already tracks the app + API live.
 export function SyncAvatarsButton() {
   const router = useRouter()

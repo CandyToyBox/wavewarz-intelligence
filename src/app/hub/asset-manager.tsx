@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { addContentAsset, deleteContentAsset } from '@/app/hub/actions'
+import { FAMILY } from '@/lib/hub-modules'
 
 export type Asset = {
   id: string
@@ -12,6 +13,9 @@ export type Asset = {
   url: string | null
   asset_type: string
   notes: string | null
+  why_added?: string | null
+  family_tags?: string[] | null
+  module_key?: string | null
 }
 
 const ASSET_TYPES = ['link', 'image', 'video', 'audio', 'doc']
@@ -27,6 +31,8 @@ export function AssetManager({
   categories,
   assets,
   revalidate,
+  moduleKey,
+  heading = 'Assets',
 }: {
   scope: 'league' | 'artist' | 'event'
   artistId?: string
@@ -34,14 +40,17 @@ export function AssetManager({
   categories: string[]
   assets: Asset[]
   revalidate: string
+  moduleKey?: string
+  heading?: string
 }) {
   const router = useRouter()
   const [adding, setAdding] = useState(false)
   const [pending, startTransition] = useTransition()
   const [err, setErr] = useState<string | null>(null)
   const [form, setForm] = useState({
-    category: categories[0], franchise: '', title: '', url: '', asset_type: 'link', notes: '',
+    category: categories[0], franchise: '', title: '', url: '', asset_type: 'link', notes: '', why_added: '',
   })
+  const [family, setFamily] = useState<string[]>([])
 
   const byCategory = new Map<string, Asset[]>()
   for (const c of categories) byCategory.set(c, [])
@@ -53,6 +62,7 @@ export function AssetManager({
   function submit() {
     setErr(null)
     if (!form.title.trim()) { setErr('Title is required'); return }
+    if (!form.why_added.trim()) { setErr('Say why this is being added and what it brings to the lore, archive or history'); return }
     startTransition(async () => {
       const res = await addContentAsset({
         scope,
@@ -64,9 +74,13 @@ export function AssetManager({
         url: form.url.trim() || null,
         assetType: form.asset_type,
         notes: form.notes.trim() || null,
+        whyAdded: form.why_added.trim(),
+        moduleKey: moduleKey ?? null,
+        familyTags: family,
       })
       if (!res.ok) { setErr(res.error ?? 'Failed'); return }
-      setForm({ category: form.category, franchise: '', title: '', url: '', asset_type: 'link', notes: '' })
+      setForm({ category: form.category, franchise: '', title: '', url: '', asset_type: 'link', notes: '', why_added: '' })
+      setFamily([])
       setAdding(false)
       router.refresh()
     })
@@ -82,7 +96,7 @@ export function AssetManager({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Assets</h2>
+        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">{heading}</h2>
         <button
           onClick={() => setAdding(a => !a)}
           className="text-xs font-bold text-[#0d1321] bg-[#95fe7c] hover:bg-[#95fe7c]/90 px-3 py-1.5 rounded"
@@ -129,6 +143,35 @@ export function AssetManager({
               className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
             />
           </label>
+          <label className="text-xs text-muted-foreground md:col-span-2">
+            Why is this being added? What does it bring to the WaveWarZ lore, archive or history? (required)
+            <textarea
+              value={form.why_added}
+              onChange={e => setForm(f => ({ ...f, why_added: e.target.value }))}
+              rows={2}
+              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+            />
+          </label>
+          <div className="md:col-span-2">
+            <p className="text-xs text-muted-foreground mb-1">Family this touches (optional)</p>
+            <div className="flex flex-wrap gap-2">
+              {FAMILY.map(f => {
+                const on = family.includes(f)
+                return (
+                  <button
+                    type="button"
+                    key={f}
+                    onClick={() => setFamily(cur => on ? cur.filter(x => x !== f) : [...cur, f])}
+                    className={`text-xs px-2.5 py-1 rounded border transition-colors ${
+                      on ? 'text-[#0d1321] bg-[#95fe7c] border-[#95fe7c]' : 'text-muted-foreground border-border hover:text-white'
+                    }`}
+                  >
+                    {f}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
           <label className="text-xs text-muted-foreground">
             Type
             <select
@@ -181,6 +224,14 @@ export function AssetManager({
                       <span className="text-[10px] text-muted-foreground ml-2">{a.asset_type}</span>
                       {a.franchise && <span className="text-[10px] text-[#95fe7c] ml-1">· {a.franchise}</span>}
                       {a.notes && <p className="text-[11px] text-muted-foreground">{a.notes}</p>}
+                      {a.why_added ? (
+                        <p className="text-[11px] text-white/70">Why: {a.why_added}</p>
+                      ) : (
+                        <p className="text-[11px] text-amber-400">No reason recorded yet. Add one.</p>
+                      )}
+                      {a.family_tags && a.family_tags.length > 0 && (
+                        <p className="text-[10px] text-[#7ec1fb]">{a.family_tags.join(' · ')}</p>
+                      )}
                     </div>
                     <button
                       onClick={() => remove(a.id)}

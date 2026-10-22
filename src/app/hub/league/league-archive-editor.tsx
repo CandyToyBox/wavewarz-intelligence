@@ -15,6 +15,7 @@ export type LeagueBible = {
   rules_md: string | null
   scoring_md: string | null
   guardrails_md: string | null
+  ethos_md: string | null
   glossary: { term: string; definition: string }[]
 }
 
@@ -35,6 +36,13 @@ const SECTIONS: { title: string; blurb: string; fields: Field[] }[] = [
     ],
   },
   {
+    title: 'Ethos',
+    blurb: 'What we stand for, in the words we all use: all genres, bring all of you, the audience decides.',
+    fields: [
+      { name: 'ethos_md', label: 'Ethos', ta: true, hint: 'Every genre. Bring all of you. Put the anger in the music. The whole artist counts. A show the whole family can watch.' },
+    ],
+  },
+  {
     title: 'Rules & Scoring',
     blurb: 'Official battle rules and winner methodology in plain English.',
     fields: [
@@ -51,7 +59,7 @@ const SECTIONS: { title: string; blurb: string; fields: Field[] }[] = [
   },
 ]
 
-export function LeagueBibleEditor({ bible }: { bible: LeagueBible }) {
+export function LeagueArchiveEditor({ bible, only }: { bible: LeagueBible; only: string[] }) {
   const router = useRouter()
   const [editing, setEditing] = useState<string | null>(null)
   const [draft, setDraft] = useState<Record<string, string>>(() => {
@@ -83,7 +91,7 @@ export function LeagueBibleEditor({ bible }: { bible: LeagueBible }) {
 
   return (
     <div className="space-y-4">
-      {SECTIONS.map(section => {
+      {SECTIONS.filter(section => only.includes(section.title)).map(section => {
         const isEditing = editing === section.title
         return (
           <Group
@@ -113,7 +121,7 @@ export function LeagueBibleEditor({ bible }: { bible: LeagueBible }) {
       })}
 
       {/* Glossary */}
-      <Group
+      {only.includes('Glossary') && <Group
         title="Glossary"
         blurb="Your own terms, defined once — THE WALK, TRACK LOCK, Main Event, Benefit Battle…"
         editing={editing === 'Glossary'}
@@ -146,7 +154,7 @@ export function LeagueBibleEditor({ bible }: { bible: LeagueBible }) {
             ))}
           </dl>
         )}
-      </Group>
+      </Group>}
     </div>
   )
 }

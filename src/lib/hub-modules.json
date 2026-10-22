@@ -1,0 +1,893 @@
+{
+  "family": [
+    "WaveWarZ",
+    "WavID",
+    "WaveZStation",
+    "The ZAO",
+    "ZAO Festivals"
+  ],
+  "artist": [
+    {
+      "key": "who",
+      "order": 1,
+      "tier": "start",
+      "title": "Who You Are",
+      "minutes": 30,
+      "blurb": "The basics, in your own words. This is the first thing a new listener learns about you.",
+      "why": "It becomes your first docu-slice and the opening line of every card, poster and intro that carries your name.",
+      "familyTie": "Write one line a stranger could read on any of our family pages: WaveWarZ, WavID, WaveZStation or the ZAO.",
+      "fields": [
+        "nickname",
+        "archetype_primary",
+        "archetype_secondary",
+        "one_line_identity",
+        "short_bio",
+        "long_bio",
+        "want",
+        "motivation",
+        "whats_proving",
+        "greatest_strength",
+        "core_belief",
+        "hero_heel",
+        "vulnerability"
+      ],
+      "categories": [
+        "Artist Archive"
+      ],
+      "prompts": [
+        {
+          "key": "one_line",
+          "label": "Who are you in one sentence?",
+          "hint": "A stranger should get you from this line alone."
+        },
+        {
+          "key": "genre",
+          "label": "What music do you make, and what makes it yours?"
+        },
+        {
+          "key": "short_bio",
+          "label": "Your short bio: 3 or 4 sentences you would be proud to see on every platform."
+        },
+        {
+          "key": "want",
+          "label": "What do you want right now, with your music?"
+        },
+        {
+          "key": "prove",
+          "label": "What are you trying to prove, to yourself or anyone else?"
+        },
+        {
+          "key": "strength",
+          "label": "What is your greatest strength as an artist?"
+        }
+      ],
+      "checklist": [
+        {
+          "key": "one_line",
+          "label": "One-line identity written"
+        },
+        {
+          "key": "short_bio",
+          "label": "Short bio written"
+        },
+        {
+          "key": "want_prove",
+          "label": "What you want and what you are proving written"
+        }
+      ],
+      "skipOk": "Long bio, core belief and archetype can wait. Candy can suggest an archetype with you later."
+    },
+    {
+      "key": "look",
+      "order": 2,
+      "tier": "start",
+      "title": "Your Look",
+      "minutes": 45,
+      "blurb": "Colors, logo, symbol and the full character: the look, the costume, the stage presence.",
+      "why": "Every poster, Face-Off card and clip uses these. Once they are set, nobody has to ask you again.",
+      "familyTie": "Send your logo as a clean file. The same file travels to WaveWarZ, WaveZStation and ZAO pages.",
+      "fields": [
+        "color_signature",
+        "color_secondary",
+        "color_accent",
+        "symbol",
+        "typography",
+        "logo_url",
+        "visual_effect",
+        "stage_character",
+        "do_not_use"
+      ],
+      "categories": [
+        "Logos",
+        "Photos"
+      ],
+      "prompts": [
+        {
+          "key": "colors",
+          "label": "Your signature color, a second color and an accent (names or hex codes)."
+        },
+        {
+          "key": "symbol",
+          "label": "Do you have a symbol, monogram or mark? If not, what would it be?"
+        },
+        {
+          "key": "character",
+          "label": "Your full character: the look, the costume, the stage presence. Describe it like a movie character."
+        },
+        {
+          "key": "effect",
+          "label": "Any signature visual effect or style you love (grain, glitch, neon, hand-drawn)?"
+        },
+        {
+          "key": "avoid",
+          "label": "What should we never do to your image?"
+        }
+      ],
+      "collect": [
+        "Your logo as a PNG with a transparent background, if you have one",
+        "3 to 5 of your best photos, full resolution",
+        "A reference for your costume or character, if there is one"
+      ],
+      "checklist": [
+        {
+          "key": "logo",
+          "label": "Logo file received"
+        },
+        {
+          "key": "photos",
+          "label": "3 to 5 best photos received"
+        },
+        {
+          "key": "character",
+          "label": "Character described"
+        },
+        {
+          "key": "colors",
+          "label": "Colors chosen"
+        }
+      ],
+      "skipOk": "No logo yet? Say so and we will plan one. Do not rush it."
+    },
+    {
+      "key": "story",
+      "order": 3,
+      "tier": "start",
+      "title": "Your Story, In Your Own Words",
+      "minutes": 90,
+      "blurb": "Short answers recorded once, each as its own clip. We stack them into interviews, docu-slices and flashbacks.",
+      "why": "Every cut we make later (the interview, the pre-battle slice, the flashback) is built from these blocks, so a plain answer today becomes episodes later.",
+      "familyTie": "Mention where we found each other: Wave Wars, the ZAO, a festival, a Space. These are the threads that make the history real.",
+      "fields": [],
+      "categories": [
+        "Interviews",
+        "Quotes"
+      ],
+      "prompts": [
+        {
+          "key": "core1",
+          "label": "Core answer 1: What music do you play?",
+          "hint": "Record it as its own 30 to 60 second clip. It must make sense without any other clip."
+        },
+        {
+          "key": "core2",
+          "label": "Core answer 2: How long have you been playing?"
+        },
+        {
+          "key": "core3",
+          "label": "Core answer 3: Where did you grow up?"
+        },
+        {
+          "key": "pick",
+          "label": "Your picks: which of these do you want the world to see? History, hobbies, what you are working on now, anything else you choose."
+        },
+        {
+          "key": "slice_plan",
+          "label": "Docu-slice plan: what would you share, in order? Basics, childhood, training, free time, then your pick."
+        },
+        {
+          "key": "meme",
+          "label": "Got an idea for a meme promo or a funny short about yourself? Describe it."
+        }
+      ],
+      "collect": [
+        "3 core answers, each recorded as its own short clip",
+        "At least 1 block of your choice (history, hobbies, current work)",
+        "Any older footage that tells part of your story (we credit third-party creators with simple text)"
+      ],
+      "checklist": [
+        {
+          "key": "core1",
+          "label": "Core answer 1 recorded"
+        },
+        {
+          "key": "core2",
+          "label": "Core answer 2 recorded"
+        },
+        {
+          "key": "core3",
+          "label": "Core answer 3 recorded"
+        },
+        {
+          "key": "pick",
+          "label": "At least 1 of your own picks recorded"
+        },
+        {
+          "key": "slice_plan",
+          "label": "Docu-slice order chosen"
+        }
+      ],
+      "skipOk": "Anything personal you are not comfortable sharing stays out. You choose what the world sees."
+    },
+    {
+      "key": "music",
+      "order": 4,
+      "tier": "start",
+      "title": "Your Music and Best Videos",
+      "minutes": 30,
+      "blurb": "The songs you would battle with, and your best videos.",
+      "why": "Your music is the reason anyone clicks. Having the right songs and links ready makes every battle and clip faster to produce.",
+      "familyTie": "Artists can apply to have music on WaveZStation (wavezstation.com). Note which tracks you own fully so we know what is free to list.",
+      "fields": [],
+      "categories": [
+        "Music",
+        "Video",
+        "Battles"
+      ],
+      "prompts": [
+        {
+          "key": "songs",
+          "label": "Which 3 to 5 songs would you battle with? Add the links (Audius or elsewhere)."
+        },
+        {
+          "key": "best_videos",
+          "label": "Which 2 or 3 videos show you at your best? Add links."
+        },
+        {
+          "key": "live",
+          "label": "Any live performance footage? Where is it?"
+        },
+        {
+          "key": "rights",
+          "label": "Do you own these tracks fully, or is anyone else involved? (Producers, features, samples.)"
+        }
+      ],
+      "collect": [
+        "3 to 5 song links",
+        "2 or 3 best video links",
+        "Live footage links, if any"
+      ],
+      "checklist": [
+        {
+          "key": "songs",
+          "label": "Battle songs listed"
+        },
+        {
+          "key": "videos",
+          "label": "Best videos listed"
+        },
+        {
+          "key": "rights",
+          "label": "Ownership noted"
+        }
+      ],
+      "skipOk": "If you are unsure about ownership on a track, flag it. We will not feature it until it is clear."
+    },
+    {
+      "key": "voice",
+      "order": 5,
+      "tier": "next",
+      "title": "Your Voice and Lines",
+      "minutes": 30,
+      "blurb": "Catchphrases and how you talk about a battle: a winner and a loser, with the anger kept in the music.",
+      "why": "These are the lines clips and graphics quote. They become part of your recognizable voice.",
+      "familyTie": "Pick a line that works on any family stage, not only in a battle.",
+      "fields": [
+        "catchphrase",
+        "victory_phrase",
+        "challenge_phrase",
+        "signoff",
+        "voice_tone",
+        "trashtalk_boundaries",
+        "signature_weapon",
+        "memeable_phrase",
+        "community_name",
+        "artist_emoji"
+      ],
+      "categories": [
+        "Quotes"
+      ],
+      "prompts": [
+        {
+          "key": "catch",
+          "label": "Your catchphrase."
+        },
+        {
+          "key": "win",
+          "label": "What do you say when you win?"
+        },
+        {
+          "key": "challenge",
+          "label": "How do you challenge an opponent?"
+        },
+        {
+          "key": "signoff",
+          "label": "How do you sign off?"
+        },
+        {
+          "key": "tone",
+          "label": "How would you describe your voice and tone?"
+        },
+        {
+          "key": "weapon",
+          "label": "Your signature weapon: bars, melody, production, storytelling, genre mixing?"
+        },
+        {
+          "key": "limits",
+          "label": "What is fair game in a rivalry, and what is off limits?"
+        },
+        {
+          "key": "fans",
+          "label": "What do you call your fans or community?"
+        }
+      ],
+      "checklist": [
+        {
+          "key": "catch",
+          "label": "Catchphrase chosen"
+        },
+        {
+          "key": "win_challenge",
+          "label": "Win and challenge lines written"
+        },
+        {
+          "key": "limits",
+          "label": "Rivalry limits written"
+        }
+      ],
+      "skipOk": "One strong catchphrase is enough to start."
+    },
+    {
+      "key": "walk",
+      "order": 6,
+      "tier": "next",
+      "title": "Your Entrance (THE WALK)",
+      "minutes": 30,
+      "blurb": "The moment before your first song: the sound, the words and the beats of your entrance.",
+      "why": "The entrance is often the most shareable clip of any event. A ready entrance means every battle starts strong.",
+      "familyTie": "Tell us if your entrance can play at ZAO Festivals and other family stages too.",
+      "fields": [
+        "entrance_sting_url",
+        "walk_cue_url",
+        "walk_script_md",
+        "announcer_intro"
+      ],
+      "categories": [
+        "THE WALK"
+      ],
+      "prompts": [
+        {
+          "key": "sound",
+          "label": "Is there a few-second sound or sting that should play when you enter? Link it."
+        },
+        {
+          "key": "intro",
+          "label": "How should the announcer introduce you? Write it the way you want to hear it."
+        },
+        {
+          "key": "beats",
+          "label": "Describe the beats of your entrance, step by step."
+        }
+      ],
+      "checklist": [
+        {
+          "key": "sound",
+          "label": "Entrance sound chosen"
+        },
+        {
+          "key": "intro",
+          "label": "Announcer intro written"
+        },
+        {
+          "key": "beats",
+          "label": "Entrance beats described"
+        }
+      ],
+      "skipOk": "No sound yet? Write the intro first. We can find the sound together."
+    },
+    {
+      "key": "home",
+      "order": 7,
+      "tier": "next",
+      "title": "Your Home Base",
+      "minutes": 60,
+      "blurb": "The places people land when they look you up, set up so a new fan can binge you.",
+      "why": "When someone loves one artist, they go looking for the next. A polished home base turns a single listener into a binge listener.",
+      "familyTie": "Link your WavID, WaveZStation page and ZAO profile where they apply, so the family finds you from anywhere.",
+      "fields": [],
+      "categories": [
+        "Home Base",
+        "Community"
+      ],
+      "prompts": [
+        {
+          "key": "website",
+          "label": "Do you have a website? Link it, or note what you need."
+        },
+        {
+          "key": "youtube",
+          "label": "Do you have a YouTube channel with your best videos on it? Link it."
+        },
+        {
+          "key": "bio",
+          "label": "Does the same bio appear on every platform? List the platforms."
+        },
+        {
+          "key": "images",
+          "label": "Do your profile picture and cover image match across platforms?"
+        },
+        {
+          "key": "thumbs",
+          "label": "Do your video thumbnails catch the eye? Share an example you like or are unsure about."
+        }
+      ],
+      "checklist": [
+        {
+          "key": "website",
+          "label": "Website in place (or planned)"
+        },
+        {
+          "key": "youtube",
+          "label": "YouTube channel with best videos"
+        },
+        {
+          "key": "bio",
+          "label": "Same bio on every platform"
+        },
+        {
+          "key": "images",
+          "label": "Profile picture and cover image match"
+        },
+        {
+          "key": "thumbs",
+          "label": "Video thumbnails polished"
+        }
+      ],
+      "skipOk": "Do these in batches. Tell us which one you need help with first."
+    },
+    {
+      "key": "community",
+      "order": 8,
+      "tier": "later",
+      "title": "Your Community, Causes and Family",
+      "minutes": 30,
+      "blurb": "Who you belong to, what you care about and which brands or causes genuinely fit you.",
+      "why": "Matching you with partners who truly fit is how we find the right fit later, without forcing it.",
+      "familyTie": "This is the family module. Note your connection to WavID, WaveZStation, the ZAO and ZAO Festivals, and who you would want us to introduce you to.",
+      "fields": [
+        "sponsor_fit"
+      ],
+      "categories": [
+        "Community",
+        "Sponsors",
+        "Merch",
+        "Charity"
+      ],
+      "prompts": [
+        {
+          "key": "community",
+          "label": "Which communities are you part of?"
+        },
+        {
+          "key": "fit",
+          "label": "Which kinds of brands, genres or causes genuinely fit you? (This is a wish list. Nothing is promised.)"
+        },
+        {
+          "key": "merch",
+          "label": "Do you have merch, or an idea for it?"
+        },
+        {
+          "key": "family",
+          "label": "How are you connected to WavID, WaveZStation, the ZAO or ZAO Festivals? Who should we introduce you to?"
+        }
+      ],
+      "checklist": [
+        {
+          "key": "community",
+          "label": "Communities listed"
+        },
+        {
+          "key": "fit",
+          "label": "Brand and cause fit listed"
+        },
+        {
+          "key": "family",
+          "label": "Family connections listed"
+        }
+      ],
+      "skipOk": "Leave anything blank that you are not sure about."
+    },
+    {
+      "key": "archive",
+      "order": 9,
+      "tier": "later",
+      "title": "Your Archive: History and Footage",
+      "minutes": 60,
+      "blurb": "Older footage, press, photos from past shows and anything that tells your history.",
+      "why": "Old footage becomes flashbacks and era remixes: the same footage in a new context. Every item we keep needs a reason, and that reason is how it becomes part of WaveWarZ lore.",
+      "familyTie": "Footage from ZAO Festivals or other family events belongs here too. Tag which family stage it came from.",
+      "fields": [],
+      "categories": [
+        "Memes",
+        "Career Record"
+      ],
+      "prompts": [
+        {
+          "key": "footage",
+          "label": "What older footage or photos do you have, and where are they?"
+        },
+        {
+          "key": "press",
+          "label": "Any press, interviews or features about you? Links."
+        },
+        {
+          "key": "moments",
+          "label": "What are the 3 moments from your career you would most want people to see?"
+        },
+        {
+          "key": "credits",
+          "label": "Who filmed or made anything you are sharing, so we can credit them?"
+        }
+      ],
+      "checklist": [
+        {
+          "key": "footage",
+          "label": "Footage and photos located"
+        },
+        {
+          "key": "press",
+          "label": "Press and features listed"
+        },
+        {
+          "key": "moments",
+          "label": "Top 3 moments chosen"
+        },
+        {
+          "key": "credits",
+          "label": "Creators to credit noted"
+        }
+      ],
+      "skipOk": "This module is ongoing. Share what you have and add more over time."
+    }
+  ],
+  "event": [
+    {
+      "key": "announce",
+      "order": 1,
+      "title": "Announce and Set the Story",
+      "blurb": "The battle is announced, the story is set and the artists are introduced.",
+      "why": "A clear story before the battle is what makes people care about the result.",
+      "familyTie": "Tell the family first: WavID, WaveZStation and the ZAO should hear about it before the public.",
+      "categories": [
+        "Promo"
+      ],
+      "runway": [
+        "announce",
+        "identity_cards",
+        "records",
+        "rivalry_promo"
+      ]
+    },
+    {
+      "key": "interview",
+      "order": 2,
+      "title": "Artist Interview and Docu-Slice",
+      "blurb": "One new sliver of each artist, plus the countdown and sponsor moment.",
+      "why": "Each battle teaches the audience a little more about the artists, which is why they come back.",
+      "familyTie": "A family partner can own this segment. Mark which one if so.",
+      "categories": [
+        "Interview",
+        "Raw"
+      ],
+      "runway": [
+        "origins",
+        "sponsor_intro",
+        "countdown",
+        "embedded"
+      ]
+    },
+    {
+      "key": "faceoff",
+      "order": 3,
+      "title": "Face-Off",
+      "blurb": "The two sides meet before the battle. Fight Card, predictions and lock-in.",
+      "why": "The Face-Off is where the rivalry becomes visible and the audience picks a side.",
+      "familyTie": "Note where the Face-Off was held and whether a partner owns the arena.",
+      "categories": [
+        "Face-Off",
+        "Screenshots"
+      ],
+      "runway": [
+        "face_the_wave",
+        "tale_of_track",
+        "track_lock"
+      ]
+    },
+    {
+      "key": "battle",
+      "order": 4,
+      "title": "Battle Night",
+      "blurb": "The live battle: trailer, entrances and live data.",
+      "why": "The live night produces the footage everything else is cut from.",
+      "familyTie": "Mention which family members joined, spoke or sponsored.",
+      "categories": [
+        "Livestream",
+        "Stats",
+        "Sponsors"
+      ],
+      "runway": [
+        "event_day_trailer",
+        "the_walk"
+      ]
+    },
+    {
+      "key": "aftermath",
+      "order": 5,
+      "title": "Aftermath and Next Announcement",
+      "blurb": "The result, the reactions, what it meant, and the next battle announced.",
+      "why": "The announcement of the next battle is how the wheel keeps turning.",
+      "familyTie": "Thank and tag the family partners who took part.",
+      "categories": [
+        "Aftermath",
+        "Results",
+        "Clips",
+        "Reactions",
+        "Press"
+      ],
+      "runway": [
+        "winner_card",
+        "aftermath",
+        "recap"
+      ]
+    }
+  ],
+  "league": [
+    {
+      "key": "identity",
+      "order": 1,
+      "title": "Identity and Ethos",
+      "blurb": "What WaveWarZ is, in the words we all use: mission, one-liners, tagline and the ethos.",
+      "why": "Everyone telling the same story is how a new audience understands us quickly.",
+      "familyTie": "Write how WavID, WaveZStation and the ZAO fit into this sentence.",
+      "sections": [
+        "Core Identity",
+        "Ethos"
+      ],
+      "categories": [],
+      "checklist": [
+        {
+          "key": "mission",
+          "label": "Mission written"
+        },
+        {
+          "key": "lines",
+          "label": "One-liner, 10-second and 30-second versions written"
+        },
+        {
+          "key": "ethos",
+          "label": "Ethos written: all genres, all you, the audience decides"
+        }
+      ]
+    },
+    {
+      "key": "rules",
+      "order": 2,
+      "title": "Rules, Scoring and Guardrails",
+      "blurb": "Official battle rules, how winners are decided and the lines we do not cross.",
+      "why": "Clear rules are what make the competition credible.",
+      "familyTie": "Make sure family partners can explain the rules in one sentence.",
+      "sections": [
+        "Rules & Scoring",
+        "Guardrails",
+        "Glossary"
+      ],
+      "categories": [
+        "Rules"
+      ],
+      "checklist": [
+        {
+          "key": "rules",
+          "label": "Battle rules written"
+        },
+        {
+          "key": "scoring",
+          "label": "Winner methodology written"
+        },
+        {
+          "key": "glossary",
+          "label": "Glossary started"
+        }
+      ]
+    },
+    {
+      "key": "brand",
+      "order": 3,
+      "title": "Brand, Logos and Templates",
+      "blurb": "Logos, brand guide, slogans and the reusable templates for flyers and cards.",
+      "why": "Reusable brand pieces mean every new piece of content starts from a finished base.",
+      "familyTie": "Include co-branding versions for WavID, WaveZStation and the ZAO.",
+      "sections": [],
+      "categories": [
+        "Logos",
+        "Brand",
+        "Templates"
+      ],
+      "checklist": [
+        {
+          "key": "logos",
+          "label": "Logo pack collected"
+        },
+        {
+          "key": "guide",
+          "label": "Brand guide collected (colors, fonts)"
+        },
+        {
+          "key": "slogans",
+          "label": "Slogans collected"
+        },
+        {
+          "key": "templates",
+          "label": "Flyer and Face-Off templates collected"
+        }
+      ]
+    },
+    {
+      "key": "family",
+      "order": 4,
+      "title": "The Family: WavID, WaveZStation, The ZAO and ZAO Festivals",
+      "blurb": "The people and projects that are one team with WaveWarZ. Keep reaching out, keep including them. WavID is built from each artist's real WaveWarZ battle history, so every artist's battles feed it.",
+      "why": "They are part of the story. Recording each touchpoint keeps the relationship active and the history accurate.",
+      "familyTie": "This module is the family itself.",
+      "sections": [],
+      "categories": [
+        "Family"
+      ],
+      "checklist": [
+        {
+          "key": "wave_id",
+          "label": "WavID: introduction written and shared"
+        },
+        {
+          "key": "wave_station",
+          "label": "WaveZStation: introduction written and shared"
+        },
+        {
+          "key": "zao",
+          "label": "The ZAO: introduction written and shared"
+        },
+        {
+          "key": "zao_festivals",
+          "label": "ZAO Festivals: past and upcoming events recorded"
+        },
+        {
+          "key": "reach_out",
+          "label": "Reached out to each this month"
+        }
+      ]
+    },
+    {
+      "key": "sponsors",
+      "order": 5,
+      "title": "Sponsors and Segments",
+      "blurb": "Spots in the battle cycle a partner can own, and the assets for each.",
+      "why": "Fixed segments are repeatable and consistent, and they never get forgotten when things get busy.",
+      "familyTie": "Family partners are offered a segment before outside brands.",
+      "sections": [],
+      "categories": [
+        "Sponsors"
+      ],
+      "checklist": [
+        {
+          "key": "segments",
+          "label": "Segments defined: Face-Off, Interview, Flyer, In-scene, Roll Call"
+        },
+        {
+          "key": "inventory",
+          "label": "Sponsor inventory reviewed"
+        },
+        {
+          "key": "assets",
+          "label": "Sponsor assets collected"
+        }
+      ]
+    },
+    {
+      "key": "press",
+      "order": 6,
+      "title": "Press, History and Charity",
+      "blurb": "Milestones, press coverage and charity work.",
+      "why": "This is the written history. A milestone saved today is a proof point tomorrow.",
+      "familyTie": "Include family milestones such as ZAO Festivals and partner launches.",
+      "sections": [],
+      "categories": [
+        "Press",
+        "History",
+        "Charity"
+      ],
+      "checklist": [
+        {
+          "key": "milestones",
+          "label": "Milestones logged"
+        },
+        {
+          "key": "press",
+          "label": "Press coverage logged"
+        },
+        {
+          "key": "charity",
+          "label": "Charity work logged"
+        }
+      ]
+    },
+    {
+      "key": "records",
+      "order": 7,
+      "title": "Records and Receipts",
+      "blurb": "The Record Book and the receipts behind it.",
+      "why": "Records give each battle weight. They turn a result into history.",
+      "familyTie": "",
+      "sections": [
+        "Record Book"
+      ],
+      "categories": [
+        "Records"
+      ],
+      "checklist": [
+        {
+          "key": "marks",
+          "label": "Judgement-call marks set"
+        },
+        {
+          "key": "receipts",
+          "label": "Receipts saved for each record"
+        }
+      ]
+    },
+    {
+      "key": "distribution",
+      "order": 8,
+      "title": "Distribution Engine",
+      "blurb": "Every channel the content goes out on, kept on a regular schedule.",
+      "why": "Regular formats make a habit. Each channel feeds the others.",
+      "familyTie": "List the family channels that carry our content too.",
+      "sections": [],
+      "categories": [
+        "Distribution"
+      ],
+      "checklist": [
+        {
+          "key": "cadence",
+          "label": "Weekly show cadence set"
+        },
+        {
+          "key": "newsletter",
+          "label": "Blog or newsletter running"
+        },
+        {
+          "key": "radio",
+          "label": "Radio and other channels listed"
+        },
+        {
+          "key": "space_clips",
+          "label": "Method for saving Space audio set"
+        }
+      ]
+    }
+  ],
+  "familyNotes": {
+    "WaveWarZ": "The live music battles and the league around them.",
+    "WavID": "The musician identity layer for WaveWarZ, created by Quan (0xQuan93). It turns an artist's verifiable WaveWarZ battle history into a visual identity that grows as they compete. It is built from real battle data, so it only exists for artists who have actually battled. A developer preview is at wavewarz.info/wavid.",
+    "WaveZStation": "The new music marketplace for community-supported music, at wavezstation.com: fan-powered songs. Fans discover and support the music they love, paying what they want for music they believe in, and rewards are shared proportionally with existing supporters as new fans buy in. Artists can apply to have their music on it.",
+    "The ZAO": "A music community (DAO) for independent artists.",
+    "ZAO Festivals": "The live events from the ZAO, including ZAO-PALOOZA and ZAO-CHELLA."
+  }
+}

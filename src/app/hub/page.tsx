@@ -6,12 +6,14 @@ import { bibleCompleteness, type ArtistBible } from '@/lib/booker-card'
 import { listHubEvents } from '@/lib/hub-events'
 import { getArtistLeaderboard } from '@/lib/leaderboards/artists'
 import { HubAvatar } from '@/app/hub/hub-avatar'
+import { ARTIST_MODULES, EVENT_MODULES, LEAGUE_MODULES, categoriesFor, FAMILY } from '@/lib/hub-modules'
 
-// The Phase 37 Content Library Structure, made browsable.
+// The Content Library Structure, made browsable. Folders come from the modules,
+// so every folder belongs to a module and nothing is orphaned.
 const LIBRARY = {
-  '/WAVEWARZ LEAGUE': ['History', 'Records', 'Rules', 'Logos', 'Brand', 'Sponsors', 'Press', 'Charity', 'Templates'],
-  '/ARTISTS/{artist}': ['Identity Bible', 'Photos', 'Logos', 'Music', 'Video', 'Battles', 'Interviews', 'Quotes', 'Memes', 'Community', 'Sponsors', 'Merch', 'THE WALK', 'Career Record'],
-  '/EVENTS/{event}': ['Raw', 'Promo', 'Livestream', 'Results', 'Clips', 'Screenshots', 'Stats', 'Sponsors', 'Reactions', 'Press'],
+  '/WAVEWARZ ARCHIVES': categoriesFor('league'),
+  '/ARTISTS/{artist}': categoriesFor('artist'),
+  '/EVENTS/{event}': categoriesFor('event'),
 }
 
 function Bar({ pct }: { pct: number }) {
@@ -27,14 +29,23 @@ function Bar({ pct }: { pct: number }) {
 
 export default async function HubHome() {
   const supabase = createAdminClient()
-  const [profilesRes, biblesRes, storylinesRes, sponsorsRes, events, leaderboard] = await Promise.all([
+  const [profilesRes, biblesRes, storylinesRes, sponsorsRes, events, leaderboard, modulesRes] = await Promise.all([
     supabase.from('artist_profiles').select('artist_id,display_name,twitter_handle,profile_picture_url,custom_pfp_url,primary_wallet'),
     supabase.from('artist_bibles').select('*'),
     supabase.from('storylines').select('status'),
     supabase.from('sponsor_inventory').select('status'),
     listHubEvents(),
     getArtistLeaderboard(),
+    supabase.from('hub_modules').select('subject,module_key,status'),
   ])
+  const modRows = modulesRes.data ?? []
+  const leagueDone = new Set(modRows.filter(m => m.subject === 'league' && m.status === 'done').map(m => m.module_key))
+  const nextLeague = LEAGUE_MODULES.find(m => !leagueDone.has(m.key))
+  const artistModuleCounts = ARTIST_MODULES.map(m => ({
+    ...m,
+    done: modRows.filter(r => (r.subject as string).startsWith('artist:') && r.module_key === m.key && r.status === 'done').length,
+  }))
+  const eventStagesDone = modRows.filter(r => (r.subject as string).startsWith('event:') && r.status === 'done').length
 
   const bibleById = new Map<string, ArtistBible>((biblesRes.data ?? []).map(b => [b.artist_id, b as ArtistBible]))
   const rankByWallet = new Map<string, number>()
@@ -64,14 +75,55 @@ export default async function HubHome() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <Kpi label="Roster" value={`${artists.length}`} sub="recurring artists" href="/hub/artists" />
         <Kpi
-          label="Identity Bibles"
+          label="Artist Archives"
           value={`${artists.filter(a => a.completeness > 0).length}/${artists.length}`}
-          sub={`${Math.round(artists.reduce((s, a) => s + a.completeness, 0) / Math.max(artists.length, 1))}% avg complete`}
+          sub={`${modRows.filter(r => (r.subject as string).startsWith('artist:') && r.status === 'done').length} artist modules complete`}
           href="/hub/artists"
         />
         <Kpi label="Main Events" value={`${events.length}`} sub={`${eventsWithThesis} with a thesis`} href="/hub/events" />
         <Kpi label="Storylines" value={`${openStorylines}`} sub={`${totalStorylines} total · open`} href="/hub/storylines" />
       </div>
+
+      {/* What is next: only what still needs doing */}
+      <section>
+        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-1">Up Next</h2>
+        <p className="text-xs text-muted-foreground mb-3">
+          Finished modules are hidden on their pages. This is what is still open.
+        </p>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-border bg-[#111827] p-4">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">WaveWarZ Archives</p>
+            {nextLeague ? (
+              <>
+                <p className="font-rajdhani font-bold text-white">{nextLeague.title}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{leagueDone.size}/{LEAGUE_MODULES.length} modules complete</p>
+                <Link href="/hub/league" className="text-xs text-[#7ec1fb] hover:underline mt-2 inline-block">Open →</Link>
+              </>
+            ) : <p className="text-sm text-[#95fe7c]">All league modules complete</p>}
+          </div>
+          <div className="rounded-xl border border-border bg-[#111827] p-4">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Artist modules (all {artists.length} artists)</p>
+            <ul className="space-y-0.5">
+              {artistModuleCounts.map(m => (
+                <li key={m.key} className="text-xs flex items-center justify-between gap-2">
+                  <span className="text-muted-foreground truncate">{m.order}. {m.title}</span>
+                  <span className="text-white shrink-0">{m.done}/{artists.length}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/hub/artists" className="text-xs text-[#7ec1fb] hover:underline mt-2 inline-block">Artists →</Link>
+          </div>
+          <div className="rounded-xl border border-border bg-[#111827] p-4">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Flywheel stages</p>
+            <p className="font-rajdhani font-bold text-white">{eventStagesDone} stages complete across {events.length} events</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{EVENT_MODULES.map(m => m.title.split(' and ')[0]).join(' · ')}</p>
+            <Link href="/hub/events" className="text-xs text-[#7ec1fb] hover:underline mt-2 inline-block">Events →</Link>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground mt-3">
+          Family to include in everything: <span className="text-white">{FAMILY.join(' · ')}</span>
+        </p>
+      </section>
 
       {/* Library structure */}
       <section>

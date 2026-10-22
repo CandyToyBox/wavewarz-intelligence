@@ -5,6 +5,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { ADMIN_COOKIE, verifyAdminSessionToken } from '@/lib/admin-session'
+import { createAdminClient } from '@/lib/supabase/server'
 
 // Same signed-session gate as /admin (and src/proxy.ts runs before render) — the Hub is an internal tool. Server Actions in
 // ./actions.ts re-check the cookie themselves (the layout gate alone doesn't
@@ -13,10 +14,17 @@ export default async function HubLayout({ children }: { children: React.ReactNod
   const cookieStore = await cookies()
   if (!(await verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE)?.value))) redirect('/admin/login')
 
+  // Open help requests from artists' playbooks, shown next to the Playbook link.
+  const { count: openHelp } = await createAdminClient()
+    .from('playbook_help')
+    .select('id', { count: 'exact', head: true })
+    .eq('resolved', false)
+
   const links = [
     { href: '/hub', label: 'Library' },
-    { href: '/hub/league', label: 'League Bible' },
+    { href: '/hub/league', label: 'WaveWarZ Archives' },
     { href: '/hub/artists', label: 'Artists' },
+    { href: '/hub/playbook', label: openHelp ? `Playbook (${openHelp} help)` : 'Playbook' },
     { href: '/hub/events', label: 'Events' },
     { href: '/hub/storylines', label: 'Storylines' },
     { href: '/hub/sponsors', label: 'Sponsor Inventory' },
@@ -34,7 +42,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
           </Badge>
         </div>
         <p className="text-muted-foreground text-sm">
-          Identity · History · Story · Content · Sponsorship — the WaveWarZ entertainment operating system.
+          Identity · History · Story · Content · Sponsorship, with the whole family: WavID, WaveZStation, The ZAO and ZAO Festivals.
         </p>
         <nav className="flex flex-wrap gap-1 mt-3">
           {links.map(l => (
