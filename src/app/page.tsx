@@ -617,12 +617,14 @@ export default async function HomePage() {
             Artist payouts are instant and onchain. Trader winnings must be manually claimed after each battle.
           </p>
         </div>
-        <Link
-          href="/claim"
+        <a
+          href="https://claim.wavewarz.info"
+          target="_blank"
+          rel="noopener noreferrer"
           className="shrink-0 inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors"
         >
           Claim Winnings ↗
-        </Link>
+        </a>
       </section>
 
       {/* Quick Battle Charts Preview */}
