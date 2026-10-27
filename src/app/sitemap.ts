@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/api-docs/changelog',
     '/privacy',
     '/terms',
+    '/data-deletion',
   ]
 
   return staticRoutes.map(route => ({

@@ -35,7 +35,7 @@ export default function TermsPage() {
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-white">6. Content</h2>
-        <p>By submitting music, clips, or other content to WaveWarZ, you confirm you own or have the rights to that content. WaveWarZ may use submitted content for promotional purposes including YouTube, X (Twitter), and TikTok.</p>
+        <p>By submitting music, clips, or other content to WaveWarZ, you confirm you own or have the rights to that content. WaveWarZ may use submitted content for promotional purposes including Facebook, Instagram, Threads, YouTube, X (Twitter), and TikTok.</p>
       </section>
 
       <section className="space-y-3">
