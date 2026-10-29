@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveWarz — Musical Prediction Markets on Solana</title>
-  <meta name="description" content="WaveWarz: Vote with SOL. Shape the Charts. Live Music Battles & Prediction Markets on Solana." />
+  <title>WaveWarz | Live music battles you can trade</title>
+  <meta name="description" content="WaveWarz is live music battles you can trade. Two artists go head to head, you trade the song you believe in, and every trade pays the artist. Quick Battles run every hour of every day. Main Events are Sundays at 7 PM Eastern." />
 
   <!-- Dynamic Non-Stretched Square Favicon -->
   <link id="dynamic-favicon" rel="icon" type="image/png" href="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" />
@@ -29,11 +29,32 @@
       --brand-blue: #7EC1FB;        /* Primary Blue */
       --brand-blue-rgb: 126, 193, 251;
       --brand-deep-blue: #106EFD;   /* Guide RGB: 16 / 110 / 253 */
-      --brand-orange: #ff801d;      /* Secondary Orange */
-      --brand-orange-rgb: 255, 128, 29;
-      --brand-lilac: #e171ea;       /* Secondary Lilac */
-      --brand-lilac-rgb: 225, 113, 234;
-      --brand-ice: #D8EBFC;         /* Lilac Swatch Soft Ice Tint */
+      --brand-navy: #0d1321;        /* Standard navy */
+
+      /* ------------------------------------------------------------------
+         WAVE ID ACCENTS (from Quan's WavID studio palettes, 0xQuan93/WavID,
+         studio/src/core/production-definition.mjs). Violet, rose and plum
+         palettes were left out on purpose: no pink, no purple.
+         ------------------------------------------------------------------ */
+      --wid-aqua: #76f3df;          /* living-aqua */
+      --wid-aqua-rgb: 118, 243, 223;
+      --wid-amber: #f2a74b;         /* oxide-amber */
+      --wid-amber-rgb: 242, 167, 75;
+      --wid-cerulean: #62b8df;      /* cerulean-static */
+      --wid-ice: #a9d9de;           /* ice-filament */
+      --wid-sodium: #e5c25a;        /* sodium-ghost */
+      --wid-glow: #e4fff3;          /* living-aqua highlight */
+      /* the darker Wave ID tones */
+      --wid-deep-cerulean: #274862;
+      --wid-deep-viridian: #355e45;
+      --wid-deep-ice: #42575d;
+      --wid-deep-oxide: #842f22;
+      --wid-deep-sodium: #63532c;
+      --wid-ink: #010405;
+      /* the Wave ID texture: fine film grain, plus a thin wavy phosphor trace */
+      --wid-grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .89 0 0 0 0 1 0 0 0 0 .95 0 0 0 .9 -.42'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      --wid-trace: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='26' viewBox='0 0 360 26' fill='none'><path d='M0 13 C22 -1 68 -1 90 13 S158 27 180 13 S248 -1 270 13 S338 27 360 13' stroke='%2362b8df' stroke-width='1.2' stroke-opacity='.55'/><path d='M0 15 C22 1 68 1 90 15 S158 29 180 15 S248 1 270 15 S338 29 360 15' stroke='%23f2a74b' stroke-width='1' stroke-opacity='.22'/></svg>");
+      --brand-ice: #D8EBFC;         /* Soft Ice Tint */
       --brand-neutral: #909090;     /* Neutral Gray Swatch */
       --text-main: #FFFFFF;
       --text-muted: #909090;
@@ -71,9 +92,9 @@
       z-index: 0;
       background:
         radial-gradient(circle at 14% 32%, rgba(var(--brand-blue-rgb), 0.14) 0%, transparent 45%),
-        radial-gradient(circle at 86% 32%, rgba(var(--brand-orange-rgb), 0.11) 0%, transparent 45%),
+        radial-gradient(circle at 86% 32%, rgba(var(--wid-amber-rgb), 0.11) 0%, transparent 45%),
         radial-gradient(circle at 50% 78%, rgba(var(--brand-green-rgb), 0.08) 0%, transparent 55%),
-        radial-gradient(circle at 50% 20%, rgba(var(--brand-lilac-rgb), 0.06) 0%, transparent 45%);
+        radial-gradient(circle at 50% 20%, rgba(var(--wid-aqua-rgb), 0.06) 0%, transparent 45%);
     }
 
     .grid-overlay {
@@ -223,7 +244,7 @@
       100% {
         opacity: 1;
         transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-        filter: brightness(1) blur(0px) drop-shadow(-18px 10px 50px rgba(var(--brand-orange-rgb), 0.42)) drop-shadow(0 0 24px rgba(var(--brand-lilac-rgb), 0.3));
+        filter: brightness(1) blur(0px) drop-shadow(-18px 10px 50px rgba(var(--wid-amber-rgb), 0.42)) drop-shadow(0 0 24px rgba(var(--wid-aqua-rgb), 0.3));
       }
     }
 
@@ -488,7 +509,7 @@
     }
     .fighter-tag.right-tag {
       right: 4vw;
-      border-right: 4px solid var(--brand-orange);
+      border-right: 4px solid var(--wid-amber);
       text-align: right;
     }
 
@@ -534,9 +555,9 @@
       margin-bottom: 18px;
     }
 
-    /* Official Brand Gradient: Green (#95FE7C) -> Blue (#7EC1FB) -> Lilac (#e171ea) */
+    /* Brand gradient: Green (#95FE7C) -> Wave ID aqua (#76F3DF) -> Blue (#7EC1FB) */
     .text-gradient {
-      background: linear-gradient(90deg, var(--brand-green) 0%, var(--brand-blue) 55%, var(--brand-lilac) 100%);
+      background: linear-gradient(90deg, var(--brand-green) 0%, var(--wid-aqua) 50%, var(--brand-blue) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -659,8 +680,8 @@
 
     .qb-art-card.tilt-right {
       transform: perspective(1100px) rotateZ(2.6deg) rotateY(-8deg) rotateX(2deg);
-      border-color: rgba(var(--brand-orange-rgb), 0.25);
-      box-shadow: 20px 28px 60px rgba(0, 0, 0, 0.85), 0 0 42px rgba(var(--brand-orange-rgb), 0.2);
+      border-color: rgba(var(--wid-amber-rgb), 0.25);
+      box-shadow: 20px 28px 60px rgba(0, 0, 0, 0.85), 0 0 42px rgba(var(--wid-amber-rgb), 0.2);
     }
 
     .qb-art-card.tilt-left:hover,
@@ -691,9 +712,9 @@
       position: absolute;
       inset: 0;
       background: 
-        radial-gradient(circle at 70% 25%, rgba(var(--brand-orange-rgb), 0.48) 0%, transparent 55%),
-        radial-gradient(circle at 25% 70%, rgba(var(--brand-lilac-rgb), 0.38) 0%, transparent 60%),
-        linear-gradient(200deg, #1B0C18 0%, var(--brand-black) 100%);
+        radial-gradient(circle at 70% 25%, rgba(var(--wid-amber-rgb), 0.48) 0%, transparent 55%),
+        radial-gradient(circle at 25% 70%, rgba(var(--wid-aqua-rgb), 0.38) 0%, transparent 60%),
+        linear-gradient(200deg, var(--wid-deep-cerulean) 0%, var(--brand-black) 100%);
     }
 
     .qb-card-img {
@@ -1163,61 +1184,65 @@
       .hero-fighter-anchor.right-anchor { right: -14vw; }
       .hero-fighter-left, .hero-fighter-right { height: 48vh; }
     }
+
+    /* ==========================================================================
+       WAVE ID TEXTURE (grain + phosphor trace), sprinkled through the UI
+       ========================================================================== */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      pointer-events: none;
+      background-image: var(--wid-grain);
+      opacity: 0.045;
+    }
+    .wid-trace {
+      position: relative;
+      z-index: 5;
+      height: 26px;
+      max-width: 1320px;
+      margin: 0 auto;
+      background: var(--wid-trace) repeat-x center / auto 26px;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    .spotlight-card::after,
+    .qb-main-stage::after,
+    .ar-portal-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-image: var(--wid-grain);
+      opacity: 0.07;
+      pointer-events: none;
+    }
+    .section-eyebrow {
+      border-color: rgba(var(--wid-aqua-rgb), 0.45);
+      color: var(--wid-aqua);
+      background: rgba(var(--wid-aqua-rgb), 0.08);
+    }
   </style>
 
-  <!-- VENTURE-GRADE EXCHANGE TOUR STYLES -->
+  <!-- RIDE THE WAVEWARZ STYLES -->
   <style>
-
-    :root {
-      --bg-dark: #07080d;
-      --bg-panel: rgba(14, 17, 28, 0.88);
-      --neon-cyan: #00f0ff;
-      --neon-pink: #ff007f;
-      --neon-green: #00ff9d;
-      --neon-amber: #ffb800;
-      --text-main: #f3f6ff;
-      --text-muted: #8b95b0;
-      --border-glow: rgba(0, 240, 255, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* body-reset {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: 'Space Grotesk', sans-serif;
-      overflow-x: hidden;
-    } */
-
-    /* Helper spacer for demo purposes */
-    .demo-spacer {
-      height: 45vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      border-bottom: 1px dashed rgba(255,255,255,0.1);
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
-      letter-spacing: 0.1em;
-    }
-
-    /* ==========================================
-       SCROLL TRACK & STICKY VIEWPORT
-       ========================================== */
-    .exchange-scroll-track {
+    /* ==========================================================================
+       RIDE THE WAVEWARZ  (onboarding wave)
+       Brand navy + green + blue. Accents and textures come from Quan's Wave ID
+       palettes (see --wid-* tokens in the first :root block). No pink, no purple.
+       ========================================================================== */
+    .ride-track {
       position: relative;
-      height: 600vh; /* Extended distance for comfortable pace & full reveal dwell */
-      background: radial-gradient(circle at 50% 50%, #101528 0%, #07080d 75%);
+      height: 600vh; /* scroll distance: one stop at a time, then a short rest on the finished map */
+      background:
+        radial-gradient(ellipse at 50% 112%, rgba(39, 72, 98, 0.60) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% -12%, rgba(53, 94, 69, 0.38) 0%, transparent 55%),
+        var(--brand-navy);
+      font-family: 'Space Grotesk', sans-serif;
     }
 
-    .exchange-sticky-stage {
+    .ride-stage {
       position: -webkit-sticky;
       position: sticky;
       top: 0;
@@ -1228,25 +1253,21 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 2rem 3rem;
+      padding: 6.6rem 3rem 1.25rem; /* top room for the floating nav pill */
     }
 
-    /* Subtle cyber grid background */
-    .cyber-grid-bg {
+    /* Wave ID film grain + phosphor scan lines */
+    .ride-grain {
       position: absolute;
       inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(0, 240, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
       pointer-events: none;
       z-index: 0;
+      background-image: var(--wid-grain), repeating-linear-gradient(0deg, rgba(228, 255, 243, 0.035) 0 1px, transparent 1px 4px);
+      opacity: 0.35;
     }
 
-    /* ==========================================
-       SECTION HEADER & CONTROLS
-       ========================================== */
-    .exchange-header {
+    /* ---------- header ---------- */
+    .ride-header {
       position: relative;
       z-index: 10;
       display: flex;
@@ -1256,85 +1277,89 @@
       gap: 1rem;
     }
 
-    .badge-tag {
+    .ride-eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--neon-cyan);
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid var(--border-glow);
-      padding: 0.35rem 0.75rem;
+      color: var(--brand-green);
+      background: rgba(var(--brand-green-rgb), 0.10);
+      border: 1px solid rgba(var(--brand-green-rgb), 0.38);
+      padding: 0.35rem 0.8rem;
       border-radius: 99px;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
     }
 
-    .badge-dot {
+    .ride-dot {
       width: 8px;
       height: 8px;
-      background: var(--neon-cyan);
       border-radius: 50%;
-      box-shadow: 0 0 8px var(--neon-cyan);
-      animation: pulse 1.5s infinite;
+      background: var(--brand-green);
+      box-shadow: 0 0 8px var(--brand-green);
+      animation: ridePulse 1.5s infinite;
     }
 
-    .exchange-title {
-      font-size: clamp(1.6rem, 3.2vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #fff 0%, var(--neon-cyan) 60%, var(--neon-pink) 100%);
+    .ride-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2.1rem, 4.6vw, 3.8rem);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      color: #fff;
+      margin: 0;
+    }
+    .ride-title span {
+      background: linear-gradient(90deg, var(--brand-green) 0%, var(--wid-aqua) 50%, var(--brand-blue) 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .tour-status-bar {
+    .ride-sub {
+      margin: 0.55rem 0 0;
+      font-size: clamp(0.92rem, 1.4vw, 1.1rem);
+      color: var(--wid-ice);
+      max-width: 34em;
+    }
+
+    .ride-progress {
       display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: rgba(10, 12, 20, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0.6rem 1rem;
-      border-radius: 12px;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-width: 190px;
+      padding: 0.7rem 1rem;
+      border-radius: 14px;
+      background: rgba(13, 19, 33, 0.78);
+      border: 1px solid rgba(98, 184, 223, 0.28);
       backdrop-filter: blur(10px);
     }
-
-    .progress-readout {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .ride-progress-label {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      color: var(--wid-ice);
     }
-
-    .progress-readout strong {
-      color: var(--neon-green);
-    }
-
-    .mode-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      padding: 0.25rem 0.6rem;
+    .ride-progress-label strong { color: var(--brand-green); }
+    .ride-progress-bar {
+      height: 6px;
       border-radius: 6px;
-      background: rgba(255, 0, 127, 0.18);
-      color: #ff6cb6;
-      border: 1px solid rgba(255, 0, 127, 0.4);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      background: rgba(169, 217, 222, 0.16);
+      overflow: hidden;
+    }
+    .ride-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--brand-blue), var(--brand-green));
     }
 
-    .exchange-sticky-stage.is-complete .mode-pill {
-      background: rgba(0, 255, 157, 0.15);
-      color: var(--neon-green);
-      border-color: var(--neon-green);
-      box-shadow: 0 0 15px rgba(0, 255, 157, 0.25);
-    }
-
-    /* ==========================================
-       MAP BOARD & SVG CIRCUIT PATH
-       ========================================== */
-    .map-board-wrapper {
+    /* ---------- the wave ---------- */
+    .ride-board-wrap {
       position: relative;
       flex: 1;
       width: 100%;
@@ -1346,14 +1371,13 @@
       z-index: 5;
     }
 
-    .map-board {
+    .ride-board {
       position: relative;
       width: 100%;
-      height: 72vh;
-      max-height: 640px;
+      height: min(62vh, 560px);
     }
 
-    .map-svg {
+    .ride-svg {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -1361,341 +1385,211 @@
       overflow: visible;
     }
 
-    /* Base unlit road */
-    .path-base {
+    .wave-crest-dots {
       fill: none;
-      stroke: rgba(255, 255, 255, 0.08);
-      stroke-width: 8;
-      stroke-linecap: round;
-    }
-
-    .path-dashes {
-      fill: none;
-      stroke: rgba(0, 240, 255, 0.18);
+      stroke: rgba(228, 255, 243, 0.40);
       stroke-width: 2;
-      stroke-dasharray: 8 12;
+      stroke-dasharray: 3 11;
+      stroke-linecap: round;
     }
 
-    /* Lit active road */
-    .path-active {
+    /* the lit part of the wave grows as you scroll */
+    .wave-lit {
       fill: none;
-      stroke: url(#cyberGradient);
+      stroke: url(#rideGradient);
       stroke-width: 8;
       stroke-linecap: round;
-      filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.65));
-      transition: stroke-dashoffset 0.08s linear;
+      filter: drop-shadow(0 0 12px rgba(var(--brand-blue-rgb), 0.55));
     }
 
-    /* ==========================================
-       MAP NODES (EXCHANGE PILLARS)
-       ========================================== */
-    .map-node {
+    /* ---------- stops ---------- */
+    .ride-node {
       position: absolute;
       transform: translate(-50%, -50%);
       z-index: 6;
       cursor: pointer;
     }
 
-    /* Pinpoint circle on the path */
-    .node-pin {
-      width: 46px;
-      height: 46px;
+    .ride-pin {
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: #0c101d;
-      border: 2px solid rgba(255, 255, 255, 0.25);
+      background: #0d1321;
+      border: 2px solid rgba(169, 217, 222, 0.32);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Outfit', sans-serif;
       font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--text-muted);
+      font-size: 1.25rem;
+      color: var(--wid-ice);
       transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       position: relative;
       z-index: 2;
     }
-
-    .map-node.is-visited .node-pin {
-      border-color: var(--neon-cyan);
-      color: var(--text-main);
-      box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+    .ride-node.is-visited .ride-pin {
+      border-color: var(--brand-green);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(var(--brand-green-rgb), 0.35);
     }
-
-    .map-node.is-current .node-pin {
+    .ride-node.is-current .ride-pin {
       transform: scale(1.25);
-      background: var(--neon-cyan);
-      color: #05070c;
+      background: var(--brand-green);
+      color: #0d1321;
       border-color: #fff;
-      box-shadow: 0 0 28px var(--neon-cyan);
+      box-shadow: 0 0 28px rgba(var(--brand-green-rgb), 0.8);
     }
 
-    /* Node Tag Label (Visible during tour) */
-    .node-tag {
+    .ride-tag {
       position: absolute;
-      top: 54px;
+      top: 56px;
       left: 50%;
       transform: translateX(-50%);
       white-space: nowrap;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.6rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.65rem;
       border-radius: 6px;
-      background: rgba(8, 10, 18, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-muted);
+      background: rgba(13, 19, 33, 0.92);
+      border: 1px solid rgba(169, 217, 222, 0.2);
+      color: var(--wid-ice);
       transition: all 0.3s ease;
       pointer-events: none;
     }
-
-    .map-node.is-visited .node-tag {
-      color: var(--neon-cyan);
-      border-color: rgba(0, 240, 255, 0.4);
+    .ride-node.is-visited .ride-tag {
+      color: var(--brand-green);
+      border-color: rgba(var(--brand-green-rgb), 0.4);
     }
 
-    /* ==========================================
-       LINKED INFOGRAPHIC CARD (FINAL STATE)
-       ========================================== */
-    .node-infographic-card {
+    /* each stop card pops in as DJ Wavy reaches its stop and stays on the map */
+    .ride-card {
       position: absolute;
-      width: 245px;
-      background: var(--bg-panel);
-      border: 1px solid rgba(0, 240, 255, 0.4);
+      width: clamp(196px, 15.4vw, 240px);
+      background: rgba(13, 19, 33, 0.94);
+      border: 1px solid rgba(98, 184, 223, 0.38);
       border-radius: 14px;
       padding: 0.95rem 1.1rem;
       backdrop-filter: blur(12px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 240, 255, 0.12);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(var(--brand-blue-rgb), 0.10);
       opacity: 0;
       pointer-events: none;
       transform: translate(-50%, 15px) scale(0.85);
       transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
       z-index: 15;
+      overflow: hidden;
     }
+    .ride-card::after { /* Wave ID texture */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--wid-grain);
+      opacity: 0.10;
+      pointer-events: none;
+    }
+    .ride-node[data-pos="top"] .ride-card { bottom: 60px; left: 50%; }
+    .ride-node[data-pos="bottom"] .ride-card { top: 60px; left: 50%; }
 
-    /* Position cards cleanly around pins in final overview */
-    .map-node[data-pos="top"] .node-infographic-card {
-      bottom: 58px;
-      left: 50%;
-    }
-    .map-node[data-pos="bottom"] .node-infographic-card {
-      top: 58px;
-      left: 50%;
-    }
-
-    /* Reveal all cards when scroll tour finishes! */
-    .exchange-sticky-stage.is-complete .node-infographic-card {
+    .ride-node.is-visited .ride-card,
+    .ride-stage.is-complete .ride-card {
       opacity: 1;
       pointer-events: auto;
       transform: translate(-50%, 0) scale(1);
     }
+    .ride-node.is-visited .ride-tag,
+    .ride-stage.is-complete .ride-tag { opacity: 0; }
 
-    .exchange-sticky-stage.is-complete .node-tag {
-      opacity: 0;
-    }
-
-    .node-infographic-card:hover {
-      border-color: var(--neon-pink);
-      box-shadow: 0 14px 35px rgba(255, 0, 127, 0.28);
+    .ride-card:hover {
+      border-color: var(--wid-amber);
+      box-shadow: 0 14px 35px rgba(242, 167, 75, 0.22);
       transform: translate(-50%, -4px) scale(1.03) !important;
     }
 
-    .card-kicker {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-      color: var(--neon-pink);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.25rem;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .card-title {
-      font-size: 0.98rem;
+    .ride-card-step {
+      font-family: 'Outfit', sans-serif;
       font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--wid-amber);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.2rem;
+    }
+    .ride-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      line-height: 1.1;
       color: #fff;
       margin-bottom: 0.35rem;
     }
-
-    .card-desc {
-      font-size: 0.78rem;
-      line-height: 1.4;
-      color: var(--text-muted);
+    .ride-card-desc {
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: #cfe0e6;
       margin-bottom: 0.6rem;
     }
-
-    .card-metric {
+    .ride-card-tip {
       display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
-      color: var(--neon-green);
-      background: rgba(0, 255, 157, 0.1);
-      border: 1px solid rgba(0, 255, 157, 0.3);
-      padding: 0.2rem 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--brand-green);
+      background: rgba(var(--brand-green-rgb), 0.10);
+      border: 1px solid rgba(var(--brand-green-rgb), 0.3);
+      padding: 0.18rem 0.5rem;
       border-radius: 4px;
     }
 
-    /* ==========================================
-       2D DJ WAVY CHARACTER & RPG TALKING BOX
-       ========================================== */
-    .dj-wavy-actor {
+    /* ---------- DJ Wavy on a WaveWarz surfboard ---------- */
+    .ride-actor {
       position: absolute;
       top: 0;
       left: 0;
-      width: 84px;
-      height: 84px;
-      margin-left: -42px;
-      margin-top: -58px;
+      width: 170px;
+      height: 128px;
+      margin-left: -85px;
+      margin-top: -112px; /* board sits right on the wave */
       z-index: 25;
       pointer-events: none;
       will-change: transform;
+      transition: opacity 0.4s ease;
     }
-
-    .dj-wavy-sprite {
+    .ride-stage.is-complete .ride-actor { opacity: 0; } /* the ride is over: DJ Wavy paddles off */
+    .ride-tilt {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 8px 18px rgba(0, 240, 255, 0.55));
-      animation: wavyBob 0.75s ease-in-out infinite alternate;
-      transform-origin: bottom center;
+      transform-origin: 50% 88%;
+      will-change: transform;
     }
+    .ride-sprite {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 8px 14px rgba(var(--brand-blue-rgb), 0.45));
+      animation: rideBob 0.9s ease-in-out infinite alternate;
+    }
+    .ride-spray { animation: rideSpray 0.9s ease-in-out infinite alternate; }
 
-    /* DJ Wavy RPG Talking Bubble */
-    .wavy-talk-box {
-      position: absolute;
-      bottom: 96px;
-      left: 50%;
-      transform: translateX(-50%) scale(0.92);
-      width: 330px;
-      background: rgba(10, 13, 24, 0.95);
-      border: 2px solid var(--neon-cyan);
-      border-radius: 16px;
-      padding: 1rem 1.15rem;
-      box-shadow: 
-        0 18px 40px rgba(0, 0, 0, 0.75),
-        0 0 25px rgba(0, 240, 255, 0.3),
-        inset 0 0 12px rgba(0, 240, 255, 0.1);
-      backdrop-filter: blur(14px);
-      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-      pointer-events: auto;
-    }
-
-    /* Speech bubble pointer triangle */
-    .wavy-talk-box::after {
-      content: '';
-      position: absolute;
-      bottom: -11px;
-      left: 50%;
-      transform: translateX(-50%) rotate(45deg);
-      width: 18px;
-      height: 18px;
-      background: #0a0d18;
-      border-right: 2px solid var(--neon-cyan);
-      border-bottom: 2px solid var(--neon-cyan);
-    }
-
-    /* Hide big talking box in final full-infographic mode so all cards shine */
-    .exchange-sticky-stage.is-complete .wavy-talk-box {
-      opacity: 0;
-      transform: translateX(-50%) translateY(15px) scale(0.75);
-      pointer-events: none;
-    }
-
-    .talk-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.45rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 0.35rem;
-    }
-
-    .speaker-name {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--neon-pink);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    /* Equalizer bars next to DJ Wavy's name */
-    .eq-bars {
-      display: inline-flex;
-      align-items: flex-end;
-      gap: 2px;
-      height: 10px;
-    }
-    .eq-bars span {
-      width: 2px;
-      background: var(--neon-cyan);
-      animation: eqBounce 0.5s ease infinite alternate;
-    }
-    .eq-bars span:nth-child(2) { animation-delay: 0.15s; }
-    .eq-bars span:nth-child(3) { animation-delay: 0.3s; }
-
-    .talk-step-badge {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.68rem;
-      color: var(--neon-cyan);
-    }
-
-    .talk-subject {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 0.35rem;
-      letter-spacing: -0.01em;
-    }
-
-    .talk-message {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      line-height: 1.45;
-      color: #d1d9f0;
-      min-height: 3.4em;
-    }
-
-    .talk-cursor {
-      display: inline-block;
-      width: 6px;
-      height: 13px;
-      background: var(--neon-cyan);
-      vertical-align: middle;
-      margin-left: 3px;
-      animation: blink 0.8s infinite;
-    }
-
-    /* ==========================================
-       BOTTOM HUD / COMPLETE BANNER
-       ========================================== */
-    .exchange-footer {
+    /* ---------- footer strip ---------- */
+    .ride-footer {
       position: relative;
       z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      min-height: 46px;
+      font-size: 0.85rem;
+      color: var(--wid-ice);
     }
-
-    .scroll-prompt {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .scroll-mouse {
+    .ride-scroll-prompt { display: flex; align-items: center; gap: 0.6rem; }
+    .ride-mouse {
       width: 18px;
       height: 28px;
-      border: 2px solid var(--neon-cyan);
+      border: 2px solid var(--brand-blue);
       border-radius: 12px;
       position: relative;
     }
-    .scroll-mouse::before {
+    .ride-mouse::before {
       content: '';
       position: absolute;
       top: 5px;
@@ -1703,62 +1597,56 @@
       transform: translateX(-50%);
       width: 3px;
       height: 5px;
-      background: var(--neon-cyan);
+      background: var(--brand-blue);
       border-radius: 2px;
-      animation: scrollWheel 1.4s infinite;
+      animation: rideWheel 1.4s infinite;
     }
-
-    .overview-unlocked-banner {
+    .ride-cta {
       opacity: 0;
       transform: translateY(10px);
+      pointer-events: none;
       transition: all 0.4s ease;
-      color: var(--neon-green);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      color: #0d1321;
+      background: var(--brand-green);
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      box-shadow: 0 0 24px rgba(var(--brand-green-rgb), 0.4);
+    }
+    .ride-stage.is-complete .ride-cta { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .ride-stage.is-complete .ride-scroll-prompt { opacity: 0.35; }
+
+    @keyframes rideBob {
+      0% { transform: translateY(0) rotate(-1.5deg); }
+      100% { transform: translateY(-6px) rotate(1.5deg); }
+    }
+    @keyframes rideSpray {
+      0% { opacity: 0.9; transform: translate(0, 0); }
+      100% { opacity: 0.35; transform: translate(-6px, 4px); }
+    }
+    @keyframes ridePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+    @keyframes rideWheel { 0% { opacity: 1; top: 5px; } 100% { opacity: 0; top: 15px; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ride-sprite, .ride-spray, .ride-dot, .ride-mouse::before { animation: none; }
     }
 
-    .exchange-sticky-stage.is-complete .overview-unlocked-banner {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ==========================================
-       KEYFRAME ANIMATIONS
-       ========================================== */
-    @keyframes wavyBob {
-      0% { transform: translateY(0px) rotate(-3deg); }
-      100% { transform: translateY(-7px) rotate(3deg); }
-    }
-
-    @keyframes eqBounce {
-      0% { height: 3px; }
-      100% { height: 10px; }
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.3); }
-    }
-
-    @keyframes scrollWheel {
-      0% { opacity: 1; top: 5px; }
-      100% { opacity: 0; top: 15px; }
-    }
-
-    /* Responsive adjustments */
     @media (max-width: 900px) {
-      .exchange-sticky-stage { padding: 1.25rem; }
-      .wavy-talk-box { width: 260px; padding: 0.8rem; }
-      .node-infographic-card { width: 180px; padding: 0.7rem; }
-      .card-desc { display: none; } /* Keep mobile overview clean */
+      .ride-stage { padding: 7.4rem 1rem 1rem; }
+      .ride-board-wrap { flex-direction: column; justify-content: flex-start; gap: 0.7rem; }
+      .ride-board { height: 42vh; }
+      .ride-card { width: 150px; padding: 0.6rem; }
+      .ride-card-desc { display: none; } /* keep the finished map clean on phones */
+      .ride-card-tip { display: none; }
+      .ride-actor { width: 120px; height: 90px; margin-left: -60px; margin-top: -78px; }
+      .ride-progress { min-width: 0; padding: 0.5rem 0.8rem; }
+      .ride-title { font-size: 2rem; }
+      .ride-sub { font-size: 0.85rem; }
     }
-  
   </style>
 
   <!-- 3D ROYAL DJ WAVY & AR PORTAL STYLES -->
@@ -1783,7 +1671,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at 50% 42%, #1c152e 0%, #090812 55%, #05060a 90%);
+      background: radial-gradient(circle at 50% 42%, var(--wid-deep-cerulean) 0%, var(--brand-navy) 58%, var(--wid-ink) 92%);
     }
 
     /* Pause animations when offscreen */
@@ -1978,9 +1866,9 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.68rem;
       font-weight: 700;
-      color: var(--neon-green);
-      background: rgba(0, 255, 157, 0.1);
-      border: 1px solid rgba(0, 255, 157, 0.35);
+      color: var(--brand-green);
+      background: rgba(var(--brand-green-rgb), 0.1);
+      border: 1px solid rgba(var(--brand-green-rgb), 0.35);
       padding: 0.2rem 0.55rem;
       border-radius: 6px;
       text-transform: uppercase;
@@ -2034,8 +1922,8 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: var(--neon-pink);
-      box-shadow: 0 0 8px var(--neon-pink);
+      background: var(--brand-green);
+      box-shadow: 0 0 8px var(--brand-green);
       animation: qrScan 2.6s ease-in-out infinite alternate;
       pointer-events: none;
     }
@@ -2062,7 +1950,7 @@
       top: 0;
       bottom: 0;
       width: 50%;
-      background: linear-gradient(135deg, #07060c 0%, #141022 100%);
+      background: linear-gradient(135deg, var(--wid-ink) 0%, var(--brand-navy) 100%);
       will-change: transform;
     }
 
@@ -2118,6 +2006,88 @@
       margin-top: 0.5rem;
     }
   </style>
+<style id="top-of-page">
+  /* ---- Top of page: fold math, stats strip, live battle slot (WaveWarz Rebrand System) ---- */
+  :root { --strip-h: 148px; --fold: 100svh; }
+  #topStack { display: flex; flex-direction: column; position: relative; z-index: 2; }
+  .hero-stage { min-height: calc(var(--fold) - var(--strip-h)); padding-bottom: 36px; }
+  .hero-fighter-left, .hero-fighter-right { height: calc((var(--fold) - var(--strip-h)) * 0.9); }
+  .fighter-tag { bottom: 6%; }
+  .hero-center-stack { margin-top: -2vh; }
+  /* keep the logo, headline and buttons in proportion to the height left above the strip */
+  .fractal-logo-stage { width: min(clamp(300px, 52vw, 690px), 58svh); }
+  .hero-headline { font-size: clamp(2.3rem, min(5.5vw, 7.4svh), 4.9rem); margin-bottom: 14px; }
+  @media (max-height: 820px) { .hero-badge { display: none; } .fractal-logo-stage { width: min(clamp(300px, 52vw, 690px), 50svh); } .hero-sub { margin-bottom: 18px; } }
+  #topStack.is-live #liveSlot { order: 0; } #topStack.is-live #statsStrip { order: 1; } #topStack.is-live .hero-stage { order: 2; min-height: 100svh; }
+
+  /* stats strip: bare numbers, no boxes */
+  #statsStrip { position: relative; z-index: 8; min-height: var(--strip-h); display: flex; flex-direction: column; justify-content: center; gap: 14px; padding: 6px 32px 18px; background: var(--brand-black); }
+  .st-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px 24px; max-width: 1280px; width: 100%; margin: 0 auto; text-align: center; }
+  .st-n { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(1.7rem, 2.7vw, 2.7rem); line-height: 1; letter-spacing: -0.02em; color: #fff; font-variant-numeric: tabular-nums; }
+  .st-l { margin-top: 9px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .st-f { margin-top: 3px; min-height: 16px; font-size: 0.74rem; color: var(--text-muted); opacity: .85; }
+  .st-note { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+  .st-note b { color: var(--brand-green); font-weight: 500; }
+  @media (max-width: 900px) { :root { --strip-h: 250px; } .st-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } #statsStrip { padding: 14px 20px 20px; } .st-n { font-size: 1.7rem; } }
+  @media (max-width: 520px) { .st-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } :root { --strip-h: 330px; } }
+
+  /* live battle slot: always the top of the page when something is live */
+  #liveSlot { display: none; padding: 104px 24px 12px; }
+  #topStack.is-live #liveSlot { display: block; }
+  .ld { position: relative; max-width: 1000px; margin: 0 auto; border-radius: 32px; border: 1px solid rgba(218,236,253,.14); padding: 30px; display: grid; gap: 26px; background: radial-gradient(60% 70% at 0% 0%, rgba(149,254,124,.09), transparent 70%), radial-gradient(60% 70% at 100% 0%, rgba(126,193,251,.09), transparent 70%), #020202; }
+  .ld-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+  .ld-live { display: inline-flex; align-items: center; gap: 8px; color: var(--brand-green); } .ld-live i { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); box-shadow: 0 0 24px rgba(149,254,124,.5); animation: ldPulse 1.6s ease-in-out infinite; } @keyframes ldPulse { 50% { opacity: .35; } }
+  .ld-stage { display: grid; grid-template-columns: 1fr minmax(200px, 270px) 1fr; gap: 28px; align-items: start; }
+  .ld-col { display: grid; gap: 12px; min-width: 0; } .ld-col.r { text-align: right; }
+  .ld-art { position: relative; height: clamp(240px, calc(var(--fold) * 0.37), 470px); border-radius: 28px; border: 1px solid rgba(218,236,253,.14); overflow: hidden; background: linear-gradient(150deg, rgba(126,193,251,.38), rgba(13,19,33,.92) 52%, rgba(149,254,124,.34)); }
+  .ld-col.l .ld-art { transform: perspective(1200px) rotateY(7deg) rotateZ(-2.2deg); } .ld-col.r .ld-art { transform: perspective(1200px) rotateY(-7deg) rotateZ(2.2deg); background: linear-gradient(210deg, rgba(149,254,124,.22), rgba(13,19,33,.92) 50%, rgba(126,193,251,.38)); }
+  .ld-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .ld-pill { position: absolute; top: 14px; z-index: 2; background: #020202; color: #fff; font: 700 0.72rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; border-radius: 999px; padding: 8px 15px; } .ld-col.l .ld-pill { left: 14px; } .ld-col.r .ld-pill { right: 14px; }
+  .ld-play { position: absolute; top: 14px; z-index: 2; width: 42px; height: 42px; border-radius: 50%; background: #020202; display: grid; place-items: center; } .ld-col.l .ld-play { right: 14px; } .ld-col.r .ld-play { left: 14px; } .ld-play svg { width: 16px; height: 16px; }
+  .ld-eq { position: absolute; left: 14px; right: 14px; bottom: 14px; z-index: 2; height: 48px; border-radius: 18px; background: rgba(2,2,2,.72); display: flex; align-items: center; gap: 7px; padding: 0 14px; }
+  .ld-eq i { flex: 1; height: 13px; border-radius: 999px; animation: ldEq 1.3s ease-in-out infinite; } .ld-col.l .ld-eq i { background: var(--brand-green); box-shadow: 0 0 12px rgba(149,254,124,.6); } .ld-col.r .ld-eq i { background: var(--brand-blue); box-shadow: 0 0 12px rgba(126,193,251,.6); }
+  @keyframes ldEq { 0%,100% { transform: scaleY(.55); } 50% { transform: scaleY(1.9); } } .ld-eq i:nth-child(2n) { animation-delay: -.4s; } .ld-eq i:nth-child(3n) { animation-delay: -.8s; } .ld-eq i:nth-child(5n) { animation-delay: -.2s; }
+  .ld-np { font: 500 0.72rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--brand-green); } .ld-col.r .ld-np { color: var(--brand-blue); }
+  .ld-nm { margin: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: clamp(1.45rem, 2.4vw, 2.3rem); line-height: 1.08; letter-spacing: -.015em; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ld-by { margin: 0; color: var(--text-muted); font-size: .95rem; } .ld-by b { color: #fff; font-weight: 600; }
+  .ld-act { display: block; padding: 0 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; height: 54px; border-radius: 18px; font: 700 .92rem/52px 'Space Grotesk', sans-serif; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid transparent; transition: box-shadow .14s; }
+  .ld-act.fill-g { background: var(--brand-green); color: #0d1321; } .ld-act.fill-g:hover { box-shadow: 0 0 24px rgba(149,254,124,.45); } .ld-act.fill-b { background: var(--brand-blue); color: #0d1321; } .ld-act.fill-b:hover { box-shadow: 0 0 24px rgba(126,193,251,.45); }
+  .ld-act.out-g { color: var(--brand-green); border-color: var(--brand-green); } .ld-act.out-b { color: var(--brand-blue); border-color: var(--brand-blue); }
+  .ld-mid { display: grid; justify-items: center; gap: 16px; padding-top: 22px; }
+  .ld-ring { position: relative; width: min(230px, 100%); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, #0a1018, #020202); display: grid; place-items: center; box-shadow: inset 0 0 0 8px rgba(218,236,253,.05); }
+  .ld-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); } .ld-time { font: 700 clamp(1.8rem, 3vw, 2.6rem)/1 'JetBrains Mono', monospace; letter-spacing: .04em; text-align: center; font-variant-numeric: tabular-nums; } .ld-time small { display: block; margin-top: 8px; font: 400 .68rem 'JetBrains Mono', monospace; letter-spacing: .16em; color: var(--text-muted); }
+  .ld-vs { font: 700 2rem 'Space Grotesk', sans-serif; letter-spacing: .35em; color: var(--text-muted); padding-left: .35em; }
+  .ld-split { width: 100%; display: grid; gap: 8px; } .ld-pc { display: flex; justify-content: space-between; font: 700 .85rem 'JetBrains Mono', monospace; } .ld-pc .a { color: var(--brand-green); } .ld-pc .c { color: var(--brand-blue); }
+  .ld-bar { height: 12px; border-radius: 999px; display: flex; overflow: hidden; background: var(--brand-blue); } .ld-bar i { display: block; background: var(--brand-green); }
+  .ld-foot { border-top: 1px solid rgba(218,236,253,.14); padding-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font: 400 .72rem 'JetBrains Mono', monospace; letter-spacing: .04em; color: var(--text-muted); } .ld-foot b { color: #fff; } .ld-foot .hl { color: var(--brand-green); }
+  @media (max-width: 860px) { .ld-art { height: auto; aspect-ratio: 1 / 0.9; } .ld-stage { grid-template-columns: 1fr; } .ld-col.l .ld-art, .ld-col.r .ld-art { transform: none; } .ld-col.r { text-align: left; } .ld-col.r .ld-pill { right: auto; left: 14px; } .ld-col.r .ld-play { left: auto; right: 14px; } .ld-mid { padding-top: 0; } .ld { padding: 22px 16px; } #liveSlot { padding: 92px 14px 8px; } }
+  @media (prefers-reduced-motion: reduce) { .ld-live i, .ld-eq i { animation: none; } }
+
+  /* Quick Battlez section: copy plus the real queue. Hairlines and type, no boxes. */
+  .qb2-head { max-width: 1240px; margin: 0 auto 28px; }
+  .qb2-grid { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 56px; align-items: start; }
+  .qb2-lead { margin: 0 0 14px; font-size: 1.2rem; line-height: 1.55; color: #fff; max-width: 52ch; }
+  .qb2-sub { margin: 0 0 26px; color: var(--text-muted); max-width: 52ch; }
+  .qb2-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+  .qb2-artist { margin: 0; color: var(--text-muted); font-size: .92rem; line-height: 1.7; max-width: 56ch; }
+  .qb2-artist a, .qb2-queue a { color: var(--brand-blue); font-weight: 600; margin-left: 10px; text-underline-offset: 3px; } .qb2-artist a:first-of-type { margin-left: 0; } .qb2-africa { display: block; margin-top: 6px; } .qb2-africa a { margin-left: 4px; }
+  .qb2-queue { min-width: 0; }
+  .qb2-qhead { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(218,236,253,.14); }
+  .qb2-label { font-family: 'JetBrains Mono', monospace; font-size: .72rem; letter-spacing: .12em; color: var(--text-muted); text-transform: uppercase; }
+  .qb2-status { padding: 14px 0; font-size: .9rem; color: var(--text-muted); } .qb2-status b { color: var(--brand-green); font-weight: 600; }
+  .qb2-row { display: grid; grid-template-columns: 44px auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px 0; border-top: 1px solid rgba(218,236,253,.1); }
+  .qb2-arts { display: flex; gap: 6px; }
+  .qb2-art { width: 56px; height: 56px; border-radius: 8px; overflow: hidden; background: #0d1321; border: 1.5px solid var(--brand-green); flex: none; }
+  .qb2-art + .qb2-art { border-color: var(--brand-blue); }
+  .qb2-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .qb2-pos { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.7rem; letter-spacing: -.02em; color: var(--brand-green); font-variant-numeric: tabular-nums; }
+  .qb2-t { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.15rem; line-height: 1.2; overflow-wrap: anywhere; } .qb2-s { margin-top: 3px; font-size: .85rem; color: var(--text-muted); overflow-wrap: anywhere; }
+  .qb2-next { font-family: 'JetBrains Mono', monospace; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-green); margin-top: 6px; }
+  .qb2-skip { white-space: nowrap; font-size: .85rem; margin: 0 !important; }
+  .qb2-empty { padding: 22px 0; border-top: 1px solid rgba(218,236,253,.1); color: var(--text-muted); }
+  .qb2-fine { margin: 14px 0 0; font-size: .78rem; line-height: 1.6; color: var(--text-muted); opacity: .9; }
+  @media (max-width: 900px) { .qb2-grid { grid-template-columns: 1fr; gap: 32px; } .qb2-row { grid-template-columns: 34px auto minmax(0, 1fr); gap: 10px; } .qb2-art { width: 44px; height: 44px; } .qb2-row .qb2-skip { grid-column: 2 / -1; } }
+</style>
 </head>
 
 <body class="intro-playing">
@@ -2136,23 +2106,23 @@
       </a>
 
       <ul class="nav-links">
-        <li><a href="#quick-battles">⚡ Live Quick Battlez</a></li>
-        <li><a href="#how-it-works">How It Works</a></li>
-        <li><a href="#3d-arena">DJ Wavy 3D</a></li>
-        <li><a href="#analytics">Analytics & Stats</a></li>
+        <li><a href="#quick-battles">Live Battles</a></li>
+        <li><a href="#ride-the-wave">How It Works</a></li>
+        <li><a href="#3d-arena">Meet DJ Wavy</a></li>
+        <li><a href="#analytics">Stats</a></li>
         <li><a href="#faq">FAQ</a></li>
       </ul>
 
       <div class="nav-actions">
-        <button onclick="replayFractalIntro()" class="btn-secondary" style="padding: 9px 14px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;" title="Replay Fractal Logo Entrance">
-          ✨ REPLAY FRACTAL
+        <button onclick="replayFractalIntro()" class="btn-secondary" style="padding: 9px 14px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;" title="Replay the logo intro">
+          REPLAY INTRO
         </button>
         <button id="globalAudioBtn" onclick="toggleArenaSynth()" class="btn-secondary" style="padding: 9px 14px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">
           <span id="audioDot" style="width:8px;height:8px;border-radius:50%;background:var(--brand-neutral);display:inline-block;"></span>
-          <span id="audioStatusText">SYNTH: OFF</span>
+          <span id="audioStatusText">SOUND: OFF</span>
         </button>
-        <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="btn-primary">
-          Enter Arena ↗
+        <a href="https://www.wavewarz.com" target="_blank" rel="noopener" class="btn-primary">
+          Join a Battle ↗
         </a>
       </div>
     </nav>
@@ -2161,6 +2131,8 @@
   <!-- ===================================================================== -->
   <!-- CINEMATIC HERO: 16-SHARD FRACTAL LOGO PLAYS FIRST -> FIGHTERS FOLLOW  -->
   <!-- ===================================================================== -->
+  <div id="topStack">
+  <div id="liveSlot" aria-live="polite"></div>
   <header id="top" class="hero-stage">
     <div class="hero-stadium-glow"></div>
 
@@ -2176,9 +2148,9 @@
       />
     </div>
     <div onclick="jumpToFighter('A')" class="fighter-tag left-tag">
-      <div style="color:var(--brand-blue);font-weight:700;">CHALLENGER A // LEFT WING</div>
-      <div style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">LUI — 1.84X ODDS</div>
-      <div style="color:var(--brand-green);font-size:0.7rem;margin-top:2px;">CLICK TO AUDITION & BACK LUI →</div>
+      <div style="color:var(--brand-blue);font-weight:700;">ARTIST A</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">LUI</div>
+      <div style="color:var(--brand-green);font-size:0.7rem;margin-top:2px;">TAP FOR A DEMO BEAT →</div>
     </div>
 
     <!-- MASSIVE RIGHT FIGHTER: GEEK (NEW CUTOUT) -->
@@ -2190,9 +2162,9 @@
       />
     </div>
     <div onclick="jumpToFighter('B')" class="fighter-tag right-tag">
-      <div style="color:var(--brand-orange);font-weight:700;">CHALLENGER B // RIGHT WING</div>
-      <div style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">GEEK — 2.15X ODDS</div>
-      <div style="color:var(--brand-lilac);font-size:0.7rem;margin-top:2px;">← CLICK TO AUDITION & BACK GEEK</div>
+      <div style="color:var(--wid-amber);font-weight:700;">ARTIST B</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">GEEK</div>
+      <div style="color:var(--wid-aqua);font-size:0.7rem;margin-top:2px;">← TAP FOR A DEMO BEAT</div>
     </div>
 
     <!-- CENTER STAGE: 16-SHARD FRACTAL LOGO ASSEMBLES FIRST -->
@@ -2202,24 +2174,24 @@
 
       <div class="hero-badge">
         <span style="width:8px;height:8px;border-radius:50%;background:var(--brand-green);box-shadow:0 0 10px var(--brand-green);"></span>
-        LIVE ON SOLANA • MUSICAL PREDICTION MARKETS
+        LIVE MUSIC BATTLES
       </div>
 
       <h1 class="hero-headline">
-        <span class="hero-headline-line1">VOTE WITH <span class="text-gradient">SOL.</span></span>
-        <span class="hero-headline-line2">SHAPE THE CHARTS.</span>
+        <span class="hero-headline-line1">HEAR IT <span class="text-gradient">FIRST.</span></span>
+        <span class="hero-headline-line2">TRADE IT LIVE.</span>
       </h1>
 
       <p class="hero-sub">
-        Two artists enter the arena. Stream unreleased heat, stake SOL on your favorite side in real-time prediction pools, and claim instant on-chain payouts when the clock hits zero.
+        Two artists battle live. Hear both songs, then trade the one you believe in. Every trade pays the artist.
       </p>
 
       <div class="hero-cta-row">
         <a href="#quick-battles" class="btn-primary" style="padding: 15px 32px; font-size: 1rem;">
-          ⚡ Jump to Quick Battlez
+          Watch a Live Battle
         </a>
-        <a href="https://app.wavewarz.com" target="_blank" rel="noopener" class="btn-secondary" style="padding: 15px 28px; font-size: 1rem;">
-          Open Full DApp
+        <a href="https://www.wavewarz.com/audius/search" target="_blank" rel="noopener" class="btn-secondary" style="padding: 15px 28px; font-size: 1rem;">
+          Launch a Quick Battle
         </a>
       </div>
     </div>
@@ -2227,21 +2199,34 @@
     <div class="hero-bottom-vignette"></div>
   </header>
 
+  <section id="statsStrip" aria-label="WaveWarz by the numbers">
+    <div class="st-row">
+      <div><div class="st-n" id="stVol">&mdash;</div><div class="st-l">Trading volume</div><div class="st-f" id="stVolSol">&nbsp;</div></div>
+      <div><div class="st-n" id="stPaid">&mdash;</div><div class="st-l">Paid to artists</div><div class="st-f" id="stPaidSol">&nbsp;</div></div>
+      <div><div class="st-n" id="stSpot">&mdash;</div><div class="st-l">Spotify-stream equivalent</div><div class="st-f">Est. at $0.003 per stream</div></div>
+      <div><div class="st-n" id="stQb">&mdash;</div><div class="st-l">Quick Battlez</div><div class="st-f">&nbsp;</div></div>
+      <div><div class="st-n" id="stMe">&mdash;</div><div class="st-l">Main Events</div><div class="st-f">&nbsp;</div></div>
+      <div><div class="st-n" id="stTot">&mdash;</div><div class="st-l">Total battles</div><div class="st-f">&nbsp;</div></div>
+    </div>
+    <div class="st-note">SOL <b id="stSol">&mdash;</b> &middot; Trading carries risk. Start small.</div>
+  </section>
+  </div>
+
   <!-- ===================================================================== -->
   <!-- KINETIC SCROLL RIBBON (BRAND PALETTE)                                 -->
   <!-- ===================================================================== -->
   <div class="kinetic-ribbon">
     <div class="marquee-track">
-      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> LIVE QUICK BATTLEZ ON SOLANA</div>
-      <div class="marquee-item"><span style="color:var(--brand-blue);">⚡</span> 48 BATTLES SETTLED ONCHAIN</div>
-      <div class="marquee-item"><span style="color:var(--brand-orange);">★</span> 1% INSTANT ARTIST PAYOUT PER TRADE</div>
-      <div class="marquee-item"><span style="color:var(--brand-lilac);">🔥</span> 40% DOWNSIDE PROTECTION FOR TRADERS</div>
-      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> SKIP QUEUE: 0.02 SOL</div>
-      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> LIVE QUICK BATTLEZ ON SOLANA</div>
-      <div class="marquee-item"><span style="color:var(--brand-blue);">⚡</span> 48 BATTLES SETTLED ONCHAIN</div>
-      <div class="marquee-item"><span style="color:var(--brand-orange);">★</span> 1% INSTANT ARTIST PAYOUT PER TRADE</div>
-      <div class="marquee-item"><span style="color:var(--brand-lilac);">🔥</span> 40% DOWNSIDE PROTECTION FOR TRADERS</div>
-      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> SKIP QUEUE: 0.02 SOL</div>
+      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> LIVE MUSIC BATTLES, EVERY HOUR OF EVERY DAY</div>
+      <div class="marquee-item"><span style="color:var(--wid-amber);">★</span> ARTISTS GET 1% OF EVERY TRADE ON THEIR SIDE</div>
+      <div class="marquee-item"><span style="color:var(--brand-blue);">●</span> MAIN EVENTS: SUNDAYS 7 PM EASTERN</div>
+      <div class="marquee-item"><span style="color:var(--brand-green);">●</span> SKIP THE LINE: <span class="rb-skip">0.02 SOL</span></div>
+      <div class="marquee-item"><span style="color:var(--wid-aqua);">●</span> HEAR BOTH SONGS, THEN TRADE THE ONE YOU BELIEVE IN</div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-green);">●</span> LIVE MUSIC BATTLES, EVERY HOUR OF EVERY DAY</div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--wid-amber);">★</span> ARTISTS GET 1% OF EVERY TRADE ON THEIR SIDE</div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-blue);">●</span> MAIN EVENTS: SUNDAYS 7 PM EASTERN</div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-green);">●</span> SKIP THE LINE: <span class="rb-skip">0.02 SOL</span></div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--wid-aqua);">●</span> HEAR BOTH SONGS, THEN TRADE THE ONE YOU BELIEVE IN</div>
     </div>
   </div>
 
@@ -2254,15 +2239,15 @@
     <div class="qb-topbar labs-reveal">
       <div class="qb-live-pill">
         <span style="width:8px;height:8px;border-radius:50%;background:var(--brand-green);box-shadow:0 0 10px var(--brand-green);"></span>
-        LIVE QUICK BATTLEZ
+        QUICK BATTLEZ PREVIEW
       </div>
 
-      <div onclick="cycleMatchup()" class="qb-skip-queue" title="Click to cycle to next live battle">
-        SKIP QUEUE: <span style="color:var(--brand-green);font-weight:700;">0.02 SOL</span> ↻
+      <div onclick="cycleMatchup()" class="qb-skip-queue" title="Preview the next sample battle">
+        SKIP THE LINE: <span style="color:var(--brand-green);font-weight:700;">0.02 SOL</span> ↻
       </div>
 
       <div class="qb-settled-count">
-        <strong id="settledCounter" style="color:#ffffff;">48</strong> BATTLES SETTLED ONCHAIN
+        <strong id="settledCounter" style="color:#ffffff;"></strong>EVERY BATTLE SETTLES ONCHAIN
       </div>
     </div>
 
@@ -2275,9 +2260,9 @@
         <!-- LEFT CONTENDER: CHALLENGER A (TILTED LEFT PORTRAIT PANEL)       -->
         <!-- =============================================================== -->
         <div class="qb-contender-col">
-          <div id="cardArtA" onclick="playFighterSynth('A')" class="qb-art-card tilt-left" title="Click to audition Challenger A track">
+          <div id="cardArtA" onclick="playFighterSynth('A')" class="qb-art-card tilt-left" title="Tap for a demo beat">
             <div class="qb-card-atmo-a"></div>
-            <span class="qb-challenger-pill left">CHALLENGER A</span>
+            <span class="qb-challenger-pill left">ARTIST A</span>
             <span id="playIconA" class="qb-play-badge left">▶</span>
 
             <img id="qbImgA" src="LUI.png" alt="Challenger A" class="qb-card-img" />
@@ -2297,14 +2282,14 @@
           </div>
 
           <div class="qb-meta-wrap">
-            <div id="qbRoundA" class="qb-now-playing">NOW PLAYING (ROUND 2)</div>
+            <div id="qbRoundA" class="qb-now-playing">NOW PLAYING</div>
             <h3 id="qbTrackA" class="qb-track-title">Apex Cyber</h3>
             <div class="qb-artist-sub">
-              by <strong id="qbArtistA">LUI (Stormbourne)</strong> · <span id="qbCityA">Los Angeles</span>
+              by <strong id="qbArtistA">LUI</strong> · <span id="qbCityA">sample song</span>
             </div>
 
             <button id="qbBtnBackA" onclick="triggerPrediction('A')" class="qb-btn-outline-blue">
-              BACK LUI · 1.84X
+              TRADE LUI
             </button>
           </div>
         </div>
@@ -2320,7 +2305,7 @@
             </svg>
             <div class="qb-dial-inner">
               <div id="qbTimerText" class="qb-time-readout">05:50</div>
-              <div class="qb-round-sub">ROUND REMAINING</div>
+              <div class="qb-round-sub">TIME LEFT</div>
             </div>
           </div>
 
@@ -2340,9 +2325,9 @@
 
           <!-- Quick Matchup Switcher Pills -->
           <div style="margin-top:28px;display:flex;gap:8px;justify-content:center;">
-            <button onclick="selectMatchup(0)" id="matchPill0" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(var(--brand-green-rgb),0.18);border:1px solid var(--brand-green);color:var(--brand-green);cursor:pointer;">RND 2</button>
-            <button onclick="selectMatchup(1)" id="matchPill1" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">RND 3</button>
-            <button onclick="switchQuickBattleMode('ledger')" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">LEDGER ↗</button>
+            <button onclick="selectMatchup(0)" id="matchPill0" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(var(--brand-green-rgb),0.18);border:1px solid var(--brand-green);color:var(--brand-green);cursor:pointer;">SAMPLE 1</button>
+            <button onclick="selectMatchup(1)" id="matchPill1" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">SAMPLE 2</button>
+            <button onclick="switchQuickBattleMode('ledger')" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">FULL LIST ↗</button>
           </div>
         </div>
 
@@ -2350,9 +2335,9 @@
         <!-- RIGHT CONTENDER: CHALLENGER B (TILTED RIGHT PORTRAIT PANEL)     -->
         <!-- =============================================================== -->
         <div class="qb-contender-col right-col">
-          <div id="cardArtB" onclick="playFighterSynth('B')" class="qb-art-card tilt-right" title="Click to audition Challenger B track">
+          <div id="cardArtB" onclick="playFighterSynth('B')" class="qb-art-card tilt-right" title="Tap for a demo beat">
             <div class="qb-card-atmo-b"></div>
-            <span class="qb-challenger-pill right">CHALLENGER B</span>
+            <span class="qb-challenger-pill right">ARTIST B</span>
             <span id="playIconB" class="qb-play-badge right">▶</span>
 
             <img id="qbImgB" src="Geek cutout new.png" alt="Challenger B" class="qb-card-img" />
@@ -2372,27 +2357,27 @@
           </div>
 
           <div class="qb-meta-wrap">
-            <div id="qbRoundB" class="qb-now-playing">NOW PLAYING (ROUND 2)</div>
+            <div id="qbRoundB" class="qb-now-playing">NOW PLAYING</div>
             <h3 id="qbTrackB" class="qb-track-title">Emerald Glitch</h3>
             <div class="qb-artist-sub">
-              by <strong id="qbArtistB">GEEK (Rockstar)</strong> · <span id="qbCityB">Berlin</span>
+              by <strong id="qbArtistB">GEEK MYTH</strong> · <span id="qbCityB">sample song</span>
             </div>
 
             <button id="qbBtnBackB" onclick="triggerPrediction('B')" class="qb-btn-solid-green">
-              BACK GEEK · 2.15X
+              TRADE GEEK
             </button>
           </div>
         </div>
 
       </div>
 
-      <!-- Subtle On-Chain Settlement Toast Bar -->
+      <!-- Small status bar under the battle -->
       <div style="margin-top:38px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--brand-neutral);">
         <div id="txToast">
-          <span style="color:var(--brand-green);">● ONCHAIN FEED:</span> Click either tilted artist panel to preview audio or click <strong>BACK</strong> to stake SOL in the pool.
+          <span style="color:var(--brand-green);">● LIVE:</span> This is a sample battle. Tap an artist for a demo beat, or tap <strong>TRADE</strong> to preview a trade.
         </div>
         <div>
-          POOL VOLUME: <strong id="poolVolReadout" style="color:#FFFFFF;">42.85 SOL</strong> · 1% ARTIST ROYALTY ACTIVE
+          SAMPLE POOLS: <strong id="poolVolReadout" style="color:#FFFFFF;">42.85 SOL</strong> · ARTISTS EARN 1% OF EVERY TRADE ON THEIR SIDE
         </div>
       </div>
 
@@ -2401,9 +2386,9 @@
     <!-- OPTIONAL LIVE NOTION BRACKET EMBED -->
     <div id="ledgerBattleEmbed" class="qb-main-stage" style="display:none;padding:28px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">
-        <span style="color:var(--brand-green);">● WAVEWARZ LIVE QUICK BATTLEZ NOTION LEDGER</span>
+        <span style="color:var(--brand-green);">● QUICK BATTLEZ: FULL LIST</span>
         <button onclick="switchQuickBattleMode('interactive')" class="btn-secondary" style="padding:6px 14px;font-size:0.75rem;">
-          ← Back to Tilted Battle Deck
+          ← Back to the battle
         </button>
       </div>
       <iframe 
@@ -2416,114 +2401,175 @@
   </section>
 
   <!-- ===================================================================== -->
-  <!-- GOOGLE LABS BENTO GRID: HOW WAVEWARZ WORKS (OFFICIAL BRAND PALETTE)   -->
+  <!-- QUICK BATTLEZ: the 24/7 engine, with the real queue (WaveWarz Rebrand System) -->
   <!-- ===================================================================== -->
-    <!-- ===================================================================== -->
-  <!-- VENTURE-GRADE EXCHANGE INTERACTIVE MAP TOUR (INTEGRATED ITERATION)    -->
+  <section id="quick-queue" class="section-container" aria-labelledby="qbTitle">
+    <div class="qb2-head labs-reveal">
+      <div class="section-eyebrow">QUICK BATTLEZ</div>
+      <h2 class="section-title" id="qbTitle">EVERY HOUR OF <span class="text-gradient">EVERY DAY</span></h2>
+    </div>
+    <div class="qb2-grid labs-reveal">
+      <div class="qb2-copy">
+        <p class="qb2-lead">Pick two songs from the Audius catalog and launch a battle any time. As soon as one ends, the next one starts. Trade, climb the leaderboard, repeat.</p>
+        <p class="qb2-sub">Artists: start here. Battle in Quick Battlez, build your record, then step up to Sunday.</p>
+        <div class="qb2-cta">
+          <a class="btn-primary" href="https://www.wavewarz.com/audius/search" target="_blank" rel="noopener" style="padding:15px 30px;font-size:1rem;">Create a Quick Battle</a>
+          <a class="btn-secondary" href="https://www.wavewarz.com/quick-battles" target="_blank" rel="noopener" style="padding:15px 26px;font-size:1rem;">See the whole queue</a>
+        </div>
+        <p class="qb2-artist">Artist on Audius? Connect your profile so your catalog is battle-ready on WaveWarz.
+          <a href="https://www.wavewarz.com/audius/connect" target="_blank" rel="noopener">Connect Audius profile</a>
+          <a href="https://www.wavewarz.com/audius/search" target="_blank" rel="noopener">Resync Audius tracks</a>
+          <span class="qb2-africa">In Africa, where Audius does not work, <a href="https://www.songchainn.xyz/wavewarz-africa" target="_blank" rel="noopener">use SongChain</a>.</span></p>
+      </div>
+      <div class="qb2-queue" id="qbQueue" aria-live="polite">
+        <div class="qb2-qhead"><span class="qb2-label">UP NEXT</span><span class="qb2-label" id="qbCount">&nbsp;</span></div>
+        <div class="qb2-status" id="qbStatus">Loading the queue&hellip;</div>
+        <div id="qbRows"></div>
+        <p class="qb2-fine" id="qbSkipNote"></p>
+        <p class="qb2-fine">Add to queue 0.005 SOL &middot; Launch 0.007 SOL &middot; Trading fee 1.5% (1.0% to the artist)</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================================================================== -->
-<section id="venture-exchange-scroll" class="exchange-scroll-track">
-    <div class="exchange-sticky-stage" id="exchangeStage">
-      <div class="cyber-grid-bg"></div>
+  <!-- RIDE THE WAVEWARZ: HOW TO USE WAVEWARZ, IN PLAIN LANGUAGE            -->
+  <!-- Scroll to ride the wave. DJ Wavy surfs from stop to stop.            -->
+  <!-- ===================================================================== -->
+  <section id="ride-the-wave" class="ride-track">
+    <div class="ride-stage" id="rideStage">
+      <div class="ride-grain" aria-hidden="true"></div>
 
       <!-- HEADER -->
-      <header class="exchange-header">
+      <header class="ride-header">
         <div>
-          <div class="badge-tag">
-            <span class="badge-dot"></span>
-            SYSTEM ARCHITECTURE // DJ WAVY TOUR
-          </div>
-          <h2 class="exchange-title">Built Like A Venture-Grade Exchange</h2>
+          <div class="ride-eyebrow"><span class="ride-dot"></span>NEW HERE? START HERE</div>
+          <h2 class="ride-title">Ride the <span>WaveWarz</span></h2>
+          <p class="ride-sub">Ride the wave. Five easy stops from sign-up to your first battle.</p>
         </div>
 
-        <div class="tour-status-bar">
-          <div class="progress-readout">
-            TOUR SYNC: <strong id="tourPercent">0%</strong>
-          </div>
-          <div class="mode-pill" id="modeStatusPill">
-            WALKTHROUGH ACTIVE
-          </div>
+        <div class="ride-progress" aria-live="polite">
+          <div class="ride-progress-label">STOP <strong id="rideStop">1</strong> OF 5</div>
+          <div class="ride-progress-bar"><div class="ride-progress-fill" id="rideFill"></div></div>
         </div>
       </header>
 
-      <!-- MAP & LINKED INFOGRAPHIC STAGE -->
-      <div class="map-board-wrapper">
-        <div class="map-board" id="mapBoard">
+      <!-- THE WAVE -->
+      <div class="ride-board-wrap">
+        <div class="ride-board" id="rideBoard">
 
-          <!-- SVG CIRCUIT ROAD -->
-          <svg class="map-svg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+          <svg class="ride-svg" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true">
             <defs>
-              <linearGradient id="cyberGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#00f0ff" />
-                <stop offset="50%" stop-color="#ff007f" />
-                <stop offset="100%" stop-color="#00ff9d" />
+              <linearGradient id="rideGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#7EC1FB" />
+                <stop offset="50%" stop-color="#76F3DF" />
+                <stop offset="100%" stop-color="#95FE7C" />
               </linearGradient>
+              <linearGradient id="rideWater" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#274862" stop-opacity="0.78" />
+                <stop offset="55%" stop-color="#274862" stop-opacity="0.30" />
+                <stop offset="100%" stop-color="#0d1321" stop-opacity="0" />
+              </linearGradient>
+              <!-- Wave ID film grain, cut to the shape it is applied to -->
+              <filter id="rideGrain" x="0" y="0" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="7" result="n" />
+                <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.89  0 0 0 0 1  0 0 0 0 0.95  0 0 0 0.85 -0.32" result="g" />
+                <feComposite in="g" in2="SourceAlpha" operator="in" />
+              </filter>
+              <!-- Wave ID bloom (soft glow behind the trace) -->
+              <filter id="rideBloom" x="-10%" y="-30%" width="120%" height="160%">
+                <feGaussianBlur stdDeviation="5" />
+              </filter>
             </defs>
 
-            <!-- Background unlit track -->
-            <path class="path-base" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
-            <path class="path-dashes" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <!-- water under the wave -->
+            <path id="rideWaterShape" d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372 L 1260 640 L -60 640 Z" fill="url(#rideWater)" />
+            <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372 L 1260 640 L -60 640 Z" fill="#E4FFF3" filter="url(#rideGrain)" opacity="0.4" />
 
-            <!-- Foreground Scroll-Activated Neon Track -->
-            <path id="wavyMotionPath" class="path-active" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <!-- Wave ID phosphor traces: thin echoes of the wave, plus a faint amber ghost -->
+            <g fill="none" stroke-linecap="round">
+              <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#62B8DF" stroke-width="1.5" opacity="0.40" transform="translate(0 22)" />
+              <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#62B8DF" stroke-width="1.5" opacity="0.24" transform="translate(0 46)" />
+              <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#A9D9DE" stroke-width="1.5" opacity="0.12" transform="translate(0 74)" />
+              <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#F2A74B" stroke-width="1.5" opacity="0.30" transform="translate(3 1)" />
+            </g>
+
+            <!-- the route: dots along the crest -->
+            <path class="wave-crest-dots" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+
+            <!-- glow + lit line that grows as you scroll -->
+            <path id="rideGlow" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#7EC1FB" stroke-width="14" stroke-linecap="round" filter="url(#rideBloom)" opacity="0.5" />
+            <path id="rideLit" class="wave-lit" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
           </svg>
 
-          <!-- NODES CONTAINER (Populated dynamically from JS data) -->
-          <div id="nodesLayer"></div>
+          <!-- the five stops are drawn here by the script below -->
+          <div id="rideNodes"></div>
 
-          <!-- 2D DJ WAVY CHARACTER + TALKING BOX -->
-          <div class="dj-wavy-actor" id="djWavyActor">
-            <!-- RPG Talking Box -->
-            <div class="wavy-talk-box" id="wavyTalkBox">
-              <div class="talk-header">
-                <span class="speaker-name">
-                  DJ WAVY
-                  <span class="eq-bars"><span></span><span></span><span></span></span>
-                </span>
-                <span class="talk-step-badge" id="talkStepBadge">NODE 01/05</span>
-              </div>
-              <div class="talk-subject" id="talkSubject">Loading...</div>
-              <div class="talk-message">
-                <span id="talkMessageText"></span><span class="talk-cursor"></span>
-              </div>
+          <!-- DJ WAVY ON A WAVEWARZ SURFBOARD (2D drawing) -->
+          <div class="ride-actor" id="rideActor">
+            <div class="ride-tilt" id="rideTilt">
+              <svg class="ride-sprite" viewBox="0 -12 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DJ Wavy riding a WaveWarz surfboard">
+                <!-- spray off the tail -->
+                <g class="ride-spray">
+                  <circle cx="16" cy="118" r="3.2" fill="#D8EBFC" />
+                  <circle cx="6" cy="109" r="2.2" fill="#A9D9DE" />
+                  <circle cx="24" cy="127" r="2.2" fill="#D8EBFC" />
+                </g>
+
+                <!-- WaveWarz surfboard -->
+                <path d="M6 121 C46 108 150 104 196 110 C150 130 46 130 6 121 Z" fill="#95FE7C" />
+                <path d="M6 121 C46 108 150 104 196 110" stroke="#0D1321" stroke-opacity="0.35" stroke-width="1.4" />
+                <path d="M20 116.6 C62 109.4 150 107.4 188 111.4" stroke="#0D1321" stroke-width="3.2" stroke-linecap="round" />
+                <text x="104" y="122.6" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="700" font-size="8.6" letter-spacing="1.3" fill="#0D1321" transform="rotate(-1.6 104 119)">WaveWarz</text>
+
+                <!-- legs (surf stance) -->
+                <path d="M92 108 Q83 98 94 86" stroke="#0D1321" stroke-width="8" stroke-linecap="round" />
+                <path d="M113 107 Q123 98 112 86" stroke="#0D1321" stroke-width="8" stroke-linecap="round" />
+                <ellipse cx="92" cy="108" rx="7.5" ry="3" fill="#E4FFF3" />
+                <ellipse cx="114" cy="107" rx="7.5" ry="3" fill="#E4FFF3" />
+
+                <!-- arms out for balance -->
+                <path d="M90 63 Q72 62 60 74" stroke="#274862" stroke-width="7" stroke-linecap="round" />
+                <circle cx="58" cy="76" r="4.6" fill="#7EC1FB" />
+                <path d="M112 63 Q130 58 142 48" stroke="#274862" stroke-width="7" stroke-linecap="round" />
+                <circle cx="144" cy="46" r="4.6" fill="#7EC1FB" />
+
+                <!-- jacket + bow tie -->
+                <path d="M87 88 Q85 70 90 58 L112 58 Q117 70 115 88 Z" fill="#274862" stroke="#E5C25A" stroke-width="1.2" />
+                <path d="M101 60 L101 87" stroke="#E5C25A" stroke-width="0.9" />
+                <path d="M101 59 L92 54 L92 64 Z M101 59 L110 54 L110 64 Z" fill="#95FE7C" />
+
+                <!-- head -->
+                <circle cx="101" cy="36" r="20" fill="#7EC1FB" />
+                <ellipse cx="101" cy="46" rx="15" ry="8" fill="#62B8DF" opacity="0.5" />
+                <circle cx="94" cy="36" r="2.4" fill="#0D1321" />
+                <circle cx="108" cy="36" r="6.6" fill="#E4FFF3" fill-opacity="0.2" stroke="#E5C25A" stroke-width="1.8" />
+                <circle cx="108" cy="36" r="2.4" fill="#0D1321" />
+                <path d="M114 40 Q121 50 116 59" stroke="#E5C25A" stroke-width="0.9" />
+                <path d="M96 55 Q101 60 106 55" stroke="#0D1321" stroke-width="1.6" stroke-linecap="round" />
+                <!-- big white mustache -->
+                <path d="M101 45 C96 42 89 43 85 49 C83 53 88 55 90 51 C92 49 96 49 101 50 Z" fill="#F2FFFF" />
+                <path d="M101 45 C106 42 113 43 117 49 C119 53 114 55 112 51 C110 49 106 49 101 50 Z" fill="#F2FFFF" />
+
+                <!-- top hat -->
+                <ellipse cx="101" cy="17" rx="22" ry="4.6" fill="#010405" />
+                <rect x="86" y="-4" width="30" height="21" rx="3" fill="#010405" />
+                <rect x="86" y="9" width="30" height="4.5" fill="#95FE7C" />
+                <path d="M112 -2 C124 -11 134 -6 128 4" stroke="#E4FFF3" stroke-width="2.4" stroke-linecap="round" />
+              </svg>
             </div>
-
-            <!-- 2D Vector Sprite of DJ Wavy -->
-            <svg class="dj-wavy-sprite" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Outer Aura -->
-              <circle cx="60" cy="64" r="42" fill="rgba(0, 240, 255, 0.12)" />
-              <!-- Headphone Band -->
-              <path d="M22 62 C22 30, 98 30, 98 62" stroke="#00f0ff" stroke-width="7" stroke-linecap="round"/>
-              <!-- Wavy Hair / Crown -->
-              <path d="M32 42 Q45 22 60 35 T88 38" stroke="#ff007f" stroke-width="6" stroke-linecap="round" fill="none"/>
-              <!-- Head Base -->
-              <rect x="30" y="38" width="60" height="50" rx="22" fill="#121629" stroke="#ffffff" stroke-width="3"/>
-              <!-- Left & Right Headphones -->
-              <rect x="14" y="50" width="14" height="28" rx="6" fill="#ff007f" stroke="#fff" stroke-width="2"/>
-              <rect x="92" y="50" width="14" height="28" rx="6" fill="#ff007f" stroke="#fff" stroke-width="2"/>
-              <!-- Cyber Visor Shades -->
-              <path d="M35 54 H85 L80 68 H64 L60 62 L56 68 H40 Z" fill="#00f0ff" stroke="#ffffff" stroke-width="2"/>
-              <!-- Visor Glint -->
-              <line x1="44" y1="57" x2="52" y2="65" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-              <!-- Confident DJ Grin -->
-              <path d="M48 76 Q60 83 72 76" stroke="#00ff9d" stroke-width="3" stroke-linecap="round"/>
-              <!-- Boom Mic -->
-              <path d="M26 74 Q38 86 52 82" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round"/>
-              <circle cx="54" cy="82" r="3.5" fill="#ff007f"/>
-            </svg>
           </div>
 
         </div>
+
       </div>
 
       <!-- FOOTER -->
-      <footer class="exchange-footer">
-        <div class="scroll-prompt">
-          <div class="scroll-mouse"></div>
-          <span>SCROLL TO WALK THE MAP WITH DJ WAVY</span>
+      <footer class="ride-footer">
+        <div class="ride-scroll-prompt">
+          <div class="ride-mouse"></div>
+          <span>Scroll to ride the wave</span>
         </div>
-        <div class="overview-unlocked-banner">
-          <span>★ FULL LINKED INFOGRAPHIC UNLOCKED — HOVER ANY NODE TO INSPECT</span>
-        </div>
+        <a class="ride-cta" href="https://www.wavewarz.com" target="_blank" rel="noopener">Join your first battle ↗</a>
       </footer>
     </div>
   </section>
@@ -2547,8 +2593,8 @@
         <div class="prestige-gate prestige-gate-right" id="gate3DRight"></div>
         <div class="gate-crest-banner" id="gateCrestBanner">
           <div class="crest-crown">♛</div>
-          <div class="crest-title">ENTER THE SOVEREIGN</div>
-          <div class="crest-subtitle">MEET DJ WAVY // 3D & AR EXPERIENCE</div>
+          <div class="crest-title">MEET DJ WAVY</div>
+          <div class="crest-subtitle">SEE HIM IN 3D AND IN YOUR ROOM</div>
         </div>
       </div>
 
@@ -2557,20 +2603,26 @@
 
         <!-- Left Column: Royal Introduction -->
         <div class="royal-lore-col" id="royalLoreCol">
-          <div class="crown-pill">♛ WAVEWARZ ROYALTY</div>
-          <h2 class="royal-3d-title">All Hail<br>DJ Wavy</h2>
+          <div class="crown-pill">THE JUDGE</div>
+          <h2 class="royal-3d-title">Meet<br>DJ Wavy</h2>
           <p class="royal-3d-Bio">
-            The sovereign architect of the arena. Presiding over every battle, liquidity pool, and crowd surge in full 3D glory—and ready to drop straight into your physical space.
+            The resident AI judge. In every Quick Battlez he casts one of three votes, alongside the poll and the charts, and two of three decides the winner. &ldquo;If it's not genius, don't waste my time.&rdquo; Spin him around, or point your phone at the code to bring him into your room.
           </p>
           <div class="royal-stats-row">
             <div class="royal-stat-box">
-              <div class="stat-lbl">STATUS</div>
-              <div class="stat-val">SOVEREIGN</div>
+              <div class="stat-lbl">HIS VOTE</div>
+              <div class="stat-val">1 OF 3</div>
             </div>
             <div class="royal-stat-box">
-              <div class="stat-lbl">DIMENSION</div>
-              <div class="stat-val">3D + WEB AR</div>
+              <div class="stat-lbl">SEE HIM IN</div>
+              <div class="stat-val">3D + AR</div>
             </div>
+          </div>
+          <p class="royal-3d-Bio" style="margin-top:22px;">
+            Want his take on your own track? Pick two songs and pay 0.015 SOL once. He tells you which one wins and why, with a verdict, a confidence score and a five-part scorecard. The fee splits three ways: 0.005 SOL to each artist and 0.005 SOL to WaveWarz.
+          </p>
+          <div style="margin-top:22px;">
+            <a class="btn-primary" href="https://www.wavewarz.com/audius/search" target="_blank" rel="noopener">Get a DJ Wavy Breakdown</a>
           </div>
         </div>
 
@@ -2588,19 +2640,19 @@
             exposure="1.1"
             interaction-prompt="none">
           </model-viewer>
-          <div class="interaction-hint">DRAG TO ROTATE 3D ROYALTY</div>
+          <div class="interaction-hint">DRAG TO SPIN DJ WAVY</div>
         </div>
 
         <!-- Right Column: AR QR Code Portal (DJ wavy QR.svg) -->
         <div class="royal-ar-col" id="royalArCol">
           <div class="ar-portal-card">
             <div class="ar-card-header">
-              <span class="ar-live-tag">● AR PORTAL READY</span>
+              <span class="ar-live-tag">● AR READY</span>
               <span class="ar-crown-icon">♛</span>
             </div>
-            <div class="ar-card-title">Summon Wavy in AR</div>
+            <div class="ar-card-title">See DJ Wavy in your room</div>
             <p class="ar-card-sub">
-              Point your phone camera at the royal seal below to project 3D DJ Wavy directly into your room.
+              Point your phone camera at the code below.
             </p>
             <div class="qr-frame-wrapper">
               <div class="qr-scan-laser"></div>
@@ -2608,7 +2660,7 @@
               <img src="DJ wavy QR.svg" alt="Scan to view DJ Wavy in AR" loading="lazy" />
             </div>
             <div class="ar-footer-meta">
-              [ SCAN WITH IOS OR ANDROID CAMERA ]
+              [ SCAN WITH YOUR PHONE CAMERA ]
             </div>
           </div>
         </div>
@@ -2618,33 +2670,34 @@
   </section>
 
   <!-- ===================================================================== -->
-  <!-- ON-CHAIN INTELLIGENCE & EVENT CALENDAR (LAZY LOADED)                  -->
+  <!-- ONCHAIN STATS & BATTLE CALENDAR (LAZY LOADED)                  -->
   <!-- ===================================================================== -->
+  <div class="wid-trace" aria-hidden="true"></div>
   <section id="analytics" class="section-container velocity-skew">
     <div class="labs-reveal" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:32px;">
       <div>
-        <div class="section-eyebrow">LIVE ECOSYSTEM TELEMETRY</div>
+        <div class="section-eyebrow">THE NUMBERS</div>
         <h2 class="section-title">
-          ON-CHAIN <span class="text-gradient">INTELLIGENCE</span> HUB
+          ONCHAIN <span class="text-gradient">STATS</span>
         </h2>
       </div>
 
       <div style="display:flex;flex-wrap:wrap;gap:10px;">
         <button onclick="switchHubIframe('analytics')" id="hubBtn-analytics" class="btn-primary" style="padding:10px 20px;font-size:0.8rem;">
-          📊 Global Analytics
+          All Stats
         </button>
         <button onclick="switchHubIframe('artists')" id="hubBtn-artists" class="btn-secondary" style="padding:10px 20px;font-size:0.8rem;">
-          🎤 Artist Profiles
+          Artists
         </button>
         <button onclick="switchHubIframe('calendar')" id="hubBtn-calendar" class="btn-secondary" style="padding:10px 20px;font-size:0.8rem;">
-          📅 Lu.ma Battle Calendar
+          Battle Calendar
         </button>
       </div>
     </div>
 
     <div class="spotlight-card labs-reveal reveal-scale" style="padding:20px;">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px 16px 12px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--brand-neutral);">
-        <span id="hubTitleText">WAVEWARZ REAL-TIME ANALYTICS DASHBOARD</span>
+        <span id="hubTitleText">LIVE WAVEWARZ STATS</span>
         <a id="hubExternalLink" href="https://wavewarz-analytics.vercel.app/" target="_blank" rel="noopener" style="color:var(--brand-blue);text-decoration:none;">
           Open in New Window ↗
         </a>
@@ -2662,6 +2715,7 @@
   <!-- ===================================================================== -->
   <!-- FAQ SECTION                                                           -->
   <!-- ===================================================================== -->
+  <div class="wid-trace" aria-hidden="true"></div>
   <section id="faq" class="section-container velocity-skew" style="max-width:960px;">
     <div class="labs-reveal" style="text-align:center;margin-bottom:44px;">
       <div class="section-eyebrow">EVERYTHING YOU NEED TO KNOW</div>
@@ -2671,36 +2725,37 @@
     <div style="display:flex;flex-direction:column;gap:16px;">
       <details class="spotlight-card labs-reveal" style="padding:26px;cursor:pointer;--stagger:0ms;">
         <summary style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;list-style:none;display:flex;justify-content:space-between;align-items:center;">
-          <span>How do I participate in a live WaveWarz battle?</span>
+          <span>How do I join a live battle?</span>
           <span style="color:var(--brand-green);font-family:'JetBrains Mono',monospace;">+</span>
         </summary>
         <p style="color:var(--brand-neutral);margin-top:14px;line-height:1.65;">
-          Connect any Solana wallet (Phantom, Solflare, or Backpack) at <strong style="color:#fff;">app.wavewarz.com</strong>. Choose an active battle, listen to both tracks, and purchase Artist A or Artist B battle tokens using SOL while the timer is active.
+          Open <strong style="color:#fff;">wavewarz.com</strong> and connect a Solana wallet. Phantom is a popular free one. Pick a live battle, hear both songs, then trade the one you believe in before the timer ends. On a phone, open wavewarz.com inside the Phantom or Solflare app browser.
         </p>
       </details>
 
       <details class="spotlight-card labs-reveal" style="padding:26px;cursor:pointer;--stagger:90ms;">
         <summary style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;list-style:none;display:flex;justify-content:space-between;align-items:center;">
-          <span>What happens if the artist I backed loses?</span>
+          <span>What happens when a battle ends?</span>
           <span style="color:var(--brand-green);font-family:'JetBrains Mono',monospace;">+</span>
         </summary>
         <p style="color:var(--brand-neutral);margin-top:14px;line-height:1.65;">
-          WaveWarz protects fans from 100% loss: 40% of the losing pool is refunded proportionally back to losing side holders, while 50% goes to the winning side traders and 5–7% goes directly to the artists.
+          The losing side&rsquo;s pool is shared out: 50% to traders on the losing side, 40% to traders on the winning side, 5% to the winning artist, 2% to the losing artist and 3% to the platform. Nothing sends itself, so tap Withdraw to collect your share.
         </p>
       </details>
 
       <details class="spotlight-card labs-reveal" style="padding:26px;cursor:pointer;--stagger:180ms;">
         <summary style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:800;list-style:none;display:flex;justify-content:space-between;align-items:center;">
-          <span>How do artists apply to battle LUI or Geek?</span>
+          <span>How do artists get into a battle?</span>
           <span style="color:var(--brand-green);font-family:'JetBrains Mono',monospace;">+</span>
         </summary>
         <p style="color:var(--brand-neutral);margin-top:14px;line-height:1.65;">
-          Join our weekday X Spaces at 8:00 PM EST or submit your tracks through the WaveWarz DApp portal to enter upcoming Quick Battles and Main Event brackets.
+          Start in Quick Battlez. Connect your Audius profile and queue your songs on the <a href="https://www.wavewarz.com/audius/search" target="_blank" rel="noopener" style="color:var(--brand-blue);">setup page</a>, build your record, then tell us about yourself and we will curate your Main Event, Sundays at 7 PM Eastern.
         </p>
       </details>
     </div>
   </section>
 
+  <div class="wid-trace" aria-hidden="true"></div>
   <!-- FOOTER -->
   <footer style="border-top:1px solid rgba(var(--brand-blue-rgb),0.15);padding:48px 24px;background:var(--brand-black);position:relative;z-index:5;">
     <div style="max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:24px;">
@@ -2711,9 +2766,9 @@
         </span>
       </div>
       <div style="display:flex;gap:24px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;">
-        <a href="https://x.com/WaveWarz" target="_blank" style="color:var(--brand-neutral);text-decoration:none;">X (TWITTER)</a>
+        <a href="https://x.com/WaveWarz" target="_blank" style="color:var(--brand-neutral);text-decoration:none;">X</a>
         <a href="https://www.youtube.com/@WaveWarz" target="_blank" style="color:var(--brand-neutral);text-decoration:none;">YOUTUBE</a>
-        <a href="https://app.wavewarz.com" target="_blank" style="color:var(--brand-green);text-decoration:none;font-weight:700;">LAUNCH DAPP ↗</a>
+        <a href="https://www.wavewarz.com" target="_blank" rel="noopener" style="color:var(--brand-green);text-decoration:none;font-weight:700;">WAVEWARZ.COM ↗</a>
       </div>
     </div>
   </footer>
@@ -2892,16 +2947,18 @@
     /* ---------------------------------------------------------------------
        5. QUICK BATTLEZ ENGINE
     --------------------------------------------------------------------- */
+    /* The old demo deck was removed from the page. $g keeps the hero fighter tags and the sound button from throwing. */
+    function $g(id) { return document.getElementById(id) || { style: {}, classList: { add() {}, remove() {}, toggle() {} } }; }
     const matchups = [
       {
-        roundLabel: "NOW PLAYING (ROUND 2)",
+        roundLabel: "NOW PLAYING",
         seconds: 350,
         maxSeconds: 400,
         a: {
           track: "Apex Cyber",
-          artist: "LUI · Stormbourne",
-          shortName: "STORMBOURNE",
-          city: "Los Angeles",
+          artist: "LUI",
+          shortName: "LUI",
+          city: "sample song",
           img: "LUI.png",
           sol: 18.85,
           freq: 110,
@@ -2909,9 +2966,9 @@
         },
         b: {
           track: "Emerald Glitch",
-          artist: "GEEK · Kate Murphy",
-          shortName: "KATE MURPHY",
-          city: "Berlin",
+          artist: "GEEK MYTH",
+          shortName: "GEEK",
+          city: "sample song",
           img: "Geek cutout new.png",
           sol: 24.00,
           freq: 165,
@@ -2919,14 +2976,14 @@
         }
       },
       {
-        roundLabel: "NOW PLAYING (ROUND 3)",
+        roundLabel: "NOW PLAYING",
         seconds: 215,
         maxSeconds: 300,
         a: {
           track: "Pink Bucket VIP",
           artist: "LUI",
           shortName: "LUI",
-          city: "Miami",
+          city: "sample song",
           img: "LUI.png",
           sol: 26.40,
           freq: 125,
@@ -2934,9 +2991,9 @@
         },
         b: {
           track: "Leopard Mic Riot",
-          artist: "GEEK",
+          artist: "GEEK MYTH",
           shortName: "GEEK",
-          city: "New York",
+          city: "sample song",
           img: "Geek cutout new.png",
           sol: 21.20,
           freq: 146,
@@ -2955,28 +3012,25 @@
       const pctA = Math.round((m.a.sol / totalSol) * 100);
       const pctB = 100 - pctA;
 
-      const oddsA = ((totalSol / m.a.sol) * 0.92).toFixed(2);
-      const oddsB = ((totalSol / m.b.sol) * 0.92).toFixed(2);
+      $g("qbImgA").src = m.a.img;
+      $g("qbRoundA").textContent = m.roundLabel;
+      $g("qbTrackA").textContent = m.a.track;
+      $g("qbArtistA").textContent = m.a.artist;
+      $g("qbCityA").textContent = m.a.city;
+      $g("qbBtnBackA").textContent = `TRADE ${m.a.shortName}`;
 
-      document.getElementById("qbImgA").src = m.a.img;
-      document.getElementById("qbRoundA").textContent = m.roundLabel;
-      document.getElementById("qbTrackA").textContent = m.a.track;
-      document.getElementById("qbArtistA").textContent = m.a.artist;
-      document.getElementById("qbCityA").textContent = m.a.city;
-      document.getElementById("qbBtnBackA").textContent = `BACK ${m.a.shortName} · ${oddsA}X`;
+      $g("qbImgB").src = m.b.img;
+      $g("qbRoundB").textContent = m.roundLabel;
+      $g("qbTrackB").textContent = m.b.track;
+      $g("qbArtistB").textContent = m.b.artist;
+      $g("qbCityB").textContent = m.b.city;
+      $g("qbBtnBackB").textContent = `TRADE ${m.b.shortName}`;
 
-      document.getElementById("qbImgB").src = m.b.img;
-      document.getElementById("qbRoundB").textContent = m.roundLabel;
-      document.getElementById("qbTrackB").textContent = m.b.track;
-      document.getElementById("qbArtistB").textContent = m.b.artist;
-      document.getElementById("qbCityB").textContent = m.b.city;
-      document.getElementById("qbBtnBackB").textContent = `BACK ${m.b.shortName} · ${oddsB}X`;
-
-      document.getElementById("qbPctA").textContent = `${pctA}%`;
-      document.getElementById("qbPctB").textContent = `${pctB}%`;
-      document.getElementById("qbSplitLeft").style.width = `${pctA}%`;
-      document.getElementById("qbSplitRight").style.width = `${pctB}%`;
-      document.getElementById("poolVolReadout").textContent = `${totalSol.toFixed(2)} SOL`;
+      $g("qbPctA").textContent = `${pctA}%`;
+      $g("qbPctB").textContent = `${pctB}%`;
+      $g("qbSplitLeft").style.width = `${pctA}%`;
+      $g("qbSplitRight").style.width = `${pctB}%`;
+      $g("poolVolReadout").textContent = `${totalSol.toFixed(2)} SOL`;
 
       updateClockDisplay();
     }
@@ -2985,20 +3039,20 @@
       const m = matchups[activeMatch];
       const mins = String(Math.floor(m.seconds / 60)).padStart(2, "0");
       const secs = String(m.seconds % 60).padStart(2, "0");
-      document.getElementById("qbTimerText").textContent = `${mins}:${secs}`;
+      $g("qbTimerText").textContent = `${mins}:${secs}`;
 
       const circumference = 502;
       const offset = circumference - (m.seconds / m.maxSeconds) * circumference;
-      document.getElementById("qbDialCircle").style.strokeDashoffset = offset.toFixed(1);
+      $g("qbDialCircle").style.strokeDashoffset = offset.toFixed(1);
     }
 
     function selectMatchup(idx) {
       activeMatch = idx;
       stopSynth();
-      document.getElementById("matchPill0").style.borderColor = idx === 0 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
-      document.getElementById("matchPill0").style.color = idx === 0 ? "var(--brand-green)" : "var(--brand-neutral)";
-      document.getElementById("matchPill1").style.borderColor = idx === 1 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
-      document.getElementById("matchPill1").style.color = idx === 1 ? "var(--brand-green)" : "var(--brand-neutral)";
+      $g("matchPill0").style.borderColor = idx === 0 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
+      $g("matchPill0").style.color = idx === 0 ? "var(--brand-green)" : "var(--brand-neutral)";
+      $g("matchPill1").style.borderColor = idx === 1 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
+      $g("matchPill1").style.color = idx === 1 ? "var(--brand-green)" : "var(--brand-neutral)";
       updateQuickBattleUI();
     }
 
@@ -3012,19 +3066,19 @@
       target.sol += 1.25;
       updateQuickBattleUI();
 
-      const card = document.getElementById(side === 'A' ? "cardArtA" : "cardArtB");
+      const card = $g(side === 'A' ? "cardArtA" : "cardArtB");
       card.classList.add("is-playing");
       setTimeout(() => {
         if (playingSide !== side) card.classList.remove("is-playing");
       }, 450);
 
-      document.getElementById("txToast").innerHTML = `
-        <span style="color:var(--brand-green);font-weight:700;">✓ SOLANA TX CONFIRMED:</span> You backed <strong style="color:#fff;">${target.shortName}</strong> with <strong style="color:var(--brand-green);">1.25 SOL</strong> (+0.0125 SOL instant artist cut!)
+      $g("txToast").innerHTML = `
+        <span style="color:var(--brand-green);font-weight:700;">✓ PREVIEW:</span> You tried a sample trade on <strong style="color:#fff;">${target.shortName}</strong>. Nothing was bought. Trade a real battle at wavewarz.com.
       `;
     }
 
     function jumpToFighter(side) {
-      document.getElementById("quick-battles").scrollIntoView({ behavior: "smooth" });
+      $g("quick-battles").scrollIntoView({ behavior: "smooth" });
       setTimeout(() => playFighterSynth(side), 550);
     }
 
@@ -3034,8 +3088,6 @@
           m.seconds--;
         } else {
           m.seconds = m.maxSeconds;
-          settledBattlesCount++;
-          document.getElementById("settledCounter").textContent = settledBattlesCount;
         }
       });
       updateClockDisplay();
@@ -3061,12 +3113,12 @@
       const m = matchups[activeMatch];
       const fighter = side === 'A' ? m.a : m.b;
 
-      document.getElementById("playIconA").textContent = side === 'A' ? "⏹" : "▶";
-      document.getElementById("playIconB").textContent = side === 'B' ? "⏹" : "▶";
-      document.getElementById("cardArtA").classList.toggle("is-playing", side === 'A');
-      document.getElementById("cardArtB").classList.toggle("is-playing", side === 'B');
-      document.getElementById("audioDot").style.background = "var(--brand-green)";
-      document.getElementById("audioStatusText").textContent = `PLAYING: ${fighter.shortName}`;
+      $g("playIconA").textContent = side === 'A' ? "⏹" : "▶";
+      $g("playIconB").textContent = side === 'B' ? "⏹" : "▶";
+      $g("cardArtA").classList.toggle("is-playing", side === 'A');
+      $g("cardArtB").classList.toggle("is-playing", side === 'B');
+      $g("audioDot").style.background = "var(--brand-green)";
+      $g("audioStatusText").textContent = `PLAYING: ${fighter.shortName}`;
 
       let step = 0;
       const pattern = side === 'A' ? [1, 1.2, 1.5, 1.33, 1, 1.5, 1.25, 0.85] : [1, 1.12, 1.33, 1.5, 1.6, 1.33, 1.12, 1];
@@ -3091,12 +3143,12 @@
       if (synthLoop) clearInterval(synthLoop);
       synthLoop = null;
       playingSide = null;
-      document.getElementById("playIconA").textContent = "▶";
-      document.getElementById("playIconB").textContent = "▶";
-      document.getElementById("cardArtA").classList.remove("is-playing");
-      document.getElementById("cardArtB").classList.remove("is-playing");
-      document.getElementById("audioDot").style.background = "var(--brand-neutral)";
-      document.getElementById("audioStatusText").textContent = "SYNTH: OFF";
+      $g("playIconA").textContent = "▶";
+      $g("playIconB").textContent = "▶";
+      $g("cardArtA").classList.remove("is-playing");
+      $g("cardArtB").classList.remove("is-playing");
+      $g("audioDot").style.background = "var(--brand-neutral)";
+      $g("audioStatusText").textContent = "SOUND: OFF";
     }
 
     function toggleArenaSynth() {
@@ -3125,9 +3177,9 @@
        7. VIEW & HUB SWITCHERS
     --------------------------------------------------------------------- */
     function switchQuickBattleMode(mode) {
-      const deck = document.getElementById("interactiveBattleDeck");
-      const ledger = document.getElementById("ledgerBattleEmbed");
-      const iframe = document.getElementById("quickBattlesIframe");
+      const deck = $g("interactiveBattleDeck");
+      const ledger = $g("ledgerBattleEmbed");
+      const iframe = $g("quickBattlesIframe");
 
       if (mode === "ledger") {
         deck.style.display = "none";
@@ -3140,9 +3192,9 @@
     }
 
     const hubUrls = {
-      analytics: { title: "WAVEWARZ REAL-TIME ANALYTICS DASHBOARD", url: "https://wavewarz-analytics.vercel.app/" },
-      artists: { title: "WAVEWARZ VERIFIED ARTIST PROFILES", url: "https://wavewarz-artists-profiles.vercel.app/" },
-      calendar: { title: "WAVEWARZ LIVE EVENT CALENDAR (LUMA)", url: "https://lu.ma/embed/calendar/cal-WaveWarz/events" }
+      analytics: { title: "LIVE WAVEWARZ STATS", url: "https://wavewarz-analytics.vercel.app/" },
+      artists: { title: "WAVEWARZ ARTISTS", url: "https://wavewarz-artists-profiles.vercel.app/" },
+      calendar: { title: "WAVEWARZ BATTLE CALENDAR", url: "https://lu.ma/embed/calendar/cal-WaveWarz/events" }
     };
 
     function switchHubIframe(key) {
@@ -3164,230 +3216,181 @@
     updateQuickBattleUI();
   </script>
 
-  <!-- VENTURE-GRADE EXCHANGE MAP TOUR SCRIPT -->
+  <!-- RIDE THE WAVEWARZ SCRIPT -->
   <script>
 
     /**
-     * WAVEWARZ: "BUILT LIKE A VENTURE-GRADE EXCHANGE" MAP STOPS
+     * The five stops of the wave. Plain language only.
      * Coordinates are mapped to the 1200x600 SVG viewBox.
      */
-    const EXCHANGE_NODES = [
+    const RIDE_STOPS = [
       {
-        id: "01",
+        id: "1",
         x: 110,
         y: 460,
         cardPos: "top",
-        tag: "AMM LIQUIDITY",
-        subject: "Dynamic Bonding Curves",
-        wavySpeech: "Yo! Welcome to the floor. Every track launches with instant, programmatic liquidity—zero gatekeepers, zero order-book lag.",
-        summary: "Automated market-making curves guarantee instant price discovery & continuous liquidity from beat one.",
-        metric: "0ms Slippage Curve"
+        tag: "GET SET UP",
+        subject: "Get a free wallet",
+        summary: "A wallet is your account. Phantom is a popular free one.",
+        tip: "Free to set up"
       },
       {
-        id: "02",
+        id: "2",
         x: 330,
         y: 170,
         cardPos: "bottom",
-        tag: "REAL-TIME SETTLEMENT",
-        subject: "Sub-Second Battle Engine",
-        wavySpeech: "See this turbo node? Every vote, trade, and wager settles on-chain in milliseconds while the crowd goes wild.",
-        summary: "High-frequency execution layer built to handle massive live battle spikes without bottlenecks.",
-        metric: "< 400ms Finality"
+        tag: "PICK A BATTLE",
+        subject: "Pick a battle",
+        summary: "Two artists. One song each. Jump into a live battle.",
+        tip: "Look for the live timer"
       },
       {
-        id: "03",
+        id: "3",
         x: 600,
         y: 440,
         cardPos: "top",
-        tag: "SMART ESCROW",
-        subject: "Trustless Prize Vaults",
-        wavySpeech: "No shady promoters here! Smart contracts lock the stakes and auto-split payouts to artists and backers the second the buzzer hits.",
-        summary: "Audited, non-custodial escrow vaults that automate royalty splits and battle rewards instantaneously.",
-        metric: "100% Verifiable"
+        tag: "LISTEN",
+        subject: "Hear both songs",
+        summary: "Listen to both songs before you decide.",
+        tip: "Play each side"
       },
       {
-        id: "04",
+        id: "4",
         x: 870,
         y: 170,
         cardPos: "bottom",
-        tag: "CULTURAL TELEMETRY",
-        subject: "Live Hype & Volume Oracles",
-        wavySpeech: "We're piping real-time crowd energy, stream velocity, and conviction straight into venture-grade analytics.",
-        summary: "Live sentiment and volume feeds convert sonic momentum into tradable, transparent market signals.",
-        metric: "Live Alpha Feed"
+        tag: "TRADE YOUR PICK",
+        subject: "Trade your pick",
+        summary: "Buy the song you believe in. You can sell any time before the timer ends.",
+        tip: "Before the timer ends"
       },
       {
-        id: "05",
+        id: "5",
         x: 1090,
         y: 380,
         cardPos: "top",
-        tag: "COMPOSABLE FLYWHEEL",
-        subject: "The Full Exchange Ecosystem",
-        wavySpeech: "And boom—the whole machine linked together! Artists, fans, and liquidity moving in one unstoppable loop. Peep the full blueprint!",
-        summary: "Every battle fuels artist treasuries, fan rewards, and protocol depth in one unified exchange graph.",
-        metric: "Full-Stack Protocol"
+        tag: "COLLECT",
+        subject: "Collect your share",
+        summary: "When the battle ends, tap Withdraw to collect. It is not automatic.",
+        tip: "You tap Withdraw yourself"
       }
     ];
 
-    const trackSection = document.getElementById('venture-exchange-scroll');
-    const stageEl = document.getElementById('exchangeStage');
-    const mapBoard = document.getElementById('mapBoard');
-    const motionPath = document.getElementById('wavyMotionPath');
-    const nodesLayer = document.getElementById('nodesLayer');
-    const djWavyActor = document.getElementById('djWavyActor');
+    const rideTrack = document.getElementById('ride-the-wave');
+    const rideStage = document.getElementById('rideStage');
+    const rideBoard = document.getElementById('rideBoard');
+    const rideLit = document.getElementById('rideLit');
+    const rideGlow = document.getElementById('rideGlow');
+    const rideNodesLayer = document.getElementById('rideNodes');
+    const rideActor = document.getElementById('rideActor');
+    const rideTilt = document.getElementById('rideTilt');
+    const rideStopEl = document.getElementById('rideStop');
+    const rideFill = document.getElementById('rideFill');
 
-    const talkStepBadge = document.getElementById('talkStepBadge');
-    const talkSubject = document.getElementById('talkSubject');
-    const talkMessageText = document.getElementById('talkMessageText');
-    const tourPercent = document.getElementById('tourPercent');
-    const modeStatusPill = document.getElementById('modeStatusPill');
-
-    // 1. Render Map Nodes & Linked Infographic Cards
-    const nodeElements = EXCHANGE_NODES.map((node, index) => {
+    // 1. Draw the five stops and their cards
+    const rideNodeEls = RIDE_STOPS.map((stop) => {
       const el = document.createElement('div');
-      el.className = 'map-node';
-      el.dataset.pos = node.cardPos;
-      // Convert 1200x600 SVG coords to percentages so pins stay locked on resize
-      el.style.left = `${(node.x / 1200) * 100}%`;
-      el.style.top = `${(node.y / 600) * 100}%`;
+      el.className = 'ride-node';
+      el.dataset.pos = stop.cardPos;
+      // percentages keep the pins locked to the wave when the window resizes
+      el.style.left = `${(stop.x / 1200) * 100}%`;
+      el.style.top = `${(stop.y / 600) * 100}%`;
 
       el.innerHTML = `
-        <div class="node-pin">${node.id}</div>
-        <div class="node-tag">${node.tag}</div>
-        <div class="node-infographic-card">
-          <div class="card-kicker">
-            <span>NODE // ${node.id}</span>
-            <span>LINKED</span>
-          </div>
-          <div class="card-title">${node.subject}</div>
-          <div class="card-desc">${node.summary}</div>
-          <span class="card-metric">${node.metric}</span>
+        <div class="ride-pin">${stop.id}</div>
+        <div class="ride-tag">${stop.tag}</div>
+        <div class="ride-card">
+          <div class="ride-card-step">STOP ${stop.id}</div>
+          <div class="ride-card-title">${stop.subject}</div>
+          <div class="ride-card-desc">${stop.summary}</div>
+          <span class="ride-card-tip">${stop.tip}</span>
         </div>
       `;
-
-      nodesLayer.appendChild(el);
+      rideNodesLayer.appendChild(el);
       return el;
     });
 
-    // 2. Setup SVG Path Dash lengths & Smooth Interpolation State
-    let pathLength = motionPath.getTotalLength();
-    motionPath.style.strokeDasharray = pathLength;
-    motionPath.style.strokeDashoffset = pathLength;
-
-    let targetProgress = 0;
-    let currentProgress = 0;
-    let activeNodeIndex = -1;
-    let typewriterTimer = null;
-
-    // Snappy typewriter effect for DJ Wavy's talking box
-    function triggerTalkBox(index) {
-      const node = EXCHANGE_NODES[index];
-      talkStepBadge.textContent = `STOP ${node.id}/0${EXCHANGE_NODES.length}`;
-      talkSubject.textContent = node.subject;
-      
-      if (typewriterTimer) clearInterval(typewriterTimer);
-      talkMessageText.textContent = '';
-      
-      let charIdx = 0;
-      const fullText = node.wavySpeech;
-      typewriterTimer = setInterval(() => {
-        charIdx += 2; // Type 2 chars per tick for a snappy arcade feel
-        talkMessageText.textContent = fullText.slice(0, charIdx);
-        if (charIdx >= fullText.length) {
-          clearInterval(typewriterTimer);
-        }
-      }, 16);
-    }
-
-    // Read scroll position and clamp between 0 and 1
-    function updateScrollTarget() {
-      const rect = trackSection.getBoundingClientRect();
-      const scrollableDistance = rect.height - window.innerHeight;
-      if (scrollableDistance <= 0) return;
-
-      const scrolled = -rect.top;
-      targetProgress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
-    }
-
-    // 60FPS Animation Loop (Smooth Lerp + Snappy Node Triggers)
-    function renderLoop() {
-      updateScrollTarget();
-      // Snappy and responsive lerp so animation always keeps up with user scroll
-      currentProgress += (targetProgress - currentProgress) * 0.28;
-      if (Math.abs(targetProgress - currentProgress) < 0.001) {
-        currentProgress = targetProgress;
-      }
-
-      // Update percentage HUD
-      const pct = Math.round(currentProgress * 100);
-      tourPercent.textContent = `${pct}%`;
-
-      // Reach 100% of the tour by 72% scroll, reserving the remaining 28% for full infographic review
-      const tourPortion = Math.min(1, currentProgress / 0.72);
-      const isComplete = currentProgress >= 0.72;
-
-      // Draw neon circuit line up to DJ Wavy's feet
-      const drawLength = pathLength * tourPortion;
-      motionPath.style.strokeDashoffset = pathLength - drawLength;
-
-      // Get exact (x, y) point on the SVG bezier path
-      const pt = motionPath.getPointAtLength(drawLength);
-      const boardWidth = mapBoard.clientWidth;
-      const boardHeight = mapBoard.clientHeight;
-
-      const screenX = (pt.x / 1200) * boardWidth;
-      const screenY = (pt.y / 600) * boardHeight;
-
-      // Move DJ Wavy smoothly along the map
-      djWavyActor.style.transform = `translate3d(${screenX}px, ${screenY}px, 0)`;
-
-      // Keep talking box inside viewport edges near far left/right stops
-      const talkBox = document.getElementById('wavyTalkBox');
-      const edgeOffset = ((0.5 - (pt.x / 1200)) * 90);
-      talkBox.style.marginLeft = `${edgeOffset}px`;
-
-      // Determine which subject node DJ Wavy is currently presenting
-      const rawIndex = Math.min(
-        EXCHANGE_NODES.length - 1,
-        Math.floor(tourPortion * EXCHANGE_NODES.length)
-      );
-
-      if (rawIndex !== activeNodeIndex) {
-        activeNodeIndex = rawIndex;
-        triggerTalkBox(activeNodeIndex);
-      }
-
-      // Highlight visited & current pins
-      nodeElements.forEach((nodeEl, idx) => {
-        const nodeThreshold = idx / (EXCHANGE_NODES.length - 1);
-        nodeEl.classList.toggle('is-visited', tourPortion >= nodeThreshold - 0.05 || isComplete);
-        nodeEl.classList.toggle('is-current', idx === activeNodeIndex && !isComplete);
-      });
-
-      // Toggle final Linked Infographic overview state
-      if (isComplete) {
-        stageEl.classList.add('is-complete');
-        modeStatusPill.textContent = 'LINKED INFOGRAPHIC LIVE';
-      } else {
-        stageEl.classList.remove('is-complete');
-        modeStatusPill.textContent = 'WALKTHROUGH ACTIVE';
-      }
-
-      requestAnimationFrame(renderLoop);
-    }
-
-    window.addEventListener('scroll', updateScrollTarget, { passive: true });
-    window.addEventListener('resize', () => {
-      pathLength = motionPath.getTotalLength();
-      motionPath.style.strokeDasharray = pathLength;
-      updateScrollTarget();
+    // 2. The lit wave line is drawn with a dash trick
+    let ridePathLength = rideLit.getTotalLength();
+    [rideLit, rideGlow].forEach((p) => {
+      p.style.strokeDasharray = ridePathLength;
+      p.style.strokeDashoffset = ridePathLength;
     });
 
-    // Initialize
-    updateScrollTarget();
-    triggerTalkBox(0);
-    requestAnimationFrame(renderLoop);
-  
+    let rideTarget = 0;
+    let rideCurrent = 0;
+    let rideActiveIndex = -1;
+
+    // Update the "Stop X of 5" counter and progress bar
+    function rideSay(index) {
+      const stop = RIDE_STOPS[index];
+      rideStopEl.textContent = stop.id;
+      rideFill.style.width = `${((index + 1) / RIDE_STOPS.length) * 100}%`;
+    }
+
+    function rideReadScroll() {
+      const rect = rideTrack.getBoundingClientRect();
+      const distance = rect.height - window.innerHeight;
+      if (distance <= 0) return;
+      rideTarget = Math.max(0, Math.min(1, -rect.top / distance));
+    }
+
+    function rideLoop() {
+      rideReadScroll();
+      rideCurrent += (rideTarget - rideCurrent) * 0.28;
+      if (Math.abs(rideTarget - rideCurrent) < 0.001) rideCurrent = rideTarget;
+
+      // The ride finishes at 72% of the scroll; the last 28% is a rest on the finished map
+      const portion = Math.min(1, rideCurrent / 0.72);
+      const done = rideCurrent >= 0.72;
+
+      const drawLength = ridePathLength * portion;
+      rideLit.style.strokeDashoffset = ridePathLength - drawLength;
+      rideGlow.style.strokeDashoffset = ridePathLength - drawLength;
+
+      // Where is the surfboard on the wave right now?
+      const pt = rideLit.getPointAtLength(drawLength);
+      const bw = rideBoard.clientWidth;
+      const bh = rideBoard.clientHeight;
+      const sx = (pt.x / 1200) * bw;
+      const sy = (pt.y / 600) * bh;
+      rideActor.style.transform = `translate3d(${sx}px, ${sy}px, 0)`;
+
+      // Lean the board along the slope of the wave
+      const ahead = rideLit.getPointAtLength(Math.min(ridePathLength, drawLength + 8));
+      const behind = rideLit.getPointAtLength(Math.max(0, drawLength - 8));
+      const dx = ((ahead.x - behind.x) / 1200) * bw;
+      const dy = ((ahead.y - behind.y) / 600) * bh;
+      const angle = Math.max(-28, Math.min(28, Math.atan2(dy, dx) * 180 / Math.PI));
+      rideTilt.style.transform = `rotate(${angle.toFixed(1)}deg)`;
+
+      const idx = Math.min(RIDE_STOPS.length - 1, Math.floor(portion * RIDE_STOPS.length));
+      if (idx !== rideActiveIndex) {
+        rideActiveIndex = idx;
+        rideSay(idx);
+      }
+
+      rideNodeEls.forEach((el, i) => {
+        const threshold = i / (RIDE_STOPS.length - 1);
+        el.classList.toggle('is-visited', portion >= threshold - 0.05 || done);
+        el.classList.toggle('is-current', i === rideActiveIndex && !done);
+      });
+
+      rideStage.classList.toggle('is-complete', done);
+      requestAnimationFrame(rideLoop);
+    }
+
+    window.addEventListener('scroll', rideReadScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      ridePathLength = rideLit.getTotalLength();
+      [rideLit, rideGlow].forEach((p) => { p.style.strokeDasharray = ridePathLength; });
+      rideReadScroll();
+    });
+
+    rideReadScroll();
+    rideSay(0);
+    requestAnimationFrame(rideLoop);
+
   </script>
 
   <!-- 3D ROYAL DJ WAVY & AR PORTAL CONTROLLER -->
@@ -3498,5 +3501,122 @@
       if (typeof update3DScrollTarget === 'function') update3DScrollTarget();
     }, { passive: true });
   </script>
+<script id="top-of-page-js">
+/* Top of page: live stats strip + live battle slot. Data: https://wavewarz.info/api/public/* (open, no key). */
+(function () {
+  var API = 'https://wavewarz.info/api/public/';
+  var qs = new URLSearchParams(location.search), demo = qs.get('demo');
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function usd(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+  function num(n) { return Math.round(n).toLocaleString('en-US'); }
+  function sol(n) { return n.toFixed(2) + ' SOL'; }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function countUp(el, to, fmt) {
+    if (reduce || !isFinite(to)) { el.textContent = fmt(to); return; }
+    var t0 = null, dur = 900;
+    (function step(ts) { if (t0 === null) t0 = ts; var p = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - p, 3); el.textContent = fmt(to * e); if (p < 1) requestAnimationFrame(step); })(performance.now());
+  }
+  function paintStats(d) {
+    var firstPaint = !$('stVol').dataset.done; $('stVol').dataset.done = 1;
+    var put = function (id, v, f) { var el = $(id); if (firstPaint) countUp(el, v, f); else el.textContent = f(v); };
+    put('stVol', d.volume.totalUsd, usd); put('stPaid', d.artistPayouts.totalUsd, usd);
+    put('stSpot', Math.round(d.artistPayouts.totalUsd / 0.003 / 1000) * 1000, num);
+    put('stQb', d.battles.quickBattles, num); put('stMe', d.battles.mainEvents, num); put('stTot', d.battles.total, num);
+    $('stVolSol').textContent = sol(d.volume.totalSol); $('stPaidSol').textContent = sol(d.artistPayouts.totalSol);
+    $('stSol').textContent = '$' + d.solPriceUsd.toFixed(2);
+  }
+
+  /* ---------- live battle slot ---------- */
+  var live = null, tick = null;
+  function handle(a) { try { return new URL(a.musicLink).pathname.split('/')[1] || ''; } catch (e) { return ''; } }
+  var PLAY = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  function sideHTML(k, a, label, leader, kind) {
+    var by = handle(a);
+    var art = a.albumArtUrl || a.profilePictureUrl;
+    return '<div class="ld-col ' + k + '"><div class="ld-art"><span class="ld-pill">' + label + '</span>' +
+      (a.musicLink ? '<a class="ld-play" href="' + esc(a.musicLink) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + ' on Audius">' + PLAY + '</a>' : '') +
+      (art ? '<img src="' + esc(art) + '" alt="" loading="eager">' : '') + '<div class="ld-eq" aria-hidden="true">' + '<i></i>'.repeat(9) + '</div></div>' +
+      '<div class="ld-np">Now playing</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
+      '<a class="ld-act ' + (leader ? (k === 'l' ? 'fill-g' : 'fill-b') : (k === 'l' ? 'out-g' : 'out-b')) + '" href="' + esc(live.url) + '">Trade ' + esc(a.name) + '</a></div>';
+  }
+  function renderLive() {
+    var b = live, A = b.a, B = b.b, pa = A.poolSol || 0, pb = B.poolSol || 0, tot = pa + pb, ga = tot ? Math.round(100 * pa / tot) : 50;
+    var kind = b.type === 'main' ? 'Main Event' : (b.type === 'community' ? 'Community Battlez' : 'Quick Battlez');
+    var lab = b.type === 'quick' ? ['Song A', 'Song B'] : ['Artist A', 'Artist B'];
+    $('liveSlot').innerHTML = '<section class="ld" aria-label="Live battle"><div class="ld-top"><span class="ld-live"><i></i>Live &middot; ' + kind + '</span>' + (demo ? '<span>Sample data</span>' : '') + '</div>' +
+      '<div class="ld-stage">' + sideHTML('l', A, lab[0], pa >= pb) +
+      '<div class="ld-mid"><div class="ld-ring" role="timer" id="ldRing"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle id="ldArc" cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="0" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6))"/></svg><div class="ld-time"><span id="ldT">--:--</span><small>TIME LEFT</small></div></div><div class="ld-vs">VS</div>' +
+      '<div class="ld-split"><div class="ld-pc"><span class="a">' + ga + '%</span><span class="c">' + (100 - ga) + '%</span></div><div class="ld-bar" aria-label="Pool balance"><i style="width:' + ga + '%"></i></div></div></div>' +
+      sideHTML('r', B, lab[1], pb > pa) + '</div>' +
+      '<div class="ld-foot"><span><span class="hl">&#9679; LIVE:</span> Tap play to open a song on Audius, then trade the one you believe in.</span><span>Both pools: <b>' + tot.toFixed(2) + ' SOL</b> &middot; Artists earn 1% of every trade on their side</span></div></section>';
+  }
+  function runTimer() {
+    clearInterval(tick);
+    function go() {
+      var left = Math.max(0, live.end - Date.now()), s = Math.ceil(left / 1000), t = $('ldT'); if (!t) return;
+      t.textContent = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+      var arc = $('ldArc'); if (arc) arc.setAttribute('stroke-dashoffset', String(289 * (1 - left / Math.max(1, live.end - live.start))));
+      if (left <= 0) { clearInterval(tick); setLive(null); }
+    }
+    go(); tick = setInterval(go, 500);
+  }
+  function setLive(b) {
+    var stack = $('topStack'); var changed = (!!b) !== stack.classList.contains('is-live') || (b && live && b.id !== live.id);
+    live = b; stack.classList.toggle('is-live', !!b);
+    if (b) { if (changed || !$('ldT')) { renderLive(); } runTimer(); } else { $('liveSlot').innerHTML = ''; }
+  }
+  function normalize(x, type) {
+    if (!x) return null; var a = x.artist1, c = x.artist2; if (!a || !c) return null;
+    var end = Date.parse(x.endsAt); if (!end || end <= Date.now()) return null;
+    var start = Date.parse(x.startedAt || x.createdAt) || (end - 8 * 60000);
+    return { id: x.battleId, type: type || x.type || 'quick', a: a, b: c, start: start, end: end, url: 'https://www.wavewarz.com/v2/battles/' + x.battleId };
+  }
+  function load() {
+    fetch(API + 'stats').then(function (r) { return r.json(); }).then(function (d) {
+      paintStats(d);
+      if (demo) return;
+      var lb = (d.liveBattles && d.liveBattles[0]) || d.liveBattle; setLive(normalize(lb));
+    }).catch(function () { /* leave the dashes; the page works without live data */ });
+  }
+  load(); setInterval(load, 30000);
+  if (demo) {
+    fetch(API + 'battles?limit=1').then(function (r) { return r.json(); }).then(function (d) {
+      var x = (d.battles || d)[0]; var n = JSON.parse(JSON.stringify(x));
+      n.endsAt = new Date(Date.now() + 169000).toISOString(); n.createdAt = new Date(Date.now() - 311000).toISOString();
+      n.artist1.poolSol = 24.1; n.artist2.poolSol = 18.75;
+      setLive(normalize(n, demo === 'main' ? 'main' : 'quick'));
+    });
+  }
+})();
+</script>
+
+<script id="quick-battlez-js">
+/* Quick Battlez section: the real queue. wavewarz.com/api/quick-battles only allows http://localhost:3002 for now, so other hosts use quick-battles.sample.json. */
+(function () {
+  var URL = 'https://www.wavewarz.com/api/quick-battles', $ = function (id) { return document.getElementById(id); };
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function title(x) { return esc(x.artist1_track_title) + ' vs ' + esc(x.artist2_track_title); }
+  function who(x) { return '@' + esc(x.artist1_handle) + ' vs @' + esc(x.artist2_handle); }
+  function art(u) { return '<span class="qb2-art">' + (u ? '<img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</span>'; }
+  function render(d, sample) {
+    var q = d.queued || [], act = d.active || [], price = +(((d.skipState && d.skipState.min_skip_lamports) || 20000000) / 1e9).toFixed(3);
+    $('qbCount').textContent = (q.length === 1 ? '1 in the queue' : q.length + ' in the queue') + (sample ? ' \u00b7 sample data' : '');
+    $('qbStatus').innerHTML = act.length ? '<b>Playing now:</b> ' + title(act[0]) : 'Nothing is playing right now. The next battle starts when it is launched from the queue.';
+    $('qbRows').innerHTML = q.length ? q.slice(0, 5).map(function (x, i) {
+      return '<div class="qb2-row"><div class="qb2-pos">#' + (i + 1) + '</div><div class="qb2-arts">' + art(x.artist1_artwork_url) + art(x.artist2_artwork_url) + '</div><div><div class="qb2-t">' + title(x) + '</div><div class="qb2-s">' + who(x) + '</div>' + (i === 0 ? '<div class="qb2-next">Next to launch</div>' : '') + '</div>' +
+        (i > 0 ? '<a class="qb2-skip" href="https://www.wavewarz.com/quick-battles" target="_blank" rel="noopener">Skip to front &middot; ' + price + ' SOL</a>' : '') + '</div>';
+    }).join('') + (q.length > 5 ? '<div class="qb2-empty"><a href="https://www.wavewarz.com/quick-battles" target="_blank" rel="noopener" style="margin-left:0">+' + (q.length - 5) + ' more in the queue</a></div>' : '')
+      : '<div class="qb2-empty">No battles are queued. Create one and it starts next.</div>';
+    $('qbSkipNote').textContent = 'Skip the line: pay the current price, ' + price + ' SOL right now, to move your battle to the front. It rises 0.01 SOL with each skip and goes back to 0.02 SOL once the latest skipped battle plays.';
+    document.querySelectorAll('.rb-skip').forEach(function (e) { e.textContent = price + ' SOL'; });
+  }
+  function load() {
+    fetch(URL).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { render(d, false); })
+      .catch(function () { fetch('quick-battles.sample.json').then(function (r) { return r.json(); }).then(function (d) { render(d, true); }).catch(function () { $('qbStatus').textContent = 'The queue did not load. Open the queue page to see it.'; }); });
+  }
+  load(); setInterval(load, 30000);
+})();
+</script>
 </body>
 </html>

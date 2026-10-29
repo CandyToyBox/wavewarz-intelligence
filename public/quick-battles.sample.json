@@ -1,0 +1,20 @@
+{
+ "note": "Snapshot of wavewarz.com/api/quick-battles taken 2026-10-28. Used only when the live API is not reachable from the host.",
+ "active": [],
+ "queued": [
+  {
+   "id": "3ce6b93b-85a7-4244-a013-6a1e4abee8d0",
+   "status": "queued",
+   "queued_at": "2026-10-26T00:27:14.17426+00:00",
+   "artist1_handle": "srchappell",
+   "artist1_track_title": "Just Don't",
+   "artist2_handle": "BennyJ504WaveWarz",
+   "artist2_track_title": "ZAZA",
+   "artist1_artwork_url": "https://val015.open-audio-validator.com/content/baeaaaiqsedwzt5vkp4y5m3dydmecgxs4jkpyl6oalrjirle4ogashxcsu54aq/480x480.jpg",
+   "artist2_artwork_url": "https://audius-creator-10.theblueprint.xyz/content/baeaaaiqseagrsnhvnf363eo436liotxjhk7ye7chzmeloq26rolvb25dwzm4m/480x480.jpg"
+  }
+ ],
+ "skipState": {
+  "min_skip_lamports": 20000000
+ }
+}
