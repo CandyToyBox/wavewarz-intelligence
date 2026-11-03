@@ -26,6 +26,9 @@ The shows live in `src/lib/weekly-schedule.ts`, because `calendar_events` stores
 row per date. They do not crowd "Up Next", which still lists one-off events (Main
 Events, community battles) from the admin calendar. Link on each is x.com/wavewarz.
 
+**Admin: flyer uploads up to 4 MB.** Uploading a calendar flyer over 1 MB failed with
+"Body exceeded 1 MB limit". The limit is now 4 MB (Vercel's own cap is 4.5 MB).
+
 **Legal: User Data Deletion page.** New `/data-deletion` page (what can be deleted, how
 to ask, the 30-day window, how to remove the app in Facebook and Instagram, what
 cannot be erased onchain). Privacy and Terms now cover Facebook, Instagram and

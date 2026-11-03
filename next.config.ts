@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   turbopack: {},
+  // Admin calendar flyers upload through a Server Action, which Next caps at 1 MB
+  // by default (a 1.7 MB flyer failed with a 413). Vercel rejects request bodies
+  // over 4.5 MB, so stay under that.
+  experimental: {
+    serverActions: { bodySizeLimit: '4mb' },
+  },
   // The API changelog page reads docs/API-CHANGELOG.md at request time — make
   // sure the file ships with the serverless bundle.
   outputFileTracingIncludes: {
