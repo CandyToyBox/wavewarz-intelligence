@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { WEEKLY_SHOWS } from '@/lib/weekly-schedule'
 
 export type CalendarEvent = {
   id: string
@@ -12,6 +13,7 @@ export type CalendarEvent = {
   location_or_link: string | null
   flyer_url: string | null
   is_featured: boolean
+  recurring?: boolean // standing weekly show, see lib/weekly-schedule.ts
 }
 
 const TYPE_CONFIG: Record<string, { color: string; label: string }> = {
@@ -49,7 +51,7 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
 
   const upcoming = useMemo(() => {
     const now = todayYmd()
-    return events.filter(e => e.event_date >= now).slice(0, 8)
+    return events.filter(e => !e.recurring && e.event_date >= now).slice(0, 8)
   }, [events])
 
   const cells = useMemo(() => {
@@ -187,16 +189,38 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
               )}
             </div>
           ) : (
-            <div className="rounded-xl border border-border bg-card p-5">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Up Next</p>
-              {upcoming.length === 0 ? (
-                <p className="text-xs text-muted-foreground">No upcoming events posted yet — check back soon.</p>
-              ) : (
+            <>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Up Next</p>
+                {upcoming.length === 0 ? (
+                  <p className="text-xs text-muted-foreground">No upcoming events posted yet — check back soon.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {upcoming.map(evt => <EventCard key={evt.id} evt={evt} compact />)}
+                  </div>
+                )}
+              </div>
+              <div className="rounded-xl border border-border bg-card p-5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">Every Week</p>
                 <div className="space-y-3">
-                  {upcoming.map(evt => <EventCard key={evt.id} evt={evt} compact />)}
+                  {WEEKLY_SHOWS.map(show => {
+                    const cfg = TYPE_CONFIG[show.event_type] ?? TYPE_CONFIG.OTHER
+                    return (
+                      <div key={show.key} className="rounded-lg border border-border/60 p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border"
+                            style={{ color: cfg.color, borderColor: `${cfg.color}30`, backgroundColor: `${cfg.color}10` }}>
+                            {cfg.label}
+                          </span>
+                          <span className="text-[10px] font-mono text-muted-foreground">{show.daysLabel} · {show.event_time}</span>
+                        </div>
+                        <p className="text-sm font-bold text-white leading-tight">{show.title}</p>
+                      </div>
+                    )
+                  })}
                 </div>
-              )}
-            </div>
+              </div>
+            </>
           )}
         </div>
       </div>

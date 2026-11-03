@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import CalendarClient, { type CalendarEvent } from './CalendarClient'
+import { expandWeeklyShows } from '@/lib/weekly-schedule'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,6 +19,9 @@ async function getEvents(): Promise<CalendarEvent[]> {
 }
 
 export default async function CalendarPage() {
-  const events = await getEvents()
+  // One-off events first so they lead on any day they share with a weekly show.
+  const events = [...(await getEvents()), ...expandWeeklyShows()].sort((a, b) =>
+    a.event_date < b.event_date ? -1 : a.event_date > b.event_date ? 1 : 0
+  )
   return <CalendarClient events={events} />
 }
