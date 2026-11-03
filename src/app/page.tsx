@@ -301,115 +301,6 @@ export default async function HomePage() {
         </div>
       </header>
 
-      {/* What Is WaveWarZ */}
-      <section className="rounded-2xl border border-[#7ec1fb]/20 bg-[#7ec1fb]/5 p-6 md:p-8 space-y-4">
-        <h2 className="text-3xl font-rajdhani font-bold text-white">What Is WaveWarZ?</h2>
-        <p className="text-gray-300 leading-relaxed max-w-3xl">
-          WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade ephemeral tokens on who they think will win. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
-        </p>
-        <p className="text-gray-400 leading-relaxed max-w-3xl text-sm">
-          We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans put real money behind the artists they believe in — and lets artists earn directly from that conviction, instantly, every time.
-        </p>
-        <div className="pt-2 flex flex-wrap gap-3">
-          <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-            Enter the Arena ↗
-          </OutboundLink>
-          <OutboundLink href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer" eventType="live_show"
-            className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-            Watch on YouTube ↗
-          </OutboundLink>
-          <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer"
-            className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
-            View Program on Solscan ↗
-          </a>
-        </div>
-      </section>
-
-      {/* Meet DJ Wavy — AI Judge */}
-      <section className="rounded-2xl border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-6 md:p-8 grid grid-cols-1 md:grid-cols-[minmax(0,220px)_1fr] gap-6 md:gap-8 items-center">
-        <div className="mx-auto md:mx-0 w-48 h-48 md:w-full md:h-56 rounded-xl bg-black/20 border border-[#95fe7c]/20 overflow-hidden">
-          <DJWavyModel className="w-full h-full" />
-        </div>
-        <div className="space-y-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">Your AI Judge</p>
-            <h2 className="text-3xl font-rajdhani font-bold text-white">Meet DJ Wavy</h2>
-          </div>
-          <p className="text-gray-300 leading-relaxed max-w-2xl">
-            DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
-          </p>
-          <p className="text-gray-400 leading-relaxed max-w-2xl text-sm">
-            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict. Or pull him up in AR and take a photo with him, right from your phone.
-          </p>
-          <div className="flex flex-wrap gap-3 pt-1">
-            <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Get Your DJ Wavy Breakdown ↗
-            </OutboundLink>
-            <a href="https://ar.illust.space/web/AttaBotty/djwavy" target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 border border-[#95fe7c]/40 hover:border-[#95fe7c] text-[#95fe7c] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Take a Photo with DJ Wavy (AR) ↗
-            </a>
-            <Link href="/leaderboards/songs"
-              className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              See His Picks on the Song Leaderboard →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* What You'll Find Here */}
-      <section className="space-y-4">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">What&apos;s On This Site</h2>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <FeatureCard
-            icon="🏆"
-            title="Leaderboards"
-            desc="Artist and song rankings by volume, wins, and battle count. See who&apos;s dominating the arena."
-            href="/leaderboards"
-          />
-          <FeatureCard
-            icon="🎬"
-            title="WaveWarZ Clippers"
-            desc="Community members submit battle highlights. Approved clips go out on YouTube, X, and TikTok. Submit your clip and earn points."
-            href="https://t.me/wavewarzclipshq"
-            external
-          />
-          <FeatureCard
-            icon="🎙"
-            title="X Spaces — Daily"
-            desc="Join us live Mon–Fri at 8:30 PM EST for the Quick Battle Livestream. Trade the charts in real-time while the music plays."
-            href="https://x.com/wavewarz"
-            external
-            trackConversion
-          />
-          <FeatureCard
-            icon="📺"
-            title="YouTube Livestream"
-            desc="Quick Battles stream live on YouTube every weeknight at 8:30 PM EST. Two songs battle it out — fans vote and trade in real-time."
-            href="https://www.youtube.com/@wavewarz"
-            external
-            trackConversion
-          />
-          <FeatureCard
-            icon="🎗️"
-            title="Benefits & Charities"
-            desc="Battles where every trade, vote, and SOL moves directly from the arena to the cause — verifiable onchain."
-            href="/benefits"
-          />
-          <FeatureCard
-            icon="📊"
-            title="Battle Analytics"
-            desc="Verified onchain stats for every battle. Volume, pools, trader counts, and payout breakdowns — all sourced directly from Solana."
-            href="/battles"
-          />
-        </div>
-      </section>
-
       {/* Pinned event — mirrors the pinned post on @wavewarz (see src/config/pinned-event.ts) */}
       <section className="space-y-4">
         <div className="flex items-center gap-2">
@@ -521,6 +412,115 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* What Is WaveWarZ */}
+      <section className="rounded-2xl border border-[#7ec1fb]/20 bg-[#7ec1fb]/5 p-6 md:p-8 space-y-4">
+        <h2 className="text-3xl font-rajdhani font-bold text-white">What Is WaveWarZ?</h2>
+        <p className="text-gray-300 leading-relaxed max-w-3xl">
+          WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade ephemeral tokens on who they think will win. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
+        </p>
+        <p className="text-gray-400 leading-relaxed max-w-3xl text-sm">
+          We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans put real money behind the artists they believe in — and lets artists earn directly from that conviction, instantly, every time.
+        </p>
+        <div className="pt-2 flex flex-wrap gap-3">
+          <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+            Enter the Arena ↗
+          </OutboundLink>
+          <OutboundLink href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer" eventType="live_show"
+            className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+            Watch on YouTube ↗
+          </OutboundLink>
+          <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer"
+            className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
+            View Program on Solscan ↗
+          </a>
+        </div>
+      </section>
+
+      {/* Meet DJ Wavy — AI Judge */}
+      <section className="rounded-2xl border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-6 md:p-8 grid grid-cols-1 md:grid-cols-[minmax(0,220px)_1fr] gap-6 md:gap-8 items-center">
+        <div className="mx-auto md:mx-0 w-48 h-48 md:w-full md:h-56 rounded-xl bg-black/20 border border-[#95fe7c]/20 overflow-hidden">
+          <DJWavyModel className="w-full h-full" />
+        </div>
+        <div className="space-y-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">Your AI Judge</p>
+            <h2 className="text-3xl font-rajdhani font-bold text-white">Meet DJ Wavy</h2>
+          </div>
+          <p className="text-gray-300 leading-relaxed max-w-2xl">
+            DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
+          </p>
+          <p className="text-gray-400 leading-relaxed max-w-2xl text-sm">
+            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict. Or pull him up in AR and take a photo with him, right from your phone.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Get Your DJ Wavy Breakdown ↗
+            </OutboundLink>
+            <a href="https://ar.illust.space/web/AttaBotty/djwavy" target="_blank" rel="noreferrer"
+              className="inline-flex items-center gap-2 border border-[#95fe7c]/40 hover:border-[#95fe7c] text-[#95fe7c] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              Take a Photo with DJ Wavy (AR) ↗
+            </a>
+            <Link href="/leaderboards/songs"
+              className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
+              See His Picks on the Song Leaderboard →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* What You'll Find Here */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">What&apos;s On This Site</h2>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <FeatureCard
+            icon="🏆"
+            title="Leaderboards"
+            desc="Artist and song rankings by volume, wins, and battle count. See who&apos;s dominating the arena."
+            href="/leaderboards"
+          />
+          <FeatureCard
+            icon="🎬"
+            title="WaveWarZ Clippers"
+            desc="Community members submit battle highlights. Approved clips go out on YouTube, X, and TikTok. Submit your clip and earn points."
+            href="https://t.me/wavewarzclipshq"
+            external
+          />
+          <FeatureCard
+            icon="🎙"
+            title="X Spaces — Daily"
+            desc="Join us live Mon–Fri at 8:30 PM EST for the Quick Battle Livestream. Trade the charts in real-time while the music plays."
+            href="https://x.com/wavewarz"
+            external
+            trackConversion
+          />
+          <FeatureCard
+            icon="📺"
+            title="YouTube Livestream"
+            desc="Quick Battles stream live on YouTube every weeknight at 8:30 PM EST. Two songs battle it out — fans vote and trade in real-time."
+            href="https://www.youtube.com/@wavewarz"
+            external
+            trackConversion
+          />
+          <FeatureCard
+            icon="🎗️"
+            title="Benefits & Charities"
+            desc="Battles where every trade, vote, and SOL moves directly from the arena to the cause — verifiable onchain."
+            href="/benefits"
+          />
+          <FeatureCard
+            icon="📊"
+            title="Battle Analytics"
+            desc="Verified onchain stats for every battle. Volume, pools, trader counts, and payout breakdowns — all sourced directly from Solana."
+            href="/battles"
+          />
+        </div>
+      </section>
 
       {/* Spotify Streams */}
       {hasSpotify && (
