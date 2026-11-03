@@ -14,6 +14,14 @@ buried here.
 
 ## 2026-11-03
 
+**Blog.** New `/blog` page lists the WaveWarZ Paragraph posts (paragraph.com/@wavewarz),
+newest first; each card opens the post on Paragraph. New posts appear on their own
+within about 10 minutes. "Blog" added to the top nav and the sitemap. (#22)
+
+**Homepage: featured event and Platform Stats moved to the top.** Both sections now sit
+directly under the title row, ahead of "What Is WaveWarZ", Meet DJ Wavy and
+"What You'll Find Here". (#21)
+
 **Calendar: standing weekly shows.** The calendar now lists the recurring shows on every
 matching day for the next 26 weeks, and an "Every Week" card shows the schedule
 at a glance. Times are Eastern (ET). No end time is shown because the shows run for
@@ -26,6 +34,8 @@ The shows live in `src/lib/weekly-schedule.ts`, because `calendar_events` stores
 row per date. They do not crowd "Up Next", which still lists one-off events (Main
 Events, community battles) from the admin calendar. Link on each is x.com/wavewarz.
 
+**Admin: flyer uploads up to 4 MB.** Uploading a calendar flyer over 1 MB failed with
+"Body exceeded 1 MB limit". The limit is now 4 MB (Vercel's own cap is 4.5 MB).
 **Legal: User Data Deletion page.** New `/data-deletion` page (what can be deleted, how
 to ask, the 30-day window, how to remove the app in Facebook and Instagram, what
 cannot be erased onchain). Privacy and Terms now cover Facebook, Instagram and
