@@ -1,0 +1,45 @@
+# WaveWarZ Intelligence — site changelog
+
+Changes to wavewarz.info that visitors or the team can see: pages, routes, embedded
+tools, the calendar. Newest first.
+
+Changes to what the public API returns are logged separately in
+[`docs/API-CHANGELOG.md`](docs/API-CHANGELOG.md) (rendered at
+wavewarz.info/api-docs/changelog), so a number moving under an API user is never
+buried here.
+
+**Entry shape:** date · area · what changed · PR.
+
+---
+
+## 2026-11-03
+
+**Calendar: standing weekly shows.** The calendar now lists the recurring shows on every
+matching day for the next 26 weeks, and an "Every Week" card shows the schedule
+at a glance. Times are Eastern (ET). No end time is shown because the shows run for
+hours.
+- WaveWarZ X Space: Mon-Fri, 11:00 AM ET
+- Quick Battlez (X Space + livestream): Mon, Wed, Fri, 9:00 PM ET
+- MythicGodz & DJ Candy (music and discussion, X Space): Tue, Thu, 9:00 PM ET
+
+The shows live in `src/lib/weekly-schedule.ts`, because `calendar_events` stores one
+row per date. They do not crowd "Up Next", which still lists one-off events (Main
+Events, community battles) from the admin calendar. Link on each is x.com/wavewarz.
+
+**Legal: User Data Deletion page.** New `/data-deletion` page (what can be deleted, how
+to ask, the 30-day window, how to remove the app in Facebook and Instagram, what
+cannot be erased onchain). Privacy and Terms now cover Facebook, Instagram and
+Threads; Privacy is dated October 2026; the page is in the sitemap. (#17)
+
+**WAVE ID: embed fits its content.** `/wavid` no longer cuts the studio off at a fixed
+height. The frame sizes itself to the studio's content (minimum 720px) and follows
+tab changes and window resizes. (#19)
+
+**WAVE ID: studio updated to upstream f58f875.** The embedded WavID Browser Studio
+is rebuilt from Quan's latest. New: wave-code woven into card artwork, card scanning,
+and the live battle panel. (#18)
+
+**WAVE ID: card and scan links.** `/wavid/card/<audiusHandle>` and `/wavid/scan` now open
+the matching studio screens (temporary 307 redirects), so the URL printed on a
+card works. Card artwork exists only for the four fixture artists for now; other
+handles show the Audius profile link. `/events` redirects to `/benefits`. (#18)
