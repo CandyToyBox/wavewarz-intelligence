@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { FullBleed } from '@/components/full-bleed'
+import { WavIdEmbed } from '@/components/wavid-embed'
 import path from 'path'
 import type { Metadata } from 'next'
 import { renderMarkdown } from '@/lib/simple-markdown'
@@ -49,13 +50,7 @@ export default function WavIdPage() {
           not live yet.
         </p>
         <FullBleed>
-          <iframe
-            src="/wavid-studio/index.html"
-            title="WavID Browser Studio"
-            loading="lazy"
-            className="block w-full border-0"
-            style={{ height: 'max(720px, calc(100vh - 5rem))' }}
-          />
+          <WavIdEmbed src="/wavid-studio/index.html" title="WavID Browser Studio" />
         </FullBleed>
         <p className="mt-3 text-xs text-muted-foreground/70">
           Open source under the MIT License ·{' '}
