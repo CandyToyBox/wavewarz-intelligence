@@ -26,7 +26,7 @@ export function BattlesControls({
   const sp = useSearchParams()
 
   function navigate(key: string, value: string) {
-    const params = new URLSearchParams(sp.toString())
+    const params = new URLSearchParams(sp?.toString() ?? '')
     params.set(key, value)
     params.set('page', '1')  // reset to page 1 on sort/filter change
     router.push(`/battles?${params.toString()}`)
