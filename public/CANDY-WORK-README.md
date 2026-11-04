@@ -26,3 +26,14 @@ Filters at the top (Candy, 2026-10-28): Genre chips and Leaderboard chips (Most 
 Wave ID background on audius-search.html: `wave-id/` holds Quan's loop (`wave-id-loop-ice.mp4`, plays muted, 4 second loop, screen blend) and the green, ice and aqua stills. The loop sits fixed behind the page at the top right. Inside the matchup panel a green Wave ID fades in behind the green side and an ice one behind the blue side once a song is picked. Reduced motion shows the still instead of the video.
 
 **Wave IDs on the setup page (update):** the fixed background layer now has two loops (top right, and a mirrored one bottom left) plus ice, green and aqua stills bleeding in from the edges. The catalog (`#browse`) sits on a solid #070b14 panel so nothing shows through the rows.
+
+## Stats app pages with Wave IDs (branch `wavid-ui-prototype`)
+
+A separate prototype of the WaveWarz Intelligence (Statz) app, styled from the WaveWarz Rebrand System, with each artist's Wave ID drawn from their public WaveWarz record.
+
+- **Branch:** `wavid-ui-prototype` on CandyToyBox/wavewarz-intelligence. Design prototype, not for merge as is.
+- **Pages:** `/artist/[id]` (Wave ID as the hero image), `/leaderboards/artists` (Wave ID mark on every row), `/battles/[id]` (two Wave IDs head to head).
+- **How it works:** a vendored copy of Quan's WavID core and renderer in `src/lib/wavid/`, a roster resolver, and an image route at `src/pages/api/wavid-art/[handle].ts` that serves each Wave ID as SVG or small PNG.
+- **Labels:** each Wave ID card says "Public observation" and "Artist control unverified". Keep that wording.
+- **Run it:** check out the branch, install, `npm run dev`. The pages read live battle data, so they need the app's environment variables.
+- **Preview:** screenshots of the three pages are on the shared preview page, because they cannot run as static files.
