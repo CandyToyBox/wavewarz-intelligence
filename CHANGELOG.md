@@ -14,6 +14,11 @@ buried here.
 
 ## 2026-11-03
 
+**WAVE ID: cards for every roster artist.** Studio updated to upstream 08f67aa. A card
+at `/wavid/card/<handle>` now looks the artist up in the live WaveWarZ roster, so any
+birth-eligible artist gets their art and wave-code, not just the four fixture artists
+(for example `oxquan` maps to `_0xQuan`). Identity kits also include the card face.
+
 **Blog.** New `/blog` page lists the WaveWarZ Paragraph posts (paragraph.com/@wavewarz),
 newest first; each card opens the post on Paragraph. New posts appear on their own
 within about 10 minutes. "Blog" added to the top nav and the sitemap. (#22)
