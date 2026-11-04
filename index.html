@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WaveWarz UI Redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column of three page cards under a short intro, on the WaveWarz navy stage */
+:root{color-scheme:dark;--bg:#0d1321;--raise:#111a2e;--ink:#daecfd;--muted:#a3adbd;--line:#daecfd24;--green:#95fe7c;--blue:#7ec1fb;--on-green:#0d1321;
+--display:'Space Grotesk',system-ui,sans-serif;--body:'Outfit',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+body{background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--body);padding-block:48px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));margin:0}
+main{max-width:760px;margin:0 auto;display:grid;gap:36px}
+.tag{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--green)}
+h1{font:700 clamp(34px,7vw,54px)/1.05 var(--display);margin:10px 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--green)}
+.lede{color:var(--muted);margin:0;max-width:56ch}
+.cards{display:grid;gap:14px}
+.card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px;align-items:center;padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:var(--raise);color:inherit;text-decoration:none}
+.card:hover,.card:focus-visible{border-color:var(--green)}
+.card h2{font:700 22px var(--display);margin:0}
+.card p{margin:0;color:var(--muted);font-size:15px;grid-column:1}
+.go{grid-row:1/3;grid-column:2;font:700 13px var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--green);color:var(--on-green);padding:12px 18px;border-radius:12px;white-space:nowrap}
+.statz{border-top:1px solid var(--line);padding-top:24px;display:grid;gap:14px}
+.statz h3{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:0}
+.statz p{margin:0;color:var(--muted);font-size:15px}
+.statz a{color:var(--blue)}
+.shots{display:grid;gap:18px}
+.shots figure{margin:0;display:grid;gap:8px}
+.shots img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px}
+.shots figcaption{font-size:14px;color:var(--muted)}
+.shots figcaption b{color:var(--ink);font-weight:600}
+.notes{border-top:1px solid var(--line);padding-top:24px;display:grid;gap:10px;color:var(--muted);font-size:15px}
+.notes h3{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:0}
+.notes ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.notes b{color:var(--ink);font-weight:600}
+.notes a{color:var(--blue)}
+@media(max-width:520px){.card{grid-template-columns:minmax(0,1fr)}.go{grid-row:auto;grid-column:1;justify-self:start;margin-top:8px}}
+</style></head><body>
+<main>
+ <header>
+  <div class="tag">Work in progress</div>
+  <h1>WaveWarz <em>UI redesign</em></h1>
+  <p class="lede">The homepage and battle setup page we have built so far, based on AttaBotty's homepage draft. Use the browser back button to return here.</p>
+ </header>
+ <nav class="cards" aria-label="Pages">
+  <a class="card" href="home.html"><h2>Homepage</h2><p>Live battle slot, stats strip, hero, Quick Battlez queue, DJ Wavy and the Ride the Wave onboarding.</p><span class="go">Open</span></a>
+  <a class="card" href="audius-search.html"><h2>Battle setup</h2><p>Pick two songs from the Audius catalog, filter by genre and leaderboard, reserve the battle. Your Wave IDs are in the background.</p><span class="go">Open</span></a>
+  <a class="card" href="onboarding.html"><h2>Onboarding</h2><p>Trader, Artist and Host lanes with the 3D DJ Wavy as the guide.</p><span class="go">Open</span></a>
+ </nav>
+ <section class="statz">
+  <h3>Stats app pages with Wave IDs</h3>
+  <p>The same rebrand applied to the WaveWarz Intelligence app, with each artist's Wave ID drawn from their public WaveWarz record. These pages need the app running, so they are shown as screenshots. Code is on branch <a href="https://github.com/CandyToyBox/wavewarz-intelligence/tree/wavid-ui-prototype" target="_blank" rel="noopener">wavid-ui-prototype</a>. It is a design prototype and is not ready to merge.</p>
+  <div class="shots">
+   <figure><img src="statz/artist-geek-myth.jpg" alt="Geek Myth artist page with a large Wave ID card, win and loss record and earnings"><figcaption><b>Artist page.</b> Geek Myth: the Wave ID is the hero image, next to the record and earnings.</figcaption></figure>
+   <figure><img src="statz/leaderboard-artists.jpg" alt="Artist rankings table with a Wave ID mark on every row"><figcaption><b>Artist rankings.</b> Each row carries the artist's Wave ID as its mark.</figcaption></figure>
+   <figure><img src="statz/battle-page.jpg" alt="Battle page with two Wave IDs facing each other"><figcaption><b>Battle page.</b> Geek Myth vs Hurric4n3Ike, two Wave IDs head to head with the winner outlined.</figcaption></figure>
+  </div>
+ </section>
+ <section class="notes">
+  <h3>What to know</h3>
+  <ul>
+   <li><b>Sample data.</b> The queue and the catalog show saved sample data here and say so on the page. The live versions load only when the pages run from the WaveWarz app.</li>
+   <li><b>Nothing here spends money.</b> Wallet, reserve and launch buttons are not connected yet.</li>
+   <li><b>Wave IDs.</b> The textures behind the setup page are the Wave ID loop and stills from Quan. The aqua and lime hex values are still to be confirmed with him.</li>
+   <li><b>Code.</b> Branch <a href="https://github.com/CandyToyBox/wavewarz-intelligence/tree/candy/homepage-and-battle-setup" target="_blank" rel="noopener">candy/homepage-and-battle-setup</a> on wavewarz-intelligence.</li>
+  </ul>
+ </section>
+</main>
+</body></html>
