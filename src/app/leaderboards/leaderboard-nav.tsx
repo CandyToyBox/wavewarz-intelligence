@@ -26,7 +26,7 @@ export function LeaderboardNav() {
         <div className="w-px h-4 bg-border shrink-0" />
         <div className="flex items-center gap-1 bg-[#080d18] border border-border/60 rounded-xl p-1 overflow-x-auto scrollbar-none">
           {TABS.map(tab => {
-            const isActive = pathname.startsWith(tab.href)
+            const isActive = pathname?.startsWith(tab.href) ?? false
             return (
               <Link
                 key={tab.href}
