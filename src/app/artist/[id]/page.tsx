@@ -10,6 +10,9 @@ import type { Metadata } from 'next'
 
 // ─── OG Metadata ──────────────────────────────────────────────────────────────
 
+import { getWavIdRoster, findWavIdArtist } from '@/lib/wavid/roster'
+import { ArtistWavIdHero, ArtistWavIdAmbient } from '@/components/wavid/artist-wavid-hero'
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
   const stats = await getArtistStats(id)
@@ -29,12 +32,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ArtistProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [stats, solPrice] = await Promise.all([
+  const [stats, solPrice, wavIdRoster] = await Promise.all([
     getArtistStats(id),
     getLiveSolPrice(),
+    getWavIdRoster(),
   ])
 
   if (!stats) notFound()
+
+  // WavID prototype: eligible artists (stable Audius identity, reconciled Quick
+  // Battle record) get their WavID as hero art. Everyone else keeps the pfp.
+  const wavIdArtist = findWavIdArtist(wavIdRoster, {
+    audiusHandle: stats.audiusHandle,
+    wallet: stats.wallet,
+    name: stats.displayName,
+  })
 
   const totalUsd = stats.totalEarningsSol * solPrice
   const spotifyStreams = Math.floor(totalUsd / 0.003)
@@ -54,15 +66,25 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
       {/* ── PLAYER CARD (the shareable hero) ── */}
       <div className="relative rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden shadow-2xl shadow-[#95fe7c]/5">
 
-        {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
+        {wavIdArtist && <ArtistWavIdAmbient handle={wavIdArtist.identity.audiusHandle} />}
 
-        <div className="p-8">
+        {/* Top accent bar */}
+        <div className="relative h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
+
+        <div className="relative p-8">
           {/* Header row */}
           <div className="flex items-start justify-between gap-6 mb-8">
 
             {/* PFP + Identity */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 flex-wrap">
+              {wavIdArtist && wavIdRoster ? (
+                <ArtistWavIdHero
+                  handle={wavIdArtist.identity.audiusHandle}
+                  name={stats.displayName}
+                  pfpUrl={stats.pfpUrl}
+                  checkedAt={wavIdRoster.checkpoint.checkedAt}
+                />
+              ) : (
               <div className="relative">
                 {stats.pfpUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -80,6 +102,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
                 )}
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#95fe7c] rounded-full border-2 border-[#0d1321]" />
               </div>
+              )}
 
               <div>
                 <h1 className="text-4xl font-rajdhani font-bold text-white tracking-wide leading-none">

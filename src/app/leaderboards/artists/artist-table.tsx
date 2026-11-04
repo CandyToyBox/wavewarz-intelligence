@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
 import { Tip } from '@/components/tip'
 import Link from 'next/link'
+import '@/components/wavid/wavid.css'
 
 export type ArtistRowClient = {
   wallet: string
@@ -54,7 +55,23 @@ function RankBadge({ position }: { position: number }) {
   )
 }
 
-function ArtistAvatar({ name, pfpUrl, twitterHandle }: { name: string; pfpUrl: string | null; twitterHandle: string | null }) {
+function ArtistAvatar({ name, pfpUrl, twitterHandle, wavIdHandle }: { name: string; pfpUrl: string | null; twitterHandle: string | null; wavIdHandle?: string }) {
+  // WavID prototype: an eligible artist's WavID is their mark (rasterized, lazy, 2x).
+  if (wavIdHandle) {
+    return (
+      <span className="ww ww-mark" style={{ width: 40, height: 40 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`/api/wavid-art/${encodeURIComponent(wavIdHandle)}?format=png&size=80`}
+          alt={`${name} WavID`}
+          width={40}
+          height={40}
+          loading="lazy"
+          decoding="async"
+        />
+      </span>
+    )
+  }
   // Priority: stored pfp → Twitter pfp via unavatar → letter fallback
   const imgSrc = pfpUrl ?? (twitterHandle ? `https://unavatar.io/twitter/${twitterHandle}` : null)
   const initial = name.charAt(0).toUpperCase()
@@ -91,7 +108,7 @@ const TOP3_LEFT_BORDER = [
   'border-l-2 border-l-orange-700',
 ]
 
-export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
+export function ArtistTable({ rows, wavIds }: { rows: ArtistRowClient[]; wavIds?: Record<string, string> }) {
   const [search, setSearch] = useState('')
 
   const filtered = search
@@ -157,7 +174,7 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
                     {/* Artist */}
                     <td className="px-3 py-2.5">
                       <Link href={`/artist/${a.wallet}`} className="flex items-center gap-3 group">
-                        <ArtistAvatar name={a.name} pfpUrl={a.pfpUrl} twitterHandle={a.twitterHandle} />
+                        <ArtistAvatar name={a.name} pfpUrl={a.pfpUrl} twitterHandle={a.twitterHandle} wavIdHandle={wavIds?.[a.wallet]} />
                         <div className="min-w-0">
                           <p className="font-rajdhani font-bold text-white group-hover:text-[#95fe7c] transition-colors text-base leading-tight truncate">
                             {a.name}
