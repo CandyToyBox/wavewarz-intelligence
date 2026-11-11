@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wave ID display study | WaveWarz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Design study: the Wave ID shown as an orb on a blueprint grid, with data callouts and a stats card.
+   Tokens match the Rebrand System; teal and red come from the vision frame. */
+:root{color-scheme:dark;--bg:#0d1321;--raise:#111a2e;--stage:#04070d;--ink:#daecfd;--muted:#989898;--line:#daecfd24;
+--green:#95fe7c;--blue:#7ec1fb;--aqua:#5fd3c1;--ember:#ff8a7a;
+--grid:rgba(126,193,251,.075);--grid-size:54px;
+--callout-bg:rgba(95,211,193,.07);--callout-line:rgba(95,211,193,.55);
+--font-display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;--font-sans:"Outfit",system-ui,sans-serif;--font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+--radius-lg:18px;--radius-md:10px;--radius-pill:999px}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--stage);color:var(--ink);font:400 16px/1.55 var(--font-sans);-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:var(--blue)}
+
+/* Blueprint grid: fixed behind everything, fading out toward the bottom of the viewport */
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+ background-size:var(--grid-size) var(--grid-size);background-position:center top;
+ -webkit-mask-image:linear-gradient(#000 55%,transparent 100%);mask-image:linear-gradient(#000 55%,transparent 100%)}
+
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px max(16px,4vw);border-bottom:1px solid var(--line);background:rgba(4,7,13,.7);backdrop-filter:blur(8px)}
+.tag{font:500 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green);border:1px solid rgba(149,254,124,.5);background:rgba(149,254,124,.08);border-radius:var(--radius-pill);padding:6px 14px}
+.top span.note{font:400 12px var(--font-mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+
+main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16px,3vw) 72px}
+
+/* Stage: orb in the middle, callouts pinned around it. Coordinates are percentages of the stage box. */
+.stage{position:relative;height:clamp(520px,62vw,720px);margin-top:8px}
+.orb{position:absolute;left:50%;top:48%;width:min(78%,860px);aspect-ratio:1;transform:translate(-50%,-50%);
+ -webkit-mask-image:radial-gradient(closest-side,#000 52%,transparent 100%);mask-image:radial-gradient(closest-side,#000 52%,transparent 100%)}
+.orb img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;filter:saturate(1.25) contrast(1.15) brightness(1.25);transform:scale(1.55);animation:drift 40s linear infinite}
+@keyframes drift{from{transform:scale(1.55) rotate(0)}to{transform:scale(1.55) rotate(360deg)}}
+/* red wash on the lower right edge, as in the vision frame */
+.orb::after{content:"";position:absolute;inset:0;background:radial-gradient(38% 38% at 70% 68%,rgba(214,70,64,.34),transparent 70%);mix-blend-mode:screen}
+
+.lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.lines polyline{fill:none;stroke:var(--callout-line);stroke-width:1;vector-effect:non-scaling-stroke}
+
+.callout{position:absolute;font:500 13px/1.45 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:#d7fbf4;
+ background:var(--callout-bg);border:1px solid var(--callout-line);border-radius:6px;padding:9px 14px;backdrop-filter:blur(3px);white-space:nowrap;box-shadow:0 0 18px rgba(95,211,193,.08)}
+.callout b{font-weight:500;color:#fff}
+/* Each box is pinned by the edge its leader line leaves from, and centred on its row, so the line always meets it */
+.c1{right:78%;top:23%;transform:translateY(-50%)}
+.c2{left:84%;top:31%;transform:translateY(-50%)}
+.c3{left:74%;top:63%;transform:translateY(-50%)}
+.node{position:absolute;width:9px;height:9px;border-radius:50%;background:#e9fffb;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(95,211,193,.25),0 0 14px 4px rgba(95,211,193,.8)}
+.node.hot{background:#ffe3df;box-shadow:0 0 0 3px rgba(255,138,122,.25),0 0 14px 4px rgba(255,138,122,.85)}
+.n1{left:31%;top:36%}
+.n2{left:71.5%;top:40.5%}
+.n3{left:58%;top:66%}
+
+.who{display:flex;align-items:center;gap:12px;margin:0 0 12px 4px;position:relative;z-index:1}
+.who img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:center top;background:var(--raise);border:1px solid var(--line)}
+.who span{font:500 15px var(--font-mono);color:var(--ink);letter-spacing:.02em}
+
+/* Stats card */
+.card{position:relative;z-index:1;border:1px solid rgba(95,211,193,.35);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(13,19,33,.78),rgba(7,11,20,.92));padding:26px 26px 18px;box-shadow:0 12px 32px #00000066}
+.card .lbl{font:400 13px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card .big{font:700 clamp(30px,4.4vw,44px)/1.1 var(--font-display);color:var(--blue);margin:10px 0 4px;letter-spacing:-.01em}
+.card .sub{font:400 15px var(--font-sans);color:var(--muted)}
+.card .foot{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between;font:400 11.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+.rows .cell{border:1px solid var(--line);border-radius:var(--radius-md);padding:14px 16px;background:rgba(17,26,46,.55)}
+.rows .cell .k{font:400 11.5px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.rows .cell .v{font:700 24px var(--font-display);margin-top:4px}
+.rows .cell .v small{font:400 13px var(--font-mono);color:var(--muted);margin-left:4px}
+.prov{margin:14px 4px 0;font:400 12px var(--font-mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+
+/* Narrow: callouts become a stack under the orb, no leader lines */
+@media(max-width:860px){
+ .stage{height:auto;display:grid;gap:10px;padding-top:6px}
+ .orb{position:relative;left:auto;top:auto;transform:none;width:112%;margin:-6% -6% -10%}
+ .lines,.node{display:none}
+ .callout{position:static;transform:none;white-space:normal;display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+ .rows{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.orb img{animation:none}}
+</style>
+</head>
+<body>
+<div class="grid" aria-hidden="true"></div>
+
+<header class="top">
+ <span class="tag">Wave ID</span>
+ <span class="note">Design study / sample data</span>
+</header>
+
+<main>
+ <section class="stage" aria-label="Wave ID for GeekMyth">
+  <div class="orb" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div>
+  <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+   <polyline points="22,23 26,23 31,36"/>
+   <polyline points="84,31 79,31 71.5,40.5"/>
+   <polyline points="74,63 70,63 58,66"/>
+  </svg>
+  <i class="node n1"></i><i class="node hot n2"></i><i class="node n3"></i>
+  <div class="callout c1">Song: <b>Neon Drift</b><br>Vol: <b>12.4 SOL</b></div>
+  <div class="callout c2">Battle activity<br><b>5 matches</b></div>
+  <div class="callout c3">Win ratio<br><b>54%</b></div>
+ </section>
+
+ <div class="who"><img src="Geek%20cutout%20new.png" alt=""><span>@GeekMyth</span></div>
+
+ <section class="card" aria-label="Artist summary">
+  <div class="lbl">Spotify stream equivalent</div>
+  <div class="big">111,535 streams</div>
+  <div class="sub">Based on a per-stream rate. Sample figure.</div>
+  <div class="rows">
+   <div class="cell"><div class="k">Battles</div><div class="v">5<small>played</small></div></div>
+   <div class="cell"><div class="k">Win ratio</div><div class="v">54%</div></div>
+   <div class="cell"><div class="k">Top song volume</div><div class="v">12.4<small>SOL</small></div></div>
+  </div>
+  <div class="foot"><span>WaveWarz Intelligence &middot; Solana mainnet</span><span>Sample data</span></div>
+ </section>
+ <p class="prov">Public observation. Artist control unverified.</p>
+</main>
+</body>
+</html>
