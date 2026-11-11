@@ -45,7 +45,7 @@
 .dfoot b{color:var(--ink);font-weight:700}.dfoot .hl{color:var(--green-ink)}
 @media(max-width:780px){.stage3{grid-template-columns:1fr}.mid{order:-0;padding-top:0}.col.l .art,.col.r .art{transform:none}.deck{padding:var(--space-5) var(--space-4)}.col.r{text-align:left}.col.r .pill{right:auto;left:var(--space-4)}.col.r .playb{left:auto;right:var(--space-4)}}
 
-.scroller{padding-bottom:260px}html{scroll-behavior:smooth}
+.scroller{padding-bottom:260px}
 .page{max-width:1100px;margin:0 auto;padding:0 var(--space-4)}
 header{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3);padding:var(--space-4) 0;border-bottom:1px solid var(--line)}
 header img{height:34px;width:auto;display:block}.hr{display:flex;gap:var(--space-3);align-items:center}
@@ -452,7 +452,7 @@ window.WWReserved=(function(){
  function clear(k){st[k]=null;st.target=k;st.avail='';render();}
  function check(){st.avail='';if(!(st.g&&st.b))return;var g=st.g,b=st.b;st.avail='pending';Promise.resolve(W.checkAvailability(g,b)).then(function(ok){if(st.g===g&&st.b===b){st.avail=ok?'ok':'bad';render()}},function(){if(st.g===g&&st.b===b){st.avail='bad';render()}})}
  function swap(){var t=st.g;st.g=st.b;st.b=t;st.target=!st.g?'g':(!st.b?'b':null);render();}
- function goBrowse(k){st.target=k;render();$('browse').scrollIntoView({behavior:'smooth',block:'start'})}
+ function goBrowse(k){st.target=k;render();$('browse').scrollIntoView({block:'start'})}
  function modal(html){$('dbody').innerHTML=html;var d=$('dlg');if(!d.open)d.showModal();}
  function reviewHTML(kind){var g=st.g,b=st.b;
   var rv='<div class="rv"><div class="g"><div class="sd">Green side</div><div class="n">'+esc(g.title)+'</div><div class="a">@'+esc(g.handle)+'</div></div><div class="vs2">VS</div><div class="b"><div class="sd">Blue side</div><div class="n">'+esc(b.title)+'</div><div class="a">@'+esc(b.handle)+'</div></div></div>';
@@ -476,7 +476,7 @@ window.WWReserved=(function(){
   else if(id==='pay'){var kind=b.dataset.kind;
    if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'https://www.wavewarz.com/quick-battles'));WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
    else $('dstat').textContent='Prototype: the live app opens your Solana wallet to confirm.'}
-  else if(id==='prev'){st.page--;loadTracks();$('browse').scrollIntoView({behavior:'smooth'})}else if(id==='next'){st.page++;loadTracks();$('browse').scrollIntoView({behavior:'smooth'})}
+  else if(id==='prev'){st.page--;loadTracks();$('browse').scrollIntoView()}else if(id==='next'){st.page++;loadTracks();$('browse').scrollIntoView()}
  });
  var deb;$('qt').addEventListener('input',function(e){var v=e.target.value;clearTimeout(deb);deb=setTimeout(function(){st.q=v;st.page=0;loadTracks()},250)});
  $('sort').addEventListener('change',function(e){st.sort=e.target.value;st.page=0;loadTracks()});

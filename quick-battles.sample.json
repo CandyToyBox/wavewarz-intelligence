@@ -1,5 +1,5 @@
 {
- "note": "Snapshot of wavewarz.com/api/quick-battles taken 2026-10-28. Used only when the live API is not reachable from the host.",
+ "note": "Snapshot of wavewarz.com/api/quick-battles taken 2026-10-28. Used only when the live API is not reachable from the host. Padded for the design preview: queue positions 2 and up are recent finished Quick BattleZ from the public API, marked \"demo\": true.",
  "active": [],
  "queued": [
   {
@@ -12,6 +12,72 @@
    "artist2_track_title": "ZAZA",
    "artist1_artwork_url": "https://val015.open-audio-validator.com/content/baeaaaiqsedwzt5vkp4y5m3dydmecgxs4jkpyl6oalrjirle4ogashxcsu54aq/480x480.jpg",
    "artist2_artwork_url": "https://audius-creator-10.theblueprint.xyz/content/baeaaaiqseagrsnhvnf363eo436liotxjhk7ye7chzmeloq26rolvb25dwzm4m/480x480.jpg"
+  },
+  {
+   "id": "demo-1794284102",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "Harmonyhub",
+   "artist1_track_title": "Glitch",
+   "artist2_handle": "CannonJones973",
+   "artist2_track_title": "Sons of poverty -Cannon Jones973 Fah Blizza",
+   "artist1_artwork_url": "https://val006.open-audio-validator.com/content/baeaaaiqsed2met5meckcpvn3fzppjwfhwarh7foooykcbfxlkwlonyclm7tos/480x480.jpg",
+   "artist2_artwork_url": "https://val007.open-audio-validator.com/content/baeaaaiqseba2lx3pvwmhpffgzg3wkbc4mhqlitghcmgig27gkhwrdcxttd4a4/480x480.jpg"
+  },
+  {
+   "id": "demo-1794282615",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "SteveStrange",
+   "artist1_track_title": "Celestial Harmony",
+   "artist2_handle": "Stormbourne",
+   "artist2_track_title": "Oasis Dreams",
+   "artist1_artwork_url": "https://val004.open-audio-validator.com/content/01KDTSJA07H4QS8E6BXMSPHDVG/480x480.jpg",
+   "artist2_artwork_url": "https://v.monophonic.digital/content/baeaaaiqsebaja5inzmptnzsqscfntpq53qwkwscnf534yseclkcxvbhkyilny/480x480.jpg"
+  },
+  {
+   "id": "demo-1794281941",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "dumbgirl",
+   "artist1_track_title": "DUMB GIRL",
+   "artist2_handle": "srchappell",
+   "artist2_track_title": "Ride Ride",
+   "artist1_artwork_url": "https://v.monophonic.digital/content/baeaaaiqsecp6ke4p3x4lpej2hz56u773lmzuo7ouvabk7bcrbyk6wplz7nqdk/480x480.jpg",
+   "artist2_artwork_url": "https://audius-nodes.com/content/baeaaaiqsecbco43ciwisdhaexys7gbdg36m6wdr35zxmwpdlcwskpl3q57ftm/480x480.jpg"
+  },
+  {
+   "id": "demo-1794280426",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "luiwrites",
+   "artist1_track_title": "Bleu Dream",
+   "artist2_handle": "luiwrites",
+   "artist2_track_title": "AI LUI - A Christmas Love Song",
+   "artist1_artwork_url": "https://audius-creator-4.theblueprint.xyz/content/baeaaaiqsea7ljituvcjuq7umrszr75xzruw5i45xyipyx47jc3v7rrpcbdadg/480x480.jpg",
+   "artist2_artwork_url": "https://audius-04.staked.cloud/content/01KCHHCB8EDNZ5Z7G1HCBKEVHF/480x480.jpg"
+  },
+  {
+   "id": "demo-1794279899",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "shawnsporter",
+   "artist1_track_title": "Rudolph",
+   "artist2_handle": "BennyJ504WaveWarz",
+   "artist2_track_title": "Pa-Rum-Pum-POW (Christmas 2024)",
+   "artist1_artwork_url": "https://v.monophonic.digital/content/baeaaaiqsedvsnzdtxym57xnm6z6xfcec47evewl5slppyo33dtm6bukllxlyi/480x480.jpg",
+   "artist2_artwork_url": "https://v.monophonic.digital/content/baeaaaiqsedr5ck74rml4zac3sq5db6eptvipkovl43px6q7tgc3hzegxpd7im/480x480.jpg"
+  },
+  {
+   "id": "demo-1794024922",
+   "status": "queued",
+   "demo": true,
+   "artist1_handle": "CannonJones973",
+   "artist1_track_title": "Cannon Jones973 feat. Premo-Life goes on",
+   "artist2_handle": "GodclouD",
+   "artist2_track_title": "KILLING FLOOR",
+   "artist1_artwork_url": "https://v.monophonic.digital/content/01KG1AVAR1W66EF8BGHSJV3SRX/480x480.jpg",
+   "artist2_artwork_url": "https://audius-creator-15.theblueprint.xyz/content/01KVBCDDVSX642ZS4DEGK5PFGR/480x480.jpg"
   }
  ],
  "skipState": {

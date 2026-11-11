@@ -1,0 +1,10 @@
+{
+  "note": "Snapshot of the wavewarz.info/calendar schedule taken 2026-11-11: the standing weekly shows from src/lib/weekly-schedule.ts and the one-off calendar_events rows (none upcoming that day). Used only when https://wavewarz.info/api/public/calendar is not available.",
+  "updatedAt": "2026-11-11T09:00:00Z",
+  "weekly": [
+    { "key": "daily-space", "title": "WaveWarZ X Space", "description": "Daily X Space. Runs live, usually for a few hours.", "event_type": "SPACES", "event_time": "11:00 AM ET", "days": [1, 2, 3, 4, 5], "daysLabel": "Mon-Fri", "location_or_link": "https://x.com/wavewarz" },
+    { "key": "quick-battlez", "title": "Quick Battlez: X Space + Livestream", "description": "Quick Battlez live on X Spaces and the livestream. Runs for a few hours.", "event_type": "BATTLE", "event_time": "9:00 PM ET", "days": [1, 3, 5], "daysLabel": "Mon, Wed, Fri", "location_or_link": "https://x.com/wavewarz" },
+    { "key": "mythicgodz-djcandy", "title": "MythicGodz & DJ Candy: X Space", "description": "Music and discussion on X Spaces. Runs for a few hours.", "event_type": "SPACES", "event_time": "9:00 PM ET", "days": [2, 4], "daysLabel": "Tue, Thu", "location_or_link": "https://x.com/wavewarz" }
+  ],
+  "events": []
+}
