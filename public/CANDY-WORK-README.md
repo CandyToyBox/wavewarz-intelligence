@@ -37,3 +37,6 @@ A separate prototype of the WaveWarz Intelligence (Statz) app, styled from the W
 - **Labels:** each Wave ID card says "Public observation" and "Artist control unverified". Keep that wording.
 - **Run it:** check out the branch, install, `npm run dev`. The pages read live battle data, so they need the app's environment variables.
 - **Preview:** screenshots of the three pages are on the shared preview page, because they cannot run as static files.
+
+## Wave ID orb preview (battle setup page)
+Each picked song now shows a Wave ID preview under its title: Quan's aqua texture as an orb on a blueprint grid, with three callouts (song, battles, win ratio and volume) read from the song's own battle record. A song with no record says "None yet" and "Not yet battled". The full-size design study is `wave-id-display.html`. Backup of the page before this change is in the session scratchpad (`audius-search.before-orb.html`). Not yet pushed to GitHub.

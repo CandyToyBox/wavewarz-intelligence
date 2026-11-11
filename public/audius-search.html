@@ -168,9 +168,64 @@ a.lm-go{text-decoration:none}
 .browse{background:#070b14;border:1px solid var(--line);border-radius:var(--radius-xl);padding:var(--space-6);box-shadow:var(--lift)}
 @media(max-width:780px){.browse{padding:var(--space-5) var(--space-4)}.wid-page .wv.w2{width:120vmin;height:120vmin;left:-50vmin;opacity:.22}.wid-page .st.gl,.wid-page .st.ar{width:100vmin;opacity:.2}}
 @media(max-width:780px){.wid-page .wv{width:130vmin;height:130vmin;right:-40vmin;top:-20vmin;opacity:.24}.deck>.wid{width:80%}}
+/* Wave ID preview under a picked song: orb on a blueprint grid with data callouts (see wave-id-display.html) */
+.wprev{position:relative;aspect-ratio:1/.92;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:#04070d;margin-top:var(--space-2);text-align:left}
+.wprev::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(126,193,251,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.08) 1px,transparent 1px);background-size:32px 32px;background-position:center}
+.wprev .orbm{position:absolute;left:50%;top:50%;width:92%;aspect-ratio:1;transform:translate(-50%,-50%);-webkit-mask-image:radial-gradient(closest-side,#000 52%,transparent 100%);mask-image:radial-gradient(closest-side,#000 52%,transparent 100%)}
+.wprev .orbm img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;filter:saturate(1.25) contrast(1.15) brightness(1.25);transform:scale(1.55);animation:odrift 48s linear infinite}
+.col.r .wprev .orbm img{animation-direction:reverse}
+@keyframes odrift{from{transform:scale(1.55) rotate(0)}to{transform:scale(1.55) rotate(360deg)}}
+.wprev .orbm::after{content:"";position:absolute;inset:0;background:radial-gradient(38% 38% at 70% 68%,rgba(214,70,64,.3),transparent 70%);mix-blend-mode:screen}
+.wprev svg.wl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wprev svg.wl polyline{fill:none;stroke:rgba(95,211,193,.55);stroke-width:1;vector-effect:non-scaling-stroke}
+.wprev .wc{position:absolute;width:42%;transform:translateY(-50%);font:500 10px/1.4 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:#d7fbf4;background:rgba(95,211,193,.08);border:1px solid rgba(95,211,193,.5);border-radius:5px;padding:5px 8px;backdrop-filter:blur(3px);overflow-wrap:anywhere}
+.wprev .wc b{font-weight:500;color:#fff}.wprev .wc .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#fff}
+.wprev .wc.a{left:3%;top:15%}.wprev .wc.b2{right:3%;top:45%;width:36%}.wprev .wc.c{left:3%;top:84%}
+.wprev .wn{position:absolute;width:7px;height:7px;border-radius:50%;background:#e9fffb;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(95,211,193,.25),0 0 10px 3px rgba(95,211,193,.8)}
+.wprev .wn.hot{background:#ffe3df;box-shadow:0 0 0 2px rgba(255,138,122,.25),0 0 10px 3px rgba(255,138,122,.85)}
+.wprev .wfoot{position:absolute;left:0;right:0;bottom:0;padding:5px 10px;font:400 9.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);background:linear-gradient(transparent,rgba(4,7,13,.85))}
+.col.r .wprev .wc.a{left:auto;right:3%}.col.r .wprev .wc.b2{right:auto;left:3%}.col.r .wprev .wc.c{left:auto;right:3%}
+@media(prefers-reduced-motion:reduce){.wprev .orbm img{animation:none}}
+/* Page-background Wave IDs get the same treatment as the preview orbs: blueprint grid, sharper teal, slow drift, red wash, glowing nodes */
+.wid-page::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(126,193,251,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.07) 1px,transparent 1px);background-size:54px 54px;background-position:center top;-webkit-mask-image:linear-gradient(#000 55%,transparent 100%);mask-image:linear-gradient(#000 55%,transparent 100%)}
+.wid-page::after{content:"";position:absolute;inset:0;background:radial-gradient(34vmin 34vmin at 84% 62%,rgba(214,70,64,.15),transparent 70%),radial-gradient(30vmin 30vmin at 24% 86%,rgba(214,70,64,.11),transparent 70%);mix-blend-mode:screen}
+.wid-page .wv,.wid-page .st{filter:saturate(1.25) contrast(1.15) brightness(1.2);animation:bgdrift 90s linear infinite}
+.wid-page .wv.w2{animation-direction:reverse;animation-duration:110s}
+.wid-page .st.gl,.wid-page .st.ic{animation-duration:130s;animation-direction:reverse}
+@keyframes bgdrift{to{rotate:360deg}}
+.wid-page .bn{position:absolute;width:8px;height:8px;border-radius:50%;background:#e9fffb;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(95,211,193,.22),0 0 14px 4px rgba(95,211,193,.7);opacity:.8}
+.wid-page .bn.hot{background:#ffe3df;box-shadow:0 0 0 3px rgba(255,138,122,.22),0 0 14px 4px rgba(255,138,122,.75)}
+.wid-page .bn.n1{left:calc(100vw - 42vmin);top:calc(38vmin - 10vmin)}
+.wid-page .bn.n2{left:calc(100vw - 24vmin);top:calc(38vmin + 8vmin)}
+.wid-page .bn.n3{left:30vmin;top:calc(100vh - 28vmin)}
+.wid-page .bn.n4{left:19vmin;top:calc(100vh - 17vmin)}
+@media(max-width:780px){.wid-page .bn.n1{left:calc(100vw - 32vmin);top:30vmin}.wid-page .bn.n2{left:calc(100vw - 14vmin);top:52vmin}.wid-page .bn.n3{left:14vmin;top:calc(100vh - 44vmin)}.wid-page .bn.n4{left:6vmin;top:calc(100vh - 30vmin)}}
+@media(prefers-reduced-motion:reduce){.wid-page .wv,.wid-page .st{animation:none}}
+/* Background reacts to the pointer: layers drift at different depths, a bright patch of grid follows the cursor, and clicking a node sends music-style pulses */
+.wid-page .wv,.wid-page .st{transition:filter .6s var(--ease-out)}
+.wid-page .wv{translate:calc(var(--mx,0)*-22px) calc(var(--my,0)*-22px)}
+.wid-page .wv.w2{translate:calc(var(--mx,0)*18px) calc(var(--my,0)*18px)}
+.wid-page .st.gl{translate:calc(var(--mx,0)*28px) calc(var(--my,0)*28px)}
+.wid-page .st.ar{translate:calc(var(--mx,0)*-30px) calc(var(--my,0)*-30px)}
+.wid-page .st.ic{translate:calc(var(--mx,0)*-12px) calc(var(--my,0)*-12px)}
+.wid-page .bn.n1,.wid-page .bn.n2{translate:calc(var(--mx,0)*-22px) calc(var(--my,0)*-22px)}
+.wid-page .bn.n3,.wid-page .bn.n4{translate:calc(var(--mx,0)*18px) calc(var(--my,0)*18px)}
+.wid-page .bn{transition:box-shadow .2s,opacity .2s,scale .2s}
+.wid-page .bn.near{opacity:1;scale:1.5;box-shadow:0 0 0 4px rgba(95,211,193,.3),0 0 22px 7px rgba(95,211,193,.9)}
+.wid-page .bn.hot.near{box-shadow:0 0 0 4px rgba(255,138,122,.3),0 0 22px 7px rgba(255,138,122,.95)}
+.wid-page .bn.fire{animation:bnpop .5s var(--ease-out)}
+@keyframes bnpop{0%{scale:2.4}100%{scale:1}}
+.wid-page .gl2{position:absolute;inset:0;opacity:0;transition:opacity .4s;background-image:linear-gradient(rgba(126,193,251,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.3) 1px,transparent 1px);background-size:54px 54px;background-position:center top;-webkit-mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%);mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%)}
+.wid-page.lit .gl2{opacity:1}
+.wid-page.beat .wv,.wid-page.beat .st{filter:saturate(1.6) contrast(1.2) brightness(1.75)}
+.wid-page .pr{position:absolute;width:46vmin;height:46vmin;margin:-23vmin 0 0 -23vmin;border-radius:50%;border:1.5px solid rgba(95,211,193,.9);box-shadow:0 0 18px rgba(95,211,193,.45),inset 0 0 18px rgba(95,211,193,.25);pointer-events:none;animation:pring 1.25s cubic-bezier(.16,.8,.3,1) both}
+.wid-page .pr.hot{border-color:rgba(255,138,122,.9);box-shadow:0 0 18px rgba(255,138,122,.45),inset 0 0 18px rgba(255,138,122,.25)}
+.wid-page .pr.soft{border-width:1px;opacity:.7}
+@keyframes pring{0%{transform:scale(.03);opacity:1}70%{opacity:.5}100%{transform:scale(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.wid-page .wv,.wid-page .st,.wid-page .bn{translate:none}.wid-page .pr{animation:prfade .6s both}@keyframes prfade{0%{transform:scale(.25);opacity:.8}100%{transform:scale(.25);opacity:0}}}
 @media(prefers-reduced-motion:reduce){.wid-page video{display:none}.wid-page .still{display:block}}
 </style></head><body>
-<div class="wid-page" aria-hidden="true"><video class="wv" autoplay muted loop playsinline preload="metadata" poster="wave-id/wave-id-ice.jpeg"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><video class="wv w2" autoplay muted loop playsinline preload="metadata"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><img class="st ic" src="wave-id/wave-id-ice.jpeg" alt=""><img class="st gl" src="wave-id/wave-id-green.jpeg" alt=""><img class="st ar" src="wave-id/wave-id-aqua.jpeg" alt=""><img class="wv still" src="wave-id/wave-id-ice.jpeg" alt=""></div>
+<div class="wid-page" aria-hidden="true"><video class="wv" autoplay muted loop playsinline preload="metadata" poster="wave-id/wave-id-ice.jpeg"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><video class="wv w2" autoplay muted loop playsinline preload="metadata"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><img class="st ic" src="wave-id/wave-id-ice.jpeg" alt=""><img class="st gl" src="wave-id/wave-id-green.jpeg" alt=""><img class="st ar" src="wave-id/wave-id-aqua.jpeg" alt=""><img class="wv still" src="wave-id/wave-id-ice.jpeg" alt=""><div class="gl2"></div><i class="bn n1"></i><i class="bn hot n2"></i><i class="bn n3"></i><i class="bn n4"></i></div>
 <div class="scroller" id="scroller"><div class="page">
 <header><img src="ChatGPT Image Oct 13, 2026, 07_12_16 PM.png" alt="WaveWarz"><div class="hr"><button class="pillbtn" id="how"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5v-2.7a8 8 0 0 1 16 0v2.7" stroke="#95fe7c"/><rect x="3.4" y="13.6" width="4.2" height="7" rx="1.8" fill="#7ec1fb" stroke="none"/><rect x="16.4" y="13.6" width="4.2" height="7" rx="1.8" fill="#7ec1fb" stroke="none"/><path d="M20.6 20.6c-1.8 1.3-4 1.3-5.8 0" stroke="#daecfd" stroke-width="1.3"/></svg>How it works</button><button class="pillbtn solid" id="wallet">Connect wallet</button></div></header>
 <div class="eyebrow"><i></i><span class="label">The stage is yours</span></div>
@@ -323,11 +378,23 @@ window.WWReserved=(function(){
 
 
  /* ---------- matchup panel (top) ---------- */
+
+ /* Wave ID preview: callouts read from the song's own battle record; no record means it says so.
+    Geometry is in percent of the preview box and mirrored for the right-hand column. */
+ function wprev(k,s){var t=s.stat,r=k==='b',has=t&&t.battles>0,m=function(x){return r?100-x:x};
+  var a='<div class="wc a">Song<span class="t">'+esc(s.title)+'</span></div>';
+  var b='<div class="wc b2">Battles<br><b>'+(has?t.battles+(t.battles===1?' match':' matches'):'None yet')+'</b></div>';
+  var c='<div class="wc c">Win ratio<br>'+(has?'<b>'+t.rate+'%</b><br>Vol <b>'+(+t.vol||0).toFixed(1)+' SOL</b>':'<b>Not yet battled</b>')+'</div>';
+  var P=[[40,34],[54,46],[44,64]];
+  var L=[[[45,15],[50,15],P[0]],[[61,45],[57,45],P[1]],[[45,84],[48,84],P[2]]];
+  var lines=L.map(function(l){return '<polyline points="'+l.map(function(q){return m(q[0])+','+q[1]}).join(' ')+'"/>'}).join('');
+  var nodes=P.map(function(q,i){return '<i class="wn'+(i===1?' hot':'')+'" style="left:'+m(q[0])+'%;top:'+q[1]+'%"></i>'}).join('');
+  return '<div class="wprev" aria-label="Wave ID preview"><div class="orbm" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div><svg class="wl" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+lines+'</svg>'+nodes+a+b+c+'<div class="wfoot">Wave ID &middot; public record</div></div>';}
  function slotBig(k){var s=st[k],cls=(k==='g'?'l':'r')+' slot '+(k==='b'?'b ':'')+(s?'full':'empty')+(st.target===k&&!s?' picking':'');
   var stat=s?'ready':(st.target===k?'picking':'empty');
   var art='<div class="art" data-art="'+k+'"><span class="pill">'+side(k)+' side</span>'+(s?'<button class="clr" data-clr="'+k+'" aria-label="Clear '+side(k).toLowerCase()+' side">&times;</button><div class="cov">'+I.song+img(s,'cvimg')+'</div>':'<span class="plus">+</span>')+'<div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
   var body='<div class="pstat '+stat+'">'+(s?'Ready':(st.target===k?'Picking':'Empty'))+'</div><h3 class="nm">'+(s?esc(s.title):(k==='g'?'Choose song one':'Choose song two'))+'</h3>'+
-   (s?'<p class="by"><b>@'+esc(s.handle)+'</b></p><div class="meta2">'+(s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+'<span class="dur2">'+fmt(s.secs)+'</span></div><button class="chg" data-chg="'+k+'">&#8635; Change song</button>':'<p class="by">'+(k==='g'?'Add a song from the catalog below':'Tap to pick for this side')+'</p>');
+   (s?'<p class="by"><b>@'+esc(s.handle)+'</b></p><div class="meta2">'+(s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+'<span class="dur2">'+fmt(s.secs)+'</span></div><button class="chg" data-chg="'+k+'">&#8635; Change song</button>'+wprev(k,s):'<p class="by">'+(k==='g'?'Add a song from the catalog below':'Tap to pick for this side')+'</p>');
   return '<div class="col '+cls+'" data-side="'+k+'">'+art+body+'</div>';}
  function center(){var f=289-144.5*n();return '<div class="mid"><div class="ring count" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="'+f+'" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6));transition:stroke-dashoffset .48s cubic-bezier(.22,1,.36,1)"/></svg><div class="time">'+n()+' / 2<small>SONGS</small></div></div><div class="vs">VS</div><button class="swap" id="swap" aria-label="Reverse battle sides"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"/></svg></button></div>';}
  /* ---------- dock ---------- */
@@ -418,5 +485,39 @@ window.WWReserved=(function(){
  var dock=$('dock');
  if('IntersectionObserver' in window){new IntersectionObserver(function(en){dock.classList.toggle('show',!en[0].isIntersecting)},{threshold:0,rootMargin:'-140px 0px 0px 0px'}).observe($('deck'));}
  render();renderFilters();loadTracks();ensureIndex().catch(function(){});
+})();
+</script><script>
+/* Interactive background: parallax, cursor-lit grid, and node pulses. Decorative only; nothing here touches the battle logic. */
+(function(){
+ var wp=document.querySelector('.wid-page');if(!wp)return;
+ var nodes=[].slice.call(wp.querySelectorAll('.bn')),reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+ var tx=0,ty=0,cx=0,cy=0,raf=0,beatT=0;
+ var SKIP='button,a,input,select,textarea,label,summary,[role=button]';
+ function frame(){cx+=(tx-cx)*.08;cy+=(ty-cy)*.08;wp.style.setProperty('--mx',cx.toFixed(3));wp.style.setProperty('--my',cy.toFixed(3));raf=(Math.abs(tx-cx)>.002||Math.abs(ty-cy)>.002)?requestAnimationFrame(frame):0}
+ function pos(n){var r=n.getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+r.height/2}}
+ function nearest(x,y,R){var best=null,bd=R;nodes.forEach(function(n){var p=pos(n),d=Math.hypot(p.x-x,p.y-y);if(d<bd){bd=d;best=n}});return best}
+ function ring(n,delay,soft){var p=pos(n),el=document.createElement('i');el.className='pr'+(n.classList.contains('hot')?' hot':'')+(soft?' soft':'');el.style.left=p.x+'px';el.style.top=p.y+'px';el.style.animationDelay=delay+'ms';el.addEventListener('animationend',function(){el.remove()});wp.appendChild(el)}
+ function fire(n){
+  var p=pos(n);
+  /* three beats from the clicked node, then a lighter pulse travels on to the others, nearest first */
+  [0,170,340].forEach(function(d,i){ring(n,d,i>0)});
+  n.classList.remove('fire');void n.offsetWidth;n.classList.add('fire');
+  nodes.filter(function(o){return o!==n}).map(function(o){var q=pos(o);return {o:o,d:Math.hypot(q.x-p.x,q.y-p.y)}}).sort(function(a,b){return a.d-b.d}).forEach(function(r,i){
+   setTimeout(function(){ring(r.o,0,true);r.o.classList.remove('fire');void r.o.offsetWidth;r.o.classList.add('fire')},300+i*220)});
+  wp.classList.add('beat');clearTimeout(beatT);beatT=setTimeout(function(){wp.classList.remove('beat')},420);
+ }
+ var cur=null;
+ addEventListener('pointermove',function(e){
+  if(e.pointerType==='touch')return;
+  wp.style.setProperty('--px',e.clientX+'px');wp.style.setProperty('--py',e.clientY+'px');wp.classList.add('lit');
+  if(!reduce){tx=e.clientX/innerWidth*2-1;ty=e.clientY/innerHeight*2-1;if(!raf)raf=requestAnimationFrame(frame)}
+  var over=e.target.closest&&e.target.closest(SKIP),n=over?null:nearest(e.clientX,e.clientY,30);
+  if(n!==cur){if(cur)cur.classList.remove('near');if(n)n.classList.add('near');cur=n;document.body.style.cursor=n?'pointer':''}
+ },{passive:true});
+ document.addEventListener('pointerleave',function(){wp.classList.remove('lit')});
+ addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest(SKIP))return;
+  var n=nearest(e.clientX,e.clientY,e.pointerType==='touch'?44:30);if(n)fire(n);
+ });
 })();
 </script></body></html>
