@@ -12,6 +12,14 @@ buried here.
 
 ---
 
+## 2026-11-11
+
+**Voter Guide: now for the November 15 battle.** The guide was still written for the
+October 18 battle. Date, time (7:00 PM EST), matchup (S.R. Chappell vs Retrospect)
+and the "Follow the battle on X" link are updated, and the event is called "WaveWarZ
+Music Battle" instead of "Community Music Battle". The date is written into the
+guide's text, so it needs updating again after each battle.
+
 ## 2026-11-03
 
 **WAVE ID: cards for every roster artist.** Studio updated to upstream 08f67aa. A card
