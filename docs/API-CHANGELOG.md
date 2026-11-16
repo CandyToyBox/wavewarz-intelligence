@@ -18,6 +18,17 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-16 — New write-only endpoint for site forms
+
+**Endpoints:** `POST /forms` (new) — **Type:** ADDITIVE
+
+A new endpoint accepts form submissions from the WaveWarZ sites (Featured Battle
+applications, sponsorship, support, feedback, Sunday reminders). It is write-only:
+it returns `{ "ok": true }` or an error and never returns stored data. No existing
+endpoint or value changed.
+
+---
+
 ## 2026-10-12 — One battle's volume restored; two Quick Battles' winners filled in
 
 **Endpoints:** `/stats` (`volume.totalSol`), `/battles`, `/battles/:id` (`volumeSol` per artist; `winnerDecided` and `winnerSide`), `/leaderboards/songs` where they count wins — **Type:** CORRECTION
