@@ -254,7 +254,7 @@ a.lm-go{text-decoration:none}
 </section>
 
 <section class="browse" id="browse"><div class="bhead"><div><h2>Find your contenders</h2><p>Choose a side. Tap + to pick.</p></div><div class="src">Music from<br>Audius</div></div>
-<div class="artistbar"><span>Artist on Audius? Connect your profile so your catalog is battle-ready on WaveWarz.</span><a href="https://www.wavewarz.com/audius/connect" target="_blank" rel="noopener">Connect Audius profile</a><button type="button" id="resync">Resync Audius tracks</button></div>
+<div class="artistbar"><span>Artist on Audius? Connect your profile so your catalog is battle-ready on WaveWarz.</span><a href="audius-connect.html" target="_blank" rel="noopener">Connect Audius profile</a><button type="button" id="resync">Resync Audius tracks</button></div>
 <div class="search"><input class="in" id="qt" placeholder="Search by track title or @artist handle..." aria-label="Search by track title or artist"><select class="in" id="sort" aria-label="Sort songs"><option value="title">Title A-Z</option><option value="artist">Artist A-Z</option><option value="short">Shortest first</option><option value="long">Longest first</option></select></div>
 <div class="fgroup"><span class="label">Genre</span><div class="chips" id="genres" aria-label="Filter by genre"></div></div>
 <div class="fgroup"><span class="label">Leaderboard</span><div class="chips" id="boards" aria-label="Filter by leaderboard"></div></div>
@@ -507,7 +507,7 @@ window.WWReserved=(function(){
   else if(id==='how')modal(howHTML());else if(id==='wallet')W.connectWallet();else if(id==='resync')W.resyncAudius();
   else if(id==='dclose'||id==='back')$('dlg').close();
   else if(id==='pay'){var kind=b.dataset.kind;
-   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'https://www.wavewarz.com/quick-battles'));WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
+   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'quick-battles.html'));WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
    else $('dstat').textContent='Prototype: the live app opens your Solana wallet to confirm.'}
   else if(id==='prev'){st.page--;loadTracks();$('browse').scrollIntoView()}else if(id==='next'){st.page++;loadTracks();$('browse').scrollIntoView()}
  });

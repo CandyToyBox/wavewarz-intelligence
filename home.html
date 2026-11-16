@@ -2190,7 +2190,7 @@
 .qp-add-cta{margin-top:6px;display:inline-flex;align-items:center;min-height:42px;padding:0 22px;border-radius:999px;border:1px solid rgba(216,235,252,.34);font:700 .8rem/1 'Space Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;transition:background-color .2s ease,border-color .2s ease}
 .qp-add:hover .qp-add-cta{background:rgba(var(--brand-green-rgb),.1);border-color:var(--brand-green)}
 /* the launch button: one clear action under the highlighted battle */
-.qp-go{position:absolute;left:50%;bottom:16px;width:454px;transform:translateX(-50%);z-index:4;height:70px;display:grid;gap:4px;justify-items:center;align-content:center;border-radius:999px;text-decoration:none;background:var(--brand-green);color:#06090f;border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 14px 34px rgba(0,0,0,.55);transition:background-color .2s ease,transform .2s ease}
+.qp-go{cursor:pointer;font:inherit;position:absolute;left:50%;bottom:16px;width:454px;transform:translateX(-50%);z-index:4;height:70px;display:grid;gap:4px;justify-items:center;align-content:center;border-radius:999px;text-decoration:none;background:var(--brand-green);color:#06090f;border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 14px 34px rgba(0,0,0,.55);transition:background-color .2s ease,transform .2s ease}
 .qp-go b{font:700 1.15rem/1 'Space Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase}
 .qp-go small{font:500 .72rem/1 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
 .qp-go:hover{background:#b6ffa4;transform:translateX(-50%) translateY(-2px)}
@@ -2615,6 +2615,41 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 @media (max-width:600px){.wf-in{padding:28px 20px 24px}.wf-fields{grid-template-columns:1fr}.wf-act .btn-primary{width:100%;justify-content:center}}
 @media (prefers-reduced-motion: reduce){.wf[open]{animation:none}}
 
+/* ACTION MODULE: launch / skip */
+.wa-vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:center;margin:6px 0 20px;padding:16px;border-radius:18px;border:1px solid rgba(216,235,252,.14);background:rgba(255,255,255,.03)}
+.wa-s{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:center;min-width:0}
+.wa-s.r{grid-template-columns:minmax(0,1fr) 52px;text-align:right}.wa-s.r .wa-d{order:2}
+.wa-d{width:52px;height:52px;border-radius:50%;padding:3px;background:var(--chrome);box-shadow:0 8px 18px rgba(0,0,0,.55)}
+.wa-d b{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 35% 30%,#1b2c42,#0d1321 70%)}
+.wa-d img{width:100%;height:100%;object-fit:cover;display:block}
+.wa-s strong{display:block;font:700 .98rem/1.25 'Space Grotesk',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wa-s span{display:block;font:400 .72rem/1.5 'JetBrains Mono',monospace;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wa-x{font:700 .72rem 'JetBrains Mono',monospace;letter-spacing:.14em;color:var(--brand-ice);opacity:.7}
+.wa-rows{display:grid;gap:0;margin:0 0 6px}
+.wa-rows div{display:flex;justify-content:space-between;gap:16px;padding:11px 2px;border-top:1px solid rgba(216,235,252,.1);font:400 .95rem/1.4 'Outfit',sans-serif;color:var(--brand-ice)}
+.wa-rows div b{font:600 .95rem 'Space Grotesk',sans-serif;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wa-note{margin:14px 0 0;font:400 .85rem/1.55 'Outfit',sans-serif;color:var(--text-muted)}
+@media (max-width:600px){.wa-vs{grid-template-columns:1fr;gap:10px}.wa-x{text-align:center}.wa-s.r{grid-template-columns:52px minmax(0,1fr);text-align:left}.wa-s.r .wa-d{order:0}}
+
+/* SEARCH: chrome-rimmed bar above the Top 5 panels; results reuse the leaderboard rows */
+.sx{margin:0 0 26px}
+.sx-bar{display:flex;align-items:center;gap:14px;height:64px;padding:0 10px 0 24px;border-radius:999px;border:2px solid transparent;background:linear-gradient(#05080e,#05080e) padding-box,var(--chrome) border-box;box-shadow:0 10px 26px rgba(0,0,0,.45);cursor:text;transition:box-shadow .25s ease}
+.sx-bar:focus-within{box-shadow:0 10px 26px rgba(0,0,0,.45),0 0 0 3px rgba(var(--brand-green-rgb),.22)}
+.sx-bar svg{width:22px;height:22px;flex:none;color:var(--brand-ice);opacity:.7}
+.sx-bar input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;color:#fff;font:400 1.05rem 'Outfit',sans-serif}
+.sx-bar input::placeholder{color:rgba(216,235,252,.42)}
+.sx-bar input::-webkit-search-cancel-button{display:none}
+.sx-clr{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid rgba(216,235,252,.2);background:rgba(255,255,255,.04);color:var(--brand-ice);font:400 1.3rem/1 'Outfit',sans-serif;cursor:pointer}
+.sx-clr:hover{color:#fff;border-color:rgba(216,235,252,.5)}
+.sx-out{margin-top:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.sx-out[hidden]{display:none}
+.sx-out .hl-panel{padding-bottom:10px;animation:sxIn .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes sxIn{from{opacity:0;transform:translateY(8px)}}
+.sx-none{grid-column:1 / -1;padding:8px 6px;color:var(--text-muted);font:400 .98rem 'Outfit',sans-serif}
+@media (max-width:1100px){.sx-out{grid-template-columns:1fr}}
+@media (max-width:600px){.sx-bar{height:56px;padding-left:18px}}
+@media (prefers-reduced-motion: reduce){.sx-out .hl-panel{animation:none}}
+
 /* Stats strip, refined: four numbers, one label each, hairline dividers */
 :root { --strip-h: 124px; }
 #statsStrip { gap: 0; padding: 0 32px 10px; }
@@ -2673,10 +2708,6 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       </ul>
 
       <div class="nav-actions">
-        <button id="globalAudioBtn" onclick="toggleArenaSynth()" class="btn-secondary" style="padding: 9px 14px; font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;">
-          <span id="audioDot" style="width:8px;height:8px;border-radius:50%;background:var(--brand-neutral);display:inline-block;"></span>
-          <span id="audioStatusText">SOUND: OFF</span>
-        </button>
         <!-- Prototype: opens the live app, where the wallet picker lives. -->
         <a href="https://www.wavewarz.com" target="_blank" rel="noopener" class="btn-primary" title="Opens wavewarz.com to connect a wallet">
           Select Wallet
@@ -2705,10 +2736,9 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         class="hero-fighter-left" 
       />
     </div>
-    <div onclick="jumpToFighter('A')" class="fighter-tag left-tag">
-      <div style="color:var(--brand-blue);font-weight:700;">ARTIST A</div>
+    <div class="fighter-tag left-tag">
+      <div style="color:var(--brand-blue);font-weight:700;">FEATURED ARTIST</div>
       <div style="font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">LUI</div>
-      <div style="color:var(--brand-green);font-size:0.7rem;margin-top:2px;">TAP FOR A DEMO BEAT →</div>
     </div>
 
     <!-- MASSIVE RIGHT FIGHTER: GEEK (NEW CUTOUT) -->
@@ -2719,10 +2749,9 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         class="hero-fighter-right" 
       />
     </div>
-    <div onclick="jumpToFighter('B')" class="fighter-tag right-tag">
-      <div style="color:var(--wid-amber);font-weight:700;">ARTIST B</div>
+    <div class="fighter-tag right-tag">
+      <div style="color:var(--wid-amber);font-weight:700;">FEATURED ARTIST</div>
       <div style="font-family:'Space Grotesk',sans-serif;font-size:1.35rem;font-weight:900;color:#fff;">GEEK</div>
-      <div style="color:var(--wid-aqua);font-size:0.7rem;margin-top:2px;">← TAP FOR A DEMO BEAT</div>
     </div>
 
     <!-- CENTER STAGE: 16-SHARD FRACTAL LOGO ASSEMBLES FIRST -->
@@ -2996,12 +3025,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
             <div class="qp-top"><span class="qp-st"><i></i>Launch station</span><span id="qbCount">&nbsp;</span></div>
             <aside class="qp-act" aria-label="Quick BattleZ actions">
               <a class="qp-add" href="audius-search.html"><span class="qp-add-v" aria-hidden="true"><i></i><i></i><em>+</em></span><b>Add a battle</b><small>0.005 SOL &middot; joins the back of the queue</small><span class="qp-add-cta">Pick 2 songs</span></a>
-              <a class="qp-all" href="https://www.wavewarz.com/quick-battles" target="_blank" rel="noopener">All finished battles &rarr;</a>
+              <a class="qp-all" href="quick-battles.html">See the whole queue &rarr;</a>
             </aside>
             <button class="qp-btn" id="qpPrev" type="button" aria-label="Previous battle in the queue"><span class="qp-chev l"></span></button>
             <div class="qp-stage" id="qpStageBox">
               <div class="qp-frame" aria-hidden="true"></div>
-              <a class="qp-go" id="qpGo" href="https://www.wavewarz.com/quick-battles" target="_blank" rel="noopener"><b>Launch this battle</b><small>0.007 SOL &middot; starts right now</small></a>
+              <button class="qp-go" id="qpGo" type="button"><b>Launch this battle</b><small>0.007 SOL &middot; starts right now</small></button>
               <div class="qp-head"><span class="qp-num" id="qpNum">#1</span><span class="qp-tag" id="qpLabel"></span></div>
               <div class="qp-track" id="qpTrack" role="listbox" aria-label="Quick BattleZ queue" tabindex="0"></div>
               <div class="qp-info qp-vary" id="qpStage">
@@ -3115,174 +3144,6 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   </section>
 
   <!-- ===================================================================== -->
-  <!-- REVAMPED LIVE QUICK BATTLEZ (TILTED BOXES + OFFICIAL BRAND COLORS)    -->
-  <!-- ===================================================================== -->
-  <section id="quick-battles" class="section-container velocity-skew">
-    
-    <!-- Top Telemetry Bar matching Reference Image -->
-    <div class="qb-topbar labs-reveal">
-      <div class="qb-live-pill">
-        <span style="width:8px;height:8px;border-radius:50%;background:var(--brand-green);box-shadow:0 0 10px var(--brand-green);"></span>
-        LIVE BATTLE PREVIEW
-      </div>
-
-      <div class="qb-skip-queue" style="cursor:default">QUICK BATTLEZ</div>
-
-      <div class="qb-settled-count">
-        <strong id="settledCounter" style="color:#ffffff;"></strong>EVERY BATTLE SETTLES ONCHAIN
-      </div>
-    </div>
-
-    <!-- Main Rounded Dark Arena Stage -->
-    <div id="interactiveBattleDeck" class="qb-main-stage labs-reveal reveal-scale" style="--stagger: 100ms;">
-      
-      <div class="qb-arena-grid">
-        
-        <!-- =============================================================== -->
-        <!-- LEFT CONTENDER: CHALLENGER A (TILTED LEFT PORTRAIT PANEL)       -->
-        <!-- =============================================================== -->
-        <div class="qb-contender-col">
-          <div id="cardArtA" onclick="playFighterSynth('A')" class="qb-art-card tilt-left" title="Tap for a demo beat">
-            <div class="qb-card-atmo-a"></div>
-            <span class="qb-challenger-pill left">ARTIST A</span>
-            <span id="playIconA" class="qb-play-badge left">▶</span>
-
-            <img id="qbImgA" src="LUI.png" alt="Challenger A" class="qb-card-img" />
-
-            <!-- 9-Segment Brand Green (#95FE7C) Equalizer Bar Inside Card -->
-            <div id="eqDockA" class="qb-eq-dock">
-              <div class="qb-eq-seg green-seg" style="height:52%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:68%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:60%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:75%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:64%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:70%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:55%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:66%;"></div>
-              <div class="qb-eq-seg green-seg" style="height:74%;"></div>
-            </div>
-          </div>
-
-          <div class="qb-meta-wrap">
-            <div id="qbRoundA" class="qb-now-playing">NOW PLAYING</div>
-            <h3 id="qbTrackA" class="qb-track-title">Apex Cyber</h3>
-            <div class="qb-artist-sub">
-              by <strong id="qbArtistA">LUI</strong> · <span id="qbCityA">sample song</span>
-            </div>
-
-            <button id="qbBtnBackA" onclick="triggerPrediction('A')" class="qb-btn-outline-blue">
-              TRADE LUI
-            </button>
-          </div>
-        </div>
-
-        <!-- =============================================================== -->
-        <!-- CENTER COLUMN: CIRCULAR #95FE7C RING TIMER + VS + 44%/56% BAR   -->
-        <!-- =============================================================== -->
-        <div class="qb-center-column">
-          <div class="qb-dial-wrap">
-            <svg class="qb-dial-svg" viewBox="0 0 180 180">
-              <circle class="qb-dial-bg" cx="90" cy="90" r="80"></circle>
-              <circle id="qbDialCircle" class="qb-dial-prog" cx="90" cy="90" r="80"></circle>
-            </svg>
-            <div class="qb-dial-inner">
-              <div id="qbTimerText" class="qb-time-readout">05:50</div>
-              <div class="qb-round-sub">TIME LEFT</div>
-            </div>
-          </div>
-
-          <div class="qb-vs-label">V S</div>
-
-          <!-- Split Percentage Bar (#7EC1FB Blue vs #95FE7C Green) -->
-          <div class="qb-split-wrap">
-            <div class="qb-split-Header">
-              <span id="qbPctA" style="color:var(--brand-blue);">44%</span>
-              <span id="qbPctB" style="color:var(--brand-green);">56%</span>
-            </div>
-            <div class="qb-split-track">
-              <div id="qbSplitLeft" class="qb-split-left" style="width:44%;"></div>
-              <div id="qbSplitRight" class="qb-split-right" style="width:56%;"></div>
-            </div>
-          </div>
-
-          <!-- Quick Matchup Switcher Pills -->
-          <div style="margin-top:28px;display:flex;gap:8px;justify-content:center;">
-            <button onclick="selectMatchup(0)" id="matchPill0" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(var(--brand-green-rgb),0.18);border:1px solid var(--brand-green);color:var(--brand-green);cursor:pointer;">SAMPLE 1</button>
-            <button onclick="selectMatchup(1)" id="matchPill1" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">SAMPLE 2</button>
-            <button onclick="switchQuickBattleMode('ledger')" style="padding:6px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--brand-neutral);cursor:pointer;">FULL LIST ↗</button>
-          </div>
-        </div>
-
-        <!-- =============================================================== -->
-        <!-- RIGHT CONTENDER: CHALLENGER B (TILTED RIGHT PORTRAIT PANEL)     -->
-        <!-- =============================================================== -->
-        <div class="qb-contender-col right-col">
-          <div id="cardArtB" onclick="playFighterSynth('B')" class="qb-art-card tilt-right" title="Tap for a demo beat">
-            <div class="qb-card-atmo-b"></div>
-            <span class="qb-challenger-pill right">ARTIST B</span>
-            <span id="playIconB" class="qb-play-badge right">▶</span>
-
-            <img id="qbImgB" src="Geek cutout new.png" alt="Challenger B" class="qb-card-img" />
-
-            <!-- 9-Segment Brand Blue (#7EC1FB) Equalizer Bar Inside Card -->
-            <div id="eqDockB" class="qb-eq-dock">
-              <div class="qb-eq-seg blue-seg" style="height:48%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:64%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:60%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:72%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:66%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:78%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:58%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:70%;"></div>
-              <div class="qb-eq-seg blue-seg" style="height:68%;"></div>
-            </div>
-          </div>
-
-          <div class="qb-meta-wrap">
-            <div id="qbRoundB" class="qb-now-playing">NOW PLAYING</div>
-            <h3 id="qbTrackB" class="qb-track-title">Emerald Glitch</h3>
-            <div class="qb-artist-sub">
-              by <strong id="qbArtistB">GEEK MYTH</strong> · <span id="qbCityB">sample song</span>
-            </div>
-
-            <button id="qbBtnBackB" onclick="triggerPrediction('B')" class="qb-btn-solid-green">
-              TRADE GEEK
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Small status bar under the battle -->
-      <div style="margin-top:38px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--brand-neutral);">
-        <div id="txToast">
-          <span style="color:var(--brand-green);">● LIVE:</span> This is a sample battle. Tap an artist for a demo beat, or tap <strong>TRADE</strong> to preview a trade.
-        </div>
-        <div>
-          SAMPLE POOLS: <strong id="poolVolReadout" style="color:#FFFFFF;">42.85 SOL</strong> · ARTISTS EARN 1% OF EVERY TRADE ON THEIR SIDE
-        </div>
-      </div>
-
-    </div>
-
-    <!-- OPTIONAL LIVE NOTION BRACKET EMBED -->
-    <div id="ledgerBattleEmbed" class="qb-main-stage" style="display:none;padding:28px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;">
-        <span style="color:var(--brand-green);">● QUICK BATTLEZ: FULL LIST</span>
-        <button onclick="switchQuickBattleMode('interactive')" class="btn-secondary" style="padding:6px 14px;font-size:0.75rem;">
-          ← Back to the battle
-        </button>
-      </div>
-      <iframe 
-        id="quickBattlesIframe"
-        data-src="https://explicit-fall-328.notion.site/ebd//295543f4635380f4b7e6f95f9797822e"
-        style="width:100%;height:560px;border:none;border-radius:20px;background:var(--brand-black);"
-        title="WaveWarz Quick Battles Live Feed"
-      ></iframe>
-    </div>
-  </section>
-
-  <!-- ===================================================================== -->
   <!-- THE BEST OF WAVEWARZ: past Featured battles + top artists + top songs, from the public stats -->
   <!-- ===================================================================== -->
   <section id="highlights" class="cp-sec hl">
@@ -3291,7 +3152,14 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       <div class="cp-head labs-reveal">
         <div class="section-eyebrow">THE BEST OF WAVEWARZ</div>
         <h2 class="section-title">Top 5 <span class="text-gradient">onchain battle stats.</span></h2>
-        <p class="cp-sub">The latest Featured battles, the artists winning most, and the songs people keep backing. Straight from the public stats.</p>
+        <p class="cp-sub">The latest Featured battles, the artists winning most, and the songs that keep winning. Straight from the public stats.</p>
+      </div>
+      <div class="sx labs-reveal" role="search">
+        <label class="sx-bar" for="sxQ"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="sxQ" type="search" placeholder="Search an artist, a song, or a battle" autocomplete="off" spellcheck="false" aria-controls="sxOut">
+          <button class="sx-clr" id="sxClr" type="button" aria-label="Clear search" hidden>&times;</button>
+        </label>
+        <div class="sx-out" id="sxOut" aria-live="polite" hidden></div>
       </div>
       <div class="hl-grid">
         <article class="hl-panel labs-reveal">
@@ -3482,6 +3350,16 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         <div class="wf-act"><button class="btn-primary" type="submit" id="wfSend"></button><span class="wf-fine" id="wfFine"></span></div>
       </form>
       <div class="wf-done" id="wfDone" hidden><span class="wf-ok" aria-hidden="true"></span><h3 id="wfDoneT"></h3><p id="wfDoneP"></p><button class="btn-secondary" type="button" id="wfDoneX">Close</button></div>
+    </div>
+  </dialog>
+
+  <!-- ACTIONS: launch the next battle, skip to the front. One module, same chrome shell as the forms. -->
+  <dialog id="wwAct" class="wf" aria-labelledby="waTitle">
+    <div class="wf-in">
+      <button class="wf-x" type="button" id="waClose" aria-label="Close">&times;</button>
+      <div class="wf-eb"><i></i><span id="waEb">Quick BattleZ</span></div>
+      <h2 id="waTitle"></h2>
+      <div id="waBody"></div>
     </div>
   </dialog>
 
@@ -3702,254 +3580,6 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     }
     requestAnimationFrame(onScrollFrame);
 
-    /* ---------------------------------------------------------------------
-       5. QUICK BATTLEZ ENGINE
-    --------------------------------------------------------------------- */
-    /* The old demo deck was removed from the page. $g keeps the hero fighter tags and the sound button from throwing. */
-    function $g(id) { return document.getElementById(id) || { style: {}, classList: { add() {}, remove() {}, toggle() {} } }; }
-    const matchups = [
-      {
-        roundLabel: "NOW PLAYING",
-        seconds: 350,
-        maxSeconds: 400,
-        a: {
-          track: "Apex Cyber",
-          artist: "LUI",
-          shortName: "LUI",
-          city: "sample song",
-          img: "LUI.png",
-          sol: 18.85,
-          freq: 110,
-          bpm: 140
-        },
-        b: {
-          track: "Emerald Glitch",
-          artist: "GEEK MYTH",
-          shortName: "GEEK",
-          city: "sample song",
-          img: "Geek cutout new.png",
-          sol: 24.00,
-          freq: 165,
-          bpm: 128
-        }
-      },
-      {
-        roundLabel: "NOW PLAYING",
-        seconds: 215,
-        maxSeconds: 300,
-        a: {
-          track: "Pink Bucket VIP",
-          artist: "LUI",
-          shortName: "LUI",
-          city: "sample song",
-          img: "LUI.png",
-          sol: 26.40,
-          freq: 125,
-          bpm: 148
-        },
-        b: {
-          track: "Leopard Mic Riot",
-          artist: "GEEK MYTH",
-          shortName: "GEEK",
-          city: "sample song",
-          img: "Geek cutout new.png",
-          sol: 21.20,
-          freq: 146,
-          bpm: 132
-        }
-      }
-    ];
-
-    let activeMatch = 0;
-    let settledBattlesCount = 48;
-    let playingSide = null;
-
-    function updateQuickBattleUI() {
-      const m = matchups[activeMatch];
-      const totalSol = m.a.sol + m.b.sol;
-      const pctA = Math.round((m.a.sol / totalSol) * 100);
-      const pctB = 100 - pctA;
-
-      $g("qbImgA").src = m.a.img;
-      $g("qbRoundA").textContent = m.roundLabel;
-      $g("qbTrackA").textContent = m.a.track;
-      $g("qbArtistA").textContent = m.a.artist;
-      $g("qbCityA").textContent = m.a.city;
-      $g("qbBtnBackA").textContent = `TRADE ${m.a.shortName}`;
-
-      $g("qbImgB").src = m.b.img;
-      $g("qbRoundB").textContent = m.roundLabel;
-      $g("qbTrackB").textContent = m.b.track;
-      $g("qbArtistB").textContent = m.b.artist;
-      $g("qbCityB").textContent = m.b.city;
-      $g("qbBtnBackB").textContent = `TRADE ${m.b.shortName}`;
-
-      $g("qbPctA").textContent = `${pctA}%`;
-      $g("qbPctB").textContent = `${pctB}%`;
-      $g("qbSplitLeft").style.width = `${pctA}%`;
-      $g("qbSplitRight").style.width = `${pctB}%`;
-      $g("poolVolReadout").textContent = `${totalSol.toFixed(2)} SOL`;
-
-      updateClockDisplay();
-    }
-
-    function updateClockDisplay() {
-      const m = matchups[activeMatch];
-      const mins = String(Math.floor(m.seconds / 60)).padStart(2, "0");
-      const secs = String(m.seconds % 60).padStart(2, "0");
-      $g("qbTimerText").textContent = `${mins}:${secs}`;
-
-      const circumference = 502;
-      const offset = circumference - (m.seconds / m.maxSeconds) * circumference;
-      $g("qbDialCircle").style.strokeDashoffset = offset.toFixed(1);
-    }
-
-    function selectMatchup(idx) {
-      activeMatch = idx;
-      stopSynth();
-      $g("matchPill0").style.borderColor = idx === 0 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
-      $g("matchPill0").style.color = idx === 0 ? "var(--brand-green)" : "var(--brand-neutral)";
-      $g("matchPill1").style.borderColor = idx === 1 ? "var(--brand-green)" : "rgba(255,255,255,0.12)";
-      $g("matchPill1").style.color = idx === 1 ? "var(--brand-green)" : "var(--brand-neutral)";
-      updateQuickBattleUI();
-    }
-
-    function cycleMatchup() {
-      selectMatchup((activeMatch + 1) % matchups.length);
-    }
-
-    function triggerPrediction(side) {
-      const m = matchups[activeMatch];
-      const target = side === 'A' ? m.a : m.b;
-      target.sol += 1.25;
-      updateQuickBattleUI();
-
-      const card = $g(side === 'A' ? "cardArtA" : "cardArtB");
-      card.classList.add("is-playing");
-      setTimeout(() => {
-        if (playingSide !== side) card.classList.remove("is-playing");
-      }, 450);
-
-      $g("txToast").innerHTML = `
-        <span style="color:var(--brand-green);font-weight:700;">✓ PREVIEW:</span> You tried a sample trade on <strong style="color:#fff;">${target.shortName}</strong>. Nothing was bought. Trade a real battle at wavewarz.com.
-      `;
-    }
-
-    function jumpToFighter(side) {
-      $g("quick-battles").scrollIntoView();
-      setTimeout(() => playFighterSynth(side), 550);
-    }
-
-    setInterval(() => {
-      matchups.forEach((m) => {
-        if (m.seconds > 1) {
-          m.seconds--;
-        } else {
-          m.seconds = m.maxSeconds;
-        }
-      });
-      updateClockDisplay();
-    }, 1000);
-
-    /* ---------------------------------------------------------------------
-       6. WEB AUDIO SYNTH & 9-SEGMENT CARD EQUALIZER ANIMATION
-    --------------------------------------------------------------------- */
-    let audioCtx = null;
-    let synthLoop = null;
-
-    function playFighterSynth(side) {
-      if (playingSide === side) {
-        stopSynth();
-        return;
-      }
-      stopSynth();
-      playingSide = side;
-
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === "suspended") audioCtx.resume();
-
-      const m = matchups[activeMatch];
-      const fighter = side === 'A' ? m.a : m.b;
-
-      $g("playIconA").textContent = side === 'A' ? "⏹" : "▶";
-      $g("playIconB").textContent = side === 'B' ? "⏹" : "▶";
-      $g("cardArtA").classList.toggle("is-playing", side === 'A');
-      $g("cardArtB").classList.toggle("is-playing", side === 'B');
-      $g("audioDot").style.background = "var(--brand-green)";
-      $g("audioStatusText").textContent = `PLAYING: ${fighter.shortName}`;
-
-      let step = 0;
-      const pattern = side === 'A' ? [1, 1.2, 1.5, 1.33, 1, 1.5, 1.25, 0.85] : [1, 1.12, 1.33, 1.5, 1.6, 1.33, 1.12, 1];
-      const speed = (60 / fighter.bpm) * 500;
-
-      synthLoop = setInterval(() => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = side === 'A' ? "sawtooth" : "triangle";
-        osc.frequency.setValueAtTime(fighter.freq * pattern[step % pattern.length], audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.11, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.23);
-        step++;
-      }, speed);
-    }
-
-    function stopSynth() {
-      if (synthLoop) clearInterval(synthLoop);
-      synthLoop = null;
-      playingSide = null;
-      $g("playIconA").textContent = "▶";
-      $g("playIconB").textContent = "▶";
-      $g("cardArtA").classList.remove("is-playing");
-      $g("cardArtB").classList.remove("is-playing");
-      $g("audioDot").style.background = "var(--brand-neutral)";
-      $g("audioStatusText").textContent = "SOUND: OFF";
-    }
-
-    function toggleArenaSynth() {
-      if (playingSide) stopSynth();
-      else playFighterSynth('A');
-    }
-
-    // Animate the 9-block equalizer bars inside both Challenger A & Challenger B cards
-    const segsA = document.querySelectorAll("#eqDockA .qb-eq-seg");
-    const segsB = document.querySelectorAll("#eqDockB .qb-eq-seg");
-
-    setInterval(() => {
-      segsA.forEach((seg, i) => {
-        const active = playingSide === 'A';
-        const h = active ? 28 + Math.random() * 70 : 48 + Math.sin(Date.now() * 0.004 + i) * 18;
-        seg.style.height = `${h.toFixed(0)}%`;
-      });
-      segsB.forEach((seg, i) => {
-        const active = playingSide === 'B';
-        const h = active ? 28 + Math.random() * 70 : 48 + Math.cos(Date.now() * 0.004 + i) * 18;
-        seg.style.height = `${h.toFixed(0)}%`;
-      });
-    }, 120);
-
-    /* ---------------------------------------------------------------------
-       7. VIEW & HUB SWITCHERS
-    --------------------------------------------------------------------- */
-    function switchQuickBattleMode(mode) {
-      const deck = $g("interactiveBattleDeck");
-      const ledger = $g("ledgerBattleEmbed");
-      const iframe = $g("quickBattlesIframe");
-
-      if (mode === "ledger") {
-        deck.style.display = "none";
-        ledger.style.display = "block";
-        if (!iframe.src) iframe.src = iframe.getAttribute("data-src");
-      } else {
-        ledger.style.display = "none";
-        deck.style.display = "block";
-      }
-    }
-
-    updateQuickBattleUI();
   </script>
 
   <!-- RIDE THE WAVEWARZ SCRIPT -->
@@ -4538,6 +4168,93 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   addEventListener('message', function (e) { if (e.origin === location.origin && e.data && e.data.type === 'ww-open-form' && FORMS[e.data.kind]) open(e.data.kind); });
 })();
 </script>
+<script id="actions-js">
+/* Launch and skip. The real wallet calls are window.WW.launchNext(battle) and window.WW.skipToFront(battle); both return a Promise.
+   Until wavewarz.com provides them, the buttons run in preview and say so. */
+(function () {
+  'use strict';
+  var dlg = document.getElementById('wwAct'); if (!dlg || !dlg.showModal) return;
+  var $ = function (id) { return document.getElementById(id); }, W = window.WW = window.WW || {}, opener = null, busy = false;
+  var LAUNCH_FEE = '0.007';
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function disc(u) { return '<span class="wa-d"><b>' + (u ? '<img src="' + esc(u) + '" alt="" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</b></span>'; }
+  function vs(x) {
+    return '<div class="wa-vs"><div class="wa-s">' + disc(x.artist1_artwork_url) + '<div><strong>' + esc(x.artist1_track_title) + '</strong><span>@' + esc(x.artist1_handle) + '</span></div></div><span class="wa-x">VS</span>' +
+      '<div class="wa-s r">' + disc(x.artist2_artwork_url) + '<div><strong>' + esc(x.artist2_track_title) + '</strong><span>@' + esc(x.artist2_handle) + '</span></div></div></div>';
+  }
+  function open(kind, o, from) {
+    var launch = kind === 'launch', fn = launch ? W.launchNext : W.skipToFront, live = typeof fn === 'function';
+    opener = from || null;
+    $('waTitle').textContent = launch ? 'Launch this battle' : 'Skip to the front';
+    $('waBody').innerHTML = vs(o.x) + '<div class="wa-rows">' +
+      (launch ? '<div><span>Launch fee</span><b>' + LAUNCH_FEE + ' SOL</b></div><div><span>Starts</span><b>Right away</b></div>'
+              : '<div><span>Skip fee</span><b>' + esc(o.price) + ' SOL</b></div><div><span>Moves from</span><b>#' + esc(o.pos) + ' to #1</b></div>') +
+      '</div><p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">' + (launch ? 'Launch battle' : 'Skip to the front') + '</button>' +
+      '<span class="wf-fine">' + (live ? 'Your wallet opens to approve. Network fees are extra.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
+    $('waGo').addEventListener('click', function () {
+      if (busy) return; busy = true; var b = this, label = b.textContent; b.disabled = true; b.textContent = 'Waiting for your wallet…'; $('waErr').textContent = '';
+      Promise.resolve(live ? fn(o.x) : new Promise(function (r) { setTimeout(r, 900); })).then(function () {
+        $('waBody').innerHTML = '<div class="wf-done"><span class="wf-ok" aria-hidden="true"></span><h3>' + (!live ? 'Preview complete.' : launch ? 'Battle launched.' : 'Moved to the front.') + '</h3><p>' +
+          (live ? (launch ? 'The music starts in a moment. Open the battle to listen and trade.' : 'Your battle is next. Launch it any time.') : 'This was a preview. No wallet opened and nothing was charged.') +
+          '</p><button class="btn-secondary" type="button" id="waDone">Close</button></div>';
+        $('waDone').addEventListener('click', close); $('waDone').focus();
+        if (live) document.dispatchEvent(new CustomEvent('ww-queue-changed'));
+      }).catch(function (e) {
+        b.disabled = false; b.textContent = label; $('waErr').textContent = (e && e.userMessage) || 'That did not go through. Nothing was charged. Try again.';
+      }).then(function () { busy = false; });
+    });
+    if (!dlg.open) dlg.showModal();
+  }
+  function close() { if (dlg.open) dlg.close(); }
+  $('waClose').addEventListener('click', close);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+  dlg.addEventListener('close', function () { if (opener && opener.focus) opener.focus(); });
+  window.WWAct = { open: open };
+})();
+</script>
+<script id="search-js">
+/* Search across artists, songs and battles from the wavewarz.info public API. The lists load once, on first focus, and are filtered in the browser.
+   Limits: the top 500 songs and the 200 most recent battles. A ?q= filter on the API would lift both. */
+(function () {
+  'use strict';
+  var q = document.getElementById('sxQ'), out = document.getElementById('sxOut'), clr = document.getElementById('sxClr'); if (!q) return;
+  var API = 'https://wavewarz.info/api/public/', data = null, loading = null, timer;
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function get(p) { return fetch(API + p).then(function (r) { if (!r.ok) throw 0; return r.json(); }); }
+  function load() {
+    if (data) return Promise.resolve(data);
+    if (!loading) loading = Promise.all([get('leaderboards/artists?limit=500'), get('leaderboards/songs?limit=500'), get('battles?limit=200')]).then(function (r) {
+      return (data = { artists: r[0].artists || [], songs: r[1].songs || [], battles: r[2].battles || [] });
+    }).catch(function (e) { loading = null; throw e; });
+    return loading;
+  }
+  function art(u) { return '<span class="hl-art"><b>' + (u ? '<img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '</b></span>'; }
+  function row(href, pic, t, sub, stat, small) {
+    return '<li><a class="hl-row" style="grid-template-columns:58px minmax(0,1fr) auto" href="' + esc(href) + '" target="_blank" rel="noopener">' + art(pic) + '<span class="hl-tx"><span class="hl-t">' + esc(t) + '</span><span class="hl-s">' + esc(sub) + '</span></span><span class="hl-st">' + esc(stat) + '<small>' + esc(small) + '</small></span></a></li>';
+  }
+  function panel(title, sub, rows) { return rows.length ? '<article class="hl-panel"><header class="hl-ph"><div><h3>' + title + '</h3><p>' + sub + '</p></div></header><ol class="hl-list">' + rows.join('') + '</ol></article>' : ''; }
+  function has(s, n) { return String(s || '').toLowerCase().indexOf(n) > -1; }
+  function day(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+  function paint() {
+    var n = q.value.trim().toLowerCase(); clr.hidden = !q.value;
+    if (n.length < 2) { out.hidden = true; out.innerHTML = ''; return; }
+    out.hidden = false;
+    if (!data) { out.innerHTML = '<p class="sx-none">Searching…</p>'; load().then(paint, function () { out.innerHTML = '<p class="sx-none">Search did not load. Check your connection and try again.</p>'; }); return; }
+    var A = data.artists.filter(function (a) { return has(a.name, n) || has(a.twitterHandle, n); }).slice(0, 5).map(function (a) {
+      return row('https://wavewarz.info/artist/' + a.wallet, a.pfpUrl, a.name, a.wins + 'W ' + a.losses + 'L · ' + a.winRate + '% win rate', a.battles, a.battles === 1 ? 'battle' : 'battles'); });
+    var S = data.songs.filter(function (x) { return has(x.songTitle, n) || has(x.artistName, n); }).slice(0, 5).map(function (x) {
+      return row(x.musicLink || 'https://wavewarz.info', x.artUrl, x.songTitle, '@' + x.artistName + (x.genre ? ' · ' + x.genre : ''), x.wins + (x.wins === 1 ? ' win' : ' wins'), x.winRate + '% win rate'); });
+    var B = data.battles.filter(function (b) { return has(b.artist1 && b.artist1.name, n) || has(b.artist2 && b.artist2.name, n); }).slice(0, 5).map(function (b) {
+      var w = b.winnerDecided ? (b.winnerSide === 'artist1' ? b.artist1.name : b.artist2.name) : '';
+      return row(b.url, b.imageUrl, b.artist1.name + ' vs ' + b.artist2.name, (b.live ? 'Live now' : w ? 'Winner: ' + w : 'Result pending') + ' · ' + day(b.createdAt), ((+b.artist1.volumeSol || 0) + (+b.artist2.volumeSol || 0)).toFixed(2) + ' SOL', 'traded'); });
+    out.innerHTML = (panel('Artists', 'On the leaderboard', A) + panel('Songs', 'Quick BattleZ', S) + panel('Battles', 'Most recent first', B)) || '<p class="sx-none">Nothing matches “' + esc(q.value.trim()) + '”. Try an artist name or a song title.</p>';
+  }
+  q.addEventListener('focus', function () { load().catch(function () {}); }, { once: true });
+  q.addEventListener('input', function () { clearTimeout(timer); timer = setTimeout(paint, 140); });
+  q.addEventListener('keydown', function (e) { if (e.key === 'Escape') { q.value = ''; paint(); } });
+  clr.addEventListener('click', function () { q.value = ''; paint(); q.focus(); });
+})();
+</script>
 <script id="mainnet-callout-js">
 (function () { var m = document.getElementById('mnCall'); if (!m) return; function f() { m.classList.toggle('off', scrollY > 120); } addEventListener('scroll', function () { requestAnimationFrame(f); }, { passive: true }); f(); })();
 </script>
@@ -4564,9 +4281,9 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 <script id="quick-battlez-js">
 /* Quick BattleZ queue as a music-player deck. wavewarz.com/api/quick-battles only allows http://localhost:3002 for now, so other hosts use quick-battles.sample.json. */
 (function () {
-  var URL = 'https://www.wavewarz.com/api/quick-battles', $ = function (id) { return document.getElementById(id); };
+  var URL = (window.WW_API_BASE || 'https://www.wavewarz.com') + '/api/quick-battles', $ = function (id) { return document.getElementById(id); };
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var items = [], sel = 0, price = 0.02, lockUntil = 0, sample = false;
+  var items = [], sel = 0, price = 0.02, lockUntil = 0, sample = false, queuePage = document.body.dataset.page === 'queue';
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
   function img(u) { return u ? '<img src="' + esc(u) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : ''; }
   function build(d) {
@@ -4592,7 +4309,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       $('qpCa').innerHTML = '<span>Song A</span><b>' + esc(x.artist1_track_title) + '</b><span>@' + esc(x.artist1_handle) + '</span>';
       $('qpCb').innerHTML = '<span>Song B</span><b>' + esc(x.artist2_track_title) + '</b><span>@' + esc(x.artist2_handle) + '</span>';
       var go = $('qpGo');
-      if (it.kind === 'active') { go.className = 'qp-go off'; go.innerHTML = '<b>Playing now</b><small>Watch it live</small>'; }
+      if (it.kind === 'active') { go.className = 'qp-go'; go.innerHTML = '<b>Playing now</b><small>Open the battle</small>'; }
       else if (it.pos === 1) { go.className = 'qp-go'; go.innerHTML = '<b>Launch this battle</b><small>0.007 SOL &middot; starts right now</small>'; }
       else { go.className = 'qp-go'; go.innerHTML = '<b>Skip to the front</b><small>' + price + ' SOL &middot; moves #' + it.pos + ' to #1, ready to launch</small>'; }
       st.classList.remove('out');
@@ -4634,7 +4351,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     }, 90);
   }
   function render(d, isSample) {
-    sample = isSample; items = build(d); sel = 0;
+    sample = isSample; items = build(d); sel = 0; queuePage = document.body.dataset.page === 'queue';
     price = +(((d.skipState && d.skipState.min_skip_lamports) || 20000000) / 1e9).toFixed(3);
     var act = (d.active || []).length, q = (d.queued || []).length;
     $('qbCount').textContent = (q === 1 ? '1 in the queue' : q + ' in the queue') + (sample ? ' · sample data' : '');
@@ -4645,10 +4362,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       $('qpNum').textContent = ''; $('qpLabel').textContent = 'Queue empty'; $('qpTrack').innerHTML = '';
       var e = document.createElement('div'); e.className = 'qp-empty';
       e.innerHTML = '<p style="margin:0;font-size:1.1rem;max-width:34ch">No queued Quick BattleZ yet. Artists and fans can create one from the Audius catalog.</p><a class="btn-primary" href="audius-search.html">Create Quick BattleZ</a>';
-      $('qpStageBox').appendChild(e); $('qpStage').style.display = 'none'; return;
+      $('qpStageBox').appendChild(e); $('qpStage').style.display = 'none'; document.dispatchEvent(new CustomEvent('ww-queue', { detail: { data: d, sample: sample, price: price } })); return;
     }
     $('qpStage').style.display = '';
     paintTrack(); select(0, false, true); coverflow();
+    document.dispatchEvent(new CustomEvent('ww-queue', { detail: { data: d, sample: sample, price: price } }));
   }
   function load() {
     fetch(URL).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (d) { render(d, false); })
@@ -4658,6 +4376,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   tr.addEventListener('scroll', onScroll, { passive: true });
   tr.addEventListener('click', function (e) { var b = e.target.closest('.qp-pair'); if (!b) return; select(+b.dataset.i, true); });
   tr.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); select(sel + (e.key === 'ArrowRight' ? 1 : -1), true); } });
+  $('qpGo').addEventListener('click', function () {
+    var it = items[sel]; if (!it) return;
+    if (it.kind === 'active') { window.open('https://www.wavewarz.com/v2/battles/' + encodeURIComponent(it.x.battle_id || ''), '_blank', 'noopener'); return; }
+    if (window.WWAct) WWAct.open(it.pos === 1 ? 'launch' : 'skip', { x: it.x, pos: it.pos, price: price, sample: sample }, this);
+  });
   $('qpPrev').addEventListener('click', function () { select(sel - 1, true); });
   $('qpNext').addEventListener('click', function () { select(sel + 1, true); });
   window.addEventListener('resize', function () { coverflow(); centerOn(sel, false); }, { passive: true });
@@ -4667,7 +4390,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (!inner) return;
     inner.style.zoom = '';
     var nat = inner.offsetHeight, z = Math.min(1, (innerHeight - 112) / nat);
-    pinned = !matchMedia('(max-width: 960px)').matches && z >= 0.62;
+    pinned = !queuePage && !matchMedia('(max-width: 960px)').matches && z >= 0.62;
     sect.classList.toggle('is-flow', !pinned);
     inner.style.zoom = pinned && z < 1 ? z.toFixed(3) : '';
   }
