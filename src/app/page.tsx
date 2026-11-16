@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { resolveAudiusTrack } from '@/lib/audius'
 import QBChartsPreview from '@/app/qb-charts-preview'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
-import { pinnedEvent, type PinnedEvent } from '@/config/pinned-event'
+import type { PinnedEvent } from '@/config/pinned-event'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
@@ -68,7 +68,8 @@ type CalendarEventPreview = {
 async function getCalendarEvents(): Promise<CalendarEventPreview[]> {
   try {
     const supabase = await createClient()
-    const today = new Date().toISOString().split('T')[0]
+    // Eastern date, so a 7 PM ET event stays up all evening (the UTC date flips to tomorrow at 7 PM ET).
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
     const { data } = await supabase
       .from('calendar_events')
       .select('*')
@@ -82,8 +83,8 @@ async function getCalendarEvents(): Promise<CalendarEventPreview[]> {
 
 // Auto-promotes an admin-marked "featured" calendar event (with a flyer) into the
 // homepage hero slot, so uploading a flyer to /admin is enough -- no code edit needed.
-// Falls back to the manually-authored config/pinned-event.ts when nothing qualifies
-// (e.g. no upcoming featured event, or one without a flyer image yet).
+// When nothing qualifies (no upcoming featured event, or one without a flyer image yet)
+// the hero is hidden rather than falling back to an old, hardcoded event.
 function calendarEventToPinnedEvent(evt: {
   title: string
   description: string | null
@@ -274,7 +275,7 @@ export default async function HomePage() {
   const hasSpotify = spotify && (spotify.spotify_monthly_streams > 0 || spotify.spotify_total_streams > 0)
 
   const featuredCalendarEvent = calendarEvents.find(e => e.is_featured)
-  const activePinnedEvent = (featuredCalendarEvent && calendarEventToPinnedEvent(featuredCalendarEvent)) ?? pinnedEvent
+  const activePinnedEvent = featuredCalendarEvent ? calendarEventToPinnedEvent(featuredCalendarEvent) : null
 
   return (
     <div className="space-y-10">
@@ -301,7 +302,8 @@ export default async function HomePage() {
         </div>
       </header>
 
-      {/* Pinned event — mirrors the pinned post on @wavewarz (see src/config/pinned-event.ts) */}
+      {/* Featured event — the admin-featured calendar event with a flyer; hidden when there is none */}
+      {activePinnedEvent && (
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{activePinnedEvent.sectionLabel}</h2>
@@ -376,6 +378,7 @@ export default async function HomePage() {
 
         </div>
       </section>
+      )}
 
       {/* Stat Cards */}
       {stats && (
