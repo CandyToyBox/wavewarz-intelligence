@@ -108,3 +108,18 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 - It plays 5 seconds from the Audius public stream (`api.audius.co/v1/tracks/<id>/stream`, no play count), starting about 30% into the song so you hear the song and not the intro. Songs under 40 seconds start at 0:00.
 - The waveform fills green as it plays, the button becomes a stop button, and the last 0.4 seconds fade out. One preview at a time; Escape, switching tabs, or tapping another song stops it.
 - If a stream will not load, a toast says "That preview would not play."
+
+## Hero stats, Mainnet callout, site forms (2026-11-16, local only until PR #28 is merged)
+- Hero sub line: "Two songs go head to head. The audience decides who wins." Same line in the ribbon and the share description.
+- Stats strip cut from six numbers to four (trading volume, paid to artists, Spotify streams to match, battles onchain), one label each, hairline dividers. SOL amounts and the stream-rate note moved to hover titles.
+- "Live on Solana Mainnet" is a Wave ID style callout hanging off the wallet button; it fades once you scroll. Hidden under 960px.
+- Site forms replace Tally: one chrome dialog (`#wwForm`, script `forms-js`) for Featured Battle application, sponsorship, support, feedback and Sunday reminders. Any element with `data-form="<kind>"` opens it; so do `#apply`, `#sponsor`, `#support`, `#feedback`, `#remind` and the onboarding guide's Apply buttons.
+- Forms post to `https://wavewarz.info/api/public/forms` (wavewarz-intelligence PR #28; table already live). For local testing add `?formsUrl=<url>` or set `window.WW_FORMS_URL`. Submissions are read at wavewarz.info/admin/inbox.
+- Text reminders: numbers and consent are collected, nothing is sent yet (no SMS provider).
+- Sponsor bar button and empty logo slots open the sponsorship form; `applyUrl` removed from sponsors.json.
+- Wording: no "back", "winnings" or "profit" left in visible copy.
+
+## Ride the WaveWarZ: chrome wave, shorter copy, new DJ Wavy (2026-11-16)
+- The wave is a chrome rail: dim until ridden, then polished chrome with a green bloom and a white top highlight (`#rideChrome`, `#rideHi`). Crest dots and the amber ghost line are gone.
+- Every card is one short line. Sub line: "Every genre. Decided by the listeners." End button: "Open WaveWarZ".
+- DJ Wavy redrawn from the 3D model (round blue gentleman, tall top hat with feather, monocle and chain, walrus mustache, dark tailcoat, no purple) on a chrome board with a green rail stripe. He is larger (200px), and the cards above the wave sit higher to clear him.

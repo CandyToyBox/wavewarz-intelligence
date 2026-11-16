@@ -9,7 +9,7 @@
   <meta name="description" content="Watch live music battles, back the song that moves you, and send real support to artists — win or lose. Traders can play the live market while the timer runs." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="WaveWarZ | Live music battles where artists get paid" />
-  <meta property="og:description" content="Two songs go head to head. Listen first, then back the one that hits. Artists earn from every trade, and the losing artist still gets paid." />
+  <meta property="og:description" content="Two songs go head to head. The audience decides who wins. Artists earn from every trade, and the losing artist still gets paid." />
 
   <!-- Dynamic Non-Stretched Square Favicon -->
   <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="wavewarz-logo.svg?v=3" />
@@ -1416,10 +1416,10 @@
     /* the lit part of the wave grows as you scroll */
     .wave-lit {
       fill: none;
-      stroke: url(#rideGradient);
-      stroke-width: 8;
+      stroke: url(#rideChrome);
+      stroke-width: 12;
       stroke-linecap: round;
-      filter: drop-shadow(0 0 12px rgba(var(--brand-blue-rgb), 0.55));
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.6));
     }
 
     /* ---------- stops ---------- */
@@ -2555,8 +2555,8 @@ a.cd:focus-visible{outline:2px solid var(--brand-green);outline-offset:6px;borde
 a.sp-logo:hover,a.sp-logo:focus-visible{opacity:1;transform:translateY(-1px)}
 a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;border-radius:8px}
 .sp-logo img{display:block;max-height:100%;max-width:130px;width:auto;object-fit:contain}
-.sp-logo.empty{border:1px dashed rgba(216,235,252,.28);border-radius:999px;padding:0 16px;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);opacity:.8}
-.sp-cta{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;text-decoration:none;white-space:nowrap;font:700 .72rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#06090f;background:var(--brand-green);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55);transition:background-color .2s ease,transform .2s ease}
+.sp-logo.empty{background:none;cursor:pointer;border:1px dashed rgba(216,235,252,.28);border-radius:999px;padding:0 16px;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);opacity:.8}
+.sp-cta{cursor:pointer;display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;text-decoration:none;white-space:nowrap;font:700 .72rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#06090f;background:var(--brand-green);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55);transition:background-color .2s ease,transform .2s ease}
 .sp-cta:hover{background:#b6ffa4;transform:translateY(-1px)}
 .sp-cta:focus-visible{outline:2px solid #fff;outline-offset:3px}
 @media (max-width:960px){.sp{border-radius:28px}.sp-in{grid-template-columns:1fr;justify-items:center;gap:12px;padding:16px;border-radius:26px;text-align:center}.sp-logos{flex-wrap:wrap}}
@@ -2568,6 +2568,83 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .qp-pin > .qp-in { width: 100%; max-width: 1240px; margin: 0 auto; }
 .qp.is-flow { height: auto; padding: var(--sec-y) 16px; }
 .qp.is-flow .qp-pin { position: relative; height: auto; display: block; padding: 0; overflow: visible; }
+
+/* FORMS: chrome-rimmed module, same family as the sponsor rail and the queue dock */
+.wf{position:fixed;inset:0;margin:auto;height:fit-content;--chrome:linear-gradient(145deg,#f6fbff 0%,#aebccb 17%,#5a6b7e 40%,#dbe6ef 57%,#6d7e91 76%,#2c3746 100%);width:min(560px,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:2px;border:0;border-radius:30px;background:var(--chrome);color:#fff;box-shadow:0 40px 90px rgba(0,0,0,.7);overflow:visible}
+.wf::backdrop{background:rgba(2,4,8,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.wf[open]{animation:wfIn .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes wfIn{from{opacity:0;transform:translateY(14px) scale(.985)}}
+.wf-in{position:relative;max-height:calc(100dvh - 36px);overflow:auto;overscroll-behavior:contain;padding:34px 34px 30px;border-radius:28px;background:radial-gradient(70% 50% at 50% 0%,rgba(var(--brand-blue-rgb),.12),transparent 70%),#05080e}
+.wf-x{position:absolute;right:16px;top:16px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(216,235,252,.2);background:rgba(255,255,255,.04);color:var(--brand-ice);font:400 1.4rem/1 'Outfit',sans-serif;cursor:pointer;transition:border-color .2s ease,color .2s ease}
+.wf-x:hover{border-color:rgba(216,235,252,.5);color:#fff}
+.wf-eb{display:inline-flex;align-items:center;gap:10px;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-green)}
+.wf-eb i{width:7px;height:7px;border-radius:50%;background:var(--brand-green);box-shadow:0 0 10px rgba(var(--brand-green-rgb),.8)}
+.wf h2{margin:14px 44px 8px 0;font:700 clamp(1.5rem,3.4vw,1.95rem)/1.12 'Space Grotesk',sans-serif;letter-spacing:-.015em;text-wrap:balance}
+.wf-lead:empty{display:none}.wf-lead{margin:0 0 22px;color:var(--brand-ice);font:400 .98rem/1.6 'Outfit',sans-serif;opacity:.9}
+.wf-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px 14px}
+.wf-f{display:grid;gap:7px;min-width:0}.wf-f.full{grid-column:1 / -1}
+.wf-f > span{font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ice)}
+.wf-f > span em{font-style:normal;color:var(--text-muted);letter-spacing:.06em}
+.wf-f input,.wf-f textarea,.wf-f select{width:100%;box-sizing:border-box;padding:13px 14px;border-radius:14px;border:1px solid rgba(216,235,252,.18);background:rgba(255,255,255,.035);color:#fff;font:400 1rem/1.4 'Outfit',sans-serif;transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease}
+.wf-f textarea{min-height:112px;resize:vertical}
+.wf-f select{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--brand-ice) 50%),linear-gradient(135deg,var(--brand-ice) 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:38px}
+.wf-f select option{background:#0b1018;color:#fff}
+.wf-f input::placeholder,.wf-f textarea::placeholder{color:rgba(216,235,252,.38)}
+.wf-f input:hover,.wf-f textarea:hover,.wf-f select:hover{border-color:rgba(216,235,252,.34)}
+.wf-f input:focus-visible,.wf-f textarea:focus-visible,.wf-f select:focus-visible{outline:none;border-color:var(--brand-green);background-color:rgba(var(--brand-green-rgb),.04);box-shadow:0 0 0 3px rgba(var(--brand-green-rgb),.16)}
+.wf-f.bad input,.wf-f.bad textarea{border-color:#ff8a7a}
+.wf-ck{grid-column:1 / -1;display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font:400 .88rem/1.5 'Outfit',sans-serif;color:var(--brand-ice);cursor:pointer}
+.wf-ck input{width:20px;height:20px;margin:1px 0 0;accent-color:#95fe7c}
+.wf-ck.bad{color:#ffb4a8}
+.wf-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.wf-err{margin:14px 0 0;font:500 .9rem/1.5 'Outfit',sans-serif;color:#ffb4a8}.wf-err:empty{display:none}
+.wf-act{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:22px}
+.wf-act .btn-primary{cursor:pointer;border:0}.wf-act .btn-primary:disabled{opacity:.55;cursor:default}
+.wf-fine{flex:1 1 200px;font:400 .8rem/1.5 'Outfit',sans-serif;color:var(--text-muted)}
+.wf-done{text-align:center;padding:18px 0 6px}
+.wf-done h3{margin:18px 0 8px;font:700 1.4rem/1.2 'Space Grotesk',sans-serif}
+.wf-done p{margin:0 auto 22px;max-width:40ch;color:var(--brand-ice);font:400 .98rem/1.6 'Outfit',sans-serif}
+.wf-done .btn-secondary{cursor:pointer}
+.wf-ok{display:inline-grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--chrome);box-shadow:inset 0 1px 2px rgba(255,255,255,.7),0 10px 24px rgba(0,0,0,.5)}
+.wf-ok::after{content:"";width:22px;height:11px;border-left:3px solid #0d1321;border-bottom:3px solid #0d1321;transform:translateY(-3px) rotate(-45deg)}
+.cp-foot button[data-form],.cp-inline{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:.95rem;color:var(--brand-ice);text-align:left;transition:color .2s ease}
+.cp-foot button[data-form]:hover{color:var(--brand-green)}
+.cp-inline{font-size:inherit;color:var(--brand-blue);text-decoration:underline;text-underline-offset:3px}.cp-inline:hover{color:var(--brand-green)}
+.cp-foot-in{grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.cp-foot-in{grid-template-columns:1fr 1fr}.cp-foot-in > div:first-child{grid-column:1 / -1}}
+@media (max-width:600px){.wf-in{padding:28px 20px 24px}.wf-fields{grid-template-columns:1fr}.wf-act .btn-primary{width:100%;justify-content:center}}
+@media (prefers-reduced-motion: reduce){.wf[open]{animation:none}}
+
+/* Stats strip, refined: four numbers, one label each, hairline dividers */
+:root { --strip-h: 124px; }
+#statsStrip { gap: 0; padding: 0 32px 10px; }
+.st-row { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; max-width: 1080px; }
+.st-row > div { position: relative; padding: 6px 18px; }
+.st-row > div + div::before { content: ""; position: absolute; left: 0; top: 14%; bottom: 14%; width: 1px; background: linear-gradient(180deg, transparent, rgba(216,235,252,.28), transparent); }
+.st-n { font-weight: 500; font-size: clamp(1.9rem, 3vw, 3rem); letter-spacing: -0.03em; }
+.st-l { margin-top: 12px; font-size: 0.72rem; letter-spacing: 0.16em; color: var(--brand-ice); opacity: .7; }
+@media (max-width: 900px) { :root { --strip-h: 124px; } .st-row { grid-template-columns: repeat(4, minmax(0, 1fr)); } #statsStrip { padding: 0 12px 10px; } .st-n { font-size: clamp(1.25rem, 4.6vw, 1.9rem); } .st-row > div { padding: 6px 8px; } .st-l { letter-spacing: .1em; } }
+@media (max-width: 600px) { :root { --strip-h: 190px; } .st-row { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 22px; } .st-row > div:nth-child(3)::before { display: none; } .st-n { font-size: 1.7rem; } }
+
+/* Mainnet callout: Wave ID data-callout style, hangs off the wallet button at the top of the page */
+.nav-actions { position: relative; }
+.mn { position: absolute; right: 22px; top: calc(100% + 6px); display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; transition: opacity .35s ease, transform .35s ease; }
+.mn::before { content: ""; width: 1px; height: 22px; margin-right: 46px; background: rgba(95,211,193,.55); }
+.mn i { position: absolute; right: 46px; top: 0; width: 7px; height: 7px; border-radius: 50%; background: #e9fffb; transform: translate(50%, -50%); box-shadow: 0 0 0 2px rgba(95,211,193,.25), 0 0 10px 3px rgba(95,211,193,.8); }
+.mn span { font: 500 .72rem/1.4 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; color: #d7fbf4; background: rgba(4,7,13,.72); border: 1px solid rgba(95,211,193,.5); border-radius: 5px; padding: 5px 9px; backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.mn span b { font-weight: 500; color: #fff; }
+.mn.off { opacity: 0; transform: translateY(-6px); }
+@media (max-width: 960px) { .mn { display: none; } }
+@media (prefers-reduced-motion: reduce) { .mn { transition: none; } }
+
+/* Ride the WaveWarZ: larger DJ Wavy on a chrome board; cards lifted to clear him */
+.ride-actor { width: 200px; height: 173px; margin-left: -100px; margin-top: -160px; }
+.ride-tilt { transform-origin: 50% 92%; }
+.ride-sprite { filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.55)); }
+.ride-node[data-pos="top"] .ride-card { bottom: 214px; }
+.ride-node[data-pos="top"] .ride-stem { height: 166px; }
+.ride-card-desc { font-size: 0.9rem; margin-bottom: 0.7rem; }
+@media (max-width: 900px) { .ride-actor { width: 132px; height: 114px; margin-left: -66px; margin-top: -105px; } .ride-node[data-pos="top"] .ride-card { bottom: 60px; } }
 </style>
 </head>
 
@@ -2604,6 +2681,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         <a href="https://www.wavewarz.com" target="_blank" rel="noopener" class="btn-primary" title="Opens wavewarz.com to connect a wallet">
           Select Wallet
         </a>
+        <div class="mn" id="mnCall"><i aria-hidden="true"></i><span>Live on <b>Solana Mainnet</b></span></div>
       </div>
     </nav>
   </div>
@@ -2663,7 +2741,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       </h1>
 
       <p class="hero-sub">
-        Two songs go head to head. Listen first, then back the one that hits.
+        Two songs go head to head. The audience decides who wins.
       </p>
 
     </div>
@@ -2671,16 +2749,13 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     <div class="hero-bottom-vignette"></div>
   </header>
 
-  <section id="statsStrip" aria-label="WaveWarz by the numbers">
+  <section id="statsStrip" aria-label="WaveWarZ by the numbers">
     <div class="st-row">
-      <div><div class="st-n" id="stVol">&mdash;</div><div class="st-l">Trading volume</div><div class="st-f" id="stVolSol">&nbsp;</div></div>
-      <div><div class="st-n" id="stPaid">&mdash;</div><div class="st-l">Paid to artists</div><div class="st-f" id="stPaidSol">&nbsp;</div></div>
-      <div><div class="st-n" id="stSpot">&mdash;</div><div class="st-l">Spotify-stream equivalent</div><div class="st-f">Est. at $0.003 per stream</div></div>
-      <div><div class="st-n" id="stQb">&mdash;</div><div class="st-l">Quick BattleZ</div><div class="st-f">&nbsp;</div></div>
-      <div><div class="st-n" id="stMe">&mdash;</div><div class="st-l">Featured BattleZ</div><div class="st-f">&nbsp;</div></div>
-      <div><div class="st-n" id="stTot">&mdash;</div><div class="st-l">Total battles</div><div class="st-f">&nbsp;</div></div>
+      <div><div class="st-n" id="stVol">&mdash;</div><div class="st-l">Trading volume</div></div>
+      <div><div class="st-n" id="stPaid">&mdash;</div><div class="st-l">Paid to artists</div></div>
+      <div><div class="st-n" id="stSpot">&mdash;</div><div class="st-l">Spotify streams to match</div></div>
+      <div><div class="st-n" id="stTot">&mdash;</div><div class="st-l">Battles onchain</div></div>
     </div>
-    <div class="st-note">SOL <b id="stSol">&mdash;</b> &middot; Trading carries risk. Start small.</div>
   </section>
   </div>
 
@@ -2698,7 +2773,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         <div>
           <div class="ride-eyebrow"><span class="ride-dot"></span>NEW HERE? START HERE</div>
           <h2 class="ride-title">Ride the <span>WaveWarz</span></h2>
-          <p class="ride-sub">An onchain music competition for every genre, decided by the listeners.</p>
+          <p class="ride-sub">Every genre. Decided by the listeners.</p>
         </div>
 
         <div class="ride-progress" aria-live="polite">
@@ -2719,9 +2794,20 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
                 <stop offset="100%" stop-color="#95FE7C" />
               </linearGradient>
               <linearGradient id="rideWater" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#274862" stop-opacity="0.78" />
-                <stop offset="55%" stop-color="#274862" stop-opacity="0.30" />
+                <stop offset="0%" stop-color="#8fa3b8" stop-opacity="0.34" />
+                <stop offset="38%" stop-color="#3b5068" stop-opacity="0.26" />
                 <stop offset="100%" stop-color="#0d1321" stop-opacity="0" />
+              </linearGradient>
+              <!-- chrome: light and dark bands by height, so the crest catches light and the face goes dark, like polished metal -->
+              <linearGradient id="rideChrome" gradientUnits="userSpaceOnUse" x1="0" y1="150" x2="70" y2="480">
+                <stop offset="0" stop-color="#ffffff" />
+                <stop offset="0.14" stop-color="#dbe6ef" />
+                <stop offset="0.3" stop-color="#8496aa" />
+                <stop offset="0.46" stop-color="#2c3746" />
+                <stop offset="0.58" stop-color="#6d7e91" />
+                <stop offset="0.74" stop-color="#f6fbff" />
+                <stop offset="0.88" stop-color="#aebccb" />
+                <stop offset="1" stop-color="#4a5a6c" />
               </linearGradient>
               <!-- Wave ID film grain, cut to the shape it is applied to -->
               <filter id="rideGrain" x="0" y="0" width="100%" height="100%">
@@ -2754,18 +2840,16 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
               <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#62B8DF" stroke-width="1.5" opacity="0.40" transform="translate(0 22)" />
               <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#62B8DF" stroke-width="1.5" opacity="0.24" transform="translate(0 46)" />
               <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#A9D9DE" stroke-width="1.5" opacity="0.12" transform="translate(0 74)" />
-              <path d="M -60 462 C 20 462, 50 460, 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380 C 1150 380, 1200 372, 1260 372" stroke="#F2A74B" stroke-width="1.5" opacity="0.30" transform="translate(3 1)" />
             </g>
 
-            <!-- specular line along the crest -->
-            <path d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#E4FFF3" stroke-width="2" stroke-linecap="round" opacity="0.5" transform="translate(0 -5)" />
+            <!-- the chrome rail: dim until DJ Wavy has ridden it -->
+            <path d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#04070d" stroke-width="16" stroke-linecap="round" opacity="0.55" transform="translate(0 4)" />
+            <path d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="url(#rideChrome)" stroke-width="11" stroke-linecap="round" opacity="0.38" />
 
-            <!-- the route: dots along the crest -->
-            <path class="wave-crest-dots" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
-
-            <!-- glow + lit line that grows as you scroll -->
-            <path id="rideGlow" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#7EC1FB" stroke-width="14" stroke-linecap="round" filter="url(#rideBloom)" opacity="0.5" />
+            <!-- the ridden part: green bloom, polished chrome, and a white highlight along the top edge -->
+            <path id="rideGlow" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#95FE7C" stroke-width="20" stroke-linecap="round" filter="url(#rideBloom)" opacity="0.42" />
             <path id="rideLit" class="wave-lit" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" />
+            <path id="rideHi" d="M 110 460 C 220 460, 210 170, 330 170 C 450 170, 460 440, 600 440 C 740 440, 750 170, 870 170 C 990 170, 980 380, 1090 380" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.9" transform="translate(0 -3.6)" />
           </svg>
 
           <!-- the five stops are drawn here by the script below -->
@@ -2774,54 +2858,101 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
           <!-- DJ WAVY ON A WAVEWARZ SURFBOARD (2D drawing) -->
           <div class="ride-actor" id="rideActor">
             <div class="ride-tilt" id="rideTilt">
-              <svg class="ride-sprite" viewBox="0 -12 200 150" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DJ Wavy riding a WaveWarz surfboard">
+              <svg class="ride-sprite" viewBox="0 -18 240 208" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="DJ Wavy riding a chrome WaveWarZ surfboard">
+                <defs>
+                  <linearGradient id="wvBoard" x1="0" y1="0" x2="1" y2="0.25">
+                    <stop offset="0" stop-color="#6d7e91" /><stop offset="0.22" stop-color="#f6fbff" /><stop offset="0.48" stop-color="#8496aa" /><stop offset="0.72" stop-color="#ffffff" /><stop offset="1" stop-color="#aebccb" />
+                  </linearGradient>
+                  <radialGradient id="wvSkin" cx="0.62" cy="0.3" r="0.8">
+                    <stop offset="0" stop-color="#c9e6ff" /><stop offset="0.45" stop-color="#7EC1FB" /><stop offset="1" stop-color="#3f7fb3" />
+                  </radialGradient>
+                  <linearGradient id="wvCoat" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#2a3a52" /><stop offset="0.5" stop-color="#0d1321" /><stop offset="1" stop-color="#04070d" />
+                  </linearGradient>
+                  <linearGradient id="wvHat" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stop-color="#05080e" /><stop offset="0.3" stop-color="#3b4a60" /><stop offset="0.48" stop-color="#0d1321" /><stop offset="1" stop-color="#010405" />
+                  </linearGradient>
+                </defs>
+
                 <!-- spray off the tail -->
                 <g class="ride-spray">
-                  <circle cx="16" cy="118" r="3.2" fill="#D8EBFC" />
-                  <circle cx="6" cy="109" r="2.2" fill="#A9D9DE" />
-                  <circle cx="24" cy="127" r="2.2" fill="#D8EBFC" />
+                  <circle cx="14" cy="166" r="3.4" fill="#f6fbff" />
+                  <circle cx="3" cy="155" r="2.2" fill="#aebccb" />
+                  <circle cx="24" cy="178" r="2.4" fill="#dbe6ef" />
+                  <circle cx="-6" cy="170" r="1.6" fill="#aebccb" />
                 </g>
 
-                <!-- WaveWarz surfboard -->
-                <path d="M6 121 C46 108 150 104 196 110 C150 130 46 130 6 121 Z" fill="#95FE7C" />
-                <path d="M6 121 C46 108 150 104 196 110" stroke="#0D1321" stroke-opacity="0.35" stroke-width="1.4" />
-                <path d="M20 116.6 C62 109.4 150 107.4 188 111.4" stroke="#0D1321" stroke-width="3.2" stroke-linecap="round" />
-                <text x="104" y="122.6" text-anchor="middle" font-family="Outfit, sans-serif" font-weight="700" font-size="8.6" letter-spacing="1.3" fill="#0D1321" transform="rotate(-1.6 104 119)">WaveWarz</text>
+                <!-- chrome surfboard: nose up, green rail stripe, fin -->
+                <path d="M96 180 L84 190 L106 182 Z" fill="#5a6b7e" />
+                <path d="M8 172 C52 158 176 152 234 158 C240 159 240 162 234 164 C178 184 54 186 8 176 C4 175 4 173 8 172 Z" fill="url(#wvBoard)" stroke="#f6fbff" stroke-opacity="0.7" stroke-width="0.8" />
+                <path d="M22 171.5 C70 162 176 158 226 161" stroke="#95FE7C" stroke-width="2.6" stroke-linecap="round" />
+                <path d="M14 176 C62 184 176 181 232 164" stroke="#0d1321" stroke-opacity="0.45" stroke-width="1.6" stroke-linecap="round" />
 
-                <!-- legs (surf stance) -->
-                <path d="M92 108 Q83 98 94 86" stroke="#0D1321" stroke-width="8" stroke-linecap="round" />
-                <path d="M113 107 Q123 98 112 86" stroke="#0D1321" stroke-width="8" stroke-linecap="round" />
-                <ellipse cx="92" cy="108" rx="7.5" ry="3" fill="#E4FFF3" />
-                <ellipse cx="114" cy="107" rx="7.5" ry="3" fill="#E4FFF3" />
+                <!-- coat tails flying behind -->
+                <path d="M100 118 C84 122 66 128 50 122 C62 136 82 140 104 136 Z" fill="url(#wvCoat)" />
+                <path d="M102 126 C88 134 74 142 58 142 C74 152 94 150 110 140 Z" fill="#070b13" />
+                <path d="M54 124 C68 130 84 128 98 122" stroke="#E5C25A" stroke-width="0.9" stroke-linecap="round" opacity="0.8" />
 
-                <!-- arms out for balance -->
-                <path d="M90 63 Q72 62 60 74" stroke="#274862" stroke-width="7" stroke-linecap="round" />
-                <circle cx="58" cy="76" r="4.6" fill="#7EC1FB" />
-                <path d="M112 63 Q130 58 142 48" stroke="#274862" stroke-width="7" stroke-linecap="round" />
-                <circle cx="144" cy="46" r="4.6" fill="#7EC1FB" />
+                <!-- back arm, out for balance -->
+                <path d="M100 98 Q80 96 68 108" stroke="#0d1321" stroke-width="12" stroke-linecap="round" />
+                <path d="M72 103 L67 110" stroke="#E5C25A" stroke-width="3" stroke-linecap="round" />
+                <circle cx="62" cy="113" r="7" fill="url(#wvSkin)" />
 
-                <!-- jacket + bow tie -->
-                <path d="M87 88 Q85 70 90 58 L112 58 Q117 70 115 88 Z" fill="#274862" stroke="#E5C25A" stroke-width="1.2" />
-                <path d="M101 60 L101 87" stroke="#E5C25A" stroke-width="0.9" />
-                <path d="M101 59 L92 54 L92 64 Z M101 59 L110 54 L110 64 Z" fill="#95FE7C" />
+                <!-- legs: low surf stance -->
+                <path d="M108 138 Q92 148 98 164" stroke="#070b13" stroke-width="14" stroke-linecap="round" />
+                <path d="M134 138 Q152 146 150 160" stroke="#0d1321" stroke-width="14" stroke-linecap="round" />
+                <path d="M84 167 C86 160 106 159 110 166 C104 170 90 171 84 167 Z" fill="#010405" />
+                <path d="M138 163 C142 156 162 155 168 161 C160 166 146 167 138 163 Z" fill="#010405" />
+                <path d="M90 163 C95 161 101 161 105 163" stroke="#aebccb" stroke-width="1.2" stroke-linecap="round" />
+                <path d="M144 159 C150 157 157 157 162 159" stroke="#aebccb" stroke-width="1.2" stroke-linecap="round" />
+
+                <!-- round body in a tailcoat -->
+                <ellipse cx="121" cy="110" rx="34" ry="38" fill="url(#wvCoat)" />
+                <path d="M110 80 C102 100 104 128 116 146 L132 146 C142 128 142 100 134 80 Z" fill="#1c2a3f" />
+                <path d="M110 80 C102 100 104 128 116 146" stroke="#E5C25A" stroke-width="1.1" stroke-linecap="round" />
+                <path d="M134 80 C142 100 142 128 132 146" stroke="#E5C25A" stroke-width="1.1" stroke-linecap="round" />
+                <circle cx="123" cy="104" r="2" fill="#E5C25A" /><circle cx="124" cy="117" r="2" fill="#E5C25A" /><circle cx="124" cy="130" r="2" fill="#E5C25A" />
+                <path d="M96 96 C92 108 92 122 98 134" stroke="#aebccb" stroke-width="1.4" stroke-linecap="round" opacity="0.45" />
+
+                <!-- collar and bow tie -->
+                <path d="M108 80 L122 90 L136 80 L132 74 L112 74 Z" fill="#f6fbff" />
+                <path d="M122 84 L110 78 L110 91 Z M122 84 L134 78 L134 91 Z" fill="#95FE7C" />
+                <circle cx="122" cy="84.5" r="2.6" fill="#62d651" />
 
                 <!-- head -->
-                <circle cx="101" cy="36" r="20" fill="#7EC1FB" />
-                <ellipse cx="101" cy="46" rx="15" ry="8" fill="#62B8DF" opacity="0.5" />
-                <circle cx="94" cy="36" r="2.4" fill="#0D1321" />
-                <circle cx="108" cy="36" r="6.6" fill="#E4FFF3" fill-opacity="0.2" stroke="#E5C25A" stroke-width="1.8" />
-                <circle cx="108" cy="36" r="2.4" fill="#0D1321" />
-                <path d="M114 40 Q121 50 116 59" stroke="#E5C25A" stroke-width="0.9" />
-                <path d="M96 55 Q101 60 106 55" stroke="#0D1321" stroke-width="1.6" stroke-linecap="round" />
-                <!-- big white mustache -->
-                <path d="M101 45 C96 42 89 43 85 49 C83 53 88 55 90 51 C92 49 96 49 101 50 Z" fill="#F2FFFF" />
-                <path d="M101 45 C106 42 113 43 117 49 C119 53 114 55 112 51 C110 49 106 49 101 50 Z" fill="#F2FFFF" />
+                <ellipse cx="124" cy="54" rx="28" ry="26" fill="url(#wvSkin)" />
+                <ellipse cx="136" cy="62" rx="13" ry="9" fill="#c9e6ff" opacity="0.35" />
+                <ellipse cx="138" cy="57" rx="4.6" ry="3.4" fill="#4d8fc4" />
+                <circle cx="118" cy="48" r="2.8" fill="#0D1321" /><circle cx="119" cy="47" r="0.9" fill="#fff" />
+                <path d="M112 41 Q118 37 124 41" stroke="#3f7fb3" stroke-width="2" stroke-linecap="round" />
 
-                <!-- top hat -->
-                <ellipse cx="101" cy="17" rx="22" ry="4.6" fill="#010405" />
-                <rect x="86" y="-4" width="30" height="21" rx="3" fill="#010405" />
-                <rect x="86" y="9" width="30" height="4.5" fill="#95FE7C" />
-                <path d="M112 -2 C124 -11 134 -6 128 4" stroke="#E4FFF3" stroke-width="2.4" stroke-linecap="round" />
+                <!-- monocle and chain -->
+                <circle cx="143" cy="46" r="8.4" fill="#f6fbff" fill-opacity="0.22" stroke="#E5C25A" stroke-width="2" />
+                <circle cx="143" cy="46.5" r="2.6" fill="#0D1321" />
+                <path d="M139 41 Q142 39 146 40" stroke="#fff" stroke-width="1.3" stroke-linecap="round" opacity="0.9" />
+                <path d="M149 52 Q158 70 146 92" stroke="#E5C25A" stroke-width="1" stroke-linecap="round" stroke-dasharray="1.6 1.8" />
+
+                <!-- walrus mustache -->
+                <path d="M138 60 C128 56 114 58 108 68 C104 76 112 82 118 75 C123 69 130 67 138 68 Z" fill="#ffffff" />
+                <path d="M138 60 C147 56 160 58 164 67 C167 75 159 80 154 74 C150 69 145 67 138 68 Z" fill="#f2f8fc" />
+                <path d="M114 70 C120 64 128 63 136 64" stroke="#aebccb" stroke-width="1" stroke-linecap="round" opacity="0.7" />
+                <path d="M144 64 C150 63 156 65 160 69" stroke="#aebccb" stroke-width="1" stroke-linecap="round" opacity="0.7" />
+
+                <!-- tall top hat, tipped back, with a feather -->
+                <g transform="rotate(-9 122 30)">
+                  <path d="M100 30 C100 12 102 -4 104 -12 L142 -12 C144 -4 146 12 146 30 Z" fill="url(#wvHat)" />
+                  <ellipse cx="123" cy="-12" rx="19.4" ry="3.6" fill="#1c2a3f" />
+                  <path d="M100 30 L100 22 L146 22 L146 30 Z" fill="#95FE7C" />
+                  <ellipse cx="123" cy="30" rx="34" ry="6.4" fill="#05080e" />
+                  <path d="M92 29 C104 34 142 34 154 29" stroke="#aebccb" stroke-width="1.1" stroke-linecap="round" opacity="0.6" />
+                  <path d="M104 22 C92 12 88 -4 96 -16 C100 -4 104 8 110 20 Z" fill="#f6fbff" />
+                  <path d="M105 20 C98 10 95 -2 97 -12" stroke="#aebccb" stroke-width="0.9" stroke-linecap="round" />
+                </g>
+
+                <!-- front arm, pointing down the line -->
+                <path d="M142 96 Q162 92 176 82" stroke="#16202f" stroke-width="12" stroke-linecap="round" />
+                <path d="M171 80 L177 88" stroke="#E5C25A" stroke-width="3" stroke-linecap="round" />
+                <circle cx="182" cy="79" r="7" fill="url(#wvSkin)" />
               </svg>
             </div>
           </div>
@@ -2830,13 +2961,13 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 
       </div>
 
-      <!-- FOOTER -->
+      <!-- RIDE FOOTER -->
       <footer class="ride-footer">
         <div class="ride-scroll-prompt">
           <div class="ride-mouse"></div>
           <span>Scroll to ride the wave</span>
         </div>
-        <a class="ride-cta" href="https://www.wavewarz.com" target="_blank" rel="noopener">Back your artist ↗</a>
+        <a class="ride-cta" href="https://www.wavewarz.com" target="_blank" rel="noopener">Open WaveWarZ ↗</a>
       </footer>
     </div>
   </section>
@@ -2897,12 +3028,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       <div class="marquee-item"><span style="color:var(--wid-amber);">★</span> ARTISTS GET 1% OF EVERY TRADE ON THEIR SIDE</div>
       <div class="marquee-item"><span style="color:var(--brand-blue);">●</span> SUNDAY FEATURED BATTLEZ</div>
       <div class="marquee-item"><span style="color:var(--brand-green);">●</span> SKIP THE LINE: <span class="rb-skip">0.02 SOL</span></div>
-      <div class="marquee-item"><span style="color:var(--wid-aqua);">●</span> LISTEN FIRST, THEN BACK THE ONE THAT HITS</div>
+      <div class="marquee-item"><span style="color:var(--wid-aqua);">●</span> THE AUDIENCE DECIDES WHO WINS</div>
       <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-green);">●</span> LIVE MUSIC BATTLES, EVERY HOUR OF EVERY DAY</div>
       <div class="marquee-item" aria-hidden="true"><span style="color:var(--wid-amber);">★</span> ARTISTS GET 1% OF EVERY TRADE ON THEIR SIDE</div>
       <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-blue);">●</span> SUNDAY FEATURED BATTLEZ</div>
       <div class="marquee-item" aria-hidden="true"><span style="color:var(--brand-green);">●</span> SKIP THE LINE: <span class="rb-skip">0.02 SOL</span></div>
-      <div class="marquee-item" aria-hidden="true"><span style="color:var(--wid-aqua);">●</span> LISTEN FIRST, THEN BACK THE ONE THAT HITS</div>
+      <div class="marquee-item" aria-hidden="true"><span style="color:var(--wid-aqua);">●</span> THE AUDIENCE DECIDES WHO WINS</div>
     </div>
   </div>
 
@@ -2924,7 +3055,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       <div class="sp-in">
         <span class="sp-thx"><i></i>Thank you to our sponsors</span>
         <div class="sp-logos" id="spLogos" aria-label="Sponsor logos"></div>
-        <a class="sp-cta" id="spCta" href="https://x.com/wavewarz" target="_blank" rel="noopener">Become a sponsor<span aria-hidden="true">&rarr;</span></a>
+        <button class="sp-cta" id="spCta" type="button" data-form="sponsorship">Become a sponsor<span aria-hidden="true">&rarr;</span></button>
       </div>
     </div>
   </section>
@@ -3273,7 +3404,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
           <span>Do I need to withdraw at the end?</span>
           <span style="color:var(--brand-green);font-family:'JetBrains Mono',monospace;">+</span>
         </summary>
-        <p style="color:var(--brand-neutral);margin-top:14px;line-height:1.65;">If you&rsquo;re holding tokens when the battle ends, yes. Press Withdraw to collect your SOL. Trader winnings are not automatic. If you sold all your tokens during the battle, you may have nothing to withdraw.</p>
+        <p style="color:var(--brand-neutral);margin-top:14px;line-height:1.65;">If you&rsquo;re holding tokens when the battle ends, yes. Press Withdraw to collect your SOL. Trader withdrawals are not automatic. If you sold all your tokens during the battle, you may have nothing to withdraw.</p>
       </details>
 
       <details class="spotlight-card labs-reveal" style="padding:26px;cursor:pointer;--stagger:180ms;">
@@ -3325,21 +3456,42 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   <section id="alerts" class="cp-sec" style="max-width:980px">
     <div class="cp-alerts labs-reveal">
       <div class="section-eyebrow">STAY IN THE LOOP</div>
-      <h2 class="section-title">Get battle alerts</h2>
-      <p>Show times, featured lineups, and what&rsquo;s coming up on WaveWarZ. This list is for fans and traders.</p>
-      <p class="cp-fine">Artists who want to get on a battle should use Apply for a Featured Battle or Connect your Audius catalog above &mdash; not this form.</p>
-      <div class="cp-ctas" style="justify-content:center"><a class="btn-primary" href="https://subscribepage.io/XFM0pk" target="_blank" rel="noopener">Get battle alerts</a></div>
+      <h2 class="section-title">Never miss a Sunday battle</h2>
+      <p>Sunday Featured BattleZ start at 7 PM ET. Get a reminder before the show, and follow Quick BattleZ as they launch on Discord.</p>
+      <div class="cp-ctas" style="justify-content:center">
+        <button class="btn-primary" type="button" data-form="notify">Remind me on Sundays</button>
+        <a class="btn-secondary" href="https://subscribepage.io/XFM0pk" target="_blank" rel="noopener">Get email updates</a>
+        <a class="btn-secondary" href="https://discord.gg/5nHwDhuWjK" target="_blank" rel="noopener">Quick BattleZ alerts on Discord</a>
+      </div>
+      <p class="cp-fine" style="margin-top:18px">Artists: <button class="cp-inline" type="button" data-form="featured_application">apply for a Sunday Featured Battle</button>, or connect your Audius catalog to join Quick BattleZ any time.</p>
     </div>
   </section>
 
   <div class="wid-trace" aria-hidden="true"></div>
+  <!-- FORMS: one chrome module for every form (apply, sponsor, support, feedback, reminders) -->
+  <dialog id="wwForm" class="wf" aria-labelledby="wfTitle">
+    <div class="wf-in">
+      <button class="wf-x" type="button" id="wfClose" aria-label="Close">&times;</button>
+      <div class="wf-eb"><i></i><span id="wfEb"></span></div>
+      <h2 id="wfTitle"></h2>
+      <p class="wf-lead" id="wfLead"></p>
+      <form id="wfForm" novalidate>
+        <div class="wf-fields" id="wfFields"></div>
+        <label class="wf-hp" aria-hidden="true">Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+        <p class="wf-err" id="wfErr" role="alert"></p>
+        <div class="wf-act"><button class="btn-primary" type="submit" id="wfSend"></button><span class="wf-fine" id="wfFine"></span></div>
+      </form>
+      <div class="wf-done" id="wfDone" hidden><span class="wf-ok" aria-hidden="true"></span><h3 id="wfDoneT"></h3><p id="wfDoneP"></p><button class="btn-secondary" type="button" id="wfDoneX">Close</button></div>
+    </div>
+  </dialog>
+
   <!-- FOOTER -->
   <footer class="cp-foot">
     <div class="cp-foot-in">
       <div>
         <div class="cp-logo"><img src="wavewarz-logo.svg?v=3" alt="WaveWarZ" width="96" height="42" /></div>
         <h4>About WaveWarZ</h4>
-        <p>WaveWarZ is a live music-battle stage on Solana. Artists go head to head, fans listen and back the songs that move them, and traders can play the live market while the timer runs. Our mission is to get real support to working musicians &mdash; win or lose &mdash; and to throw a high-energy show while we do it.</p>
+        <p>WaveWarZ is a live music-battle stage on Solana. Artists go head to head, fans listen and support the songs that move them, and traders can trade the live market while the timer runs. Our mission is to get real support to working musicians &mdash; win or lose &mdash; and to throw a high-energy show while we do it.</p>
         <p>Watch with us on X, Kick, and Twitch. Replays live on YouTube.</p>
       </div>
       <div>
@@ -3363,6 +3515,16 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
           <li><a href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener">YouTube (replays)</a></li>
           <li><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Kick</a></li>
           <li><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Twitch</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><button type="button" data-form="support">Get support</button></li>
+          <li><button type="button" data-form="feedback">Send feedback</button></li>
+          <li><button type="button" data-form="featured_application">Apply for a Featured Battle</button></li>
+          <li><button type="button" data-form="sponsorship">Become a sponsor</button></li>
+          <li><button type="button" data-form="notify">Sunday battle reminders</button></li>
         </ul>
       </div>
     </div>
@@ -3807,7 +3969,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         icon: "wallet",
         tag: "GET A WALLET",
         subject: "Get a free wallet",
-        summary: "Your wallet is your voice. It lets you vote and back the artists you love.",
+        summary: "It is how you vote and support artists.",
         tip: "Free to set up"
       },
       {
@@ -3818,7 +3980,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         icon: "quick",
         tag: "JUMP IN",
         subject: "Jump into a battle",
-        summary: "Open a live battle, or launch one from the queue. Anyone can, any time.",
+        summary: "Join one live, or launch the next in the queue.",
         tip: "Open 24/7"
       },
       {
@@ -3829,7 +3991,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         icon: "headphones",
         tag: "LISTEN",
         subject: "Listen to the music",
-        summary: "Watch the livestream, join the X Space, or play the songs on the WaveWarZ battle page.",
+        summary: "On the livestream, the X Space, or the battle page.",
         tip: "Free to listen"
       },
       {
@@ -3840,7 +4002,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         icon: "leaderboard",
         tag: "GIVE FEEDBACK",
         subject: "Give your feedback",
-        summary: "Vote on the poll, or back a side with real SOL. Either way, your artist hears from you.",
+        summary: "Vote on the poll, or trade the song you believe in.",
         tip: "Voting is free"
       },
       {
@@ -3851,7 +4013,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         icon: "paid",
         tag: "ARTISTS GET PAID",
         subject: "Artists get paid",
-        summary: "Artists earn right away, and every vote and trade is recorded in the public stats.",
+        summary: "Every trade pays the artist, win or lose.",
         tip: "Paid right away"
       }
     ];
@@ -3861,6 +4023,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     const rideBoard = document.getElementById('rideBoard');
     const rideLit = document.getElementById('rideLit');
     const rideGlow = document.getElementById('rideGlow');
+    const rideHi = document.getElementById('rideHi');
     const rideNodesLayer = document.getElementById('rideNodes');
     const rideActor = document.getElementById('rideActor');
     const rideTilt = document.getElementById('rideTilt');
@@ -3893,7 +4056,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 
     // 2. The lit wave line is drawn with a dash trick
     let ridePathLength = rideLit.getTotalLength();
-    [rideLit, rideGlow].forEach((p) => {
+    [rideLit, rideGlow, rideHi].forEach((p) => {
       p.style.strokeDasharray = ridePathLength;
       p.style.strokeDashoffset = ridePathLength;
     });
@@ -3928,6 +4091,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       const drawLength = ridePathLength * portion;
       rideLit.style.strokeDashoffset = ridePathLength - drawLength;
       rideGlow.style.strokeDashoffset = ridePathLength - drawLength;
+      rideHi.style.strokeDashoffset = ridePathLength - drawLength;
 
       // Where is the surfboard on the wave right now?
       const pt = rideLit.getPointAtLength(drawLength);
@@ -3964,7 +4128,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     window.addEventListener('scroll', rideReadScroll, { passive: true });
     window.addEventListener('resize', () => {
       ridePathLength = rideLit.getTotalLength();
-      [rideLit, rideGlow].forEach((p) => { p.style.strokeDasharray = ridePathLength; });
+      [rideLit, rideGlow, rideHi].forEach((p) => { p.style.strokeDasharray = ridePathLength; });
       rideReadScroll();
     });
 
@@ -4099,12 +4263,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   }
   function paintStats(d) {
     var firstPaint = !$('stVol').dataset.done; $('stVol').dataset.done = 1;
-    var put = function (id, v, f) { var el = $(id); if (firstPaint) countUp(el, v, f); else el.textContent = f(v); };
+    var put = function (id, v, f) { var el = $(id); if (!el) return; if (firstPaint) countUp(el, v, f); else el.textContent = f(v); };
     put('stVol', d.volume.totalUsd, usd); put('stPaid', d.artistPayouts.totalUsd, usd);
     put('stSpot', Math.round(d.artistPayouts.totalUsd / 0.003 / 1000) * 1000, num);
     put('stQb', d.battles.quickBattles, num); put('stMe', d.battles.mainEvents, num); put('stTot', d.battles.total, num);
-    $('stVolSol').textContent = sol(d.volume.totalSol); $('stPaidSol').textContent = sol(d.artistPayouts.totalSol);
-    $('stSol').textContent = '$' + d.solPriceUsd.toFixed(2);
+    $('stVol').title = sol(d.volume.totalSol); $('stPaid').title = sol(d.artistPayouts.totalSol); $('stSpot').title = 'Estimated at $0.003 per stream';
   }
 
   /* ---------- live battle slot ---------- */
@@ -4256,6 +4419,128 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   window.addEventListener('resize', state, { passive: true });
 })();
 </script>
+<script id="forms-js">
+/* Site forms. Posts JSON to the wavewarz.info forms route; window.WW_FORMS_URL overrides it for local testing. */
+(function () {
+  'use strict';
+  var dlg = document.getElementById('wwForm'); if (!dlg || !dlg.showModal) return;
+  var URL_ = window.WW_FORMS_URL || new URLSearchParams(location.search).get('formsUrl') || 'https://wavewarz.info/api/public/forms';
+  var $ = function (id) { return document.getElementById(id); };
+  /* field: [name, label, type, required, placeholder, extra]   type: text | email | tel | url | area | select | check   extra.half = half width */
+  var FORMS = {
+    featured_application: {
+      eb: 'Sunday Featured BattleZ', t: 'Apply for a Featured Battle',
+      lead: 'Featured BattleZ are the Sunday shows, and the team picks each lineup. Quick BattleZ are open to everyone: connect a wallet and sync your Audius catalog.',
+      send: 'Send application', fine: 'We reply by email if there is a spot for you.',
+      done: ['Application received.', 'Thanks for applying. The team reviews every application and will email you about upcoming Sunday lineups.'],
+      f: [['artistName', 'Artist name', 'text', 1, '', { half: 1, ac: 'nickname' }], ['email', 'Email', 'email', 1, 'you@example.com', { half: 1, ac: 'email' }],
+          ['listen', 'Where can we listen?', 'url', 1, 'Audius, Spotify, SoundCloud or YouTube link', {}],
+          ['audius', 'Audius profile', 'text', 0, 'audius.co/yourname', { half: 1 }], ['socials', 'Social handles', 'text', 0, '@you on X, Instagram, TikTok', { half: 1 }],
+          ['bio', 'Your sound, in a few lines', 'area', 1, 'Genre, style, and a short bio', {}]]
+    },
+    sponsorship: {
+      eb: 'Sponsorship', t: 'Become a WaveWarZ sponsor',
+      lead: 'Put your brand in front of a live music audience. Tell us a little and we will send the options.',
+      send: 'Send enquiry', fine: 'We reply by email.',
+      done: ['Thanks for reaching out.', 'Your enquiry is with the team. We will email you with sponsorship options.'],
+      f: [['name', 'Your name', 'text', 1, '', { half: 1, ac: 'name' }], ['company', 'Company or brand', 'text', 1, '', { half: 1, ac: 'organization' }],
+          ['email', 'Email', 'email', 1, 'you@company.com', { half: 1, ac: 'email' }], ['site', 'Website', 'text', 0, 'company.com', { half: 1, key: 'website' }],
+          ['message', 'What are you looking for?', 'area', 1, 'A show, a season, a logo on the stream…', {}]]
+    },
+    support: {
+      eb: 'Support', t: 'Get help',
+      lead: 'Tell us what happened and we will get back to you by email.',
+      send: 'Send request', fine: 'Never share a seed phrase or private key. We will never ask for one.',
+      done: ['Request received.', 'We will reply by email as soon as we can.'],
+      f: [['email', 'Email', 'email', 1, 'you@example.com', { half: 1, ac: 'email' }],
+          ['topic', 'What is it about?', 'select', 0, '', { half: 1, opts: ['A battle', 'Withdraw', 'My wallet', 'My Audius catalog', 'Something else'] }],
+          ['battleLink', 'Battle link', 'text', 0, 'Paste the battle page link', { half: 1 }], ['wallet', 'Wallet address', 'text', 0, 'Public address only', { half: 1 }],
+          ['message', 'What happened?', 'area', 1, '', {}]]
+    },
+    feedback: {
+      eb: 'Feedback', t: 'Tell us what you think',
+      lead: 'What is working, what is confusing, what you want next. We read all of it.',
+      send: 'Send feedback', fine: 'Email is optional. Add it if you want a reply.',
+      done: ['Thank you.', 'Your feedback is with the team.'],
+      f: [['message', 'Your feedback', 'area', 1, '', {}], ['email', 'Email', 'email', 0, 'Optional', { ac: 'email' }]]
+    },
+    notify: {
+      eb: 'Sunday Featured BattleZ · 7 PM ET', t: 'Get a reminder before the show',
+      lead: 'Leave a phone number, an email, or both. Text reminders are being set up now; we will start texting as soon as they are ready.',
+      send: 'Remind me', fine: 'Sunday reminders only. Unsubscribe any time.',
+      done: ['You are on the list.', 'We will remind you before Sunday Featured BattleZ.'],
+      f: [['phone', 'Mobile number', 'tel', 0, '(555) 555-0123', { half: 1, ac: 'tel' }], ['email', 'Email', 'email', 0, 'you@example.com', { half: 1, ac: 'email' }],
+          ['smsConsent', 'Text me WaveWarZ battle reminders at this number. Message and data rates may apply. Reply STOP to opt out.', 'check', 0, '', {}]]
+    }
+  };
+  var TOP = { name: 1, email: 1, phone: 1 }, kind = null, opener = null, busy = false;
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function field(f) {
+    var n = f[0], x = f[5] || {}, id = 'wf_' + n, req = f[3] ? ' required aria-required="true"' : '', ph = f[4] ? ' placeholder="' + esc(f[4]) + '"' : '', ac = ' autocomplete="' + (x.ac || 'off') + '"';
+    if (f[2] === 'check') return '<label class="wf-ck" data-f="' + n + '"><input type="checkbox" id="' + id + '" name="' + n + '"><span>' + esc(f[1]) + '</span></label>';
+    var lab = '<span>' + esc(f[1]) + (f[3] ? '' : ' <em>optional</em>') + '</span>', ctl;
+    if (f[2] === 'area') ctl = '<textarea id="' + id + '" name="' + n + '" maxlength="2000"' + req + ph + '></textarea>';
+    else if (f[2] === 'select') ctl = '<select id="' + id + '" name="' + n + '"><option value="">Choose one</option>' + x.opts.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join('') + '</select>';
+    else ctl = '<input id="' + id + '" name="' + n + '" type="' + (f[2] === 'url' ? 'text' : f[2]) + '" maxlength="' + (f[2] === 'tel' ? 32 : 320) + '"' + (f[2] === 'email' ? ' inputmode="email" spellcheck="false"' : f[2] === 'tel' ? ' inputmode="tel"' : f[2] === 'url' ? ' inputmode="url" spellcheck="false"' : '') + req + ph + ac + '>';
+    return '<label class="wf-f' + (x.half ? '' : ' full') + '" data-f="' + n + '" for="' + id + '">' + lab + ctl + '</label>';
+  }
+  function open(k, from) {
+    var F = FORMS[k]; if (!F) return;
+    kind = k; opener = from || null;
+    $('wfEb').textContent = F.eb; $('wfTitle').textContent = F.t; $('wfLead').textContent = F.lead;
+    $('wfFields').innerHTML = F.f.map(field).join(''); $('wfSend').textContent = F.send; $('wfFine').textContent = F.fine;
+    $('wfErr').textContent = ''; $('wfForm').hidden = false; $('wfDone').hidden = true; $('wfForm').reset();
+    if (!dlg.open) dlg.showModal();
+    var first = dlg.querySelector('.wf-fields input, .wf-fields textarea'); if (first && matchMedia('(pointer: fine)').matches) first.focus();
+  }
+  function close() { if (dlg.open) dlg.close(); }
+  function fail(msg, names) {
+    $('wfErr').textContent = msg;
+    dlg.querySelectorAll('[data-f]').forEach(function (el) { el.classList.toggle('bad', !!names && names.indexOf(el.dataset.f) > -1); });
+    var bad = dlg.querySelector('.bad input, .bad textarea'); if (bad) bad.focus();
+  }
+  $('wfForm').addEventListener('submit', function (e) {
+    e.preventDefault(); if (busy) return;
+    var F = FORMS[kind], fd = new FormData(this), body = { kind: kind, fields: {}, source: location.hostname + location.pathname, website: fd.get('website') || '' }, miss = [];
+    F.f.forEach(function (f) {
+      var n = f[0], v = f[2] === 'check' ? !!$('wf_' + n).checked : String(fd.get(n) || '').trim();
+      if (f[3] && !v) miss.push(n);
+      if (f[2] === 'email' && v && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) miss.push(n);
+      if (f[2] === 'check') body[n] = v; else if (TOP[n]) body[n] = v; else if (v) body.fields[(f[5] && f[5].key) || n] = v;
+    });
+    if (kind === 'notify') {
+      if (!body.phone && !body.email) return fail('Add a mobile number or an email so we can reach you.', ['phone', 'email']);
+      if (body.phone && body.phone.replace(/\D/g, '').length < 10) return fail('That number looks too short. Include the area code.', ['phone']);
+      if (body.phone && !body.smsConsent) return fail('Tick the box so we have your OK to text you.', ['smsConsent']);
+      body.fields.channel = body.phone && body.email ? 'text and email' : body.phone ? 'text' : 'email';
+    }
+    if (miss.length) return fail(miss.indexOf('email') > -1 && String(fd.get('email') || '').trim() ? 'Check the email address.' : 'Fill in the highlighted fields.', miss);
+    fail('', null); busy = true; var btn = $('wfSend'), label = btn.textContent; btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(URL_, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (r) {
+        if (r.j && r.j.ok) { $('wfForm').hidden = true; $('wfLead').textContent = ''; $('wfDone').hidden = false; $('wfDoneT').textContent = F.done[0]; $('wfDoneP').textContent = F.done[1]; $('wfDoneX').focus(); return; }
+        if (r.s === 429) return fail('You have sent a few already. Try again in an hour.', null);
+        if (r.j && r.j.error === 'missing_fields') return fail('Fill in the highlighted fields.', r.j.fields || []);
+        fail('That did not send. Check your connection and try again.', null);
+      })
+      .catch(function () { fail('That did not send. Check your connection and try again.', null); })
+      .then(function () { busy = false; btn.disabled = false; btn.textContent = label; });
+  });
+  $('wfClose').addEventListener('click', close); $('wfDoneX').addEventListener('click', close);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });
+  dlg.addEventListener('close', function () { if (opener && opener.focus) opener.focus(); if (/^#(apply|sponsor|support|feedback|remind)$/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search); });
+  document.addEventListener('click', function (e) { var b = e.target.closest('[data-form]'); if (!b) return; e.preventDefault(); open(b.dataset.form, b); });
+  /* deep links (#apply, #sponsor, #support, #feedback, #remind) and the embedded onboarding guide can open a form too */
+  var HASH = { '#apply': 'featured_application', '#sponsor': 'sponsorship', '#support': 'support', '#feedback': 'feedback', '#remind': 'notify' };
+  function fromHash() { if (HASH[location.hash]) open(HASH[location.hash]); }
+  addEventListener('hashchange', fromHash); fromHash();
+  addEventListener('message', function (e) { if (e.origin === location.origin && e.data && e.data.type === 'ww-open-form' && FORMS[e.data.kind]) open(e.data.kind); });
+})();
+</script>
+<script id="mainnet-callout-js">
+(function () { var m = document.getElementById('mnCall'); if (!m) return; function f() { m.classList.toggle('off', scrollY > 120); } addEventListener('scroll', function () { requestAnimationFrame(f); }, { passive: true }); f(); })();
+</script>
 <script id="sponsors-js">
 (function () {
   'use strict';
@@ -4264,13 +4549,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function draw(d) {
     var list = (d && d.sponsors || []).slice(0, 3), out = '';
-    if (d && d.applyUrl) cta.href = d.applyUrl;
     for (var i = 0; i < 3; i++) {
       var p = list[i];
       if (p && p.logo) {
         var img = '<img src="' + esc(p.logo) + '" alt="' + esc(p.name) + '" height="34" loading="lazy" decoding="async">';
         out += p.url ? '<a class="sp-logo" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '">' + img + '</a>' : '<span class="sp-logo">' + img + '</span>';
-      } else out += '<a class="sp-logo empty" href="' + esc(cta.href) + '" target="_blank" rel="noopener">Your logo</a>';
+      } else out += '<button class="sp-logo empty" type="button" data-form="sponsorship">Your logo</button>';
     }
     box.innerHTML = out;
   }
