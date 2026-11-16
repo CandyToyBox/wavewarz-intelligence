@@ -2544,6 +2544,24 @@ a.cd:focus-visible{outline:2px solid var(--brand-green);outline-offset:6px;borde
 @media (max-width:600px){.fd-head{align-items:flex-start}.fd-ctl{width:100%;justify-content:space-between}.fd-btn{display:none}.fd-card{flex-basis:76vw}.fd-card.wide{flex-basis:82vw}}
 @media (prefers-reduced-motion: reduce){.fd-card .fd-img{transition:none}}
 
+
+/* SPONSOR BAR: thin chrome rail under Tonight */
+.sp{--chrome:linear-gradient(145deg,#f6fbff 0%,#aebccb 17%,#5a6b7e 40%,#dbe6ef 57%,#6d7e91 76%,#2c3746 100%);margin-top:18px;padding:2px;border-radius:999px;background:var(--chrome);box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.sp-in{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px;min-height:64px;padding:8px 10px 8px 26px;border-radius:999px;background:radial-gradient(60% 140% at 50% 0%,rgba(var(--brand-blue-rgb),.1),transparent 70%),#05080e}
+.sp-thx{display:inline-flex;align-items:center;gap:10px;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ice);white-space:nowrap}
+.sp-thx i{width:7px;height:7px;border-radius:50%;background:var(--brand-green);box-shadow:0 0 10px rgba(var(--brand-green-rgb),.8)}
+.sp-logos{display:flex;align-items:center;justify-content:center;gap:clamp(18px,4vw,52px);min-width:0}
+.sp-logo{display:grid;place-items:center;height:34px;min-width:96px;color:inherit;text-decoration:none;opacity:.78;transition:opacity .2s ease,transform .2s ease}
+a.sp-logo:hover,a.sp-logo:focus-visible{opacity:1;transform:translateY(-1px)}
+a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;border-radius:8px}
+.sp-logo img{display:block;max-height:100%;max-width:130px;width:auto;object-fit:contain}
+.sp-logo.empty{border:1px dashed rgba(216,235,252,.28);border-radius:999px;padding:0 16px;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);opacity:.8}
+.sp-cta{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;text-decoration:none;white-space:nowrap;font:700 .72rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#06090f;background:var(--brand-green);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55);transition:background-color .2s ease,transform .2s ease}
+.sp-cta:hover{background:#b6ffa4;transform:translateY(-1px)}
+.sp-cta:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media (max-width:960px){.sp{border-radius:28px}.sp-in{grid-template-columns:1fr;justify-items:center;gap:12px;padding:16px;border-radius:26px;text-align:center}.sp-logos{flex-wrap:wrap}}
+@media (prefers-reduced-motion: reduce){.sp-logo,.sp-cta{transition:none}}
+
 /* Quick BattleZ queue: pinned for a screen and a half so nobody scrolls past it */
 .qp { padding: 0; overflow: clip; height: 240vh; }
 .qp-pin { position: sticky; top: 0; height: 100vh; box-sizing: border-box; display: flex; align-items: center; padding: 92px 24px 20px; overflow: clip; }
@@ -2902,6 +2920,13 @@ a.cd:focus-visible{outline:2px solid var(--brand-green);outline-offset:6px;borde
       </div>
     </div>
     <div id="weeklyStrip" class="cp-wk" aria-label="Every week"></div>
+    <div class="sp labs-reveal" role="complementary" aria-label="Sponsors">
+      <div class="sp-in">
+        <span class="sp-thx"><i></i>Thank you to our sponsors</span>
+        <div class="sp-logos" id="spLogos" aria-label="Sponsor logos"></div>
+        <a class="sp-cta" id="spCta" href="https://x.com/wavewarz" target="_blank" rel="noopener">Become a sponsor<span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
   </section>
 
   <!-- ===================================================================== -->
@@ -4229,6 +4254,27 @@ a.cd:focus-visible{outline:2px solid var(--brand-green);outline-offset:6px;borde
     state();
   });
   window.addEventListener('resize', state, { passive: true });
+})();
+</script>
+<script id="sponsors-js">
+(function () {
+  'use strict';
+  var box = document.getElementById('spLogos'), cta = document.getElementById('spCta');
+  if (!box) return;
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function draw(d) {
+    var list = (d && d.sponsors || []).slice(0, 3), out = '';
+    if (d && d.applyUrl) cta.href = d.applyUrl;
+    for (var i = 0; i < 3; i++) {
+      var p = list[i];
+      if (p && p.logo) {
+        var img = '<img src="' + esc(p.logo) + '" alt="' + esc(p.name) + '" height="34" loading="lazy" decoding="async">';
+        out += p.url ? '<a class="sp-logo" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '">' + img + '</a>' : '<span class="sp-logo">' + img + '</span>';
+      } else out += '<a class="sp-logo empty" href="' + esc(cta.href) + '" target="_blank" rel="noopener">Your logo</a>';
+    }
+    box.innerHTML = out;
+  }
+  fetch('sponsors.json?v=1').then(function (r) { return r.json(); }).then(draw).catch(function () { draw(null); });
 })();
 </script>
 <script id="quick-battlez-js">
