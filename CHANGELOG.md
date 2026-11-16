@@ -12,6 +12,17 @@ buried here.
 
 ---
 
+## 2026-11-16
+
+**Site forms and an admin inbox.** New route `POST /api/public/forms` takes the five
+forms on the redesigned homepage: Featured Battle application (replaces the Tally form),
+sponsorship, support, feedback and Sunday battle reminders. Submissions are stored in a
+new `form_submissions` table (migration 007, service-role only) and listed at
+`/admin/inbox`, newest first, with a filter per form. The route is write-only, limited
+to five submissions an hour per visitor, and keeps a phone number only when the person
+ticked the box agreeing to be texted. Nothing is emailed or texted yet: there is no
+email or SMS provider connected, so the inbox is where submissions are read.
+
 ## 2026-11-11
 
 **Voter Guide: now for the November 15 battle.** The guide was still written for the
