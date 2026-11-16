@@ -97,3 +97,14 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 
 ## WaveZStation section (2026-11-11, not pushed yet)
 `#wavezstation` sits right after the leaderboard/stats section: the WaveZStation logo (wavezstation-logo.jpg, feathered into the background), a one-line explainer, three stats (songs dropped, fans backing, USDC in fan pools), and a chrome CD display: the newest drop large (jewel case with a disc sliding out, slow spin) plus the next four. Each links to https://wavezstation.com/song/<id>. Data: wavezstation.com/api/discover is not CORS-open, so the page reads wavezstation.sample.json (snapshot 2026-11-11) and swaps to the live list automatically if WaveZStation ever allows cross-origin reads. Titles with profanity are skipped on purpose. Refresh the snapshot by re-running the discover fetch; a /api/public/wavezstation proxy route in wavewarz-intelligence would make it live (needs Candy's go-ahead).
+
+## Sponsor bar (under Tonight)
+- Thin chrome-rimmed rail directly under the Tonight card and weekly strip: "Thank you to our sponsors", three transparent logo slots, and a green "Become a sponsor" button.
+- Data lives in `sponsors.json`: set `name`, `logo` (transparent PNG or SVG, about 130 x 34) and `url` for each slot, and change `applyUrl` for the become-a-sponsor link (currently https://x.com/wavewarz as a stand-in). Empty slots show a dashed "Your logo" placeholder.
+- Phones stack the bar: line, logos, button.
+
+## 5-second song previews (battle setup page, audius-search.html)
+- Every song row has a small chrome play button on its cover; the big picked-song cards and the mobile dock have one too.
+- It plays 5 seconds from the Audius public stream (`api.audius.co/v1/tracks/<id>/stream`, no play count), starting about 30% into the song so you hear the song and not the intro. Songs under 40 seconds start at 0:00.
+- The waveform fills green as it plays, the button becomes a stop button, and the last 0.4 seconds fade out. One preview at a time; Escape, switching tabs, or tapping another song stops it.
+- If a stream will not load, a toast says "That preview would not play."
