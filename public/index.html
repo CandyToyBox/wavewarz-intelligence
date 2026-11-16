@@ -2680,6 +2680,19 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .ride-node[data-pos="top"] .ride-stem { height: 166px; }
 .ride-card-desc { font-size: 0.9rem; margin-bottom: 0.7rem; }
 @media (max-width: 900px) { .ride-actor { width: 132px; height: 114px; margin-left: -66px; margin-top: -105px; } .ride-node[data-pos="top"] .ride-card { bottom: 60px; } }
+
+/* Phones: one ride card at a time (the current stop), kept inside the screen; form eyebrow clears the close button */
+.wf-eb { max-width: calc(100% - 56px); }
+@media (max-width: 900px) {
+  /* the current stop's card sits in the open space under the wave, centered, so it never covers DJ Wavy or the pins */
+  .ride-board { container-type: size; }
+  .ride-node .ride-card { display: none; }
+  .ride-node.is-current .ride-card { display: block; opacity: 1; pointer-events: auto; width: min(330px, 88cqw); bottom: auto; top: calc((1.0 - var(--fy)) * 100cqh); left: calc((0.5 - var(--fx)) * 100cqw); transform: translate(-50%, 0) scale(1); padding: .8rem 1rem; }
+  .ride-node .ride-card .ride-card-desc { display: block; font-size: .88rem; margin-bottom: 0; }
+  .ride-node:nth-child(1) { --fx: .0917; --fy: .7667; } .ride-node:nth-child(2) { --fx: .275; --fy: .2833; } .ride-node:nth-child(3) { --fx: .5; --fy: .7333; }
+  .ride-node:nth-child(4) { --fx: .725; --fy: .2833; } .ride-node:nth-child(5) { --fx: .9083; --fy: .6333; }
+  .ride-stage.is-complete .ride-card { display: none; }
+}
 </style>
 </head>
 

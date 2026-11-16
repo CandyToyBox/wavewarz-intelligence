@@ -131,3 +131,8 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 - Launch and Skip open one action module (`actions-js`); real calls are `WW.launchNext` and `WW.skipToFront`, preview until provided.
 - The mid-page sample arena, its fake timer and synth, the Sound button and the "tap for a demo beat" tags are removed.
 - `HURRICANE-HANDOFF.md`: integration guide (routes, `window.WW` functions, data, section map, questions).
+
+## Phone pass (2026-11-16)
+- Checked at 390px wide: homepage (ride, sponsor bar, search, forms, footer), queue page, Audius flow. No sideways scrolling on any of them.
+- Ride the WaveWarZ on phones now shows one card at a time, for the current stop, in the open space under the wave (container query units on `.ride-board`).
+- Form eyebrow no longer runs under the close button. Audius catalog rows get a placeholder cover when a song has no artwork.
