@@ -50,8 +50,12 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.getPosition(battle)` | `battle.html`, Sell tab | The connected wallet's balance on each side | `{ a: { tokens, valueSol }, b: { tokens, valueSol } }` |
 | `WW.donate(battle, target, amountSol)` | `battle.html`, donate bar | Your existing wallet-to-wallet donation, no fee. `target` is `'a'`, `'b'` or `'wavewarz'` | anything |
 | `WW.withdraw(battle)` | `battle.html`, after the battle ends | Your existing Withdraw | anything |
-| `WW.getPoll(battle)` | `battle.html`, decision panel | Quick BattleZ poll counts | `{ a, b, locked }` |
-| `WW.votePoll(battle, side)` | `battle.html`, decision panel | Cast a poll vote | anything |
+| `WW.getPoll(battle)` | `battle.html`, deck and decision panel | Quick BattleZ poll counts, and the connected wallet's own vote | `{ a, b, locked, mine }` |
+| `WW.votePoll(battle, side)` | `battle.html`, the Vote button on each side | Cast the free poll vote (wallet signs a message) | anything |
+| `WW.getJudge(battle)` | `battle.html`, decision panel | DJ Wavy's verdict from `/api/quick-battles/judge/<id>` | `{ status: 'locked' or 'ready', winner: 'a' or 'b', confidence, notes }` |
+| `WW.getSummary(battle)` | `battle.html`, Your battle panel after the end | The connected wallet's totals and trades in this battle | `{ putInSol, gotBackSol, trades: [{ side, buy, tokens, sol }] }` |
+| `WW.shareStats(battle, where)` | `battle.html`, Your battle panel | Your existing stats image and share actions. `where` is `'image'`, `'x'` or `'farcaster'` | anything |
+| `WW.audioUrl(battle, side)` | `battle.html`, play buttons | Optional. A playable URL for that side's song, for example your `/api/audius/stream`. Audius links already play without it | a URL |
 
 `queueItem` is the object from your `/api/quick-battles` response, untouched (`id`, `artist1_track_title`, `artist1_handle`, `artist1_artwork_url`, and so on). `songA` and `songB` are `{ id, title, handle, secs, art, link, wallet, genre }`, mapped from your `/api/audius/tracks` rows by `norm()` in the setup page.
 
@@ -130,6 +134,11 @@ Built from the homepage pieces: the Live Battle Deck is the matchup, and the pan
 
 - **One chart, same as today's.** Your current page already plots both sides' Pool Size (SOL) over time, once in each artist card. The new page keeps that chart (same measure, axes, legend and point markers) and shows it once. Until `WW.getBattleChart` exists the line shape is a labeled sample that ends on the real pool sizes.
 - **Chart or game.** The chart panel has a switch: Chart, DJ Clash, Racers, Dancers, Surf. The game views are the stream games from `CandyToyBox/WaveWarz-Stream-Battle` (built copy in `games/arena/`, commit 92047b6), loaded in an iframe and driven through the game's own `wavewarz:*` postMessage bridge with the battle's names, pictures, pools, poll and time left. To make the games react to each trade as it happens, fire `document.dispatchEvent(new CustomEvent('ww-trade', { detail: { side: 'a', buy: true, sol: 0.1 } }))`; without it the page infers moves from pool changes on each refresh. Set `window.WW_GAME_URL` to host the game somewhere else.
+- **The poll comes first.** Each side's main button is Vote, marked Free, with Trade underneath. The vote shows the moment it is tapped (the audit found a one minute delay that read as a failure) and is taken back with a message if the wallet rejects it. The poll count sits in the middle of the deck above the pools. On Featured and Community battles the button reads "Vote on X" and opens the X poll (`window.WW_POLL_URL` to point it at the exact post).
+- **Songs play on the page.** The play button on each cover plays and pauses that song in place and marks it Now playing. It no longer opens a new tab mid battle.
+- **DJ Wavy's call.** Locked during the battle; after it, the winner, the confidence and his written feedback. No Yay or Nay buttons: Candy says they are not used.
+- **Live stream above the chart** on Featured and Community battles while the battle is live, from the battle's `streamLink` (Twitch, Kick and YouTube embed; anything else gets an Open stream button). `window.WW_STREAM_URL` overrides it.
+- **After the battle.** Withdraw shows the tokens held and the SOL the person will receive before they approve (`WW.getPosition` may return `claimSol`). A "Your battle" panel shows what they put in, what they got back and the difference to four decimals, never a red negative zero for a winner, with the save and share actions.
 - **Donate bar.** Under the matchup: donate to either artist or to WaveWarZ, wallet to wallet, no fees.
 - **How it is decided.** Three rows: the poll, the judges (DJ Wavy on Quick BattleZ) and the chart, each showing who holds it. Two of three takes the round, and on Sunday Featured battles best of three rounds takes the battle. Results come from wavewarz.info `/battles/:id` (`factors`) and `/events` (rounds).
 - **Trade module.** The Trade button on each side opens one dialog with Buy (0.05, 0.10, 0.25 SOL) and Sell (25, 50, 100 percent), the same choices as today's page.
@@ -194,5 +203,7 @@ Each script block on the homepage has an `id` and is self-contained (its own clo
 4. How should Community BattleZ connect, if at all, for launch?
 5. Are the fixed fees in section 6 right?
 6. What does `/audius/search` call today to reserve a battle, and what does it return? `WW.reserve` assumes `{ position, skipPrice }`.
-7. On the battle page, can you supply pool size over time for both sides (`WW.getBattleChart`), and is the poll on Sunday Featured battles still the X poll?
-8. Would you rather receive these as React components? Candy can have them converted section by section once the answers above are settled.
+7. Is the red End Battle step still needed before people can withdraw? The new page has no button for it. If it is, it should be a green "Settle battle" action, and it needs a hook.
+8. Can a trade show "Waiting for your wallet" separately from "Preparing"? The new trade module has one waiting state and one confirmation, in the module itself, instead of two toasts.
+9. On the battle page, can you supply pool size over time for both sides (`WW.getBattleChart`), and is the poll on Sunday Featured battles still the X poll?
+10. Would you rather receive these as React components? Candy can have them converted section by section once the answers above are settled.
