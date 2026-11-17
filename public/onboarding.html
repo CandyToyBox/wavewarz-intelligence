@@ -81,6 +81,36 @@ html.panel.fixed,html.panel.fixed body{height:100%}
 html.panel.fixed.embed .app{height:100%}
 html.panel.fixed .main{height:100%;grid-template-rows:auto minmax(0,1fr) auto}
 html.panel.fixed .step{align-self:start;min-height:0;max-height:100%;overflow-y:auto;margin-top:var(--space-4);padding-right:6px}
+/* panel: a compact module, so a step fits the frame without scrolling */
+html.panel .main{padding:16px 22px 18px}
+html.panel .top{gap:12px}
+html.panel .step{gap:12px}
+html.panel.fixed .step{margin:14px 0 0;overflow:hidden;padding-right:0;align-self:center}
+html.panel h1{font-size:clamp(28px,3.1vw,40px);line-height:1.04}
+html.panel h2{font-size:clamp(23px,2.5vw,31px);line-height:1.08}
+html.panel .lead{font-size:15.5px;line-height:1.5}
+html.panel ul.pts{gap:8px}html.panel ul.pts li{font-size:15px;line-height:1.5;grid-template-columns:18px 1fr;gap:10px}html.panel ul.pts li::before{margin-top:8px;width:6px;height:6px}
+html.panel ol.pts{gap:9px}html.panel ol.pts li{font-size:15px;line-height:1.5;grid-template-columns:30px 1fr;gap:10px}html.panel ol.pts li::before{font-size:12.5px;padding-top:2px}
+html.panel .note,html.panel .risk{font-size:13px}
+html.panel .k{font-size:11px}
+html.panel .sico{width:34px;height:34px;border-radius:10px}html.panel .sico svg{width:20px;height:20px}
+html.panel .srow{gap:10px}
+html.panel .lanes{gap:8px;margin-top:0}
+html.panel .lane{grid-template-columns:40px 1fr auto;gap:14px;padding:11px 16px}html.panel .lane .ico{width:40px;height:40px}html.panel .lane .ico svg{width:22px;height:22px}html.panel .lane b{font-size:18px}html.panel .lane span{font-size:13.5px}
+/* judging factors as slim rows: icon beside its label instead of stacked */
+html.panel .fx{gap:8px}
+html.panel .fx-row{padding:10px 12px;gap:8px;border-radius:14px}
+html.panel .fx-h b{font-size:15px}html.panel .fx-h .d{font-size:12.5px}html.panel .fx-h .sico{width:30px;height:30px}html.panel .fx-h .sico svg{width:18px;height:18px}
+html.panel .fx-i{display:flex;align-items:center;justify-content:flex-start;gap:8px;text-align:left;padding:7px 9px;border-radius:10px}
+html.panel .fx-i > span{display:grid;flex:none}html.panel .fx-i svg{width:18px;height:18px}
+html.panel .fx-i b{font-size:13.5px;line-height:1.15}html.panel .fx-i i{font-size:11.5px;line-height:1.2}
+html.panel .fx-i b,html.panel .fx-i i{display:block}
+html.panel .figs{gap:14px}html.panel .fig .n{font-size:clamp(34px,4.2vw,50px)}html.panel .fig .t{font-size:13px}
+html.panel .legend{gap:6px;font-size:14px}
+html.panel .bar{padding-top:12px}
+html.panel .btn{height:46px;font-size:14px;padding:0 22px}
+html.panel .links{gap:8px}
+html.panel .home{height:34px;font-size:13px}
 @media(max-width:860px) and (min-width:521px){html.panel .figs{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* inside the homepage frame: size to content, not to the frame */
 html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
@@ -91,9 +121,9 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
 </head><body>
 <div class="app" id="app">
  <aside class="wavy" id="wavy" aria-label="DJ Wavy">
-  <div class="brand"><a href="index.html" target="_top" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=3" alt="WaveWarz"></a></div>
+  <div class="brand"><a href="index.html" target="_top" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=3" alt="WaveWarZ"></a></div>
   <div style="position:relative;min-height:0"><div class="floor" aria-hidden="true"></div>
-   <model-viewer id="mv" src="djwavy.glb" alt="DJ Wavy, the WaveWarz resident AI judge, in 3D. Drag to turn him." camera-controls disable-zoom disable-pan interaction-prompt="none" shadow-intensity="1" exposure="1.1" camera-orbit="-28deg 80deg 100%" min-camera-orbit="auto 60deg auto" max-camera-orbit="auto 100deg auto" interpolation-decay="120"></model-viewer>
+   <model-viewer id="mv" src="djwavy.glb" alt="DJ Wavy, the WaveWarZ resident AI judge, in 3D. Drag to turn him." camera-controls disable-zoom disable-pan interaction-prompt="none" shadow-intensity="1" exposure="1.1" camera-orbit="-28deg 80deg 100%" min-camera-orbit="auto 60deg auto" max-camera-orbit="auto 100deg auto" interpolation-decay="120"></model-viewer>
    <div class="loading" id="loading"><span class="label">Loading DJ Wavy</span></div></div>
   <div class="tag"><div class="speak" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div><b>DJ Wavy</b><div class="label">Resident AI judge &middot; drag to turn him</div></div></div>
  </aside>
@@ -134,7 +164,7 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
  };
  function fx(rows,on){return '<div class="fx">'+rows.map(function(r){var x=KINDS[r];
   return '<div class="fx-row"><div class="fx-h"><span class="sico">'+IC[x.ic]+'</span><div><b>'+x.n+'</b><span class="d">'+x.d+'</span></div><span class="tg">2 of 3 wins</span></div><div class="fx-3">'+x.f.map(function(k){var f=F[k];
-   return '<div class="fx-i'+(k===on?' on':'')+'"><span>'+IC[f[0]]+'</span><b>'+f[1]+'</b><i>'+f[2]+'</i></div>'}).join('')+'</div></div>'}).join('')+'</div>'}
+   return '<div class="fx-i'+(k===on?' on':'')+'"><span>'+IC[f[0]]+'</span><div><b>'+f[1]+'</b><i>'+f[2]+'</i></div></div>'}).join('')+'</div></div>'}).join('')+'</div>'}
 
  function wallet(k,extra){return {k:k,ic:'wallet',t:'Get a wallet.',h:'<p class="lead">'+ANYWALLET+'</p>'+li(['On a computer, install the browser extension. On a phone, install the app, then open wavewarz.com inside its browser.','Create the wallet, then write down your Secret Recovery Phrase and keep it somewhere safe.'].concat(extra||[]))+WALLET_LINKS+PHRASE}}
 
@@ -143,20 +173,20 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
    {k:'Listener',ic:'headphones',t:'Listen first.',h:'<p class="lead">No wallet needed. Just listen and decide with your ears.</p>'+li(['Watch the livestream on X, Kick, or Twitch.','Catch a replay on YouTube.','Or open a battle on wavewarz.com and play both songs.'])+'<div class="links">'+link('https://x.com/wavewarz','Watch on X')+link('https://kick.com/wavewarz','Kick')+link('https://www.twitch.tv/wavewarzofficial','Twitch')+link('https://www.youtube.com/@WaveWarZ','Replays on YouTube')+'</div>'},
    {k:'Listener',ic:'chart',t:'Your vote is the Poll.',h:'<p class="lead">Every battle is decided by three things, and the Poll is the one you control. Voting is free.</p>'+fx(['quick','main'],'poll')},
    wallet('Listener',['Voting is free. The wallet is how WaveWarZ knows a real person is voting, without asking for your personal info.']),
-   {k:'Listener',ic:'play',t:'Vote on the poll.',h:ol(['Open wavewarz.com. On a phone, open it inside your wallet app’s browser.','Tap the wallet button and approve the connection.','Open a live battle, find the poll, and pick your favorite song.'])+'<p class="note">Depending on the vote, your wallet may ask for a tiny network fee, so a small amount of SOL is handy to have. Connecting does not give WaveWarZ your recovery phrase.</p>'}
+   {k:'Listener',ic:'play',t:'Vote on the poll.',h:ol(['Open wavewarz.com. On a phone, open it inside your wallet app’s browser.','Tap the wallet button and approve the connection.','Open a live battle and tap <b>Vote</b> under your favorite song.'])+'<p class="note">Voting is free. Your wallet asks you to sign a message, which costs nothing and moves no funds. Connecting never gives WaveWarZ your recovery phrase.</p>'}
   ],
   artist:[
-   {k:'Artist',ic:'paid',t:'Get paid to battle, win or lose.',h:'<div class="figs"><div class="fig"><div class="n">1%</div><div class="t">of every trade on your chart during the battle</div></div><div class="fig"><div class="n">5%</div><div class="t">of the losing pool when you win</div></div><div class="fig"><div class="n">2%</div><div class="t">of the losing pool when you lose</div></div></div><p class="note">Trade payouts arrive automatically as the trades happen. As of November 10, 2026, artists have been paid 15.89 SOL across 1,701 battles, according to public stats on wavewarz.info.</p>'},
-   {k:'Artist',ic:'vinyl',t:'Get your music on Audius.',h:li(['Upload your music to <b>audius.co</b>.','Make sure your tracks are public and playable, not paywalled or followwalled.','Connect your Audius profile to WaveWarZ, so your catalog is synced and battle-ready.','In Africa, where Audius does not work, WaveWarz Africa uses SongChain instead.'])+'<div class="links">'+link('https://audius.co','Audius')+link('audius-connect.html','Connect your Audius profile')+link('audius-search.html','Resync Audius tracks')+'</div>'},
+   {k:'Artist',ic:'paid',t:'Get paid to battle, win or lose.',h:'<div class="figs"><div class="fig"><div class="n">1%</div><div class="t">of every trade on your chart during the battle</div></div><div class="fig"><div class="n">5%</div><div class="t">of the losing pool when you win</div></div><div class="fig"><div class="n">2%</div><div class="t">of the losing pool when you lose</div></div></div><p class="note">Trade payouts arrive automatically as the trades happen. <span data-live-paid>Artists have been paid on every trade since the first battle</span>, according to public stats on wavewarz.info.</p>'},
+   {k:'Artist',ic:'vinyl',t:'Get your music on Audius.',h:li(['Upload your music to <b>audius.co</b>.','Make sure your tracks are public and playable, not paywalled or followwalled.','Connect your Audius profile to WaveWarZ, so your catalog is synced and battle-ready.','In Africa, where Audius does not work, WaveWarZ Africa uses SongChain instead.'])+'<div class="links">'+link('https://audius.co','Audius')+link('audius-connect.html','Connect your Audius profile')+link('audius-search.html','Resync Audius tracks')+'</div>'},
    {k:'Artist',ic:'quick',t:'Quick BattleZ: create a battle.',h:'<p class="lead">Your synced songs play on wavewarz.com, from the WaveWarZ Audius catalog, song against song.</p>'+fx(['quick'])+ol(['Use a desktop or laptop. This step does not work on a phone.','Connect a Solana wallet and your Audius profile.','Open Create Quick BattleZ and pick your two songs from the catalog, in the order you want them to battle.','Pay 0.005 SOL. Your battle joins the back of the queue.'])+'<div class="links">'+link('audius-search.html','Create Quick BattleZ')+'</div><p class="note">'+ANYWALLET+'</p>'},
-   {k:'Artist',ic:'launch',t:'Skip to the front, then launch.',h:ol(['<b>Skip:</b> want it sooner? Pay the skip price, 0.02 SOL right now, and your battle moves to #1. The price rises 0.01 SOL with each skip and goes back to 0.02 SOL once the latest skipped battle plays.','<b>Launch:</b> when your battle is #1, pay 0.007 SOL and it launches right away. Only the #1 battle can launch.'])+'<p class="note">The queue plays one battle at a time, so #1 is always the next one on.</p>'},
+   {k:'Artist',ic:'launch',t:'Skip to the front, then launch.',h:ol(['<b>Skip:</b> want it sooner? Pay the skip price, which starts at 0.02 SOL, and your battle moves to #1. The price rises 0.01 SOL with each skip and goes back to 0.02 SOL once the latest skipped battle plays.','<b>Launch:</b> when your battle is #1, pay 0.007 SOL and it launches right away. Only the #1 battle can launch.'])+'<p class="note">The queue plays one battle at a time, so #1 is always the next one on.</p>'},
    {k:'Artist',ic:'main',t:'Sunday Featured: apply to battle.',h:'<p class="lead">Featured battles are the Main Events on Sundays. The team curates the lineup and has sole discretion on selection.</p>'+fx(['main'])+'<div class="links">'+link('index.html#apply','Apply for a Featured Battle','p')+'</div><p class="note">You can apply from your phone.</p>'}
   ],
   trader:[
    {k:'Trader',ic:'trade',t:'How trading works.',h:li(['Each side has a live price that moves as people buy and sell.','Buying pushes the price up. Selling pushes it down.','You can trade either side, and sell your tokens any time, until the clock hits zero.','Each trade carries a 1.5% fee. 1% of every trade goes straight to the artist.'])+'<p class="note">Trading on WaveWarZ is for people 18 or older, or the legal age where you live. New here? Voting on the poll is free and a good way to see how a battle moves. '+'<button class="skip" type="button" data-lane="listener">Show me how to vote</button></p>'},
    {k:'Trader',ic:'chart',t:'What decides the winner.',h:'<p class="lead">Trading is what builds the Charts. When time runs out, the side with the bigger pool wins that factor.</p>'+fx(['quick','main'],'charts')},
    wallet('Trader',['Trading uses real SOL, so you will need some in your wallet. You can buy SOL inside your wallet app.']),
-   {k:'Trader',ic:'trade',t:'Place your trades.',h:ol(['Open wavewarz.com and connect your wallet. On a phone, open it inside your wallet app’s browser.','Open a live battle and listen to both songs.','Buy tokens on the side you believe in. Sell any time before the clock hits zero.'])+'<p class="note">Start small.</p>'},
+   {k:'Trader',ic:'trade',t:'Place your trades.',h:ol(['Open wavewarz.com and connect your wallet. On a phone, open it inside your wallet app’s browser.','Open a live battle and listen to both songs.','Buy on the side you believe in: tap an amount or type your own. Sell any time before the clock hits zero.'])+'<p class="note">Start small.</p>'},
    {k:'Trader',ic:'timer',t:'When the clock hits zero.',h:'<p class="lead">Everyone settles at once. The losing side’s pool is shared out like this.</p><div class="split" aria-hidden="true">'+SPLIT.map(function(s){return '<i style="width:'+s[1]+';background:'+s[2]+'"></i>'}).join('')+'</div><div class="legend">'+SPLIT.map(function(s){return '<div><s style="background:'+s[2]+'"></s><b>'+s[1]+'</b><span>'+s[0]+'</span></div>'}).join('')+'</div><p class="note">Winning traders split their share by how many winning tokens they hold. Losing traders split theirs by how many losing tokens they hold.</p>'},
    {k:'Trader',ic:'collect',t:'Withdraw is required.',h:'<p class="lead">Nothing sends itself. If you are holding tokens when the battle ends, tap <b>Withdraw</b> to collect your SOL.</p><p class="note">If you sold everything during the battle, you may have nothing to withdraw.</p>'},
    {k:'Trader',t:'Know the risks.',h:li(['Winning the battle does not mean you get back more than you put in. If you bought late, paid a high price, or hold a small share of the side, your Withdraw can be less than you put in.','You can also lose money by buying high and selling low while the timer is running.','If you hold the losing side into the finish, part of that pool moves to the winners.'])+'<p class="risk">You can lose what you put in. WaveWarZ does not promise outcomes or returns. Start small, and do not put in more than you can afford to lose.</p>'}
@@ -169,7 +199,7 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
  var FINAL={
   listener:{t:'You are ready to listen and vote.',p:'Watch live or catch a replay, then vote on the poll.',cta:[['Watch on X','https://x.com/wavewarz','p'],['Replays on YouTube','https://www.youtube.com/@WaveWarZ','s'],['Open WaveWarZ','https://www.wavewarz.com','s']]},
   artist:{t:'You are ready to battle.',p:'Sync your Audius catalog and queue a Quick BattleZ, or apply for a Sunday Featured battle.',cta:[['Connect your Audius profile','audius-connect.html','p'],['Create Quick BattleZ','audius-search.html','s'],['Apply for a Featured Battle','index.html#apply','s']]},
-  trader:{t:'You are ready to trade.',p:'Open a live battle, listen to both songs, and start small.',cta:[['Open the live battles','quick-battles.html','p']]},
+  trader:{t:'You are ready to trade.',p:'Open a live battle, listen to both songs, and start small.',cta:[['Open the live battle','battle.html','p'],['See the queue','quick-battles.html','s']]},
   host:{t:'You are ready to host.',p:'Launch your Community BattleZ when you are ready.',cta:[['Launch a Community Battle','https://www.wavewarz.com/v2/community/create','p']]}
  };
  var lane=null,idx=0,seq=[{welcome:true}],mv=$('mv'),speakT,root=document.documentElement,embed=root.classList.contains('embed');
@@ -184,10 +214,18 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
   else if(st.final){var f=FINAL[lane];h='<div class="k">'+LANES[lane].name+' lane complete</div><h2>'+f.t+'</h2><p class="lead">'+f.p+'</p><div class="links">'+f.cta.map(function(c){return '<a class="btn '+c[2]+'" href="'+c[1]+'" target="_blank" rel="noopener">'+c[0]+'</a>'}).join('')+'</div><p class="note"><button class="skip" id="again" type="button">&larr; Back to the start and pick a different lane</button></p>'}
   else{h=(st.ic?'<div class="srow"><span class="sico">'+IC[st.ic]+'</span><div class="k">'+st.k+'</div></div>':'<div class="k">'+st.k+'</div>')+'<h2>'+st.t+'</h2>'+st.h}
   el.innerHTML=h;el.style.animation='none';void el.offsetWidth;el.style.animation='';
+  var lp=el.querySelector('[data-live-paid]');if(lp)livePaid(lp);
+  fit();
   rail();
   $('back').hidden=idx===0;$('next').hidden=!!(st.welcome||st.final);$('home').hidden=idx===0;
   if(mv)mv.cameraOrbit=CAM[idx%CAM.length];speak();post();
  }
+ /* in the pinned frame a step never scrolls: if it is still taller than the space, it scales down (not below 80%) */
+ function fit(){var el=$('step');el.style.zoom='';if(!root.classList.contains('fixed'))return;var ch=el.clientHeight,sh=el.scrollHeight;if(ch>0&&sh>ch+1)el.style.zoom=String(Math.max(.8,Math.floor(ch/sh*100)/100))}
+ var paid=null;
+ function livePaid(n){function put(d){n.textContent='So far, artists have been paid '+d.sol+' SOL across '+d.b+' battles';}
+  if(paid){put(paid);return}
+  fetch('https://wavewarz.info/api/public/stats').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){var sol=d&&d.artistPayouts&&+d.artistPayouts.totalSol,b=d&&d.battles&&+d.battles.total;if(!(sol>0&&b>0))return;paid={sol:sol.toFixed(2),b:b.toLocaleString('en-US')};var cur=document.querySelector('[data-live-paid]');if(cur)put(paid);fit()}).catch(function(){})}
  function go(n){idx=Math.max(0,Math.min(seq.length-1,n));render();if(!embed)window.scrollTo(0,0)}
  function pick(k){if(!LANES[k])return;lane=k;build();go(1)}
  function start(){lane=null;build();go(0)}
@@ -199,8 +237,8 @@ html.embed .app,html.embed .wavy,html.embed .main{min-height:0}
  if(mv){mv.addEventListener('load',function(){$('loading').classList.add('gone')});mv.addEventListener('error',function(){$('loading').innerHTML='<span class="label">DJ Wavy could not load. The guide still works.</span>'})}
  /* deep links: ?lane=artist, or a message from the page that embeds this guide */
  document.addEventListener('click',function(e){var l=e.target.closest&&e.target.closest('a[href$="#apply"]');if(!l)return;e.preventDefault();if(window.parent!==window){try{window.parent.postMessage({type:'ww-open-form',kind:'featured_application'},location.origin)}catch(_){}}else location.href=l.getAttribute('href')});
- window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data)return;if(e.data.type==='ww-onboarding-lane')pick(e.data.lane);if(e.data.type==='ww-onboarding-mode'){root.classList.toggle('fixed',e.data.mode==='fixed');post()}});
- window.addEventListener('resize',post);
+ window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data)return;if(e.data.type==='ww-onboarding-lane')pick(e.data.lane);if(e.data.type==='ww-onboarding-mode'){root.classList.toggle('fixed',e.data.mode==='fixed');fit();post()}});
+ window.addEventListener('resize',function(){fit();post()});
  render();
  var q=new URLSearchParams(location.search).get('lane');if(q&&LANES[q])pick(q);
 })();
