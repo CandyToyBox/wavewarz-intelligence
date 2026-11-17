@@ -136,3 +136,10 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 - Checked at 390px wide: homepage (ride, sponsor bar, search, forms, footer), queue page, Audius flow. No sideways scrolling on any of them.
 - Ride the WaveWarZ on phones now shows one card at a time, for the current stop, in the open space under the wave (container query units on `.ride-board`).
 - Form eyebrow no longer runs under the close button. Audius catalog rows get a placeholder cover when a song has no artwork.
+
+## Wave ID callouts matched to Quan's card; live calendar and WaveZStation routes (2026-11-16)
+- Quan's Nov 4 update (WavID #12, commit 7307c4e) is the callout design from the IMG_7344 vision frame: a glass tile with a small green label, a title and a mono detail line, joined to a dot on the ID by a thin line, hidden until the ID is hovered, focused or held. The setup page preview (`.wprev` in `audius-search.html`), the design study (`wave-id-display.html`) and the Mainnet callout on the homepage now use his values (tile `rgba(7,14,12,.22)`, border `rgba(188,241,207,.42)`, line `#c8ffd9`, dot `#e9fff3`, 56px grid) and his wording: Song with volume and record, Battle activity, Win ratio. On touch screens, holding the ID shows the callouts and letting go hides them.
+- The orb in the previews is still the stand-in texture, not the artist's own Wave ID. Showing the real one needs an image route on wavewarz.info (draft PR #25).
+- WaveZStation drops now read `https://wavewarz.info/api/public/wavezstation`; Tonight already reads `/api/public/calendar`. Both routes are in wavewarz-intelligence PR #29 and both sections keep using their saved snapshot until it is merged.
+- wavewarz.info: PR #30 updates the embedded Wave ID studio to the same commit.
+- Backups before this change: scratchpad `*.before-quan-callouts.html`. Patch script `apply_quan_callouts.py`.

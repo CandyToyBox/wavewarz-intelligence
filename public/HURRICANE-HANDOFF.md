@@ -80,7 +80,10 @@ Sample files used when the API is not reachable: `quick-battles.sample.json`, `q
 | `GET /api/public/leaderboards/artists`, `/songs` | Top artists, top songs, search, song stats on the setup page |
 | `POST /api/public/forms` | All five forms. Submissions are read at wavewarz.info/admin/inbox |
 
-Not built yet on wavewarz.info: `/api/public/calendar` (Tonight reads `calendar.sample.json` until it exists) and a pass-through for WaveZStation (that section reads `wavezstation.sample.json`).
+| `GET /api/public/calendar` | Tonight and the weekly shows strip |
+| `GET /api/public/wavezstation` | WaveZStation drops |
+
+The last two are in wavewarz-intelligence PR #29. Until that is merged the pages read `calendar.sample.json` and `wavezstation.sample.json`; they switch to the live routes on their own once the routes answer.
 
 ### Other
 
@@ -102,11 +105,11 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 | 4 | Ride the WaveWarZ | `#ride-the-wave` | none | none |
 | 5 | Quick BattleZ dock | `#quick-queue` | `/api/quick-battles` | `WW.launchNext`, `WW.skipToFront` |
 | 6 | Ribbon | (marquee) | skip price from the dock | none |
-| 7 | Tonight and weekly shows | `#tonight` | calendar | none |
+| 7 | Tonight and weekly shows | `#tonight` | wavewarz.info calendar | none |
 | 8 | Sponsor bar | inside `#tonight` | `sponsors.json` | none |
 | 9 | DJ Wavy and guided start | `#3d-arena` | `djwavy.glb`, `onboarding.html` | none |
 | 10 | Search and Top 5 panels | `#highlights` | wavewarz.info | none |
-| 11 | WaveZStation drops | `#wavezstation` | snapshot | none |
+| 11 | WaveZStation drops | `#wavezstation` | wavewarz.info wavezstation | none |
 | 12 | Blog and merch carousel | `#latest` | Paragraph, `merch-featured.json` | none |
 | 13 | FAQ | `#faq` | none | Confirm the payout wording (see section 7) |
 | 14 | Sunday reminders | `#alerts` | forms route | none |
@@ -155,7 +158,8 @@ Each script block on the homepage has an `id` and is self-contained (its own clo
 - **Scroll-pinned sections.** The dock, Ride the WaveWarZ and the DJ Wavy section use `position: sticky` inside a tall section, with native scroll. They need `overflow: clip` (not `hidden`) on their ancestors, or the pinning breaks.
 - **Reduced motion** is respected everywhere. Keep the `prefers-reduced-motion` rules when porting.
 - **Wording rule from Candy:** no betting, gambling, wagering or profit language anywhere. Use listen, vote, trade, support. "ONCHAIN" is one word.
-- **Not tested:** phone widths for the newest pieces (sponsor bar, forms, queue page lists, Audius flow), and nothing has been run inside the real wavewarz.com app.
+- **Wave ID callouts.** The Wave ID previews on the setup page follow Quan's card (WavID repo, commit 7307c4e, `studio/src/card/callouts.mjs` and the `.card-callout` styles): a glass tile, a thin leader line and a dot, hidden until the ID is hovered, focused or held. Keep that behavior. The orb image is a stand-in texture; the artist's real Wave ID still needs an image route on wavewarz.info.
+- **Not tested:** a real phone (layouts were checked at 390px wide on desktop), and nothing has been run inside the real wavewarz.com app.
 
 ---
 
