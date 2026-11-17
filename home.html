@@ -2693,6 +2693,74 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   .ride-node:nth-child(4) { --fx: .725; --fy: .2833; } .ride-node:nth-child(5) { --fx: .9083; --fy: .6333; }
   .ride-stage.is-complete .ride-card { display: none; }
 }
+
+/* ===== This week: one heading, the next show, a seven-day strip, then sponsors with room to breathe ===== */
+.tw .si{width:18px;height:18px;fill:currentColor;flex:none;display:block}
+.tw-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 28px;margin-bottom:28px}
+.tw-title{margin:0!important}
+.tw-watch{display:flex;align-items:center;gap:6px}
+.tw-wl{white-space:nowrap;font:500 .72rem 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-right:6px}
+.tw-so{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:44px;height:44px;padding:0 12px;border-radius:999px;color:var(--brand-ice);text-decoration:none;border:1px solid rgba(216,235,252,.14);background:rgba(255,255,255,.03);transition:color .18s,border-color .18s,background .18s,transform .18s}
+.tw-so:hover{color:#fff;border-color:rgba(216,235,252,.4);background:rgba(255,255,255,.07);transform:translateY(-1px)}
+.tw-so span{font:600 .82rem 'Outfit',sans-serif}
+.tw-sep{width:1px;height:22px;background:rgba(216,235,252,.16);margin:0 6px}
+.tw-grid{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,2fr);gap:20px;align-items:stretch}
+.tw-next{position:relative;display:flex;flex-direction:column;gap:12px;padding:26px 26px 24px;border-radius:24px;border:1px solid rgba(var(--brand-blue-rgb),.2);background:radial-gradient(80% 90% at 0% 0%,rgba(var(--brand-green-rgb),.09),transparent 65%),linear-gradient(180deg,rgba(14,21,34,.92),rgba(7,10,16,.95))}
+.tw-next.is-live{border-color:rgba(var(--brand-green-rgb),.55);box-shadow:0 0 40px rgba(var(--brand-green-rgb),.12)}
+.tw-k{display:inline-flex;align-items:center;gap:8px;margin:0;font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-green)}
+.tw-k i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+.tw-when{font:300 clamp(2.2rem,3.4vw,3rem)/1 'Outfit',sans-serif;letter-spacing:-.02em;color:#fff;font-variant-numeric:tabular-nums}
+.tw-when small{display:block;margin-top:8px;font:500 .78rem 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.tw-what{display:flex;align-items:center;gap:12px;margin-top:4px}
+.tw-what .kd{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;background:rgba(255,255,255,.05);border:1px solid rgba(216,235,252,.14);color:#fff}
+.tw-what .kd .si{width:17px;height:17px}
+.tw-what b{display:block;font:600 1.2rem/1.2 'Space Grotesk',sans-serif;color:#fff}
+.tw-what span{display:block;font:400 .9rem 'Outfit',sans-serif;color:var(--brand-ice);margin-top:2px}
+.tw-acts{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:auto;padding-top:8px}
+.tw-acts .btn-primary .si{width:15px;height:15px}
+.tw-free{font:400 .78rem 'Outfit',sans-serif;color:var(--text-muted)}
+.tw-samp{position:absolute;top:18px;right:20px;font:500 .66rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+/* seven days */
+.tw-week:empty{display:none}.tw-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;padding:14px;border-radius:24px;border:1px solid rgba(216,235,252,.1);background:rgba(7,10,16,.55)}
+.tw-day{display:flex;flex-direction:column;gap:8px;min-width:0;padding:10px 8px 12px;border-radius:16px}
+.tw-day.today{background:rgba(var(--brand-green-rgb),.07);box-shadow:inset 0 0 0 1px rgba(var(--brand-green-rgb),.35)}
+.tw-dh{display:flex;align-items:baseline;justify-content:space-between;gap:4px;padding:0 4px 6px;border-bottom:1px solid rgba(216,235,252,.08)}
+.tw-dh b{font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-ice)}
+.tw-dh span{font:300 1.25rem/1 'Outfit',sans-serif;color:#fff;font-variant-numeric:tabular-nums}
+.tw-day.today .tw-dh b{color:var(--brand-green)}
+.tw-ev{display:flex;flex-direction:column;gap:3px;padding:8px 9px;border-radius:12px;text-decoration:none;color:inherit;border:1px solid rgba(216,235,252,.1);background:rgba(255,255,255,.025);transition:border-color .18s,background .18s,transform .18s;min-width:0}
+.tw-ev:hover{border-color:rgba(216,235,252,.32);background:rgba(255,255,255,.06);transform:translateY(-1px)}
+.tw-ev .r{display:flex;align-items:center;gap:6px;font:600 .74rem 'JetBrains Mono',monospace;color:#fff;font-variant-numeric:tabular-nums}
+.tw-ev .r .si{width:12px;height:12px}
+.tw-ev .n{font:500 .76rem/1.25 'Outfit',sans-serif;color:var(--brand-ice);overflow-wrap:anywhere}
+.tw-ev.quick{border-color:rgba(var(--brand-green-rgb),.35);background:rgba(var(--brand-green-rgb),.06)}.tw-ev.quick .r{color:var(--brand-green)}
+.tw-ev.feat{border-color:rgba(229,194,90,.45);background:rgba(229,194,90,.07)}.tw-ev.feat .r{color:#f0d27a}
+.tw-ev.space .r{color:var(--brand-blue)}
+.tw-none{font:400 .72rem 'Outfit',sans-serif;color:rgba(216,235,252,.32);padding:2px 4px}
+.tw-key{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 18px;padding:8px 6px 0;font:500 .72rem 'Outfit',sans-serif;color:var(--text-muted)}
+.tw-key span{display:inline-flex;align-items:center;gap:6px}.tw-key .si{width:12px;height:12px}
+.tw-key .q{color:var(--brand-green)}.tw-key .f{color:#f0d27a}.tw-key .x{color:var(--brand-blue)}
+.tw-key a{color:var(--brand-blue);text-decoration:none}.tw-key a:hover{color:var(--brand-green)}
+/* sponsors: open, no frame */
+.spx{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px 56px;align-items:center;margin-top:72px;padding-top:56px;border-top:1px solid rgba(216,235,252,.1)}
+.spx-copy h3{margin:0 0 12px;font:600 clamp(1.5rem,2.4vw,2.1rem)/1.12 'Space Grotesk',sans-serif;letter-spacing:-.015em;color:#fff}
+.spx-copy p{margin:0 0 22px;max-width:46ch;font:400 1rem/1.6 'Outfit',sans-serif;color:var(--brand-ice)}
+.spx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:36px 56px}
+.spx-logo{display:flex;align-items:center;justify-content:center;height:96px;text-decoration:none;opacity:.92;transition:opacity .25s ease,transform .25s ease,filter .25s ease;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.spx-logo:hover{opacity:1;transform:translateY(-3px) scale(1.03)}
+.spx-logo img{display:block;height:96px;width:auto;max-width:220px;object-fit:contain}
+.cp-foot .cp-so{display:inline-flex;align-items:center;gap:10px}.cp-foot .cp-so svg{width:16px;height:16px;fill:currentColor;flex:none;opacity:.85}
+@media(max-width:1000px){.tw-grid{grid-template-columns:1fr}.spx{grid-template-columns:1fr;margin-top:56px;padding-top:44px}.spx-logos{justify-content:flex-start}}
+@media(max-width:760px){
+  .tw-head{align-items:flex-start}
+  .tw-week{grid-template-columns:1fr;gap:4px;padding:8px}
+  .tw-day{display:grid;grid-template-columns:62px minmax(0,1fr);gap:8px;align-items:start;padding:8px}
+  .tw-dh{flex-direction:column;align-items:flex-start;border:0;padding:4px 0 0}
+  .tw-day .evs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+  .tw-ev{flex:1 1 140px}
+  .spx-logo,.spx-logo img{height:68px}.spx-logos{gap:28px 36px}
+}
+@media(prefers-reduced-motion:reduce){.tw-so,.tw-ev,.spx-logo{transition:none}.tw-so:hover,.tw-ev:hover,.spx-logo:hover{transform:none}}
 </style>
   <script src="ww-celebrate.js" defer></script>
 <link rel="stylesheet" href="ww-base.css">
@@ -3085,23 +3153,29 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   <!-- ===================================================================== -->
   <!-- TONIGHT / NEXT UP  (the wavewarz.info calendar; live battles use the live slot above the hero) -->
   <!-- ===================================================================== -->
-  <section id="tonight" class="cp-sec" aria-label="Tonight">
-    <div class="cp-head labs-reveal"><div class="section-eyebrow">TONIGHT</div></div>
-    <div id="tonightCard" class="cp-tn labs-reveal">
-      <div>
-        <div class="cp-eb"><i></i><span>Nothing booked</span></div>
-        <h2>The next battle is being lined up.</h2>
-        <p class="cp-line">Follow the livestream channels or join the battle alerts list so you don&rsquo;t miss the next one.</p>
-        <div class="cp-ctas"><details class="cp-watch"><summary class="btn-primary">Watch live<span class="cp-chev" aria-hidden="true"></span></summary><div class="cp-watch-menu"><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch on X</a><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Watch on Kick</a><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Watch on Twitch</a><p>No wallet needed to watch. YouTube is replays only; current livestreams are on X, Kick, and Twitch.</p></div></details><a class="btn-secondary" href="https://subscribepage.io/XFM0pk" target="_blank" rel="noopener">Get battle alerts</a></div>
+  <section id="tonight" class="cp-sec tw" aria-label="This week">
+    <div class="tw-head labs-reveal">
+      <h2 class="section-title tw-title">This week</h2>
+      <div class="tw-watch" aria-label="Watch live">
+        <span class="tw-wl">Watch live</span>
+        <a class="tw-so" href="https://x.com/wavewarz" target="_blank" rel="noopener" aria-label="Watch on X"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
+        <a class="tw-so" href="https://kick.com/wavewarz" target="_blank" rel="noopener" aria-label="Watch on Kick"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"/></svg></a>
+        <a class="tw-so" href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener" aria-label="Watch on Twitch"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg></a>
+        <i class="tw-sep" aria-hidden="true"></i>
+        <a class="tw-so tw-rep" href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener" aria-label="Replays on YouTube"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>Replays</span></a>
       </div>
     </div>
-    <div id="weeklyStrip" class="cp-wk" aria-label="Every week"></div>
-    <div class="sp labs-reveal" role="complementary" aria-label="Sponsors">
-      <div class="sp-in">
-        <span class="sp-thx"><i></i>Thank you to our sponsors</span>
-        <div class="sp-logos" id="spLogos" aria-label="Sponsor logos"></div>
-        <button class="sp-cta" id="spCta" type="button" data-form="sponsorship">Become a sponsor<span aria-hidden="true">&rarr;</span></button>
+    <div class="tw-grid labs-reveal">
+      <div id="tonightCard" class="tw-next"><p class="tw-k">Loading the schedule</p></div>
+      <div id="weeklyStrip" class="tw-week" aria-label="The next seven days"></div>
+    </div>
+    <div class="spx labs-reveal" role="complementary" aria-label="Sponsors">
+      <div class="spx-copy">
+        <h3>Our sponsors keep the battles going.</h3>
+        <p>Thank you to the partners who make WaveWarZ possible. Sponsors ride with us every week in the live shows, clips and recaps, and in person at ZAO festivals.</p>
+        <button class="btn-secondary spx-cta" id="spCta" type="button" data-form="sponsorship">Become a sponsor <span aria-hidden="true">&rarr;</span></button>
       </div>
+      <div class="spx-logos" id="spLogos" aria-label="Sponsor logos"></div>
     </div>
   </section>
 
@@ -3403,12 +3477,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       <div>
         <h4>Connect</h4>
         <ul>
-          <li><a href="https://x.com/wavewarz" target="_blank" rel="noopener">X / Twitter</a></li>
-          <li><a href="https://t.me/wavewarz" target="_blank" rel="noopener">Telegram</a></li>
-          <li><a href="https://discord.gg/5nHwDhuWjK" target="_blank" rel="noopener">Discord</a></li>
-          <li><a href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener">YouTube (replays)</a></li>
-          <li><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Kick</a></li>
-          <li><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Twitch</a></li>
+          <li><a class="cp-so" href="https://x.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>X</a></li>
+          <li><a class="cp-so" href="https://t.me/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Telegram</a></li>
+          <li><a class="cp-so" href="https://discord.gg/5nHwDhuWjK" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Discord</a></li>
+          <li><a class="cp-so" href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YouTube</a></li>
+          <li><a class="cp-so" href="https://kick.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"/></svg>Kick</a></li>
+          <li><a class="cp-so" href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>Twitch</a></li>
         </ul>
       </div>
       <div>
@@ -4287,17 +4361,14 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   if (!box) return;
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function draw(d) {
-    var list = (d && d.sponsors || []).slice(0, 3), out = '';
-    for (var i = 0; i < 3; i++) {
-      var p = list[i];
-      if (p && p.logo) {
-        var img = '<img src="' + esc(p.logo) + '" alt="' + esc(p.name) + '" height="34" loading="lazy" decoding="async">';
-        out += p.url ? '<a class="sp-logo" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '">' + img + '</a>' : '<span class="sp-logo">' + img + '</span>';
-      } else out += '<button class="sp-logo empty" type="button" data-form="sponsorship">Your logo</button>';
-    }
-    box.innerHTML = out;
+    var list = (d && d.sponsors || []).filter(function (p) { return p && p.logo; });
+    box.innerHTML = list.map(function (p) {
+      var img = '<img src="' + esc(p.logo) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async">';
+      return p.url ? '<a class="spx-logo" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '" title="' + esc(p.name) + '">' + img + '</a>' : '<span class="spx-logo">' + img + '</span>';
+    }).join('');
+    box.hidden = !list.length;
   }
-  fetch('sponsors.json?v=1').then(function (r) { return r.json(); }).then(draw).catch(function () { draw(null); });
+  fetch('sponsors.json?v=2').then(function (r) { return r.json(); }).then(draw).catch(function () { draw(null); });
 })();
 </script>
 <script id="quick-battlez-js">
@@ -4479,35 +4550,40 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   }
   function link(cls, href, label, blank) { return href ? '<a class="' + cls + '" href="' + esc(href) + '"' + (blank === false ? '' : ' target="_blank" rel="noopener"') + '>' + label + '</a>' : ''; }
   function eyebrow(parts) { return parts.filter(Boolean).map(esc).join(' · '); }
+  var SVG = function (d) { return '<svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg>'; };
+  var IX = SVG('M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z'), IQ = SVG('M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z'), IF = SVG('m12 2.6 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.5l-5.9 3.1 1.2-6.5L2.5 9.5l6.6-.9L12 2.6z'), IP = SVG('M8 5.5v13l11-6.5z');
+  function kindOf(e) { return e.event_type === 'BATTLE' ? (/quick/i.test(e.title || '') ? 'quick' : 'feat') : 'space'; }
+  function iconOf(k) { return k === 'quick' ? IQ : k === 'feat' ? IF : IX; }
+  function cellName(t) { return shortName(t).replace(/\s+Space$/i, '').split(' & ')[0]; }
+  function fullDate(e) { var p = e.event_date.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2], 12)).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' }); }
+  function shortName(t) { return String(t || '').replace(/Battlez/g, 'BattleZ').replace(/\s*[:+]\s*X Spaces?\b.*$/i, '').replace(/\s+X Spaces?$/i, ' Space').trim(); }
   function renderTonight(t) {
     var el = $('tonightCard'); if (!el) return;
-    var meta = t.meta ? '<p class="cp-meta">' + esc(t.meta) + '</p>' : '';
-    var h, line, ctas = '', listen = '';
+    el.className = 'tw-next' + (t.state === 'live' ? ' is-live' : '');
+    var samp = t.sample ? '<span class="tw-samp">Sample</span>' : '';
     if (t.state === 'none') {
-      el.className = 'cp-tn';
-      el.innerHTML = '<div><div class="cp-eb"><i></i><span>Nothing booked</span></div><h2>The next battle is being lined up.</h2>' +
-        '<p class="cp-line">Follow the livestream channels or join the battle alerts list so you don’t miss the next one.</p>' +
-        '<div class="cp-ctas">' + chooser('btn-primary') + link('btn-secondary', 'https://subscribepage.io/XFM0pk', 'Get battle alerts') + '</div></div>';
+      el.innerHTML = '<p class="tw-k"><i></i>Up next</p><div class="tw-when">Being lined up<small>The next show is coming</small></div><p class="tw-free" style="margin:0">Follow us on X, Kick or Twitch to catch it, or get Sunday reminders.</p>' +
+        '<div class="tw-acts">' + link('btn-primary', 'https://x.com/wavewarz', IX + 'Follow on X') + '<a class="btn-secondary" href="#alerts">Get reminders</a></div>';
       return;
     }
-    h = t.cal ? esc(t.title) : esc(t.a) + ' vs ' + esc(t.b);
-    if (t.state === 'live') {
-      line = 'The battle is on. Watch the show, or jump in and back a side.';
-      ctas = chooser('btn-primary') + link('btn-secondary', t.battleUrl, 'Enter the battle');
-    } else if (t.state === 'ended') {
-      line = 'Winner: ' + esc(t.winner) + '. Watch the replay and see how the settlement landed.';
-      ctas = link('btn-primary', t.battleUrl, 'See the battle') + link('btn-secondary', 'https://www.youtube.com/@WaveWarZ', 'Watch the replay');
-    } else {
-      line = t.cal ? esc(t.pitch) : 'Add it to your night. Come for the music, stay if you want in on the action.';
-      ctas = t.cal ? ((t.xspace ? link('btn-primary', t.joinUrl, 'Join the X Space') + chooser('btn-secondary') : chooser('btn-primary')) + link('btn-secondary', 'https://wavewarz.info/calendar', 'See the calendar')) :
-        chooser('btn-primary') + (t.listenA || t.listenB ? '<a class="btn-secondary" href="#tonightListen">Meet the artists</a>' : '') + link('btn-secondary', t.battleUrl, 'Enter the battle');
-      listen = t.cal ? '<p class="cp-help" style="margin-top:14px">No wallet needed to listen.</p>' : (t.listenA || t.listenB) ? '<div class="cp-listen" id="tonightListen">' + link('btn-secondary', t.listenA, 'Listen to ' + esc(t.songA || t.a)) + link('btn-secondary', t.listenB, 'Listen to ' + esc(t.songB || t.b)) + '</div>' : '';
+    if (t.state === 'live' || t.state === 'ended') {
+      var live = t.state === 'live';
+      el.innerHTML = samp + '<p class="tw-k"><i></i>' + (live ? 'Live now' : 'Just ended') + (t.type ? ' · ' + esc(t.type) : '') + '</p><div class="tw-what"><span class="kd">' + IF + '</span><div><b>' + esc(t.a) + ' vs ' + esc(t.b) + '</b><span>' + (live ? esc(t.round || 'Listen, vote and trade') : 'Winner: ' + esc(t.winner)) + '</span></div></div>' +
+        '<div class="tw-acts">' + link('btn-primary', t.battleUrl, live ? IP + 'Open the battle' : 'See the result', false) + '</div>';
+      return;
     }
-    el.className = 'cp-tn' + (t.state === 'live' ? ' is-live' : '');
-    el.innerHTML = (t.sample ? '<span class="cp-samp">Sample data</span>' : '') +
-      '<div><div class="cp-eb"><i></i><span>' + eyebrow(t.cal ? [t.type] : [t.label, t.type, t.round]) + '</span></div><h2>' + h + '</h2>' +
-      (t.songs ? '<p class="cp-songs">' + esc(t.songs) + '</p>' : (t.desc ? '<p class="cp-songs">' + esc(t.desc) + '</p>' : '')) + meta + '<p class="cp-line">' + line + '</p>' +
-      '<div class="cp-ctas">' + ctas + '</div>' + listen + '</div>' + (t.img ? '<img class="cp-art" src="' + esc(t.img) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : '');
+    if (!t.cal) {   /* a show set by hand in SHOW */
+      el.innerHTML = samp + '<p class="tw-k"><i></i>' + esc(t.label || 'Up next') + '</p><div class="tw-when">' + esc(SHOW.time || '') + '<small>' + esc(SHOW.day || '') + ' · ET</small></div>' +
+        '<div class="tw-what"><span class="kd">' + IF + '</span><div><b>' + esc(t.a) + ' vs ' + esc(t.b) + '</b><span>' + esc(t.songs || t.type || '') + '</span></div></div>' +
+        '<div class="tw-acts">' + link('btn-primary', t.battleUrl || 'battle.html', IP + 'Open the battle', false) + '</div><span class="tw-free">Free to listen. No wallet needed.</span>';
+      return;
+    }
+    var e = t.ev, k = kindOf(e), time = e.event_time.replace(/\s*E[SD]?T$/i, '').replace(':00', ''), sub = k === 'quick' ? 'Song vs song, live. Listen and vote free.' : k === 'feat' ? (e.description || 'Featured battle, live.') : (shortName(e.title) === 'WaveWarZ Space' ? 'Music, artists and the community, live on X.' : 'Live on X Spaces.');
+    var act = k === 'space' ? link('btn-primary', t.joinUrl, IX + 'Join the Space') : link('btn-primary', 'battle.html', IP + 'Open the battle', false);
+    el.innerHTML = samp + '<p class="tw-k"><i></i>' + esc(t.label) + '</p><div class="tw-when">' + esc(time) + ' <span style="font-size:.5em;letter-spacing:.04em;color:var(--text-muted)">ET</span><small>' + esc(fullDate(e)) + '</small></div>' +
+      '<div class="tw-what"><span class="kd">' + iconOf(k) + '</span><div><b>' + esc(shortName(e.title)) + '</b><span>' + esc(sub) + '</span></div></div>' +
+      (t.img ? '<img class="cp-art" src="' + esc(t.img) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()" style="width:100%;height:auto;max-height:180px;object-fit:cover;border-radius:16px">' : '') +
+      '<div class="tw-acts">' + act + '</div><span class="tw-free">Free to listen. No wallet needed.</span>';
   }
   function configured() {
     if (!(SHOW.artistA && SHOW.artistB && SHOW.day && SHOW.time)) return null;
@@ -4568,18 +4644,23 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     var xs = /x space|spaces/i.test((e.title || '') + ' ' + (e.description || '') + ' ' + (e.location_or_link || ''));
     var when = isToday ? (evening ? 'tonight' : 'today') : dayLabel(e), name = (e.title || '').replace(/Battlez/g, 'BattleZ');
     var pitch = e.recurring ? (/quick battlez/i.test(e.title) ? 'Song vs song, live. Meet the WaveWarZ community: artists and musicians are in the Space too. Listen, vote on the poll and cheer them on.' : (e.description || '')) : (e.description || 'Meet the WaveWarZ community. Come listen, vote on the poll and cheer on your artists.');
-    return { state: 'upcoming', cal: true, label: isToday ? (evening ? 'Tonight' : 'Today') : 'Up next', type: typeLabel(e), title: e.recurring && xs ? 'Join us ' + when + ' on X Spaces' : name, desc: e.recurring ? name : '', pitch: pitch, xspace: xs,
+    return { state: 'upcoming', cal: true, ev: e, label: isToday ? (evening ? 'Tonight' : 'Today') : 'Up next', type: typeLabel(e), title: e.recurring && xs ? 'Join us ' + when + ' on X Spaces' : name, desc: e.recurring ? name : '', pitch: pitch, xspace: xs,
       joinUrl: spaceLink || !/^https?:/.test(e.location_or_link || '') ? 'https://x.com/wavewarz' : e.location_or_link, a: e.title, b: '',
       meta: dayLabel(e) + ' \u00b7 ' + e.event_time.replace(/\s*EST$/i, ' ET') + ' \u00b7 Live on X, Kick, and Twitch', img: e.flyer_url,
       linkUrl: spaceLink ? '' : e.location_or_link };
   }
   function nextBattle() { return calEvents().filter(function (e) { return e.event_type === 'BATTLE'; })[0] || null; }
   function renderWeekly() {
-    var el = $('weeklyStrip'); if (!el || !cal || !(cal.weekly || []).length) return;
-    el.innerHTML = '<div class="cp-wk-h"><span>Every week</span><a href="https://wavewarz.info/calendar" target="_blank" rel="noopener">Full calendar</a></div>' +
-      cal.weekly.map(function (w) {
-        return '<div class="cp-wk-i"><div class="t"><span class="cp-chip ' + (w.event_type === 'BATTLE' ? 'b' : 's') + '">' + (w.event_type === 'BATTLE' ? 'Battle' : 'X Spaces') + '</span><span>' + esc(w.daysLabel) + ' \u00b7 ' + esc(w.event_time) + '</span></div><b>' + esc(w.title.replace(/Battlez/g, 'BattleZ')) + '</b></div>';
-      }).join('');
+    var el = $('weeklyStrip'); if (!el || !cal) return;
+    var list = calEvents(), now = Date.now(), days = [];
+    for (var i = 0; i < 7; i++) { var o = etParts(now + i * DAY_MS); days.push({ date: o.year + '-' + o.month + '-' + o.day, wd: o.weekday, d: +o.day, today: i === 0 }); }
+    el.innerHTML = days.map(function (d) {
+      var evs = list.filter(function (e) { return e.event_date === d.date; });
+      return '<div class="tw-day' + (d.today ? ' today' : '') + '"><div class="tw-dh"><b>' + (d.today ? 'Today' : d.wd) + '</b><span>' + d.d + '</span></div><div class="evs">' +
+        (evs.length ? evs.map(function (e) { var k = kindOf(e), href = k === 'space' ? 'https://x.com/wavewarz' : 'battle.html';
+          return '<a class="tw-ev ' + k + '" href="' + href + '"' + (k === 'space' ? ' target="_blank" rel="noopener"' : '') + ' title="' + esc(shortName(e.title)) + ' · ' + esc(e.event_time) + '"><span class="r">' + iconOf(k) + esc(e.event_time.replace(/\s*E[SD]?T$/i, '').replace(':00', '').replace(' ', '').toLowerCase()) + '</span><span class="n">' + esc(cellName(e.title)) + '</span></a>'; }).join('')
+          : '<span class="tw-none">No show</span>') + '</div></div>';
+    }).join('') + '<div class="tw-key"><span class="x">' + IX + 'X Space</span><span class="q">' + IQ + 'Quick BattleZ</span><span class="f">' + IF + 'Featured battle</span><a href="https://wavewarz.info/calendar" target="_blank" rel="noopener">Full calendar &rarr;</a></div>';
   }
   function pickTonight() {
     var c = calendarPick(), nb = nextBattle();
@@ -4602,7 +4683,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       ended: { state: 'ended', label: 'Battle ended', type: 'Sunday Featured', a: 'Sample Artist A', b: 'Sample Artist B', winner: 'Sample Artist A', battleUrl: '#' },
       none: { state: 'none' }
     };
-    if (S[demo]) { S[demo].sample = demo !== 'none'; renderTonight(S[demo]); }
+    if (S[demo]) { S[demo].sample = demo !== 'none'; renderTonight(S[demo]); jget(API + 'calendar').catch(function () { return jget('calendar.sample.json'); }).then(function (d) { cal = d; renderWeekly(); }).catch(function () {}); }
   } else { loadCalendar(); setInterval(function () { if (cal) pickTonight(); }, 60000); }
 
   /* ---- DJ Wavy section: the guided onboarding lives next to the 3D model.

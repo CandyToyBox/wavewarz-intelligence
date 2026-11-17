@@ -119,8 +119,8 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 | 4 | Ride the WaveWarZ | `#ride-the-wave` | none | none |
 | 5 | Quick BattleZ dock | `#quick-queue` | `/api/quick-battles` | `WW.launchNext`, `WW.skipToFront` |
 | 6 | Ribbon | (marquee) | skip price from the dock | none |
-| 7 | Tonight and weekly shows | `#tonight` | wavewarz.info calendar | none |
-| 8 | Sponsor bar | inside `#tonight` | `sponsors.json` | none |
+| 7 | This week: next show, seven-day strip, watch-live icons | `#tonight` | wavewarz.info calendar | none |
+| 8 | Sponsors (Lit Studio, Ignite Radio, The ZAO) | inside `#tonight` | `sponsors.json`, logos in `sponsors/` | none |
 | 9 | DJ Wavy and guided start | `#3d-arena` | `djwavy.glb`, `onboarding.html` | none |
 | 10 | Search and Top 5 panels | `#highlights` | wavewarz.info | none |
 | 11 | WaveZStation drops | `#wavezstation` | wavewarz.info wavezstation | none |

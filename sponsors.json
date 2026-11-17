@@ -1,19 +1,8 @@
 {
+  "note": "Shown in the sponsor block under This week. Logos are transparent PNGs in sponsors/, trimmed to the mark. Add or remove entries; the row lays itself out.",
   "sponsors": [
-    {
-      "name": "",
-      "logo": "",
-      "url": ""
-    },
-    {
-      "name": "",
-      "logo": "",
-      "url": ""
-    },
-    {
-      "name": "",
-      "logo": "",
-      "url": ""
-    }
+    { "name": "Lit Studio", "logo": "sponsors/lit-studio.png", "url": "https://litstudio.online" },
+    { "name": "Ignite Radio", "logo": "sponsors/ignite-radio.png", "url": "https://igniteradio.xyz" },
+    { "name": "The ZAO", "logo": "sponsors/the-zao.png", "url": "https://thezao.com" }
   ]
 }
