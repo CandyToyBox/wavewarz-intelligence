@@ -18,6 +18,18 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-16 — Two new read endpoints: calendar and WaveZStation
+
+**Endpoints:** `GET /calendar` (new), `GET /wavezstation` (new) — **Type:** ADDITIVE
+
+`/calendar` returns the schedule shown at wavewarz.info/calendar: the standing weekly
+shows and the dated events from today (Eastern) onward. `/wavezstation` passes through
+the song drops listed on wavezstation.com so another site can read them from a browser;
+the numbers are WaveZStation's and nothing is stored on wavewarz.info. No existing
+endpoint or value changed.
+
+---
+
 ## 2026-11-16 — New write-only endpoint for site forms
 
 **Endpoints:** `POST /forms` (new) — **Type:** ADDITIVE
