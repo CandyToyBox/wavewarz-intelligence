@@ -11,8 +11,8 @@
    Tokens match the Rebrand System; teal and red come from the vision frame. */
 :root{color-scheme:dark;--bg:#0d1321;--raise:#111a2e;--stage:#04070d;--ink:#daecfd;--muted:#989898;--line:#daecfd24;
 --green:#95fe7c;--blue:#7ec1fb;--aqua:#5fd3c1;--ember:#ff8a7a;
---grid:rgba(126,193,251,.075);--grid-size:54px;
---callout-bg:rgba(95,211,193,.07);--callout-line:rgba(95,211,193,.55);
+--grid:rgba(126,196,156,.11);--grid-size:56px;
+--callout-bg:rgba(7,14,12,.22);--callout-line:rgba(188,241,207,.42);--phosphor:#c8ffd9;
 --font-display:"Space Grotesk","Helvetica Neue",Arial,sans-serif;--font-sans:"Outfit",system-ui,sans-serif;--font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 --radius-lg:18px;--radius-md:10px;--radius-pill:999px}
 *{box-sizing:border-box}
@@ -42,17 +42,25 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
 .orb::after{content:"";position:absolute;inset:0;background:radial-gradient(38% 38% at 70% 68%,rgba(214,70,64,.34),transparent 70%);mix-blend-mode:screen}
 
 .lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.lines polyline{fill:none;stroke:var(--callout-line);stroke-width:1;vector-effect:non-scaling-stroke}
+.lines line{stroke:var(--phosphor);stroke-width:1.25;vector-effect:non-scaling-stroke}
 
-.callout{position:absolute;font:500 13px/1.45 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:#d7fbf4;
- background:var(--callout-bg);border:1px solid var(--callout-line);border-radius:6px;padding:9px 14px;backdrop-filter:blur(3px);white-space:nowrap;box-shadow:0 0 18px rgba(95,211,193,.08)}
-.callout b{font-weight:500;color:#fff}
-/* Each box is pinned by the edge its leader line leaves from, and centred on its row, so the line always meets it */
-.c1{right:78%;top:23%;transform:translateY(-50%)}
-.c2{left:84%;top:31%;transform:translateY(-50%)}
-.c3{left:74%;top:63%;transform:translateY(-50%)}
-.node{position:absolute;width:9px;height:9px;border-radius:50%;background:#e9fffb;transform:translate(-50%,-50%);box-shadow:0 0 0 3px rgba(95,211,193,.25),0 0 14px 4px rgba(95,211,193,.8)}
-.node.hot{background:#ffe3df;box-shadow:0 0 0 3px rgba(255,138,122,.25),0 0 14px 4px rgba(255,138,122,.85)}
+/* Callouts follow Quan's Wave ID card (WavID #12): quiet until the ID is hovered, focused or held */
+.callout{position:absolute;z-index:2;width:max-content;max-width:240px;margin:0;padding:8px 10px 9px;border-radius:6px;background:var(--callout-bg);border:1px solid var(--callout-line);box-shadow:0 0 0 1px rgba(188,241,207,.06),0 0 28px rgba(140,255,190,.06);-webkit-backdrop-filter:blur(8px) saturate(1.15);backdrop-filter:blur(8px) saturate(1.15);pointer-events:none}
+.callout .k{display:block;font:600 10px/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.callout strong{display:block;margin-top:3px;font:500 14px/1.25 var(--font-sans);letter-spacing:-.2px;color:#f4fff8}
+.callout p{margin:3px 0 0;font:400 12px/1.35 var(--font-mono);color:#d7f5e4}
+.c1{left:27%;top:23%;transform:translate(-100%,-50%)}
+.c2{left:77%;top:26%;transform:translate(0,-50%)}
+.c3{left:77%;top:58%;transform:translate(0,-50%)}
+.node{position:absolute;width:9px;height:9px;border-radius:50%;background:#e9fff3;transform:translate(-50%,-50%);box-shadow:0 0 12px 3px rgba(200,255,217,.55)}
+.stage .lines,.stage .node,.stage .callout{opacity:0;transition:opacity .28s ease}
+.stage:hover .lines,.stage:hover .node,.stage:hover .callout,.stage:focus-visible .lines,.stage:focus-visible .node,.stage:focus-visible .callout,.stage.show .lines,.stage.show .node,.stage.show .callout{opacity:1}
+.stage:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.hint{position:absolute;left:50%;bottom:2%;transform:translateX(-50%);font:400 11px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:opacity .28s ease}
+.stage:hover .hint,.stage:focus-visible .hint,.stage.show .hint{opacity:0}
+.hint .th{display:none}@media(hover:none){.hint .th{display:inline}.hint .hh{display:none}}
+@media(prefers-reduced-transparency:reduce){.callout{background:rgba(7,14,12,.82);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.stage .lines,.stage .node,.stage .callout,.hint{transition:none}}
 .n1{left:31%;top:36%}
 .n2{left:71.5%;top:40.5%}
 .n3{left:58%;top:66%}
@@ -78,8 +86,9 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
 @media(max-width:860px){
  .stage{height:auto;display:grid;gap:10px;padding-top:6px}
  .orb{position:relative;left:auto;top:auto;transform:none;width:112%;margin:-6% -6% -10%}
- .lines,.node{display:none}
- .callout{position:static;transform:none;white-space:normal;display:flex;gap:10px;align-items:baseline;justify-content:space-between}
+ .lines,.node,.hint{display:none}
+ .callout,.c1,.c2,.c3{position:static;transform:none;width:auto;max-width:none}
+ .stage .callout{opacity:1}
  .rows{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.orb img{animation:none}}
@@ -94,17 +103,18 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
 </header>
 
 <main>
- <section class="stage" aria-label="Wave ID for GeekMyth">
+ <section class="stage" tabindex="0" aria-label="Wave ID for GeekMyth">
   <div class="orb" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div>
   <svg class="lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-   <polyline points="22,23 26,23 31,36"/>
-   <polyline points="84,31 79,31 71.5,40.5"/>
-   <polyline points="74,63 70,63 58,66"/>
+   <line x1="31" y1="36" x2="27" y2="23"/>
+   <line x1="71.5" y1="40.5" x2="77" y2="26"/>
+   <line x1="58" y1="66" x2="77" y2="58"/>
   </svg>
-  <i class="node n1"></i><i class="node hot n2"></i><i class="node n3"></i>
-  <div class="callout c1">Song: <b>Neon Drift</b><br>Vol: <b>12.4 SOL</b></div>
-  <div class="callout c2">Battle activity<br><b>5 matches</b></div>
-  <div class="callout c3">Win ratio<br><b>54%</b></div>
+  <i class="node n1"></i><i class="node n2"></i><i class="node n3"></i>
+  <div class="callout c1"><span class="k">Song</span><strong>Neon Drift</strong><p>12.4 SOL &middot; 3W / 2L</p></div>
+  <div class="callout c2"><span class="k">Battle activity</span><strong>5 battles</strong></div>
+  <div class="callout c3"><span class="k">Win ratio</span><strong>54%</strong><p>3W / 2L &middot; 4 songs</p></div>
+  <p class="hint" aria-hidden="true"><span class="hh">Hover the ID to read it</span><span class="th">Hold the ID to read it</span></p>
  </section>
 
  <div class="who"><img src="Geek%20cutout%20new.png" alt=""><span>@GeekMyth</span></div>
@@ -122,5 +132,10 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
  </section>
  <p class="prov">Public observation. Artist control unverified.</p>
 </main>
+<script>
+(function(){var st=document.querySelector('.stage');if(!st)return;
+st.addEventListener('pointerdown',function(e){if(e.pointerType==='touch')st.classList.add('show')});
+['pointerup','pointercancel'].forEach(function(n){document.addEventListener(n,function(e){if(e.pointerType==='touch')st.classList.remove('show')})});})();
+</script>
 </body>
 </html>

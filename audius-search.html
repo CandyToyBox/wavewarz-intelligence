@@ -189,17 +189,27 @@ a.lm-go{text-decoration:none}
 @keyframes odrift{from{transform:scale(1.55) rotate(0)}to{transform:scale(1.55) rotate(360deg)}}
 .wprev .orbm::after{content:"";position:absolute;inset:0;background:radial-gradient(38% 38% at 70% 68%,rgba(214,70,64,.3),transparent 70%);mix-blend-mode:screen}
 .wprev svg.wl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.wprev svg.wl polyline{fill:none;stroke:rgba(95,211,193,.55);stroke-width:1;vector-effect:non-scaling-stroke}
-.wprev .wc{position:absolute;width:42%;transform:translateY(-50%);font:500 10px/1.4 var(--font-mono);letter-spacing:.04em;text-transform:uppercase;color:#d7fbf4;background:rgba(95,211,193,.08);border:1px solid rgba(95,211,193,.5);border-radius:5px;padding:5px 8px;backdrop-filter:blur(3px);overflow-wrap:anywhere}
-.wprev .wc b{font-weight:500;color:#fff}.wprev .wc .t{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#fff}
-.wprev .wc.a{left:3%;top:15%}.wprev .wc.b2{right:3%;top:45%;width:36%}.wprev .wc.c{left:3%;top:84%}
-.wprev .wn{position:absolute;width:7px;height:7px;border-radius:50%;background:#e9fffb;transform:translate(-50%,-50%);box-shadow:0 0 0 2px rgba(95,211,193,.25),0 0 10px 3px rgba(95,211,193,.8)}
-.wprev .wn.hot{background:#ffe3df;box-shadow:0 0 0 2px rgba(255,138,122,.25),0 0 10px 3px rgba(255,138,122,.85)}
-.wprev .wfoot{position:absolute;left:0;right:0;bottom:0;padding:5px 10px;font:400 9.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);background:linear-gradient(transparent,rgba(4,7,13,.85))}
-.col.r .wprev .wc.a{left:auto;right:3%}.col.r .wprev .wc.b2{right:auto;left:3%}.col.r .wprev .wc.c{left:auto;right:3%}
+.wprev svg.wl line{stroke:#c8ffd9;stroke-width:1.25;vector-effect:non-scaling-stroke}
+/* Callouts follow Quan's Wave ID card (WavID #12): glass tile, phosphor leader line, dot on the part of the ID it describes.
+   Quiet until the ID is hovered, focused or held, as on the card. */
+.wprev .wc{position:absolute;z-index:2;width:max-content;max-width:36.5%;margin:0;padding:6px 8px 7px;border-radius:6px;background:rgba(7,14,12,.22);border:1px solid rgba(188,241,207,.42);box-shadow:0 0 0 1px rgba(188,241,207,.06),0 0 28px rgba(140,255,190,.06);-webkit-backdrop-filter:blur(8px) saturate(1.15);backdrop-filter:blur(8px) saturate(1.15);overflow-wrap:anywhere;pointer-events:none}
+.wprev .wc.L{transform:translate(-100%,-50%)}.wprev .wc.R{transform:translate(0,-50%)}
+.wprev .wc .k{display:block;font:600 9.5px/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.wprev .wc strong{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px;font:500 13px/1.25 var(--font-sans);letter-spacing:-.2px;color:#f4fff8}
+.wprev .wc p{margin:3px 0 0;font:400 10.5px/1.35 var(--font-mono);color:#d7f5e4}
+.wprev .wn{position:absolute;width:7px;height:7px;border-radius:50%;background:#e9fff3;transform:translate(-50%,-50%);box-shadow:0 0 10px 2px rgba(200,255,217,.55)}
+.wprev .wl,.wprev .wn,.wprev .wc{opacity:0;transition:opacity .28s var(--ease-out)}
+.wprev:hover .wl,.wprev:hover .wn,.wprev:hover .wc,.wprev:focus-visible .wl,.wprev:focus-visible .wn,.wprev:focus-visible .wc,.wprev.show .wl,.wprev.show .wn,.wprev.show .wc{opacity:1}
+.wprev{cursor:default;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.wprev:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.wprev .wfoot{position:absolute;left:0;right:0;bottom:0;padding:5px 10px;font:400 9.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);background:linear-gradient(transparent,rgba(4,7,13,.85));pointer-events:none}
+.wprev .wfoot .th{display:none}@media(hover:none){.wprev .wfoot .th{display:inline}.wprev .wfoot .hh{display:none}}
+@media(prefers-reduced-transparency:reduce){.wprev .wc{background:rgba(7,14,12,.82);-webkit-backdrop-filter:none;backdrop-filter:none}}
+@media(prefers-contrast:more){.wprev .wc{background:rgba(4,8,7,.9);border-color:rgba(188,241,207,.95)}}
+@media(prefers-reduced-motion:reduce){.wprev .wl,.wprev .wn,.wprev .wc{transition:none}}
 @media(prefers-reduced-motion:reduce){.wprev .orbm img{animation:none}}
 /* Page-background Wave IDs get the same treatment as the preview orbs: blueprint grid, sharper teal, slow drift, red wash, glowing nodes */
-.wid-page::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(126,193,251,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.07) 1px,transparent 1px);background-size:54px 54px;background-position:center top;-webkit-mask-image:linear-gradient(#000 55%,transparent 100%);mask-image:linear-gradient(#000 55%,transparent 100%)}
+.wid-page::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(126,193,251,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.07) 1px,transparent 1px);background-size:56px 56px;background-position:center top;-webkit-mask-image:linear-gradient(#000 55%,transparent 100%);mask-image:linear-gradient(#000 55%,transparent 100%)}
 .wid-page::after{content:"";position:absolute;inset:0;background:radial-gradient(34vmin 34vmin at 84% 62%,rgba(214,70,64,.15),transparent 70%),radial-gradient(30vmin 30vmin at 24% 86%,rgba(214,70,64,.11),transparent 70%);mix-blend-mode:screen}
 .wid-page .wv,.wid-page .st{filter:saturate(1.25) contrast(1.15) brightness(1.2);animation:bgdrift 90s linear infinite}
 .wid-page .wv.w2{animation-direction:reverse;animation-duration:110s}
@@ -227,7 +237,7 @@ a.lm-go{text-decoration:none}
 .wid-page .bn.hot.near{box-shadow:0 0 0 4px rgba(255,138,122,.3),0 0 22px 7px rgba(255,138,122,.95)}
 .wid-page .bn.fire{animation:bnpop .5s var(--ease-out)}
 @keyframes bnpop{0%{scale:2.4}100%{scale:1}}
-.wid-page .gl2{position:absolute;inset:0;opacity:0;transition:opacity .4s;background-image:linear-gradient(rgba(126,193,251,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.3) 1px,transparent 1px);background-size:54px 54px;background-position:center top;-webkit-mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%);mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%)}
+.wid-page .gl2{position:absolute;inset:0;opacity:0;transition:opacity .4s;background-image:linear-gradient(rgba(126,193,251,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(126,193,251,.3) 1px,transparent 1px);background-size:56px 56px;background-position:center top;-webkit-mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%);mask-image:radial-gradient(circle 240px at var(--px,50%) var(--py,50%),#000,transparent 100%)}
 .wid-page.lit .gl2{opacity:1}
 .wid-page.beat .wv,.wid-page.beat .st{filter:saturate(1.6) contrast(1.2) brightness(1.75)}
 .wid-page .pr{position:absolute;width:46vmin;height:46vmin;margin:-23vmin 0 0 -23vmin;border-radius:50%;border:1.5px solid rgba(95,211,193,.9);box-shadow:0 0 18px rgba(95,211,193,.45),inset 0 0 18px rgba(95,211,193,.25);pointer-events:none;animation:pring 1.25s cubic-bezier(.16,.8,.3,1) both}
@@ -394,14 +404,15 @@ window.WWReserved=(function(){
  /* Wave ID preview: callouts read from the song's own battle record; no record means it says so.
     Geometry is in percent of the preview box and mirrored for the right-hand column. */
  function wprev(k,s){var t=s.stat,r=k==='b',has=t&&t.battles>0,m=function(x){return r?100-x:x};
-  var a='<div class="wc a">Song<span class="t">'+esc(s.title)+'</span></div>';
-  var b='<div class="wc b2">Battles<br><b>'+(has?t.battles+(t.battles===1?' match':' matches'):'None yet')+'</b></div>';
-  var c='<div class="wc c">Win ratio<br>'+(has?'<b>'+t.rate+'%</b><br>Vol <b>'+(+t.vol||0).toFixed(1)+' SOL</b>':'<b>Not yet battled</b>')+'</div>';
-  var P=[[40,34],[54,46],[44,64]];
-  var L=[[[45,15],[50,15],P[0]],[[61,45],[57,45],P[1]],[[45,84],[48,84],P[2]]];
-  var lines=L.map(function(l){return '<polyline points="'+l.map(function(q){return m(q[0])+','+q[1]}).join(' ')+'"/>'}).join('');
-  var nodes=P.map(function(q,i){return '<i class="wn'+(i===1?' hot':'')+'" style="left:'+m(q[0])+'%;top:'+q[1]+'%"></i>'}).join('');
-  return '<div class="wprev" aria-label="Wave ID preview"><div class="orbm" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div><svg class="wl" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+lines+'</svg>'+nodes+a+b+c+'<div class="wfoot">Wave ID &middot; public record</div></div>';}
+  /* same ledger as the card: a band is the song (volume and record), a node is battle activity, a cavity is win ratio */
+  var C=[
+   {an:[45,38],lb:[38,22],side:'L',k:'Song',t:esc(s.title),d:has?(+t.vol||0).toFixed(2)+' SOL &middot; '+t.wins+'W / '+t.losses+'L':'Not yet battled'},
+   {an:[56,44],lb:[61,30],side:'R',k:'Battle activity',t:has?t.battles+(t.battles===1?' battle':' battles'):'None yet',d:''},
+   {an:[51,62],lb:[61,68],side:'R',k:'Win ratio',t:has?t.rate+'%':'No record yet',d:has?t.wins+'W / '+t.losses+'L':''}];
+  var lines=C.map(function(c){return '<line x1="'+m(c.an[0])+'" y1="'+c.an[1]+'" x2="'+m(c.lb[0])+'" y2="'+c.lb[1]+'"/>'}).join('');
+  var nodes=C.map(function(c){return '<i class="wn" style="left:'+m(c.an[0])+'%;top:'+c.an[1]+'%"></i>'}).join('');
+  var tiles=C.map(function(c){var sd=r?(c.side==='L'?'R':'L'):c.side;return '<div class="wc '+sd+'" style="left:'+m(c.lb[0])+'%;top:'+c.lb[1]+'%"><span class="k">'+c.k+'</span><strong>'+c.t+'</strong>'+(c.d?'<p>'+c.d+'</p>':'')+'</div>'}).join('');
+  return '<div class="wprev" tabindex="0" role="group" aria-label="Wave ID preview for '+esc(s.title)+'"><div class="orbm" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div><svg class="wl" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+lines+'</svg>'+nodes+tiles+'<div class="wfoot">Wave ID &middot; <span class="hh">hover to read</span><span class="th">hold to read</span></div></div>';}
  function slotBig(k){var s=st[k],cls=(k==='g'?'l':'r')+' slot '+(k==='b'?'b ':'')+(s?'full':'empty')+(st.target===k&&!s?' picking':'');
   var stat=s?'ready':(st.target===k?'picking':'empty');
   var art='<div class="art" data-art="'+k+'"><span class="pill">'+side(k)+' side</span>'+(s?'<button class="clr" data-clr="'+k+'" aria-label="Clear '+side(k).toLowerCase()+' side">&times;</button><div class="cov">'+I.song+img(s,'cvimg')+'</div>'+pvBtn(s,'big'):'<span class="plus">+</span>')+'<div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
@@ -553,4 +564,10 @@ window.WWReserved=(function(){
   var n=nearest(e.clientX,e.clientY,e.pointerType==='touch'?44:30);if(n)fire(n);
  });
 })();
-</script></body></html>
+</script><script id="wave-id-hold-js">
+(function(){function up(){var o=document.querySelectorAll('.wprev.show');for(var i=0;i<o.length;i++)o[i].classList.remove('show')}
+document.addEventListener('pointerdown',function(e){if(e.pointerType!=='touch')return;var w=e.target.closest&&e.target.closest('.wprev');if(w)w.classList.add('show')});
+['pointerup','pointercancel'].forEach(function(n){document.addEventListener(n,function(e){if(e.pointerType==='touch')up()})});
+document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.wprev'))e.preventDefault()});})();
+</script>
+</body></html>
