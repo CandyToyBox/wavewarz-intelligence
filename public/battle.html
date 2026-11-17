@@ -2703,7 +2703,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bp-end { max-width: 1000px; margin: 16px auto 0; display: none; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap; padding: 16px 22px; border-radius: 22px; border: 1px solid rgba(216,235,252,.16); background: linear-gradient(180deg, rgba(14,21,34,.92), rgba(7,10,16,.95)); }
 .bp-end.on { display: flex; }
 .bp-end p { margin: 0; flex: 1 1 280px; color: var(--brand-ice); font-size: .98rem; line-height: 1.5; } .bp-end p b { color: #fff; }
-.bp-end .btn-primary { cursor: pointer; border: 0; }
+.bp-end .btn-primary { cursor: pointer; border: 0; } .bp-end .btn-primary:disabled { opacity: .5; cursor: default; } .bp-end a { color: var(--brand-green); }
 .bp { padding-top: 28px; }
 .bp .hl-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); align-items: start; }
 .bp .hl-grid + .hl-grid { margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2843,7 +2843,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     <div class="bp-back"><a href="quick-battles.html">&larr; All battles</a><span id="bpKind" class="bp-tag" hidden></span></div>
     <div id="bpDeck" aria-live="polite"><section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>Loading the battle</span></div></section></div>
     <p class="bp-msg" id="bpMsg" role="status"></p>
-    <div class="bp-end" id="bpEnd"><p id="bpEndTx"></p><button class="btn-primary" type="button" id="bpWithdraw">Withdraw</button></div>
+    <div class="bp-end" id="bpEnd"><p id="bpEndTx"></p><button class="btn-primary" type="button" id="bpSettle" hidden>Settle battle</button><button class="btn-primary" type="button" id="bpWithdraw">Withdraw</button></div>
     <div class="bp-give" id="bpGive" hidden><span>Donate direct &middot; <b>No fees</b></span></div>
   </div>
 
@@ -2876,7 +2876,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       </div>
       <div class="hl-grid">
         <article class="hl-panel" id="rounds" hidden>
-          <header class="hl-ph"><div><h3>Best of 3 rounds</h3></div></header>
+          <header class="hl-ph"><div><h3 id="brTitle">Best of 3 rounds</h3></div></header>
           <p class="br-score" id="brScore"></p>
           <ol class="br" id="brList"></ol>
         </article>
@@ -3103,6 +3103,8 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
      WW.shareStats(battle, where)       where is 'image', 'x' or 'farcaster'
      WW.audioUrl(battle, side)          optional; a playable URL for that side's song (Audius links play without it)
      WW.donate(battle, target, sol)     target is 'a', 'b' or 'wavewarz'
+     WW.isSettled(battle)               optional -> true once withdrawals are open
+     WW.settle(battle)                  optional; only offered if nobody has settled 20 seconds after the end
    Pick a battle with ?id=<battleId>. With no id the page shows the live battle, or the most recent one.
    Design review: ?demo=live shows a battle in progress, ?demo=ended a finished one, both with sample numbers. */
 (function () {
@@ -3145,7 +3147,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   function renderDeck() {
     var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, over = ended(), pv = B.poll;
     var lab = B.type === 'quick' ? ['Song A', 'Song B'] : ['Artist A', 'Artist B'];
-    var rd = EV && B.round ? ' &middot; Round ' + B.round + ' of ' + Math.max(3, EV.rounds.length) : '';
+    var rd = EV && B.round ? ' &middot; Round ' + B.round + ' of ' + nRounds() : '';
     $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live' + (over ? ' ended' : '') + '"><i></i>' + (over ? 'Battle ended' : 'Live') + ' &middot; ' + kindName(B.type) + rd + '</span>' + (B.sample ? '<span>Sample data</span>' : '') + '</div>' +
       '<div class="ld-stage">' + sideHTML('a', B.a, lab[0]) +
       '<div class="ld-mid"><div class="ld-ring" role="timer"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle id="ldArc" cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="' + (over ? 289 : 0) + '" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6))"/></svg><div class="ld-time"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? 'FINAL' : 'TIME LEFT') + '</small></div></div><div class="ld-vs">VS</div>' +
@@ -3154,11 +3156,30 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Voting is free. Your wallet signs a message and nothing is charged.') + '</span><span>Both pools: <b>' + tot.toFixed(4) + ' SOL</b></span></div></section>';
     var k = $('bpKind'); k.hidden = false; k.textContent = 'Battle ' + B.id;
     var e = $('bpEnd'); e.classList.toggle('on', over);
-    if (over) $('bpEndTx').innerHTML = '<b>Battle ended.</b> Traded? Withdraw to collect your SOL.';
+    if (over) {
+      var done = isSettled(), wd = $('bpWithdraw'), st = $('bpSettle');
+      $('bpEndTx').innerHTML = done ? '<b>Battle ended.</b> Traded? Withdraw to collect your SOL. Missed it? <a href="https://claim.wavewarz.info" target="_blank" rel="noopener">claim.wavewarz.info</a>' : '<b>Battle ended.</b> Settling the result. Withdraw opens in a moment.';
+      wd.disabled = !done; wd.textContent = done ? 'Withdraw' : 'Settling\u2026';
+      st.hidden = done || typeof W.settle !== 'function' || Date.now() - B.end < 20000;
+    }
     var g = $('bpGive'); g.hidden = false;
     g.innerHTML = '<span>Donate direct &middot; <b>No fees</b></span><button class="bp-btn" type="button" data-give="a"><i class="ka"></i>' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-give="b"><i class="kb"></i>' + esc(B.b.name) + '</button><button class="bp-btn" type="button" data-give="wavewarz">WaveWarZ</button>';
     document.title = B.a.name + ' vs ' + B.b.name + ' | WaveWarZ';
   }
+  /* Settling should happen on its own. The page never shows a red End Battle button: it waits and re-checks, and only if nobody
+     has settled after 20 seconds does it offer one green action (WW.settle). WW.isSettled(battle) can report it directly. */
+  function isSettled() { return !!(B.winner || B.settled || Date.now() - B.end > 600000); }   /* long-finished battles never sit on Settling */
+  var settleT = null;
+  function watchSettle() {
+    clearTimeout(settleT); if (!B || !ended() || isSettled() || demo) return;
+    settleT = setTimeout(function () {
+      var chk = typeof W.isSettled === 'function' ? Promise.resolve(W.isSettled(B)).then(function (v) { if (v) B.settled = true; }).catch(function () {}) : Promise.resolve();
+      chk.then(function () { return load(); }).then(function () { if (B && !isSettled()) { renderDeck(); watchSettle(); } });
+    }, 8000);
+  }
+  /* wavewarz.com plays the two songs in order, in sync for everyone. Announce it and the deck follows:
+       document.dispatchEvent(new CustomEvent('ww-now-playing', { detail: { side: 'a' } }))   side 'a', 'b' or null */
+  document.addEventListener('ww-now-playing', function (e) { var k = e.detail && e.detail.side; if (audio) audio.pause(); playing = k === 'a' || k === 'b' ? k : ''; if (B) { renderDeck(); runTimer(); } });
   /* songs play on the page, one at a time */
   var audio = null;
   function say(t, ok) { var m = $('bpMsg'); m.textContent = t || ''; m.classList.toggle('ok', !!ok); }
@@ -3197,19 +3218,20 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (!quick) jw.innerHTML = '';
     else if (j && j.status === 'ready' && (j.winner === 'a' || j.winner === 'b')) {
       var cf = +j.confidence; if (cf > 0 && cf <= 1) cf *= 100;
-      jw.innerHTML = '<div class="bj"><div class="bj-h"><span>DJ Wavy\'s call</span>' + (cf > 0 ? '<span>' + Math.round(cf) + '% confident</span>' : '') + '</div><strong><i class="k' + j.winner + '"></i>' + esc(name(j.winner)) + '</strong>' + (j.notes ? '<p>' + esc(j.notes) + '</p>' : '') + '</div>';
+      jw.innerHTML = '<div class="bj"><div class="bj-h"><span>DJ Wavy\'s call</span>' + (cf > 0 ? '<span>' + Math.round(cf) + '% confident</span>' : '') + '</div><strong><i class="k' + j.winner + '"></i>' + esc(name(j.winner)) + '</strong>' + (j.notes ? '<p>' + esc(j.notes) + '</p>' : '') + '<p style="margin-top:12px"><a class="bp-btn" href="audius-search.html">Get a DJ Wavy Breakdown</a></p></div>';
     } else jw.innerHTML = '<div class="bj locked"><div class="bj-h"><span>DJ Wavy\'s call</span><span>Locked</span></div><p>Revealed when the battle ends.</p></div>';
     $('bfList').innerHTML = rows;
     var quickLabel = quick ? ' the battle' : ' the round'; var got = { a: 0, b: 0 }; [pollK, judgeK, chartK].forEach(function (k) { if (k) got[k]++; });
     var lead2 = got.a >= 2 ? 'a' : got.b >= 2 ? 'b' : B.winner;
-    $('bfRule').innerHTML = lead2 && over ? '<b>' + esc(name(lead2)) + '</b> wins' + quickLabel + (got[lead2] ? ', ' + got[lead2] + ' of 3' : '') : (B.type === 'main' ? 'Best of 3 rounds wins the battle' : '');
+    $('bfRule').innerHTML = lead2 && over ? '<b>' + esc(name(lead2)) + '</b> wins' + quickLabel + (got[lead2] ? ', ' + got[lead2] + ' of 3' : '') : (B.type === 'main' ? 'Best of ' + nRounds() + ' rounds wins the battle' : '');
     $('bfRule').hidden = !$('bfRule').innerHTML;
   }
 
+  function nRounds() { return Math.max(3, EV && EV.rounds ? EV.rounds.length : 3); }
   /* ---------- rounds (Main Events) ---------- */
   function renderRounds() {
     var p = $('rounds'); if (!EV || !EV.rounds || EV.rounds.length < 2) { p.hidden = true; return; }
-    p.hidden = false;
+    p.hidden = false; $('brTitle').textContent = 'Best of ' + nRounds() + ' rounds';
     var rw = EV.roundsWon || {};
     $('brScore').innerHTML = esc(B.a.name) + ' ' + (rw.artist1 || 0) + ' &middot; ' + (rw.artist2 || 0) + ' ' + esc(B.b.name) + '<small>' + (EV.winnerSide ? 'Final' : 'So far') + '</small>';
     $('brList').innerHTML = EV.rounds.map(function (r) {
@@ -3370,7 +3392,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
           : '<div class="bt-amt">' + [25, 50, 100].map(function (v) { return '<button type="button" data-v="' + v + '" aria-pressed="' + (v === pct) + '">' + v + '%</button>'; }).join('') + '</div><p class="bt-bal" id="btBal">Connect a wallet to see your balance.</p>') +
         '<div class="wa-rows"><div><span>Goes to the artist</span><b>1% of the trade</b></div><div><span>Platform fee</span><b>0.5% of the trade</b></div></div>' +
         '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">' + (mode === 'buy' ? 'Buy ' + amt.toFixed(2) + ' SOL' : 'Sell ' + pct + '%') + '</button>' +
-        '<span class="wf-fine">' + (live ? 'Your wallet opens to approve. Token prices move as people trade, and you can get back less than you put in.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
+        '<span class="wf-fine">' + (live ? 'Your wallet opens to approve. ' : 'Preview. Nothing is sent from this page yet. ') + 'Trading carries risk. You can lose what you put in.</span></div>';
       if (mode === 'sell' && typeof W.getPosition === 'function') Promise.resolve(W.getPosition(B)).then(function (p) { var x = p && p[k], e = $('btBal'); if (x && e) e.textContent = 'Your balance: ' + (+x.tokens || 0).toFixed(3) + ' tokens, about ' + sol(x.valueSol, 4); }).catch(function () {});
       $('waGo').addEventListener('click', function () {
         run(this, live, function () { return mode === 'buy' ? W.buy(B, k, amt) : W.sell(B, k, pct); }, mode === 'buy' ? 'Bought.' : 'Sold.', mode === 'buy' ? 'You are in on ' + esc(a.name) + '. Withdraw after the battle ends.' : 'Your sale went through.');
@@ -3387,7 +3409,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (!dlg || !dlg.showModal) return; var live = typeof W.withdraw === 'function';
     opener = from || null; $('waBody').onclick = null; $('waEb').textContent = kindName(B.type); $('waTitle').textContent = 'Withdraw from this battle';
     $('waBody').innerHTML = '<div class="wa-rows"><div><span>Result</span><b>' + (B.winner ? esc(name(B.winner)) + ' won' : 'Settling') + '</b></div><div><span>Your tokens</span><b id="bwTok">' + (live ? 'Checking…' : 'Shown when a wallet is connected') + '</b></div><div><span>You receive</span><b id="bwGet">' + (live ? 'Checking…' : 'Shown before you approve') + '</b></div></div>' +
-      '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">Withdraw</button><span class="wf-fine">' + (live ? 'Your wallet opens to approve.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
+      '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">Withdraw</button><span class="wf-fine">' + (live ? 'Your wallet opens to approve. Use the wallet you traded with.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
     if (typeof W.getPosition === 'function') Promise.resolve(W.getPosition(B)).then(function (p) {
       var t = $('bwTok'), g = $('bwGet'); if (!p || !t) return;
       t.textContent = [['a', p.a], ['b', p.b]].filter(function (q) { return q[1] && +q[1].tokens > 0; }).map(function (q) { return (+q[1].tokens).toFixed(3) + ' on ' + name(q[0]); }).join(', ') || 'None in this battle';
@@ -3420,6 +3442,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (b) openTrade(b.dataset.trade, b); else if (v) castVote(v.dataset.vote); else if (pl) togglePlay(pl.dataset.play);
   });
   $('bpWithdraw').addEventListener('click', function () { openWithdraw(this); });
+  $('bpSettle').addEventListener('click', function () {
+    var b = this; b.disabled = true; b.textContent = 'Waiting for your wallet\u2026';
+    Promise.resolve(W.settle(B)).then(function () { B.settled = true; say('Battle settled. Withdraw is open.', true); return load(); })
+      .catch(function (er) { say((er && er.userMessage) || 'Settling did not go through. Nothing was charged. Try again.'); })
+      .then(function () { b.disabled = false; b.textContent = 'Settle battle'; if (B) renderDeck(); });
+  });
   /* the poll: the vote shows at once, then the wallet signs; a failed vote is taken back */
   function voteKey() { return 'ww-vote-' + B.id; }
   function castVote(k) {
@@ -3482,7 +3510,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   function normalize(x) {
     var end = Date.parse(x.endsAt), start = Date.parse(x.startedAt || x.createdAt) || (end - (x.battleDurationSeconds || 480) * 1000), same = B && B.id === x.battleId, stored = '';
     try { stored = sessionStorage.getItem('ww-vote-' + x.battleId) || ''; } catch (e) {}
-    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, streamLink: x.streamLink || '', poll: same ? B.poll : (x.poll || null), myVote: same ? B.myVote : stored, judge: same ? B.judge : (x.judge || null) };
+    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, settled: same ? B.settled : false, streamLink: x.streamLink || '', poll: same ? B.poll : (x.poll || null), myVote: same ? B.myVote : stored, judge: same ? B.judge : (x.judge || null) };
   }
   var viewSet = false;
   function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); renderStream(); loadMine(); if (!viewSet) { viewSet = true; if (view !== 'chart') setView(view); } else sendGame(); }
@@ -3504,6 +3532,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       loadPoll(); if (ended()) loadJudge();
       if (first) { if (B.type === 'main') jget(API + 'events?limit=60').then(function (d) { EV = (d.events || []).filter(function (e) { return (e.rounds || []).some(function (r) { return String(r.battleId) === String(B.id); }); })[0] || null; if (EV && demo === 'live') { EV = JSON.parse(JSON.stringify(EV)); EV.winnerSide = null; EV.rounds.forEach(function (r) { if (String(r.battleId) === String(B.id)) { if (r.winnerSide && EV.roundsWon[r.winnerSide]) EV.roundsWon[r.winnerSide]--; r.winnerSide = null; r.live = true; r.artist1PoolSol = B.a.poolSol; r.artist2PoolSol = B.b.poolSol; } }); } if (EV) { setRound(); paint(); } }).catch(function () {}); }
       clearTimeout(poll); if (!ended() && demo !== 'live') poll = setTimeout(load, 30000);
+      watchSettle();
     }).catch(function () { if (!B) fail(); });
   }
   function setRound() { var r = (EV.rounds || []).filter(function (r) { return String(r.battleId) === String(B.id); })[0]; B.round = r ? r.roundNumber : null; }

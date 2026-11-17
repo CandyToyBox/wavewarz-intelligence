@@ -172,3 +172,11 @@ Source: `~/wavewarz-ux-audit-2026-07 copy/REPORT.md` plus Candy's review of live
 - Removed for good: wallet address dump, Reconnect Sync, the second explainer pop-up, the yellow banner, purple, winner overlays on the chart, duplicate toasts.
 - Review states: `?demo=live`, `?demo=ended`, and `?id=<main battle id>&demo=live` for the stream embed.
 - Not solved here, raised with Hurricane: whether End Battle is still a manual step, and the wallet waiting state.
+
+## Battle page: settle state and briefing rules (2026-11-17)
+Sources: Candy on End Battle, `~/wavewarz-homepage-blueprint-2026-10-21.md`, `~/WaveWarz-Muse-Briefing-2026-10-24.md`.
+- No End Battle button. After the timer the bar reads "Settling the result" with Withdraw disabled, re-checks every 8 seconds, and opens Withdraw once settled. A green "Settle battle" appears only if `WW.settle` exists and nobody has settled after 20 seconds. Battles more than 10 minutes old never sit on Settling.
+- `ww-now-playing` event lets wavewarz.com's synced song order drive the Now playing state.
+- "Best of N rounds" follows the event's round count (three, sometimes five).
+- Trade module always shows the risk line. Withdraw says to use the wallet you traded with. End bar links claim.wavewarz.info.
+- DJ Wavy's call has a "Get a DJ Wavy Breakdown" link.
