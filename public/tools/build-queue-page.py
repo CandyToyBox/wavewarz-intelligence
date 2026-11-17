@@ -32,6 +32,7 @@ PAGE_CSS = '''
 body[data-page="queue"] .qp { padding-top: 132px; }
 body[data-page="queue"] .qp-all { display: none; }
 .ql { padding-top: 24px; }
+.ql .hl-ph .ql-h { margin: 0; font: 700 var(--fs-h3, 1.15rem)/1.2 'Space Grotesk', sans-serif; letter-spacing: -.005em; color: #fff; text-transform: none; }
 .ql .hl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 .ql .hl-row { grid-template-columns: 30px 70px minmax(0, 1fr) auto; }
 .ql .hl-rk { font-size: .95rem; }
@@ -61,12 +62,12 @@ LISTS = '''
     <div class="hl-in">
       <div class="hl-grid">
         <article class="hl-panel">
-          <header class="hl-ph"><div><h3>Up next</h3><p id="qlCount">Every battle waiting to play</p></div></header>
+          <header class="hl-ph"><div><h2 class="ql-h">Up next</h2><p id="qlCount">Every battle waiting to play</p></div></header>
           <ol class="hl-list" id="qlQueue"><li class="hl-empty">Loading the queue.</li></ol>
           <p class="ql-foot" id="qlNote"></p>
         </article>
         <article class="hl-panel" id="recent">
-          <header class="hl-ph"><div><h3>Recently finished</h3><p>Open a battle to see the result and Withdraw</p></div></header>
+          <header class="hl-ph"><div><h2 class="ql-h">Recently finished</h2><p>Open a battle to see the result and Withdraw</p></div></header>
           <ol class="hl-list" id="qlRecent"><li class="hl-empty">Loading finished battles.</li></ol>
         </article>
       </div>
@@ -122,7 +123,7 @@ PAGE_JS = r'''<script id="queue-page-js">
 </script>
 '''
 
-out = (head.rstrip() + PAGE_CSS if '</head>' not in head else head.replace('</head>', PAGE_CSS + '</head>'))
+out = (head.rstrip() + PAGE_CSS if '</head>' not in head else head.replace('<link rel="stylesheet" href="ww-base.css">', PAGE_CSS + '<link rel="stylesheet" href="ww-base.css">'))
 out += '''<body data-page="queue">
   <!-- GENERATED from index.html by tools/build-queue-page.py. Edit the homepage or the generator, not this file. -->
   <div class="ambient-canvas"></div>

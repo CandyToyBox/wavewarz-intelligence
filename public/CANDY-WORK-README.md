@@ -191,3 +191,14 @@ From Candy's voice note: timing is everything when trading, so everything has to
 - `ww-celebrate.js`: wave or champagne bubbles on canvas. Launch plays the wave and goes to the battle; reserving plays bubbles.
 - `share-module.html`: Candy's Battle Share Card artifact (https://claude.ai/artifact/SumSU8RQ8tfE4FGZUqE7b1) with an embed mode; opens after Withdraw and from Your battle.
 - The trade pop-up from the earlier passes is gone. Backups: scratchpad `build-battle-page.v3.py`, `index.before-cockpit.html`, `audius-search.before-cockpit.html`. Patch: `cockpit_patch.py`.
+
+## Polish pass across every page (2026-11-17)
+Ran the impeccable `polish` pass over all eight pages so they read as one site. Refinement only: the look, copy and behavior stay as designed.
+- **Real font weights.** Every page now loads one identical font request (Space Grotesk 400-700, Outfit 300-900, JetBrains Mono 400-800). Before, pages asked for weights that were never loaded: Space Grotesk 800 and 900 (that font stops at 700) were being faked by the browser, which smeared headings and made them read chunky; most Outfit body text was quietly rendering a step heavier than designed. `font-synthesis-weight: none` now stops any faking.
+- **`ww-base.css`**, loaded last by every page: themed text selection, text cursor, scrollbars and keyboard focus ring; buttons use the page font instead of the system font; timers and tables keep steady-width numbers; balanced headline wrapping.
+- **One nav and footer.** The setup page and the Audius flow now use the same floating pill nav as the homepage, queue and battle pages, with the same links. Queue was added to the nav everywhere. The wallet button reads "Connect wallet" on every page (it said "Select Wallet" on the homepage). Phone nav sizing matches on every page so the button never wraps.
+- **Share module** moved from the old Rajdhani and Inter to the site's Space Grotesk and Outfit; quiet grey text raised to pass contrast; labels raised to at least 11px.
+- **Readability:** small labels on the battle page and the Wave ID study raised to the 11px floor; the battle page's Mainnet tag no longer covers the timer bar; the queue page's list headings are now h2 under the page h1 (screen readers read the order correctly).
+- **Brand spelling** in page titles and the share card: WaveWarZ.
+- **Kept on purpose** (the design itself, not defects): the glow, the Wave ID grid backgrounds, the scrolling ribbon, the pulsing live dots, the brand gradient on two headlines, the small labels above section headings, and the side stripe on the featured-artist tags.
+- Backups: scratchpad `before-polish/`. Patch: `apply_polish.py`.

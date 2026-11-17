@@ -58,8 +58,8 @@ CSS = r'''
 '''
 
 BODY = r'''
-<div class="scroller" id="scroller"><div class="page">
-<header><a href="index.html" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=3" alt="WaveWarZ"></a><div class="hr"><a class="pillbtn" href="audius-search.html">Battle setup</a><button class="pillbtn solid" id="wallet" type="button">Connect wallet</button></div></header>
+<div class="scroller" id="scroller"><div class="page ww-under-nav">
+
 <div class="eyebrow"><i></i><span class="label">For artists on Audius</span></div>
 <h1>Get your catalog <em>battle-ready.</em></h1>
 <p class="sub">Connect once. Every public song on your Audius profile can enter Quick BattleZ.</p>
@@ -73,7 +73,7 @@ BODY = r'''
 
 <section class="ac-cat" id="cat" hidden aria-label="Your catalog on WaveWarZ"></section>
 
-<footer style="margin-top:var(--space-8);padding-top:var(--space-5);border-top:1px solid var(--line);color:var(--ink-muted);font-size:13px;display:flex;flex-wrap:wrap;gap:var(--space-3) var(--space-5);justify-content:space-between"><span>&copy; 2026 WaveWarZ. Powered by Solana.</span><a href="https://www.wavewarz.com/terms" style="color:var(--blue-ink)">Terms and Conditions</a></footer>
+@@FOOT@@
 </div></div>
 <div id="toast" role="status" hidden style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;background:var(--bg-raised);border:1px solid var(--line);border-radius:var(--radius-pill);padding:12px 20px;font-size:14px;box-shadow:var(--lift);max-width:calc(100vw - 32px)"></div>
 '''
@@ -153,6 +153,12 @@ JS = r'''<script>
 })();
 </script>
 '''
-out = head + CSS + '</style></head><body>\n' + bg + BODY + JS + '</body></html>\n'
+# site nav and footer: the same ones as the setup page, with this page's own action and current link
+NAV = src[src.index('<div class="nav-wrapper">'):src.index('</nav></div>') + len('</nav></div>')]
+NAV = NAV.replace(' aria-current="page"', '')
+NAV = re.sub(r'<div class="nav-actions">.*</div></nav></div>$', '<div class="nav-actions"><button class="ww-btn solid" id="wallet" type="button">Connect wallet</button></div></nav></div>', NAV, flags=re.S)
+FOOT = re.search(r'<footer class="ww-foot">.*?</footer>', src, re.S).group(0)
+BODY = BODY.replace('@@FOOT@@', FOOT)
+out = head + CSS + '</style><link rel="stylesheet" href="ww-base.css">\n</head><body class="ww-flow">\n' + NAV + '\n' + bg + BODY + JS + '</body></html>\n'
 open('audius-connect.html', 'w', encoding='utf-8').write(out)
 print('audius-connect.html', len(out))

@@ -14,7 +14,7 @@
   <!-- Fonts: Outfit, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Model Viewer for 3D DJ Wavy -->
 
@@ -2697,6 +2697,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 body[data-page="queue"] .qp { padding-top: 132px; }
 body[data-page="queue"] .qp-all { display: none; }
 .ql { padding-top: 24px; }
+.ql .hl-ph .ql-h { margin: 0; font: 700 var(--fs-h3, 1.15rem)/1.2 'Space Grotesk', sans-serif; letter-spacing: -.005em; color: #fff; text-transform: none; }
 .ql .hl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 .ql .hl-row { grid-template-columns: 30px 70px minmax(0, 1fr) auto; }
 .ql .hl-rk { font-size: .95rem; }
@@ -2709,6 +2710,7 @@ body[data-page="queue"] .qp-all { display: none; }
 @media (max-width: 1100px) { .ql .hl-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .ql .hl-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .ql .hl-art { display: none; } .ql-btn { padding: 0 12px; } }
 </style>
+<link rel="stylesheet" href="ww-base.css">
 </head>
 
 <body data-page="queue">
@@ -2727,6 +2729,7 @@ body[data-page="queue"] .qp-all { display: none; }
         <li><a href="index.html#tonight">Schedule</a></li>
         <li><a href="index.html#how-it-works">How it works</a></li>
         <li><a href="index.html#for-artists">For Artists</a></li>
+        <li><a href="quick-battles.html">Queue</a></li>
         <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
         <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
       </ul>
@@ -2734,7 +2737,7 @@ body[data-page="queue"] .qp-all { display: none; }
       <div class="nav-actions">
         <!-- Prototype: opens the live app, where the wallet picker lives. -->
         <a href="https://www.wavewarz.com" target="_blank" rel="noopener" class="btn-primary" title="Opens wavewarz.com to connect a wallet">
-          Select Wallet
+          Connect wallet
         </a>
         <div class="mn" id="mnCall"><i aria-hidden="true"></i><span>Live on <b>Solana Mainnet</b></span></div>
       </div>
@@ -2790,12 +2793,12 @@ body[data-page="queue"] .qp-all { display: none; }
     <div class="hl-in">
       <div class="hl-grid">
         <article class="hl-panel">
-          <header class="hl-ph"><div><h3>Up next</h3><p id="qlCount">Every battle waiting to play</p></div></header>
+          <header class="hl-ph"><div><h2 class="ql-h">Up next</h2><p id="qlCount">Every battle waiting to play</p></div></header>
           <ol class="hl-list" id="qlQueue"><li class="hl-empty">Loading the queue.</li></ol>
           <p class="ql-foot" id="qlNote"></p>
         </article>
         <article class="hl-panel" id="recent">
-          <header class="hl-ph"><div><h3>Recently finished</h3><p>Open a battle to see the result and Withdraw</p></div></header>
+          <header class="hl-ph"><div><h2 class="ql-h">Recently finished</h2><p>Open a battle to see the result and Withdraw</p></div></header>
           <ol class="hl-list" id="qlRecent"><li class="hl-empty">Loading finished battles.</li></ol>
         </article>
       </div>

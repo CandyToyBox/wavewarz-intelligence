@@ -200,6 +200,8 @@ Each script block on the homepage has an `id` and is self-contained (its own clo
 
 ## 6. Things to know before you start
 
+- **`ww-base.css` is shared by every page** and loads last. It holds the browser-surface styling (selection, focus ring, scrollbars, caret), turns off synthetic font weights, and styles the nav and footer on the flow pages (`body.ww-flow`). In React it belongs in the global stylesheet. Use the one font request in each page's head; the weights in it are the ones the pages use.
+
 - **Money amounts shown on the pages.** Launch 0.007 SOL, add a battle 0.005 SOL, DJ Wavy Breakdown up to 0.015 SOL are written into the pages. Skip comes from `skipState.min_skip_lamports`. If any of the fixed ones are wrong or should come from the API, say so.
 - **The queue page is generated.** Do not edit `quick-battles.html` by hand in the prototype; change `index.html` or the generator.
 - **Scroll-pinned sections.** The dock, Ride the WaveWarZ and the DJ Wavy section use `position: sticky` inside a tall section, with native scroll. They need `overflow: clip` (not `hidden`) on their ancestors, or the pinning breaks.

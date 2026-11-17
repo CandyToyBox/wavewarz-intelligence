@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wave ID display study | WaveWarz</title>
+<title>Wave ID display study | WaveWarZ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Outfit:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* Design study: the Wave ID shown as an orb on a blueprint grid, with data callouts and a stats card.
    Tokens match the Rebrand System; teal and red come from the vision frame. */
@@ -46,7 +46,7 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
 
 /* Callouts follow Quan's Wave ID card (WavID #12): quiet until the ID is hovered, focused or held */
 .callout{position:absolute;z-index:2;width:max-content;max-width:240px;margin:0;padding:8px 10px 9px;border-radius:6px;background:var(--callout-bg);border:1px solid var(--callout-line);box-shadow:0 0 0 1px rgba(188,241,207,.06),0 0 28px rgba(140,255,190,.06);-webkit-backdrop-filter:blur(8px) saturate(1.15);backdrop-filter:blur(8px) saturate(1.15);pointer-events:none}
-.callout .k{display:block;font:600 10px/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
+.callout .k{display:block;font:600 11px/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--green)}
 .callout strong{display:block;margin-top:3px;font:500 14px/1.25 var(--font-sans);letter-spacing:-.2px;color:#f4fff8}
 .callout p{margin:3px 0 0;font:400 12px/1.35 var(--font-mono);color:#d7f5e4}
 .c1{left:27%;top:23%;transform:translate(-100%,-50%)}
@@ -93,6 +93,7 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 max(16
 }
 @media(prefers-reduced-motion:reduce){.orb img{animation:none}}
 </style>
+<link rel="stylesheet" href="ww-base.css">
 </head>
 <body>
 <div class="grid" aria-hidden="true"></div>

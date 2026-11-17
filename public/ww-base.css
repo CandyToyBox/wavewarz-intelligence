@@ -1,0 +1,79 @@
+/* WaveWarZ shared base. Loaded by every page after its own styles, so these few rules hold everywhere.
+   It only covers what each page used to leave to browser defaults, plus the site nav and footer for the flow pages
+   (body.ww-flow) that are not generated from the homepage. Page designs stay in each page. */
+
+:root { color-scheme: dark; }
+
+/* Real weights only. Space Grotesk stops at 700: asking for 800 or 900 made the browser smear the letters into a fake
+   bold, which is what read as chunky. With synthesis off, those headings render the real 700. */
+html { font-synthesis-weight: none; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* Controls take the page's type instead of the system font */
+button, input, select, textarea { font-family: inherit; }
+
+/* Browser surfaces in the palette */
+::selection { background: rgba(149, 254, 124, .3); color: #fff; }
+input, textarea, [contenteditable="true"] { caret-color: #95fe7c; }
+a { text-underline-offset: .22em; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid #95fe7c; outline-offset: 3px; }
+:focus:not(:focus-visible) { outline: none; }
+
+html { scrollbar-width: thin; scrollbar-color: rgba(216, 235, 252, .24) #06090f; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #06090f; }
+::-webkit-scrollbar-thumb { background: rgba(216, 235, 252, .2); border-radius: 999px; border: 2px solid #06090f; }
+::-webkit-scrollbar-thumb:hover { background: rgba(216, 235, 252, .36); }
+
+/* Numbers that change in place keep their width */
+[role="timer"], table, time { font-variant-numeric: tabular-nums; }
+
+h1, h2, h3 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+
+/* ---------------- Site nav and footer for the flow pages (setup, Audius connect) ----------------
+   Same look as the homepage navbar: a floating pill with the logo, the main links, and the wallet button. */
+body.ww-flow .nav-wrapper { position: fixed; top: 18px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 20px; pointer-events: none; }
+body.ww-flow .navbar { pointer-events: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; width: 100%; max-width: 1320px; padding: 12px 24px; border-radius: 999px; background: rgba(0, 0, 0, .82); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(126, 193, 251, .22); box-shadow: 0 20px 50px rgba(0, 0, 0, .8), 0 0 25px rgba(126, 193, 251, .12); }
+body.ww-flow .nav-logo { display: block; height: 50px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)); transition: transform .3s ease; }
+body.ww-flow .nav-logo:hover { transform: scale(1.07) rotate(-1.5deg); }
+body.ww-flow .nav-links { display: flex; align-items: center; gap: 24px; list-style: none; margin: 0; padding: 0; }
+body.ww-flow .nav-links a { color: #daecfd; text-decoration: none; font: 600 .92rem 'Outfit', sans-serif; transition: color .2s ease; }
+body.ww-flow .nav-links a:hover, body.ww-flow .nav-links a[aria-current="page"] { color: #95fe7c; }
+body.ww-flow .nav-actions { display: flex; align-items: center; gap: 10px; }
+body.ww-flow .ww-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 0 24px; border-radius: 999px; font: 700 .84rem/1 'Space Grotesk', sans-serif; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease; }
+body.ww-flow .ww-btn.solid { background: #95fe7c; color: #06090f; border: 1px solid rgba(255, 255, 255, .38); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 8px 22px rgba(0, 0, 0, .45); }
+body.ww-flow .ww-btn.solid:hover { background: #b6ffa4; transform: translateY(-1px); }
+body.ww-flow .ww-btn.ghost { background: rgba(255, 255, 255, .03); color: #fff; border: 1px solid rgba(216, 235, 252, .3); }
+body.ww-flow .ww-btn.ghost:hover { border-color: #95fe7c; background: rgba(149, 254, 124, .08); transform: translateY(-1px); }
+body.ww-flow .ww-btn:active { transform: translateY(0); }
+body.ww-flow .ww-btn svg { flex: none; }
+body.ww-flow .ww-under-nav { padding-top: 112px; }
+body.ww-flow footer.ww-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; margin-top: 64px; padding: 22px 0 28px; border-top: 1px solid rgba(216, 235, 252, .12); font: 400 .72rem/1.6 'JetBrains Mono', monospace; letter-spacing: .04em; color: #8d9bb0; }
+body.ww-flow footer.ww-foot a { color: #daecfd; text-decoration: none; } body.ww-flow footer.ww-foot a:hover { color: #95fe7c; }
+body.ww-flow footer.ww-foot nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+body.ww-flow .cp-watch { position: relative; display: inline-block; }
+body.ww-flow .cp-watch > summary { list-style: none; cursor: pointer; color: #daecfd; font: 600 .92rem 'Outfit', sans-serif; } body.ww-flow .cp-watch > summary::-webkit-details-marker { display: none; } body.ww-flow .cp-watch > summary:hover { color: #95fe7c; }
+body.ww-flow .cp-chev { display: inline-block; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); margin-left: 8px; }
+body.ww-flow .cp-watch[open] .cp-chev { transform: translateY(1px) rotate(-135deg); }
+body.ww-flow .cp-watch-menu { position: absolute; z-index: 300; top: calc(100% + 10px); left: 0; min-width: 250px; background: rgba(7, 10, 16, .97); border: 1px solid rgba(126, 193, 251, .28); border-radius: 18px; padding: 8px; box-shadow: 0 20px 50px rgba(0, 0, 0, .8); }
+body.ww-flow .cp-watch-menu a { display: block; padding: 11px 14px; border-radius: 12px; color: #fff; font: 600 .92rem 'Outfit', sans-serif; }
+body.ww-flow .cp-watch-menu a:hover { background: rgba(149, 254, 124, .12); color: #95fe7c; }
+body.ww-flow .cp-watch-menu p { margin: 6px 14px 8px; font: 400 .72rem/1.5 'JetBrains Mono', monospace; color: #8d9bb0; }
+@media (max-width: 1100px) { body.ww-flow .nav-links { display: none; } }
+@media (max-width: 640px) {
+  body.ww-flow .nav-wrapper { top: 10px; padding: 0 10px; }
+  body.ww-flow .navbar { padding: 8px 10px 8px 16px; gap: 10px; }
+  body.ww-flow .nav-logo { height: 38px; }
+  body.ww-flow .ww-btn { min-height: 40px; padding: 0 14px; font-size: .74rem; }
+  body.ww-flow .ww-btn.ghost .lbl { display: none; } body.ww-flow .ww-btn.ghost { width: 40px; padding: 0; }
+  body.ww-flow .ww-under-nav { padding-top: 84px; }
+}
+/* Every page's nav sizes the same on a phone, so the wallet button never wraps */
+.nav-actions .btn-primary { white-space: nowrap; }
+@media (max-width: 640px) {
+  .nav-wrapper { top: 10px; padding: 0 10px; }
+  .navbar { padding: 8px 10px 8px 16px; gap: 10px; }
+  .nav-logo { height: 38px; }
+  .nav-actions .btn-primary { min-height: 40px; padding: 0 14px; font-size: .74rem; }
+}
+@media (prefers-reduced-motion: reduce) { body.ww-flow .nav-logo, body.ww-flow .ww-btn { transition: none; } body.ww-flow .nav-logo:hover, body.ww-flow .ww-btn:hover { transform: none; } }
