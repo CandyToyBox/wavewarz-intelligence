@@ -20,11 +20,12 @@ One thing to confirm first: this guide assumes wavewarz.com is still built the w
 | `/quick-battles` | `quick-battles.html` | Generated from `index.html` by `tools/build-queue-page.py`, so the dock is identical |
 | `/audius/search` | `audius-search.html` | Battle setup: pick two songs, review, reserve |
 | `/audius/connect` and `/audius/tracks` | `audius-connect.html` | One four-step flow: wallet, rights, Audius, catalog |
+| `/v2/battles/[battleId]` | `battle.html` | Battle page. Generated from `index.html` by `tools/build-battle-page.py`. Open with `?id=<battleId>`; `?demo=live` shows a battle in progress |
 | (new) | `onboarding.html` | The guided start, embedded in the homepage as an iframe. Also works standalone |
 
 Links between the pages are relative file names in the prototype (`audius-search.html`, `quick-battles.html`, `audius-connect.html`). Change them to your routes.
 
-Unchanged routes the pages link to: `/v2/battles/[battleId]`, `/v2/community/create`, `/terms`, `/docs`.
+Unchanged routes the pages link to: `/v2/community/create`, `/terms`, `/docs`. The homepage and queue page still link battles to `/v2/battles/<id>`, which is where `battle.html` goes.
 
 ---
 
@@ -43,6 +44,13 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.connectAudius({ address })` | `audius-connect.html` step 3 | Audius sign-in, then link the profile to the wallet | `{ handle }` |
 | `WW.getMyCatalog({ address })` | `audius-connect.html` step 4 | The artist's songs in the WaveWarZ catalog | `{ linked, handle, tracks: [...] }` |
 | `WW.resyncCatalog({ address })` | `audius-connect.html` step 4 | Resync, then return the catalog | same as `getMyCatalog` |
+| `WW.getBattleChart(battleId)` | `battle.html`, the chart | Pool size of each side over time, from your trade history | `{ points: [{ t, a, b }] }` (`t` in ms, `a` and `b` in SOL) |
+| `WW.buy(battle, side, amountSol)` | `battle.html`, trade module | Buy on one side. `side` is `'a'` or `'b'` | anything |
+| `WW.sell(battle, side, percent)` | `battle.html`, trade module | Sell 25, 50 or 100 percent of the holder's tokens on that side | anything |
+| `WW.getPosition(battle)` | `battle.html`, Sell tab | The connected wallet's balance on each side | `{ a: { tokens, valueSol }, b: { tokens, valueSol } }` |
+| `WW.withdraw(battle)` | `battle.html`, after the battle ends | Your existing Withdraw | anything |
+| `WW.getPoll(battle)` | `battle.html`, decision panel | Quick BattleZ poll counts | `{ a, b, locked }` |
+| `WW.votePoll(battle, side)` | `battle.html`, decision panel | Cast a poll vote | anything |
 
 `queueItem` is the object from your `/api/quick-battles` response, untouched (`id`, `artist1_track_title`, `artist1_handle`, `artist1_artwork_url`, and so on). `songA` and `songB` are `{ id, title, handle, secs, art, link, wallet, genre }`, mapped from your `/api/audius/tracks` rows by `norm()` in the setup page.
 
@@ -115,6 +123,17 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 | 14 | Sunday reminders | `#alerts` | forms route | none |
 | 15 | Footer | `footer.cp-foot` | forms route | Merge with your layout footer |
 
+### The battle page (`battle.html`)
+
+Built from the homepage pieces: the Live Battle Deck is the matchup, and the panels are the Top 5 panel shell.
+
+- **One chart for both sides.** It plots the SOL in each side's pool over time, because that is what decides the chart. Until `WW.getBattleChart` exists the line shape is a labeled sample that ends on the real pool sizes. Your current page draws one price chart per side; if you would rather keep price as the measure, the same hook can carry it, but then say so on the page.
+- **How it is decided.** Three rows: the poll, the judges (DJ Wavy on Quick BattleZ) and the chart, each showing who holds it. Two of three takes the round, and on Sunday Featured battles best of three rounds takes the battle. Results come from wavewarz.info `/battles/:id` (`factors`) and `/events` (rounds).
+- **Trade module.** The Trade button on each side opens one dialog with Buy (0.05, 0.10, 0.25 SOL) and Sell (25, 50, 100 percent), the same choices as today's page.
+- **After the battle.** The deck shows the winner and a Withdraw bar appears.
+- The battle object passed to the hooks is `{ id, type, a, b, start, end, winner, factors }`, where `a` and `b` are the `artist1` and `artist2` objects from wavewarz.info.
+- Left off on purpose: the intro pop-up, the yellow Mainnet banner and the donate blocks. Say if any should come back.
+
 ### How the Live Battle Deck behaves
 
 This replaces the old Featured Battle card.
@@ -171,4 +190,5 @@ Each script block on the homepage has an `id` and is self-contained (its own clo
 4. How should Community BattleZ connect, if at all, for launch?
 5. Are the fixed fees in section 6 right?
 6. What does `/audius/search` call today to reserve a battle, and what does it return? `WW.reserve` assumes `{ position, skipPrice }`.
-7. Would you rather receive these as React components? Candy can have them converted section by section once the answers above are settled.
+7. On the battle page, can you supply pool size over time for both sides (`WW.getBattleChart`), and is the poll on Sunday Featured battles still the X poll?
+8. Would you rather receive these as React components? Candy can have them converted section by section once the answers above are settled.

@@ -143,3 +143,13 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 - WaveZStation drops now read `https://wavewarz.info/api/public/wavezstation`; Tonight already reads `/api/public/calendar`. Both routes are in wavewarz-intelligence PR #29 and both sections keep using their saved snapshot until it is merged.
 - wavewarz.info: PR #30 updates the embedded Wave ID studio to the same commit.
 - Backups before this change: scratchpad `*.before-quan-callouts.html`. Patch script `apply_quan_callouts.py`.
+
+## Battle page (2026-11-16)
+`battle.html` is the redesigned battle page (wavewarz.com `/v2/battles/<id>`), generated from `index.html` by `tools/build-battle-page.py` so it shares the nav, footer, dialog shell, Live Battle Deck and panel styles. Open it with `?id=<battleId>`; with no id it shows the live battle or the latest one; `?demo=live` shows a battle in progress with sample pools.
+- Matchup: the Live Battle Deck, with Trade buttons that open a Buy / Sell module in the shared dialog.
+- One chart for both sides: SOL in each pool over time, legend, values at the line ends, a crosshair readout (pointer, touch, arrow keys) and a table view. The line shape is a labeled sample until wavewarz.com supplies `WW.getBattleChart`.
+- "How this round is decided": the poll, the judges (DJ Wavy on Quick BattleZ) and the chart, with who holds each; two of three. Rounds panel on Sunday Featured battles: best of three.
+- Side by side table: pool, traded, earned by the artist.
+- After the end: winner on the deck and a Withdraw bar.
+- Real data today: names, pools, volume, results, rounds and artist earnings from wavewarz.info. Preview only: buy, sell, withdraw, poll voting and the chart history.
+- Left off on purpose: the intro pop-up, the Mainnet banner, donate blocks.
