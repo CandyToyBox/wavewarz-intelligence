@@ -2747,6 +2747,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .spx-copy p{margin:0 0 22px;max-width:46ch;font:400 1rem/1.6 'Outfit',sans-serif;color:var(--brand-ice)}
 .spx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:36px 56px}
 .spx-logo{display:flex;align-items:center;justify-content:center;height:96px;text-decoration:none;opacity:.92;transition:opacity .25s ease,transform .25s ease,filter .25s ease;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.spx-logo.round,.spx-logo.round img{height:128px}.spx-logo.round img{border-radius:50%}
 .spx-logo:hover{opacity:1;transform:translateY(-3px) scale(1.03)}
 .spx-logo img{display:block;height:96px;width:auto;max-width:220px;object-fit:contain}
 .cp-foot .cp-so{display:inline-flex;align-items:center;gap:10px}.cp-foot .cp-so svg{width:16px;height:16px;fill:currentColor;flex:none;opacity:.85}
@@ -2758,7 +2759,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   .tw-dh{flex-direction:column;align-items:flex-start;border:0;padding:4px 0 0}
   .tw-day .evs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
   .tw-ev{flex:1 1 140px}
-  .spx-logo,.spx-logo img{height:68px}.spx-logos{gap:28px 36px}
+  .spx-logo,.spx-logo img{height:68px}.spx-logo.round,.spx-logo.round img{height:96px}.spx-logos{gap:28px 36px}
 }
 @media(prefers-reduced-motion:reduce){.tw-so,.tw-ev,.spx-logo{transition:none}.tw-so:hover,.tw-ev:hover,.spx-logo:hover{transform:none}}
 </style>
@@ -4364,11 +4365,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     var list = (d && d.sponsors || []).filter(function (p) { return p && p.logo; });
     box.innerHTML = list.map(function (p) {
       var img = '<img src="' + esc(p.logo) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async">';
-      return p.url ? '<a class="spx-logo" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '" title="' + esc(p.name) + '">' + img + '</a>' : '<span class="spx-logo">' + img + '</span>';
+      var cls = 'spx-logo' + (p.shape === 'round' ? ' round' : '');
+      return p.url ? '<a class="' + cls + '" href="' + esc(p.url) + '" target="_blank" rel="noopener" aria-label="' + esc(p.name) + '" title="' + esc(p.name) + '">' + img + '</a>' : '<span class="' + cls + '">' + img + '</span>';
     }).join('');
     box.hidden = !list.length;
   }
-  fetch('sponsors.json?v=2').then(function (r) { return r.json(); }).then(draw).catch(function () { draw(null); });
+  fetch('sponsors.json?v=4').then(function (r) { return r.json(); }).then(draw).catch(function () { draw(null); });
 })();
 </script>
 <script id="quick-battlez-js">

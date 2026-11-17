@@ -1,8 +1,22 @@
 {
-  "note": "Shown in the sponsor block under This week. Logos are transparent PNGs in sponsors/, trimmed to the mark. Add or remove entries; the row lays itself out.",
+  "note": "Shown in the sponsor block under This week. Logos are transparent PNGs in sponsors/. \"shape\": \"round\" marks a circular badge, shown a little larger so it carries the same weight as a wordmark.",
   "sponsors": [
-    { "name": "Lit Studio", "logo": "sponsors/lit-studio.png", "url": "https://litstudio.online" },
-    { "name": "Ignite Radio", "logo": "sponsors/ignite-radio.png", "url": "https://igniteradio.xyz" },
-    { "name": "The ZAO", "logo": "sponsors/the-zao.png", "url": "https://thezao.com" }
+    {
+      "name": "Lit Studio",
+      "logo": "sponsors/lit-studio.png?v=2",
+      "url": "https://litstudio.online",
+      "shape": "round"
+    },
+    {
+      "name": "Ignite Radio",
+      "logo": "sponsors/ignite-radio.png?v=2",
+      "url": "https://igniteradio.xyz",
+      "shape": "round"
+    },
+    {
+      "name": "The ZAO",
+      "logo": "sponsors/the-zao.png",
+      "url": "https://thezao.com"
+    }
   ]
 }
