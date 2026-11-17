@@ -48,6 +48,7 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.buy(battle, side, amountSol)` | `battle.html`, trade module | Buy on one side. `side` is `'a'` or `'b'` | anything |
 | `WW.sell(battle, side, percent)` | `battle.html`, trade module | Sell 25, 50 or 100 percent of the holder's tokens on that side | anything |
 | `WW.getPosition(battle)` | `battle.html`, Sell tab | The connected wallet's balance on each side | `{ a: { tokens, valueSol }, b: { tokens, valueSol } }` |
+| `WW.donate(battle, target, amountSol)` | `battle.html`, donate bar | Your existing wallet-to-wallet donation, no fee. `target` is `'a'`, `'b'` or `'wavewarz'` | anything |
 | `WW.withdraw(battle)` | `battle.html`, after the battle ends | Your existing Withdraw | anything |
 | `WW.getPoll(battle)` | `battle.html`, decision panel | Quick BattleZ poll counts | `{ a, b, locked }` |
 | `WW.votePoll(battle, side)` | `battle.html`, decision panel | Cast a poll vote | anything |
@@ -127,12 +128,15 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 
 Built from the homepage pieces: the Live Battle Deck is the matchup, and the panels are the Top 5 panel shell.
 
-- **One chart for both sides.** It plots the SOL in each side's pool over time, because that is what decides the chart. Until `WW.getBattleChart` exists the line shape is a labeled sample that ends on the real pool sizes. Your current page draws one price chart per side; if you would rather keep price as the measure, the same hook can carry it, but then say so on the page.
+- **One chart, same as today's.** Your current page already plots both sides' Pool Size (SOL) over time, once in each artist card. The new page keeps that chart (same measure, axes, legend and point markers) and shows it once. Until `WW.getBattleChart` exists the line shape is a labeled sample that ends on the real pool sizes.
+- **Chart or game.** The chart panel has a switch: Chart, DJ Clash, Racers, Dancers, Surf. The game views are the stream games from `CandyToyBox/WaveWarz-Stream-Battle` (built copy in `games/arena/`, commit 92047b6), loaded in an iframe and driven through the game's own `wavewarz:*` postMessage bridge with the battle's names, pictures, pools, poll and time left. To make the games react to each trade as it happens, fire `document.dispatchEvent(new CustomEvent('ww-trade', { detail: { side: 'a', buy: true, sol: 0.1 } }))`; without it the page infers moves from pool changes on each refresh. Set `window.WW_GAME_URL` to host the game somewhere else.
+- **Donate bar.** Under the matchup: donate to either artist or to WaveWarZ, wallet to wallet, no fees.
 - **How it is decided.** Three rows: the poll, the judges (DJ Wavy on Quick BattleZ) and the chart, each showing who holds it. Two of three takes the round, and on Sunday Featured battles best of three rounds takes the battle. Results come from wavewarz.info `/battles/:id` (`factors`) and `/events` (rounds).
 - **Trade module.** The Trade button on each side opens one dialog with Buy (0.05, 0.10, 0.25 SOL) and Sell (25, 50, 100 percent), the same choices as today's page.
 - **After the battle.** The deck shows the winner and a Withdraw bar appears.
 - The battle object passed to the hooks is `{ id, type, a, b, start, end, winner, factors }`, where `a` and `b` are the `artist1` and `artist2` objects from wavewarz.info.
-- Left off on purpose: the intro pop-up, the yellow Mainnet banner and the donate blocks. Say if any should come back.
+- Left off on purpose: the intro pop-up and the yellow Mainnet banner.
+- Kept short on purpose: viewers see this page on stream, so panels carry labels and results, not explanations.
 
 ### How the Live Battle Deck behaves
 

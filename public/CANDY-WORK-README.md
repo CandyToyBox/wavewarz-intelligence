@@ -153,3 +153,11 @@ The Quick BattleZ deck reads as a launch station. A console strip across the top
 - After the end: winner on the deck and a Withdraw bar.
 - Real data today: names, pools, volume, results, rounds and artist earnings from wavewarz.info. Preview only: buy, sell, withdraw, poll voting and the chart history.
 - Left off on purpose: the intro pop-up, the Mainnet banner, donate blocks.
+
+## Battle page, second pass (2026-11-16)
+From Candy's review: donations are back, the chart matches the current one, far less text, and the stream games can be switched in.
+- Donate bar under the matchup: either artist or WaveWarZ, wallet to wallet, no fees (`WW.donate`). Amount chips plus a free amount.
+- The chart is drawn like the current wavewarz.com chart (both sides' Pool Size (SOL) over time, boxed grid, axis titles, clock times, hollow point markers, outlined legend keys), shown once instead of once per artist.
+- Panel explanations removed. The decision panel is "2 of 3 wins" with three rows: Poll, Judges (DJ Wavy on Quick BattleZ), Chart.
+- Chart panel switch: Chart, DJ Clash, Racers, Dancers, Surf. The game views are a built copy of `CandyToyBox/WaveWarz-Stream-Battle` at 92047b6 in `games/arena/` (rebuild: `npm install --legacy-peer-deps && npx vite build --base ./`, copy `dist/` without `assets/aistudio`). The page feeds it names, pictures, pools, poll and time left through its `wavewarz:*` messages and remembers the last view. In the game side A is blue and side B is green, the reverse of the deck and chart; that lives in the game repo.
+- Backup of the first version of the generator: scratchpad `build-battle-page.v1.py`.
