@@ -47,6 +47,7 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.getBattleChart(battleId)` | `battle.html`, the chart | Pool size of each side over time, from your trade history | `{ points: [{ t, a, b }] }` (`t` in ms, `a` and `b` in SOL) |
 | `WW.buy(battle, side, amountSol)` | `battle.html`, trade module | Buy on one side. `side` is `'a'` or `'b'` | anything |
 | `WW.sell(battle, side, percent)` | `battle.html`, trade module | Sell 25, 50 or 100 percent of the holder's tokens on that side | anything |
+| `WW.sellSol(battle, side, sol)` | `battle.html`, typed amount + Sell | Optional. Sell a typed SOL amount. Without it the page converts the SOL amount to a percent of the holding using `WW.getPosition` | anything |
 | `WW.getPosition(battle)` | `battle.html`, Sell tab | The connected wallet's balance on each side | `{ a: { tokens, valueSol }, b: { tokens, valueSol } }` |
 | `WW.donate(battle, target, amountSol)` | `battle.html`, donate bar | Your existing wallet-to-wallet donation, no fee. `target` is `'a'`, `'b'` or `'wavewarz'` | anything |
 | `WW.withdraw(battle)` | `battle.html`, after the battle ends | Your existing Withdraw | anything |
@@ -135,6 +136,7 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 - **Timer bar** (`#ckBar`) is sticky and stays on screen for the whole page. It carries both names, the time left to trade and a thin progress line. The digits turn green in the last 30 seconds.
 - **Three columns that fit the screen** (`.ck-grid`): side A, the stage, side B. Each side has the cover with play and pause, the name, the pool, then **Vote (Free)**, a **Buy** row (0.05, 0.10, 0.25 SOL) and a **Sell** row (25, 50, 100 percent). Both sides are identical and the same distance from the middle.
 - **One tap trades.** A buy or sell button calls `WW.buy` or `WW.sell` straight away; the wallet approval is the confirmation. There is no trade pop-up any more. The result shows once, in the line under that side's buttons. While one trade is waiting on the wallet all trade buttons are disabled, so nothing double-fires.
+- **Typed amounts.** Under the quick buttons each side has an amount box in SOL with Buy and Sell next to it; Enter buys. What someone types survives the page's redraws. On a phone the box sits in the trade dock and its button follows the Buy / Sell switch.
 - **Keyboard:** 1, 2, 3 buy side A; 8, 9, 0 buy side B.
 - **Stage** (`.ck-stage`): Chart or one of the stream games, with the poll and pools meters under it. On Featured and Community battles the live stream sits beside the chart in a chrome TV frame (`.tv`); when there is no live stream the battle flyer shows there.
 - **Phone:** the two sides shrink to compact cards, the chart sits under them, and a trade dock is fixed to the bottom of the screen (`#ckDock`) with Vote for both sides and a Buy / Sell switch over the three amounts for each side. Port it as a fixed bar with the safe-area padding.
