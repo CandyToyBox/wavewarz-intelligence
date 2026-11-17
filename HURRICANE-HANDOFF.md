@@ -21,6 +21,7 @@ One thing to confirm first: this guide assumes wavewarz.com is still built the w
 | `/audius/search` | `audius-search.html` | Battle setup: pick two songs, review, reserve |
 | `/audius/connect` and `/audius/tracks` | `audius-connect.html` | One four-step flow: wallet, rights, Audius, catalog |
 | `/v2/battles/[battleId]` | `battle.html` | Battle page. Generated from `index.html` by `tools/build-battle-page.py`. Open with `?id=<battleId>`; `?demo=live` shows a battle in progress |
+| `/dj-wavy/create` and `/dj-wavy/[requestId]` | `dj-wavy.html` | DJ Wavy Breakdown. No params: pick two songs and pay. `?a=<trackId>&b=<trackId>` (or `?la=<music link>&lb=<music link>`, used by the battle page) pre-picks songs. `?id=<requestId>` shows the breakdown; `?id=sample` is a real finished one |
 | (new) | `onboarding.html` | The guided start, embedded in the homepage as an iframe. Also works standalone |
 
 Links between the pages are relative file names in the prototype (`audius-search.html`, `quick-battles.html`, `audius-connect.html`). Change them to your routes.
@@ -57,6 +58,10 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.getSummary(battle)` | `battle.html`, Your battle panel after the end | The connected wallet's totals and trades in this battle | `{ putInSol, gotBackSol, trades: [{ side, buy, tokens, sol }] }` |
 | `WW.shareStats(battle, where)` | `battle.html`, Your battle panel | Your existing stats image and share actions. `where` is `'image'`, `'x'` or `'farcaster'` | anything |
 | `WW.audioUrl(battle, side)` | `battle.html`, play buttons | Optional. A playable URL for that side's song, for example your `/api/audius/stream`. Audius links already play without it | a URL |
+| `WW.breakdownCatalog({ q, limit })` | `dj-wavy.html`, song search | Your `GET /api/audius/tracks` (only artists with a linked wallet) | `{ tracks: [...] }`, rows exactly as that route returns them |
+| `WW.breakdownCreate({ a, b })` | `dj-wavy.html`, Pay button | Your existing breakdown payment (0.005 SOL to each artist's wallet, 0.005 to WaveWarZ in one transaction), then `POST /api/dj-wavy/request` | `{ requestId }`. The page then opens `?id=<requestId>` |
+| `WW.getBreakdown(requestId)` | `dj-wavy.html`, polled every 3 s | `request-row` plus `judge` for that id | `{ request, judgement }`; `judgement` is `null` while DJ Wavy is still listening (your 202). The page gives up after 2 minutes and says the link keeps working |
+| `WW.audioUrl(trackId)` on `dj-wavy.html` | play buttons | Optional, your `/api/audius/stream?trackId=` | a URL. Without it the page streams from the public Audius API |
 
 `queueItem` is the object from your `/api/quick-battles` response, untouched (`id`, `artist1_track_title`, `artist1_handle`, `artist1_artwork_url`, and so on). `songA` and `songB` are `{ id, title, handle, secs, art, link, wallet, genre }`, mapped from your `/api/audius/tracks` rows by `norm()` in the setup page.
 

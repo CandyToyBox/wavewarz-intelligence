@@ -1,0 +1,272 @@
+{
+ "note": "Preview data, snapshot of wavewarz.com on 2026-11-17. Artist wallets and payer details left out. Hurricane replaces this with WW.getBreakdown / WW.breakdownCatalog.",
+ "catalog": [
+  {
+   "audius_user_id": "GEk17Nw",
+   "audius_track_id": "61Kx9NZ",
+   "title": "$20 til Monday",
+   "duration_seconds": 229,
+   "artwork_url": "https://v.monophonic.digital/content/baeaaaiqsebkl4jrefhesopi57uu5n5u6hwiz27amyvoqviz4hh7b44udxis5e/480x480.jpg",
+   "stream_url": "https://audius.co/FabQuilp/20-til-monday",
+   "artist_handle": "FabQuilp"
+  },
+  {
+   "audius_user_id": "lzq2G",
+   "audius_track_id": "NR8ya2w",
+   "title": "$PEPEWavez x Hurric4n3Ike",
+   "duration_seconds": 130,
+   "artwork_url": "https://v.monophonic.digital/content/QmeJ8LgWJVJ8VwryGvqqJs1saynZG92a6EfCbntywLqcq4/480x480.jpg",
+   "stream_url": "https://audius.co/Hurric4n3Ike/pepewavez-x-hurric4n3ike",
+   "artist_handle": "Hurric4n3Ike"
+  },
+  {
+   "audius_user_id": "lzq2G",
+   "audius_track_id": "QWExZXG",
+   "title": "$PSYOPWavez x Hurric4n3Ike",
+   "duration_seconds": 117,
+   "artwork_url": "https://validator.soundmaxx.xyz/content/Qma9Zsojp9HsG3ptBuiieb2BedMa3GncqNk78TtrGU5WNQ/480x480.jpg",
+   "stream_url": "https://audius.co/Hurric4n3Ike/psyopwavez-x-hurric4n3ike",
+   "artist_handle": "Hurric4n3Ike"
+  },
+  {
+   "audius_user_id": "XBwVRgO",
+   "audius_track_id": "P6kVB0k",
+   "title": "07 - STEAK & LOBSTER",
+   "duration_seconds": 223,
+   "artwork_url": "https://val008.open-audio-validator.com/content/baeaaaiqsec7zoodmveixvc2yy6okbdrcimu7ktdkloyimvsdqnkgybulhypf6/480x480.jpg",
+   "stream_url": "https://audius.co/WaveWarzAfrica/07-steak-lobster",
+   "artist_handle": "WaveWarzAfrica"
+  },
+  {
+   "audius_user_id": "8043XGp",
+   "audius_track_id": "xJQ9dj",
+   "title": "0g",
+   "duration_seconds": 176,
+   "artwork_url": "https://val016.open-audio-validator.com/content/01KDBGG7JBXV5GGX0ZXT3ER57M/480x480.jpg",
+   "stream_url": "https://audius.co/XTincT_official/0g",
+   "artist_handle": "XTincT_official"
+  },
+  {
+   "audius_user_id": "xddq1p3",
+   "audius_track_id": "aN8a0AA",
+   "title": "10$(Instrumental - 10yr Commercial Full) Drake type beat",
+   "duration_seconds": 222,
+   "artwork_url": "https://cn3.mainnet.audiusindex.org/content/baeaaaiqseay5byxcynmq4nyefrtgiqqzedxdhnyga7goqnintwboyc3m6w4qa/480x480.jpg",
+   "stream_url": "https://audius.co/CheckLife_/10instrumental-10yr-commercial-full-drake-type-beat",
+   "artist_handle": "CheckLife_"
+  },
+  {
+   "audius_user_id": "G2wYPPx",
+   "audius_track_id": "xydrrEj",
+   "title": "100 On The Dash",
+   "duration_seconds": 100,
+   "artwork_url": "https://audius-creator-6.theblueprint.xyz/content/01KEB3RAXJ109EDN2QCY80CRCW/480x480.jpg",
+   "stream_url": "https://audius.co/Kata7yst/100-on-the-dash",
+   "artist_handle": "Kata7yst"
+  },
+  {
+   "audius_user_id": "7O66BZ7",
+   "audius_track_id": "J5lmaOz",
+   "title": "100z",
+   "duration_seconds": 246,
+   "artwork_url": "https://audius-creator-17.theblueprint.xyz/content/baeaaaiqsecctoqioptwswgnedqwyjcbvtdzhwtsuzuvwiwsuxn4q6zgeqh3te/480x480.jpg",
+   "stream_url": "https://audius.co/_0xQuan/100z-1",
+   "artist_handle": "_0xQuan"
+  },
+  {
+   "audius_user_id": "7O66BZ7",
+   "audius_track_id": "5QabGy1",
+   "title": "100z",
+   "duration_seconds": 246,
+   "artwork_url": "https://val015.open-audio-validator.com/content/baeaaaiqsea5xzsqegqxzeg4az7k7kqukq5dpzn2cyvns6dsqg6sssp2bjj7jm/480x480.jpg",
+   "stream_url": "https://audius.co/_0xQuan/100z",
+   "artist_handle": "_0xQuan"
+  },
+  {
+   "audius_user_id": "E7gJo",
+   "audius_track_id": "vZWppMm",
+   "title": "10d4yz (Wave Warz semi-finals promo)",
+   "duration_seconds": 53,
+   "artwork_url": "https://audius-nodes.com/content/baeaaaiqseazea7ek4awthi3xmhvjcdbisbvqhsi3t25l2tjegujn6lrqlcjci/480x480.jpg",
+   "stream_url": "https://audius.co/shawnsporter/10d4yz-wave-warz-semi-finals-promo",
+   "artist_handle": "shawnsporter"
+  },
+  {
+   "audius_user_id": "E7gJo",
+   "audius_track_id": "KGdrAw",
+   "title": "10d4yz (Wave Warz semi-finals promo)",
+   "duration_seconds": 53,
+   "artwork_url": "https://audius-discovery-2.altego.net/content/baeaaaiqsed22mmlynodnvteuan2fv5bouklhjud36wzjcz6zqypcap3npdqiu/480x480.jpg",
+   "stream_url": "https://audius.co/shawnsporter/10d4yz-wave-warz-semi-finals-promo-1",
+   "artist_handle": "shawnsporter"
+  },
+  {
+   "audius_user_id": "z2r4KWx",
+   "audius_track_id": "vJad2pK",
+   "title": "10. You are my protector (remastered progression edit)",
+   "duration_seconds": 274,
+   "artwork_url": "https://cn1.mainnet.audiusindex.org/content/01JWCJQ0SXJP25Z06SPW292ERM/480x480.jpg",
+   "stream_url": "https://audius.co/KateMurphy90/10-you-are-my-protector-remastered-progression-edit",
+   "artist_handle": "KateMurphy90"
+  },
+  {
+   "audius_user_id": "z2r4KWx",
+   "audius_track_id": "qpdKxRY",
+   "title": "11. standing-tall",
+   "duration_seconds": 350,
+   "artwork_url": "https://audius-content-3.cultur3stake.com/content/01K1DPNX495GR67KY4XH9GSY0A/480x480.jpg",
+   "stream_url": "https://audius.co/KateMurphy90/11-standing-tall",
+   "artist_handle": "KateMurphy90"
+  },
+  {
+   "audius_user_id": "Wgq5qO0",
+   "audius_track_id": "blZPqAQ",
+   "title": "12 Days of Twitter Christmas ",
+   "duration_seconds": 383,
+   "artwork_url": "https://audius.rickyrombo.com/content/01KCSA8HHXTQD7ZAZJZ9ZBAWYV/480x480.jpg",
+   "stream_url": "https://audius.co/Stormbourne/12-days-of-twitter-christmas",
+   "artist_handle": "Stormbourne"
+  },
+  {
+   "audius_user_id": "RGyPJRg",
+   "audius_track_id": "lGwKgrl",
+   "title": "166700",
+   "duration_seconds": 209,
+   "artwork_url": "https://audius.zeogrid.com/content/baeaaaiqsed336f3moxddp46rnexbskmfcxhcovuv2lrp6ezkrt7kz7g75i6gu/480x480.jpg",
+   "stream_url": "https://audius.co/BennyJ504WaveWarz/166700",
+   "artist_handle": "BennyJ504WaveWarz"
+  },
+  {
+   "audius_user_id": "aNYwwmo",
+   "audius_track_id": "kP3gdop",
+   "title": "16. Addicted",
+   "duration_seconds": 210,
+   "artwork_url": "https://val009.open-audio-validator.com/content/01KFYAC514EA8V35NZGTQY650K/480x480.jpg",
+   "stream_url": "https://audius.co/RoCkY2GriMeY/16-addicted",
+   "artist_handle": "RoCkY2GriMeY"
+  },
+  {
+   "audius_user_id": "z2r4KWx",
+   "audius_track_id": "BZbRWMm",
+   "title": "1. My Lamb",
+   "duration_seconds": 231,
+   "artwork_url": "https://audius-creator-6.theblueprint.xyz/content/01JWBSB8EJ2MGAE2QBQVKDMF49/480x480.jpg",
+   "stream_url": "https://audius.co/KateMurphy90/1-my-lamb",
+   "artist_handle": "KateMurphy90"
+  },
+  {
+   "audius_user_id": "zZR8pvZ",
+   "audius_track_id": "ZaqZmPq",
+   "title": "1 OF 1 EDITION OF A DEGEN",
+   "duration_seconds": 162,
+   "artwork_url": "https://audius-cn1.tikilabs.com/content/01KFYMG1SEN7DG7EM90HJPS2DF/480x480.jpg",
+   "stream_url": "https://audius.co/geekmyth/1-of-1-edition-of-a-degen",
+   "artist_handle": "geekmyth"
+  },
+  {
+   "audius_user_id": "l4lzpGK",
+   "audius_track_id": "85pYNR9",
+   "title": "24\u201dDelo",
+   "duration_seconds": 102,
+   "artwork_url": "https://audius-creator-14.theblueprint.xyz/content/baeaaaiqseax3342kvawu6czcmdghemxro4abdxwvhhwjira7dpcofo2bjfj26/480x480.jpg",
+   "stream_url": "https://audius.co/Delo.Dark/24\u201ddelo",
+   "artist_handle": "Delo.Dark"
+  },
+  {
+   "audius_user_id": "xddq1p3",
+   "audius_track_id": "oEEPd6d",
+   "title": "25$ Exclusive Commercial Rights 10 yrs - 6LACK type Beat / NF",
+   "duration_seconds": 185,
+   "artwork_url": "https://val015.open-audio-validator.com/content/baeaaaiqseb56hhlnwpeidxxokv5ykcziebuyoksqzhix4y4yrdei452c3cdxu/480x480.jpg",
+   "stream_url": "https://audius.co/CheckLife_/25-exclusive-commercial-rights-10-yrs-6lack-type-beat-nf",
+   "artist_handle": "CheckLife_"
+  },
+  {
+   "audius_user_id": "Wgq5qO0",
+   "audius_track_id": "PQY9zR5",
+   "title": "2AM",
+   "duration_seconds": 229,
+   "artwork_url": "https://creatornode.audius1.prod-eks-ap-northeast-1.staked.cloud/content/01KCVRYMD862RQZJKQMAWSFVMX/480x480.jpg",
+   "stream_url": "https://audius.co/Stormbourne/2am",
+   "artist_handle": "Stormbourne"
+  },
+  {
+   "audius_user_id": "z2r4KWx",
+   "audius_track_id": "YolzZ4K",
+   "title": "2.Broken Girl",
+   "duration_seconds": 194,
+   "artwork_url": "https://audius-creator-5.theblueprint.xyz/content/01JWBT56AEM412NNATBKJ4ZSHN/480x480.jpg",
+   "stream_url": "https://audius.co/KateMurphy90/2broken-girl",
+   "artist_handle": "KateMurphy90"
+  },
+  {
+   "audius_user_id": "AMNd4pg",
+   "audius_track_id": "E71ak6w",
+   "title": "2 OUT THERE ",
+   "duration_seconds": 162,
+   "artwork_url": "https://audius-01.staked.cloud/content/01K4ARMVDNW9S6T8WWN8XCKGXB/480x480.jpg",
+   "stream_url": "https://audius.co/frameworkfortune/2-out-there",
+   "artist_handle": "frameworkfortune"
+  },
+  {
+   "audius_user_id": "E7gJo",
+   "audius_track_id": "OW0Bw7V",
+   "title": "360 (my h34d spins)",
+   "duration_seconds": 224,
+   "artwork_url": "https://audius-content-1.figment.io/content/baeaaaiqsecmb2hqthgxyaiurbhbsuevcpd3o6rdhlr4gbtckld5tvkuqvcsfg/480x480.jpg",
+   "stream_url": "https://audius.co/shawnsporter/360-my-h34d-spins",
+   "artist_handle": "shawnsporter"
+  }
+ ],
+ "sample": {
+  "request": {
+   "request_id": "1794940193104",
+   "created_at": "2026-11-17T18:29:53.162323+00:00",
+   "artist1_audius_track_id": "xydrrEj",
+   "artist1_track_title": "100 On The Dash",
+   "artist1_handle": "Kata7yst",
+   "artist1_artwork_url": "https://audius-creator-6.theblueprint.xyz/content/01KEB3RAXJ109EDN2QCY80CRCW/480x480.jpg",
+   "artist1_stream_url": "https://audius.co/Kata7yst/100-on-the-dash",
+   "artist2_audius_track_id": "J5lmaOz",
+   "artist2_track_title": "100z",
+   "artist2_handle": "_0xQuan",
+   "artist2_artwork_url": "https://audius-creator-17.theblueprint.xyz/content/baeaaaiqsecctoqioptwswgnedqwyjcbvtdzhwtsuzuvwiwsuxn4q6zgeqh3te/480x480.jpg",
+   "artist2_stream_url": "https://audius.co/_0xQuan/100z-1"
+  },
+  "judgement": {
+   "battleId": "1794940193104",
+   "winner": "A",
+   "confidence": 0.75,
+   "comparison": "This is the classic battle: raw, undeniable talent versus polished execution. Track A comes out swingin' with an aggressive, hungry performance and lyrics that paint a picture. It's got character. Track B is sonically clean, smooth, and ready for any playlist, but it feels a little safe, like we've heard this story before. Track A's mix is clipping and needs serious work, but you can't engineer soul. The fire in Kata7yst's delivery and the unique grittiness of the production give it the edge. With a proper mix, A isn't just a song, it's a statement.",
+   "metrics": {
+    "sonic_landscape": {
+     "A": 4,
+     "B": 8,
+     "notes": "Track B takes this hands down. The mix is clean, balanced, and has proper headroom. Track A is loud, but it's clipping (peak: 1.21), which is a cardinal sin in the booth. The whole mix on A is muddy and oversaturated in the low end (spectral_rolloff_hz: 409.1), while B has a professional clarity."
+    },
+    "vocal_performance": {
+     "A": 8,
+     "B": 7,
+     "notes": "This is where Kata7yst shines. The delivery on A is raw, confident, and full of energy. You can feel the hunger. Quan's performance on B is smooth and melodic, fitting the track well, but it doesn't have the same unique character or command the same attention as A."
+    },
+    "lyricism_storytelling": {
+     "A": 7,
+     "B": 5,
+     "notes": "Kata7yst's bars feel more specific and lived-in. Lines like 'at 19 my name was bigger' and 'Drivin' state to state while you was sittin' on your hands' tell a better story. Track B relies on more common trap tropes like 'all about the monies' and 'diamonds and chains', making it less compelling from a narrative standpoint."
+    },
+    "web3_market_readiness": {
+     "A": 5,
+     "B": 8,
+     "notes": "As it stands, Track B is far more market-ready. Its clean sonics and familiar vibe make it an easy fit for playlists and sync. Track A's technical issues, specifically the clipping, would get it rejected from most professional placements. The raw talent is there, but it's not a finished product ready for the market."
+    },
+    "production_arrangement": {
+     "A": 8,
+     "B": 7,
+     "notes": "Track A's production has a dusty, sample-heavy feel that gives it more personality. The arrangement is short and punchy at 100 seconds\u2014it gets in, makes its point, and gets out. B's beat is a solid, modern trap instrumental, but it feels more generic and by-the-numbers compared to the grittier, more memorable sound of A."
+    }
+   },
+   "model": "gemini-2.5-pro",
+   "createdAt": "2026-11-17T18:31:19.844281+00:00"
+  }
+ }
+}
