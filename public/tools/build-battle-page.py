@@ -98,6 +98,27 @@ PAGE_CSS = '''
 .bt-amt button[aria-pressed="true"] { border-color: var(--brand-green); box-shadow: inset 0 0 0 1px var(--brand-green); color: var(--brand-green); }
 .bt-bal { margin: 0 2px 8px; font: 400 .8rem 'JetBrains Mono', monospace; color: var(--text-muted); }
 .bp-top [hidden], .bp [hidden] { display: none !important; }
+/* vote first: the poll is the main action on each side, trade sits under it */
+.bp-top .ld-act.vote small { margin-left: 10px; padding: 3px 9px; border-radius: 999px; background: rgba(13,19,33,.2); font: 700 .66rem 'JetBrains Mono', monospace; letter-spacing: .12em; vertical-align: 1px; }
+.bp-top .ld-act.voted { background: transparent; cursor: default; box-shadow: none; } .bp-top .ld-col.l .ld-act.voted { color: var(--brand-green); border-color: var(--brand-green); } .bp-top .ld-col.r .ld-act.voted { color: var(--brand-blue); border-color: var(--brand-blue); }
+.bp-top .ld-act.vote:disabled:not(.voted) { opacity: .4; cursor: default; }
+.bp-top .ld-act.trade { height: 44px; line-height: 42px; font-size: .78rem; background: transparent; }
+.bp-top .ld-pc em { font: 500 .62rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .18em; color: var(--text-muted); align-self: center; }
+.bp-top button.ld-play { border: 0; cursor: pointer; padding: 0; }
+.bp-top .ld-col:not(.is-playing) .ld-eq i { animation-play-state: paused; opacity: .45; }
+.bp-top .ld-col:not(.is-playing) .ld-np { color: var(--text-muted); }
+.bp-msg { max-width: 1000px; margin: 10px auto 0; min-height: 1.2em; text-align: center; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .06em; color: var(--text-muted); } .bp-msg.ok { color: var(--brand-green); }
+/* live stream above the chart on Featured and Community battles */
+.bs-panel { margin-bottom: 20px; } .bs { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #04070d; border: 1px solid rgba(216,235,252,.12); } .bs iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+/* DJ Wavy's call */
+.bj { margin: 4px 4px 8px; padding: 16px; border-radius: 16px; border: 1px solid rgba(188,241,207,.3); background: rgba(7,14,12,.4); }
+.bj-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font: 600 .66rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--brand-green); } .bj-h span + span { color: var(--brand-ice); }
+.bj strong { display: block; margin-top: 8px; font: 700 1.25rem/1.2 'Space Grotesk', sans-serif; color: #fff; overflow-wrap: anywhere; } .bj strong i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 9px; vertical-align: 2px; }
+.bj p { margin: 8px 0 0; font: 400 .92rem/1.55 'Outfit', sans-serif; color: var(--brand-ice); } .bj.locked { border-style: dashed; border-color: rgba(216,235,252,.2); background: transparent; } .bj.locked p { margin: 6px 0 0; color: var(--text-muted); }
+/* your battle: what you put in and what came back */
+.bm-big { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 2px 0 12px; } .bm-big div { padding: 14px; border-radius: 14px; border: 1px solid rgba(216,235,252,.12); background: rgba(255,255,255,.02); min-width: 0; }
+.bm-big span { display: block; font: 500 .64rem 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); } .bm-big b { display: block; margin-top: 6px; font: 700 1.15rem 'Outfit', sans-serif; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; } .bm-big b.up { color: var(--brand-green); }
+.bm-act { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 6px; align-items: center; }
 /* donate bar: peer to peer, no fees */
 .bp-give { max-width: 1000px; margin: 16px auto 0; display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap; padding: 14px 22px; border-radius: 22px; border: 1px solid rgba(216,235,252,.16); background: linear-gradient(180deg, rgba(14,21,34,.92), rgba(7,10,16,.95)); }
 .bp-give > span { flex: 1 1 200px; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); } .bp-give > span b { color: var(--brand-green); font-weight: 500; }
@@ -115,7 +136,7 @@ PAGE_CSS = '''
 .bc-plot .pa { fill: #0a0f18; stroke: #95fe7c; stroke-width: 1.5; } .bc-plot .pb { fill: #0a0f18; stroke: #7ec1fb; stroke-width: 1.5; }
 .bc-leg i.box { width: 28px; height: 11px; border-radius: 1px; background: transparent !important; border: 2px solid; }
 @media (max-width: 1000px) { .bp .hl-grid, .bp .hl-grid + .hl-grid { grid-template-columns: 1fr; } }
-@media (max-width: 860px) { .bp-top { padding: 104px 16px 0; } .bc-plot { height: 260px; } }
+@media (max-width: 860px) { .bp-top { padding: 104px 16px 0; } .bc-plot { height: 260px; } .bm-big { grid-template-columns: 1fr; } }
 @media (prefers-reduced-transparency: reduce) { .bc-tip { background: rgba(7,14,12,.96); -webkit-backdrop-filter: none; backdrop-filter: none; } }
 </style>
 '''
@@ -130,12 +151,17 @@ BODY = '''
   <div class="bp-top">
     <div class="bp-back"><a href="quick-battles.html">&larr; All battles</a><span id="bpKind" class="bp-tag" hidden></span></div>
     <div id="bpDeck" aria-live="polite"><section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>Loading the battle</span></div></section></div>
+    <p class="bp-msg" id="bpMsg" role="status"></p>
     <div class="bp-end" id="bpEnd"><p id="bpEndTx"></p><button class="btn-primary" type="button" id="bpWithdraw">Withdraw</button></div>
     <div class="bp-give" id="bpGive" hidden><span>Donate direct &middot; <b>No fees</b></span></div>
   </div>
 
   <section class="cp-sec hl bp" aria-label="Battle details">
     <div class="hl-in">
+      <article class="hl-panel bs-panel" id="stream" hidden>
+        <header class="hl-ph"><div><h3>Live stream</h3></div><a class="bp-btn" id="bsLink" href="#" target="_blank" rel="noopener">Open stream</a></header>
+        <div class="bs" id="bsWrap"></div>
+      </article>
       <div class="hl-grid">
         <article class="hl-panel" id="chart">
           <header class="hl-ph"><div><h3 id="bcTitle">The chart</h3></div><span class="bp-tag" id="bcTag" hidden>Sample chart</span>
@@ -153,6 +179,7 @@ BODY = '''
         <article class="hl-panel" id="decided">
           <header class="hl-ph"><div><h3 id="bfTitle">2 of 3 wins</h3></div></header>
           <ul class="bf" id="bfList"></ul>
+          <div id="bjWrap"></div>
           <p class="bf-rule" id="bfRule"></p>
         </article>
       </div>
@@ -161,6 +188,10 @@ BODY = '''
           <header class="hl-ph"><div><h3>Best of 3 rounds</h3></div></header>
           <p class="br-score" id="brScore"></p>
           <ol class="br" id="brList"></ol>
+        </article>
+        <article class="hl-panel" id="mine" hidden>
+          <header class="hl-ph"><div><h3>Your battle</h3></div><span class="bp-tag" id="bmTag" hidden>Sample</span></header>
+          <div id="bmBody"></div>
         </article>
         <article class="hl-panel" id="sides">
           <header class="hl-ph"><div><h3>Side by side</h3></div></header>
@@ -180,10 +211,15 @@ PAGE_JS = r'''<script id="battle-page-js">
      WW.buy(battle, side, amountSol)    side is 'a' or 'b'
      WW.sell(battle, side, percent)     25, 50 or 100
      WW.withdraw(battle)
-     WW.getPoll(battle)                 -> { a: votes, b: votes, locked: bool }
-     WW.votePoll(battle, side)
+     WW.getPoll(battle)                 -> { a: votes, b: votes, locked: bool, mine: 'a' | 'b' | null }
+     WW.votePoll(battle, side)          free; the wallet signs a message
+     WW.getJudge(battle)                -> { status: 'locked' | 'ready', winner: 'a' | 'b', confidence: 0-100, notes }
+     WW.getSummary(battle)              -> { putInSol, gotBackSol, trades: [{ side, buy, tokens, sol }] } for the connected wallet
+     WW.shareStats(battle, where)       where is 'image', 'x' or 'farcaster'
+     WW.audioUrl(battle, side)          optional; a playable URL for that side's song (Audius links play without it)
+     WW.donate(battle, target, sol)     target is 'a', 'b' or 'wavewarz'
    Pick a battle with ?id=<battleId>. With no id the page shows the live battle, or the most recent one.
-   Design review: ?demo=live shows a battle in progress with sample pools. */
+   Design review: ?demo=live shows a battle in progress, ?demo=ended a finished one, both with sample numbers. */
 (function () {
   'use strict';
   var API = 'https://wavewarz.info/api/public/', W = window.WW = window.WW || {};
@@ -202,32 +238,52 @@ PAGE_JS = r'''<script id="battle-page-js">
   function side(v) { return v === 'artist1' ? 'a' : v === 'artist2' ? 'b' : ''; }
 
   /* ---------- matchup deck (same markup as the homepage Live Battle Deck) ---------- */
-  var PLAY = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>';
-  function sideHTML(k, a, label, leader) {
-    var c = k === 'a' ? 'l' : 'r', by = handle(a) || a.twitterHandle || '', art = httpsUrl(a.albumArtUrl || a.profilePictureUrl), link = httpsUrl(a.musicLink), over = ended();
-    return '<div class="ld-col ' + c + '"><div class="ld-art"><span class="ld-pill">' + label + '</span>' +
-      (link ? '<a class="ld-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>' : '') +
+  var PLAY = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>', PAUSE = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+  var playing = '', X_POLL = window.WW_POLL_URL || 'https://x.com/wavewarz';
+  function inPage(a) { return typeof W.audioUrl === 'function' || /^https:\/\/(www\.)?audius\.co\//.test(a.musicLink || ''); }
+  function sideHTML(k, a, label) {
+    var c = k === 'a' ? 'l' : 'r', by = handle(a) || a.twitterHandle || '', art = httpsUrl(a.albumArtUrl || a.profilePictureUrl), link = httpsUrl(a.musicLink), over = ended(), on = playing === k, fill = c === 'l' ? 'fill-g' : 'fill-b', out = c === 'l' ? 'out-g' : 'out-b';
+    var vote = '';
+    if (!over) {
+      if (B.type === 'quick') vote = B.myVote === k ? '<button type="button" class="ld-act vote voted" disabled>Your vote</button>'
+        : '<button type="button" class="ld-act vote ' + fill + '" data-vote="' + k + '"' + (B.myVote || (B.poll && B.poll.locked) ? ' disabled' : '') + '>Vote ' + esc(a.name) + '<small>Free</small></button>';
+      else vote = '<a class="ld-act vote ' + fill + '" href="' + esc(X_POLL) + '" target="_blank" rel="noopener">Vote on X<small>Free</small></a>';
+    }
+    return '<div class="ld-col ' + c + (on ? ' is-playing' : '') + '"><div class="ld-art"><span class="ld-pill">' + label + '</span>' +
+      (link ? (inPage(a) ? '<button type="button" class="ld-play" data-play="' + k + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Pause ' : 'Play ') + esc(a.name) + '">' + (on ? PAUSE : PLAY) + '</button>'
+                         : '<a class="ld-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>') : '') +
       (art ? '<img src="' + esc(art) + '" alt="" loading="eager" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '<div class="ld-eq" aria-hidden="true">' + '<i></i>'.repeat(9) + '</div></div>' +
-      '<div class="ld-np">' + (over ? (B.winner === k ? 'Winner' : 'Final') : 'Now playing') + '</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
-      (over ? (link ? '<a class="ld-act ' + (c === 'l' ? 'out-g' : 'out-b') + '" href="' + esc(link) + '" target="_blank" rel="noopener">Listen to ' + esc(a.name) + '</a>' : '')
-            : '<button type="button" class="ld-act ' + (leader ? (c === 'l' ? 'fill-g' : 'fill-b') : (c === 'l' ? 'out-g' : 'out-b')) + '" data-trade="' + k + '">Trade ' + esc(a.name) + '</button>') + '</div>';
+      '<div class="ld-np">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
+      vote + (over ? '' : '<button type="button" class="ld-act trade ' + out + '" data-trade="' + k + '">Trade</button>') + '</div>';
   }
+  function split(l, r, label, raw) { var t = l + r, g = t ? Math.round(100 * l / t) : 50; return '<div class="ld-split"><div class="ld-pc"><span class="a">' + (raw ? l : g + '%') + '</span><em>' + label + '</em><span class="c">' + (raw ? r : (100 - g) + '%') + '</span></div><div class="ld-bar" aria-label="' + label + '"><i style="width:' + g + '%"></i></div></div>'; }
   function renderDeck() {
-    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, ga = tot ? Math.round(100 * pa / tot) : 50, over = ended();
+    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, over = ended(), pv = B.poll;
     var lab = B.type === 'quick' ? ['Song A', 'Song B'] : ['Artist A', 'Artist B'];
     var rd = EV && B.round ? ' &middot; Round ' + B.round + ' of ' + Math.max(3, EV.rounds.length) : '';
     $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live' + (over ? ' ended' : '') + '"><i></i>' + (over ? 'Battle ended' : 'Live') + ' &middot; ' + kindName(B.type) + rd + '</span>' + (B.sample ? '<span>Sample data</span>' : '') + '</div>' +
-      '<div class="ld-stage">' + sideHTML('a', B.a, lab[0], pa >= pb) +
+      '<div class="ld-stage">' + sideHTML('a', B.a, lab[0]) +
       '<div class="ld-mid"><div class="ld-ring" role="timer"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle id="ldArc" cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="' + (over ? 289 : 0) + '" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6))"/></svg><div class="ld-time"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? 'FINAL' : 'TIME LEFT') + '</small></div></div><div class="ld-vs">VS</div>' +
-      '<div class="ld-split"><div class="ld-pc"><span class="a">' + ga + '%</span><span class="c">' + (100 - ga) + '%</span></div><div class="ld-bar" aria-label="Share of the two pools"><i style="width:' + ga + '%"></i></div></div></div>' +
-      sideHTML('b', B.b, lab[1], pb > pa) + '</div>' +
-      '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Listen, then trade your side.') + '</span><span>Both pools: <b>' + tot.toFixed(2) + ' SOL</b></span></div></section>';
+      (pv ? split(pv.a, pv.b, 'POLL', true) : '') + split(pa, pb, 'POOLS') + '</div>' +
+      sideHTML('b', B.b, lab[1]) + '</div>' +
+      '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Voting is free. Your wallet signs a message and nothing is charged.') + '</span><span>Both pools: <b>' + tot.toFixed(4) + ' SOL</b></span></div></section>';
     var k = $('bpKind'); k.hidden = false; k.textContent = 'Battle ' + B.id;
     var e = $('bpEnd'); e.classList.toggle('on', over);
     if (over) $('bpEndTx').innerHTML = '<b>Battle ended.</b> Traded? Withdraw to collect your SOL.';
     var g = $('bpGive'); g.hidden = false;
     g.innerHTML = '<span>Donate direct &middot; <b>No fees</b></span><button class="bp-btn" type="button" data-give="a"><i class="ka"></i>' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-give="b"><i class="kb"></i>' + esc(B.b.name) + '</button><button class="bp-btn" type="button" data-give="wavewarz">WaveWarZ</button>';
     document.title = B.a.name + ' vs ' + B.b.name + ' | WaveWarZ';
+  }
+  /* songs play on the page, one at a time */
+  var audio = null;
+  function say(t, ok) { var m = $('bpMsg'); m.textContent = t || ''; m.classList.toggle('ok', !!ok); }
+  function togglePlay(k) {
+    if (!audio) { audio = new Audio(); audio.preload = 'none'; audio.addEventListener('ended', function () { playing = ''; renderDeck(); runTimer(); }); audio.addEventListener('error', function () { if (playing) { playing = ''; renderDeck(); runTimer(); say('That song did not load. Try again.'); } }); }
+    if (playing === k) { audio.pause(); playing = ''; renderDeck(); runTimer(); return; }
+    var a = k === 'a' ? B.a : B.b; playing = k; renderDeck(); runTimer();
+    var src = typeof W.audioUrl === 'function' ? Promise.resolve(W.audioUrl(B, k))
+      : jget('https://api.audius.co/v1/resolve?url=' + encodeURIComponent(a.musicLink) + '&app_name=wavewarz').then(function (d) { var id = d && d.data && d.data.id; if (!id) throw 0; return 'https://api.audius.co/v1/tracks/' + encodeURIComponent(id) + '/stream?app_name=wavewarz'; });
+    src.then(function (u) { if (playing !== k) return; audio.src = u; return audio.play(); }).catch(function () { if (playing === k) { playing = ''; renderDeck(); runTimer(); say('That song did not load. Try again.'); } });
   }
   function runTimer() {
     clearInterval(tick);
@@ -245,16 +301,23 @@ PAGE_JS = r'''<script id="battle-page-js">
   function renderDecided() {
     var f = B.factors || {}, over = ended(), quick = B.type !== 'main';
     var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, lead = pa === pb ? '' : (pa > pb ? 'a' : 'b');
-    var pollK = side(f.xPollWinner), judgeK = side(f.humanJudgeWinner || f.djWavyWinner), chartK = side(f.solVoteWinner) || (over ? lead : '');
+    var pollK = side(f.xPollWinner) || (over && B.type === 'quick' && B.poll && B.poll.a !== B.poll.b ? (B.poll.a > B.poll.b ? 'a' : 'b') : ''), judgeK = side(f.humanJudgeWinner || f.djWavyWinner), chartK = side(f.solVoteWinner) || (over ? lead : '');
     var pv = B.poll, pollLive = pv && (pv.a || pv.b) ? (pv.a === pv.b ? '' : pv.a > pv.b ? 'a' : 'b') : '';
-    var rows = '<li><div><h4>Poll</h4></div>' +
-      (pollK ? who(pollK) : pollLive ? who(pollLive, pv[pollLive] + ' to ' + pv[pollLive === 'a' ? 'b' : 'a']) : who('', over ? 'Not recorded' : 'Open')) +
-      (quick && !over ? '<div class="bf-vote"><button class="bp-btn" type="button" data-vote="a">Vote ' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-vote="b">Vote ' + esc(B.b.name) + '</button><span class="bc-note" id="bfMsg" role="status" style="margin:0;align-self:center"></span></div>' : '') + '</li>' +
-      '<li><div><h4>' + (quick ? 'DJ Wavy' : 'Judges') + '</h4></div>' + (judgeK ? who(judgeK) : who('', over ? 'Not scored yet' : 'After the round')) + '</li>' +
+    if (B.judge && B.judge.status === 'ready' && (B.judge.winner === 'a' || B.judge.winner === 'b')) judgeK = judgeK || B.judge.winner;
+    function tally(k) { return pv[k] + ' to ' + pv[k === 'a' ? 'b' : 'a']; }
+    var rows = '<li><div><h4>Poll</h4></div>' + (pollK ? who(pollK, pv ? tally(pollK) : '') : pollLive ? who(pollLive, tally(pollLive)) : who('', over ? 'Not recorded' : pv ? 'Tied ' + pv.a + ' to ' + pv.b : 'Open')) + '</li>' +
+      '<li><div><h4>' + (quick ? 'DJ Wavy' : 'Judges') + '</h4></div>' + (judgeK ? who(judgeK) : who('', over ? 'Not scored yet' : 'After the battle')) + '</li>' +
       '<li><div><h4>Chart</h4></div>' + (chartK ? who(chartK) : lead ? who(lead, 'Ahead now') : who('', 'Even')) + '</li>';
+    var j = B.judge, jw = $('bjWrap');
+    if (!quick) jw.innerHTML = '';
+    else if (j && j.status === 'ready' && (j.winner === 'a' || j.winner === 'b')) {
+      var cf = +j.confidence; if (cf > 0 && cf <= 1) cf *= 100;
+      jw.innerHTML = '<div class="bj"><div class="bj-h"><span>DJ Wavy\'s call</span>' + (cf > 0 ? '<span>' + Math.round(cf) + '% confident</span>' : '') + '</div><strong><i class="k' + j.winner + '"></i>' + esc(name(j.winner)) + '</strong>' + (j.notes ? '<p>' + esc(j.notes) + '</p>' : '') + '</div>';
+    } else jw.innerHTML = '<div class="bj locked"><div class="bj-h"><span>DJ Wavy\'s call</span><span>Locked</span></div><p>Revealed when the battle ends.</p></div>';
     $('bfList').innerHTML = rows;
-    var got = { a: 0, b: 0 }; [pollK, judgeK, chartK].forEach(function (k) { if (k) got[k]++; });
-    $('bfRule').innerHTML = B.winner ? '<b>' + esc(name(B.winner)) + '</b> wins' + (quick ? '' : ' the round') + (got[B.winner] ? ', ' + got[B.winner] + ' of 3' : '') : (quick ? '' : 'Best of 3 rounds wins the battle');
+    var quickLabel = quick ? ' the battle' : ' the round'; var got = { a: 0, b: 0 }; [pollK, judgeK, chartK].forEach(function (k) { if (k) got[k]++; });
+    var lead2 = got.a >= 2 ? 'a' : got.b >= 2 ? 'b' : B.winner;
+    $('bfRule').innerHTML = lead2 && over ? '<b>' + esc(name(lead2)) + '</b> wins' + quickLabel + (got[lead2] ? ', ' + got[lead2] + ' of 3' : '') : (B.type === 'main' ? 'Best of 3 rounds wins the battle' : '');
     $('bfRule').hidden = !$('bfRule').innerHTML;
   }
 
@@ -438,9 +501,14 @@ PAGE_JS = r'''<script id="battle-page-js">
   function openWithdraw(from) {
     if (!dlg || !dlg.showModal) return; var live = typeof W.withdraw === 'function';
     opener = from || null; $('waBody').onclick = null; $('waEb').textContent = kindName(B.type); $('waTitle').textContent = 'Withdraw from this battle';
-    $('waBody').innerHTML = '<div class="wa-rows"><div><span>Battle</span><b>' + esc(B.a.name) + ' vs ' + esc(B.b.name) + '</b></div><div><span>Result</span><b>' + (B.winner ? esc(name(B.winner)) + ' won' : 'Settling') + '</b></div></div>' +
-      '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">Withdraw</button><span class="wf-fine">' + (live ? 'Your wallet opens to approve. Whatever is yours from this battle goes back to your wallet.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
-    $('waGo').addEventListener('click', function () { run(this, live, function () { return W.withdraw(B); }, 'Withdrawn.', 'Check your wallet for the SOL from this battle.'); });
+    $('waBody').innerHTML = '<div class="wa-rows"><div><span>Result</span><b>' + (B.winner ? esc(name(B.winner)) + ' won' : 'Settling') + '</b></div><div><span>Your tokens</span><b id="bwTok">' + (live ? 'Checking…' : 'Shown when a wallet is connected') + '</b></div><div><span>You receive</span><b id="bwGet">' + (live ? 'Checking…' : 'Shown before you approve') + '</b></div></div>' +
+      '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">Withdraw</button><span class="wf-fine">' + (live ? 'Your wallet opens to approve.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
+    if (typeof W.getPosition === 'function') Promise.resolve(W.getPosition(B)).then(function (p) {
+      var t = $('bwTok'), g = $('bwGet'); if (!p || !t) return;
+      t.textContent = [['a', p.a], ['b', p.b]].filter(function (q) { return q[1] && +q[1].tokens > 0; }).map(function (q) { return (+q[1].tokens).toFixed(3) + ' on ' + name(q[0]); }).join(', ') || 'None in this battle';
+      g.textContent = p.claimSol != null ? sol(p.claimSol, 4) : sol((p.a && +p.a.valueSol || 0) + (p.b && +p.b.valueSol || 0), 4);
+    }).catch(function () {});
+    $('waGo').addEventListener('click', function () { run(this, live, function () { return W.withdraw(B); }, 'Withdrawn.', 'Your SOL from this battle is back in your wallet.'); });
     if (!dlg.open) dlg.showModal();
   }
   /* donations go wallet to wallet with no fee: WW.donate(battle, target, amountSol), target is 'a', 'b' or 'wavewarz' */
@@ -462,27 +530,77 @@ PAGE_JS = r'''<script id="battle-page-js">
   }
   $('bpGive').addEventListener('click', function (e) { var b = e.target.closest('[data-give]'); if (b) openDonate(b.dataset.give, b); });
   if (dlg) dlg.addEventListener('close', function () { if (opener && opener.focus && document.contains(opener)) opener.focus(); opener = null; });
-  $('bpDeck').addEventListener('click', function (e) { var b = e.target.closest('[data-trade]'); if (b) openTrade(b.dataset.trade, b); });
-  $('bpWithdraw').addEventListener('click', function () { openWithdraw(this); });
-  $('bfList').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-vote]'); if (!b) return; var msg = $('bfMsg'), live = typeof W.votePoll === 'function';
-    if (!live) { if (msg) msg.textContent = 'Preview. Voting turns on at wavewarz.com.'; return; }
-    b.disabled = true;
-    Promise.resolve(W.votePoll(B, b.dataset.vote)).then(function () { return loadPoll(); }).then(function () { var m = $('bfMsg'); if (m) m.textContent = 'Vote counted.'; })
-      .catch(function (er) { b.disabled = false; var m = $('bfMsg'); if (m) m.textContent = (er && er.userMessage) || 'Your vote did not go through. Try again.'; });
+  $('bpDeck').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-trade]'), v = e.target.closest('[data-vote]'), pl = e.target.closest('[data-play]');
+    if (b) openTrade(b.dataset.trade, b); else if (v) castVote(v.dataset.vote); else if (pl) togglePlay(pl.dataset.play);
   });
+  $('bpWithdraw').addEventListener('click', function () { openWithdraw(this); });
+  /* the poll: the vote shows at once, then the wallet signs; a failed vote is taken back */
+  function voteKey() { return 'ww-vote-' + B.id; }
+  function castVote(k) {
+    if (!B || B.myVote || ended()) return;
+    var live = typeof W.votePoll === 'function', before = B.poll ? { a: B.poll.a, b: B.poll.b, locked: B.poll.locked } : null;
+    B.poll = B.poll || { a: 0, b: 0, locked: false }; B.poll[k]++; B.myVote = k; renderDeck(); runTimer(); renderDecided();
+    if (!live) { say('Preview. Your vote shows here; on wavewarz.com it is counted.', true); return; }
+    say('Approve the free vote in your wallet.');
+    Promise.resolve(W.votePoll(B, k)).then(function () { try { sessionStorage.setItem(voteKey(), k); } catch (e) {} say('Vote counted.', true); return loadPoll(); })
+      .catch(function (er) { B.poll = before; B.myVote = ''; renderDeck(); runTimer(); renderDecided(); say((er && er.userMessage) || 'Your vote did not go through. Nothing was charged. Try again.'); });
+  }
   function loadPoll() {
     if (typeof W.getPoll !== 'function' || !B) return Promise.resolve();
-    return Promise.resolve(W.getPoll(B)).then(function (p) { if (p) { B.poll = { a: +p.a || 0, b: +p.b || 0, locked: !!p.locked }; renderDecided(); } }).catch(function () {});
+    return Promise.resolve(W.getPoll(B)).then(function (p) { if (!p) return; B.poll = { a: +p.a || 0, b: +p.b || 0, locked: !!p.locked }; if (p.mine === 'a' || p.mine === 'b') B.myVote = p.mine; renderDeck(); runTimer(); renderDecided(); }).catch(function () {});
+  }
+  function loadJudge() {
+    if (!B || B.type !== 'quick' || typeof W.getJudge !== 'function') return Promise.resolve();
+    return Promise.resolve(W.getJudge(B)).then(function (j) { if (j) { B.judge = j; renderDecided(); } }).catch(function () {});
+  }
+  /* your battle: plain numbers, four decimals, no red for a result that is not a loss */
+  function renderMine(m, sample) {
+    var p = $('mine'); if (!m || !(+m.putInSol > 0 || +m.gotBackSol > 0)) { p.hidden = true; return; }
+    var inS = +m.putInSol || 0, out = +m.gotBackSol || 0, d = out - inS;
+    p.hidden = false; $('bmTag').hidden = !sample;
+    $('bmBody').innerHTML = '<div class="bm-big"><div><span>You put in</span><b>' + sol(inS, 4) + '</b></div><div><span>You got back</span><b>' + sol(out, 4) + '</b></div><div><span>Difference</span><b' + (d > 0 ? ' class="up"' : '') + '>' + (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(4) + ' SOL</b></div></div>' +
+      ((m.trades || []).length ? '<table><tbody>' + m.trades.slice(0, 8).map(function (t) { var k = t.side === 'b' ? 'b' : 'a'; return '<tr><th scope="row"><i class="k' + k + '" style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px"></i>' + (t.buy === false ? 'Sold' : 'Bought') + ' ' + esc(name(k)) + '</th><td>' + (+t.tokens || 0).toFixed(0) + ' tokens</td><td>' + sol(t.sol, 4) + '</td></tr>'; }).join('') + '</tbody></table>' : '') +
+      '<div class="bm-act"><button class="bp-btn" type="button" data-share="image">Save image</button><button class="bp-btn" type="button" data-share="x">Post on X</button><button class="bp-btn" type="button" data-share="farcaster">Post on Farcaster</button><span class="bc-note" id="bmMsg" role="status" style="margin:0"></span></div>';
+  }
+  function loadMine() {
+    if (!B || !ended()) { $('mine').hidden = true; return; }
+    if (demo === 'ended') { renderMine({ putInSol: 0.1, gotBackSol: 0.124, trades: [{ side: 'b', buy: true, tokens: 1017, sol: 0.05 }, { side: 'b', buy: true, tokens: 608, sol: 0.05 }] }, true); return; }
+    if (typeof W.getSummary !== 'function') return;
+    Promise.resolve(W.getSummary(B)).then(function (m) { renderMine(m, false); }).catch(function () {});
+  }
+  $('bmBody').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-share]'); if (!b) return; var msg = $('bmMsg');
+    if (typeof W.shareStats !== 'function') { if (msg) msg.textContent = 'Preview. Sharing turns on at wavewarz.com.'; return; }
+    Promise.resolve(W.shareStats(B, b.dataset.share)).catch(function (er) { if (msg) msg.textContent = (er && er.userMessage) || 'That did not work. Try again.'; });
+  });
+  /* live stream above the chart: Featured and Community battles, while the battle is live */
+  var streamFor = '';
+  function embedUrl(u) {
+    try { var x = new URL(u), h = x.hostname.replace(/^www\./, ''), seg = x.pathname.split('/').filter(Boolean);
+      if (h === 'twitch.tv' && seg[0]) return 'https://player.twitch.tv/?channel=' + encodeURIComponent(seg[0]) + '&parent=' + encodeURIComponent(location.hostname) + '&muted=true';
+      if (h === 'kick.com' && seg[0]) return 'https://player.kick.com/' + encodeURIComponent(seg[0]) + '?muted=true';
+      if (h === 'youtube.com' && x.searchParams.get('v')) return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(x.searchParams.get('v')) + '?mute=1';
+      if (h === 'youtu.be' && seg[0]) return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(seg[0]) + '?mute=1';
+    } catch (e) {} return '';
+  }
+  function renderStream() {
+    var p = $('stream'), link = httpsUrl(window.WW_STREAM_URL || B.streamLink), show = link && B.type !== 'quick' && !ended();
+    if (!show) { p.hidden = true; $('bsWrap').textContent = ''; streamFor = ''; return; }
+    p.hidden = false; $('bsLink').href = link; if (streamFor === link) return; streamFor = link;
+    var em = embedUrl(link), w = $('bsWrap'); w.textContent = '';
+    if (!em) { w.style.display = 'none'; return; } w.style.display = '';
+    var f = document.createElement('iframe'); f.title = 'Live stream'; f.loading = 'lazy'; f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture'); f.setAttribute('allowfullscreen', ''); f.src = em; w.appendChild(f);
   }
 
   /* ---------- data ---------- */
   function normalize(x) {
-    var end = Date.parse(x.endsAt), start = Date.parse(x.startedAt || x.createdAt) || (end - (x.battleDurationSeconds || 480) * 1000);
-    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, poll: B && B.id === x.battleId ? B.poll : null };
+    var end = Date.parse(x.endsAt), start = Date.parse(x.startedAt || x.createdAt) || (end - (x.battleDurationSeconds || 480) * 1000), same = B && B.id === x.battleId, stored = '';
+    try { stored = sessionStorage.getItem('ww-vote-' + x.battleId) || ''; } catch (e) {}
+    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, streamLink: x.streamLink || '', poll: same ? B.poll : (x.poll || null), myVote: same ? B.myVote : stored, judge: same ? B.judge : (x.judge || null) };
   }
   var viewSet = false;
-  function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); if (!viewSet) { viewSet = true; if (view !== 'chart') setView(view); } else sendGame(); }
+  function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); renderStream(); loadMine(); if (!viewSet) { viewSet = true; if (view !== 'chart') setView(view); } else sendGame(); }
   function fail() { $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>This battle did not load</span></div><div class="ld-foot"><span>Check the link, or <a href="quick-battles.html" style="color:var(--brand-green)">see all battles</a>.</span></div></section>'; }
   function pick() {
     if (wantId) return jget(API + 'battles/' + wantId);
@@ -491,13 +609,15 @@ PAGE_JS = r'''<script id="battle-page-js">
   function load() {
     return pick().then(function (x) {
       if (!x || !x.artist1 || !x.artist2) throw 0;
-      if (demo === 'live') { x = JSON.parse(JSON.stringify(x)); x.sample = true; x.winnerSide = null; x.factors = null; x.endsAt = new Date(Date.now() + 169000).toISOString(); x.createdAt = new Date(Date.now() - 311000).toISOString(); x.startedAt = null; x.artist1.poolSol = 24.1; x.artist2.poolSol = 18.75; x.artist1.volumeSol = 31.4; x.artist2.volumeSol = 22.9; x.artistEarnings = null; }
+      if (demo === 'live') { x = JSON.parse(JSON.stringify(x)); x.sample = true; x.winnerSide = null; x.factors = null; x.endsAt = new Date(Date.now() + 169000).toISOString(); x.createdAt = new Date(Date.now() - 311000).toISOString(); x.startedAt = null; x.artist1.poolSol = 24.1; x.artist2.poolSol = 18.75; x.artist1.volumeSol = 31.4; x.artist2.volumeSol = 22.9; x.artistEarnings = null; x.poll = { a: 14, b: 9, locked: false }; }
+      if (demo === 'ended') { x = JSON.parse(JSON.stringify(x)); x.sample = true; x.type = 'quick'; x.factors = null; x.winnerSide = 'artist2'; x.artist1.poolSol = 0.0227; x.artist2.poolSol = 0.1084; x.poll = { a: 3, b: 5, locked: true }; x.judge = { status: 'ready', winner: 'a', confidence: 90, notes: 'Sample verdict. Track A is a raw lyrical exercise with a clear point of view. Track B is well produced but plays it safe. A brought the conviction.' }; }
       var first = !B; B = normalize(x);
       if (EV) setRound();
       paint();
       var key = B.id + ':' + B.a.poolSol + ':' + B.b.poolSol + ':' + ended();
       if (key !== lastKey) { lastKey = key; loadChart(); }
-      if (first) { loadPoll(); if (B.type === 'main') jget(API + 'events?limit=60').then(function (d) { EV = (d.events || []).filter(function (e) { return (e.rounds || []).some(function (r) { return String(r.battleId) === String(B.id); }); })[0] || null; if (EV && demo === 'live') { EV = JSON.parse(JSON.stringify(EV)); EV.winnerSide = null; EV.rounds.forEach(function (r) { if (String(r.battleId) === String(B.id)) { if (r.winnerSide && EV.roundsWon[r.winnerSide]) EV.roundsWon[r.winnerSide]--; r.winnerSide = null; r.live = true; r.artist1PoolSol = B.a.poolSol; r.artist2PoolSol = B.b.poolSol; } }); } if (EV) { setRound(); paint(); } }).catch(function () {}); }
+      loadPoll(); if (ended()) loadJudge();
+      if (first) { if (B.type === 'main') jget(API + 'events?limit=60').then(function (d) { EV = (d.events || []).filter(function (e) { return (e.rounds || []).some(function (r) { return String(r.battleId) === String(B.id); }); })[0] || null; if (EV && demo === 'live') { EV = JSON.parse(JSON.stringify(EV)); EV.winnerSide = null; EV.rounds.forEach(function (r) { if (String(r.battleId) === String(B.id)) { if (r.winnerSide && EV.roundsWon[r.winnerSide]) EV.roundsWon[r.winnerSide]--; r.winnerSide = null; r.live = true; r.artist1PoolSol = B.a.poolSol; r.artist2PoolSol = B.b.poolSol; } }); } if (EV) { setRound(); paint(); } }).catch(function () {}); }
       clearTimeout(poll); if (!ended() && demo !== 'live') poll = setTimeout(load, 30000);
     }).catch(function () { if (!B) fail(); });
   }

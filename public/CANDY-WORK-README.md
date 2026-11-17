@@ -161,3 +161,14 @@ From Candy's review: donations are back, the chart matches the current one, far 
 - Panel explanations removed. The decision panel is "2 of 3 wins" with three rows: Poll, Judges (DJ Wavy on Quick BattleZ), Chart.
 - Chart panel switch: Chart, DJ Clash, Racers, Dancers, Surf. The game views are a built copy of `CandyToyBox/WaveWarz-Stream-Battle` at 92047b6 in `games/arena/` (rebuild: `npm install --legacy-peer-deps && npx vite build --base ./`, copy `dist/` without `assets/aistudio`). The page feeds it names, pictures, pools, poll and time left through its `wavewarz:*` messages and remembers the last view. In the game side A is blue and side B is green, the reverse of the deck and chart; that lives in the game repo.
 - Backup of the first version of the generator: scratchpad `build-battle-page.v1.py`.
+
+## Battle page, third pass: built around the July UX audit (2026-11-17)
+Source: `~/wavewarz-ux-audit-2026-07 copy/REPORT.md` plus Candy's review of live battle 1794886688.
+- The poll is the first action. Each side's main button is Vote (Free), Trade is the second button, and the poll count is in the middle of the deck. A vote shows instantly.
+- Play and pause on each cover play the song on the page (Audius links resolve through the Audius API; `WW.audioUrl` can supply another source).
+- DJ Wavy's call: locked during the battle, then winner, confidence and written feedback. Yay and Nay removed.
+- Featured and Community battles embed the live stream above the chart while live.
+- Withdraw shows what you receive. "Your battle" shows put in, got back and difference to four decimals, with save and share.
+- Removed for good: wallet address dump, Reconnect Sync, the second explainer pop-up, the yellow banner, purple, winner overlays on the chart, duplicate toasts.
+- Review states: `?demo=live`, `?demo=ended`, and `?id=<main battle id>&demo=live` for the stream embed.
+- Not solved here, raised with Hurricane: whether End Battle is still a manual step, and the wallet waiting state.
