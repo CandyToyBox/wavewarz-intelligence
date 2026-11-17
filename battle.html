@@ -2708,15 +2708,15 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bp .hl-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); align-items: start; }
 .bp .hl-grid + .hl-grid { margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .bp .hl-ph { justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
-.bp .hl-ph p { text-transform: none; letter-spacing: .02em; font: 400 .85rem/1.5 'Outfit', sans-serif; max-width: 52ch; }
+.bp .hl-ph { align-items: center; gap: 10px 14px; }
 .bp-tag { font: 500 .68rem 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); border: 1px solid rgba(216,235,252,.18); border-radius: 999px; padding: 5px 10px; white-space: nowrap; }
 /* chart */
 .bc { position: relative; margin-top: 4px; }
-.bc-leg { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 2px 2px 8px; font: 500 .85rem 'Outfit', sans-serif; color: var(--brand-ice); }
+.bc-leg { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 22px; margin: 2px 2px 8px; font: 500 .85rem 'Outfit', sans-serif; color: var(--brand-ice); }
 .bc-leg span { display: inline-flex; align-items: center; gap: 8px; min-width: 0; } .bc-leg i { width: 18px; height: 3px; border-radius: 2px; flex: none; }
 .bc-leg b { font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 24ch; }
 .bc-leg em { font: 500 .78rem 'JetBrains Mono', monospace; font-style: normal; color: var(--text-muted); }
-.bc-plot { position: relative; height: 320px; touch-action: pan-y; outline: none; border-radius: 12px; }
+.bc-plot { position: relative; height: 360px; touch-action: pan-y; outline: none; border-radius: 12px; }
 .bc-plot:focus-visible { box-shadow: 0 0 0 2px var(--brand-green); }
 .bc-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
 .bc-plot .gl { stroke: rgba(216,235,252,.08); stroke-width: 1; } .bc-plot .ax { fill: #8d9bb0; font: 400 11px 'JetBrains Mono', monospace; }
@@ -2737,7 +2737,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .ka { background: #95fe7c; } .kb { background: #7ec1fb; }
 /* how it is decided */
 .bf { list-style: none; margin: 0; padding: 0; }
-.bf li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: center; padding: 14px 4px; border-top: 1px solid rgba(216,235,252,.08); }
+.bf li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; padding: 16px 4px; border-top: 1px solid rgba(216,235,252,.08); }
 .bf li:first-child { border-top: 0; }
 .bf h4 { margin: 0; font: 700 1rem 'Space Grotesk', sans-serif; color: #fff; } .bf p { margin: 3px 0 0; font: 400 .85rem/1.45 'Outfit', sans-serif; color: var(--text-muted); }
 .bf-who { font: 600 .8rem 'JetBrains Mono', monospace; color: #fff; text-align: right; max-width: 20ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .bf-who.open { color: var(--text-muted); font-weight: 400; }
@@ -2762,6 +2762,23 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bt-amt button { min-height: 52px; border-radius: 14px; cursor: pointer; background: rgba(255,255,255,.03); border: 1px solid rgba(216,235,252,.2); color: #fff; font: 700 .95rem 'JetBrains Mono', monospace; }
 .bt-amt button[aria-pressed="true"] { border-color: var(--brand-green); box-shadow: inset 0 0 0 1px var(--brand-green); color: var(--brand-green); }
 .bt-bal { margin: 0 2px 8px; font: 400 .8rem 'JetBrains Mono', monospace; color: var(--text-muted); }
+.bp-top [hidden], .bp [hidden] { display: none !important; }
+/* donate bar: peer to peer, no fees */
+.bp-give { max-width: 1000px; margin: 16px auto 0; display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap; padding: 14px 22px; border-radius: 22px; border: 1px solid rgba(216,235,252,.16); background: linear-gradient(180deg, rgba(14,21,34,.92), rgba(7,10,16,.95)); }
+.bp-give > span { flex: 1 1 200px; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); } .bp-give > span b { color: var(--brand-green); font-weight: 500; }
+.bp-give .bp-btn i { width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; flex: none; }
+.bt-in { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; padding: 0 14px; min-height: 52px; border-radius: 14px; border: 1px solid rgba(216,235,252,.2); background: rgba(255,255,255,.03); }
+.bt-in:focus-within { border-color: var(--brand-green); }
+.bt-in input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: #fff; font: 700 1rem 'JetBrains Mono', monospace; } .bt-in span { font: 500 .8rem 'JetBrains Mono', monospace; color: var(--text-muted); }
+/* chart or game view */
+.bv { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: rgba(255,255,255,.04); border: 1px solid rgba(216,235,252,.14); max-width: 100%; overflow-x: auto; scrollbar-width: none; } .bv::-webkit-scrollbar { display: none; }
+.bv button { min-height: 36px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer; background: transparent; color: var(--brand-ice); white-space: nowrap; font: 700 .68rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
+.bv button:hover { color: var(--brand-green); } .bv button[aria-pressed="true"] { background: var(--brand-green); color: #0d1321; }
+.bg { position: relative; aspect-ratio: 1280 / 800; border-radius: 16px; overflow: hidden; background: #04070d; border: 1px solid rgba(216,235,252,.12); margin-top: 4px; }
+.bg iframe { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; }
+.bc-plot .bx { fill: none; stroke: rgba(216,235,252,.14); stroke-width: 1; } .bc-plot .at { fill: #8d9bb0; font: 400 11px 'Outfit', sans-serif; }
+.bc-plot .pa { fill: #0a0f18; stroke: #95fe7c; stroke-width: 1.5; } .bc-plot .pb { fill: #0a0f18; stroke: #7ec1fb; stroke-width: 1.5; }
+.bc-leg i.box { width: 28px; height: 11px; border-radius: 1px; background: transparent !important; border: 2px solid; }
 @media (max-width: 1000px) { .bp .hl-grid, .bp .hl-grid + .hl-grid { grid-template-columns: 1fr; } }
 @media (max-width: 860px) { .bp-top { padding: 104px 16px 0; } .bc-plot { height: 260px; } }
 @media (prefers-reduced-transparency: reduce) { .bc-tip { background: rgba(7,14,12,.96); -webkit-backdrop-filter: none; backdrop-filter: none; } }
@@ -2805,35 +2822,39 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     <div class="bp-back"><a href="quick-battles.html">&larr; All battles</a><span id="bpKind" class="bp-tag" hidden></span></div>
     <div id="bpDeck" aria-live="polite"><section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>Loading the battle</span></div></section></div>
     <div class="bp-end" id="bpEnd"><p id="bpEndTx"></p><button class="btn-primary" type="button" id="bpWithdraw">Withdraw</button></div>
+    <div class="bp-give" id="bpGive" hidden><span>Donate direct &middot; <b>No fees</b></span></div>
   </div>
 
   <section class="cp-sec hl bp" aria-label="Battle details">
     <div class="hl-in">
       <div class="hl-grid">
         <article class="hl-panel" id="chart">
-          <header class="hl-ph"><div><h3>The chart</h3><p>SOL in each side's pool over time. The side with more in its pool when time runs out takes the chart.</p></div><span class="bp-tag" id="bcTag" hidden>Sample chart</span></header>
-          <div class="bc">
+          <header class="hl-ph"><div><h3 id="bcTitle">The chart</h3></div><span class="bp-tag" id="bcTag" hidden>Sample chart</span>
+            <div class="bv" id="bvTabs" role="group" aria-label="Chart or game view">
+              <button type="button" data-view="chart" aria-pressed="true">Chart</button><button type="button" data-view="dj" aria-pressed="false">DJ Clash</button><button type="button" data-view="racer" aria-pressed="false">Racers</button><button type="button" data-view="dancer" aria-pressed="false">Dancers</button><button type="button" data-view="surf" aria-pressed="false">Surf</button>
+            </div></header>
+          <div class="bg" id="bgWrap" hidden></div>
+          <div class="bc" id="bcWrap">
             <div class="bc-leg" id="bcLeg"></div>
             <div class="bc-plot" id="bcPlot" tabindex="0" role="img" aria-label="Pool size over time for both sides"></div>
             <div class="bc-tip" id="bcTip"></div>
           </div>
-          <details class="bc-tbl"><summary>See the numbers as a table</summary><div id="bcTable"></div></details>
-          <p class="bc-note" id="bcNote"></p>
+          <details class="bc-tbl" id="bcTbl"><summary>Table</summary><div id="bcTable"></div></details>
         </article>
         <article class="hl-panel" id="decided">
-          <header class="hl-ph"><div><h3 id="bfTitle">How this battle is decided</h3><p>Three things count. Two of the three wins.</p></div></header>
+          <header class="hl-ph"><div><h3 id="bfTitle">2 of 3 wins</h3></div></header>
           <ul class="bf" id="bfList"></ul>
           <p class="bf-rule" id="bfRule"></p>
         </article>
       </div>
       <div class="hl-grid">
         <article class="hl-panel" id="rounds" hidden>
-          <header class="hl-ph"><div><h3>Rounds</h3><p>Best of three rounds takes the battle.</p></div></header>
+          <header class="hl-ph"><div><h3>Best of 3 rounds</h3></div></header>
           <p class="br-score" id="brScore"></p>
           <ol class="br" id="brList"></ol>
         </article>
         <article class="hl-panel" id="sides">
-          <header class="hl-ph"><div><h3>Side by side</h3><p>Artists earn 1% of every trade on their side.</p></div></header>
+          <header class="hl-ph"><div><h3>Side by side</h3></div></header>
           <div id="bsTable"></div>
         </article>
       </div>
@@ -3085,10 +3106,12 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       '<div class="ld-mid"><div class="ld-ring" role="timer"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle id="ldArc" cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="' + (over ? 289 : 0) + '" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6))"/></svg><div class="ld-time"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? 'FINAL' : 'TIME LEFT') + '</small></div></div><div class="ld-vs">VS</div>' +
       '<div class="ld-split"><div class="ld-pc"><span class="a">' + ga + '%</span><span class="c">' + (100 - ga) + '%</span></div><div class="ld-bar" aria-label="Share of the two pools"><i style="width:' + ga + '%"></i></div></div></div>' +
       sideHTML('b', B.b, lab[1], pb > pa) + '</div>' +
-      '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Tap play to hear a song, then trade the one you believe in.') + '</span><span>Both pools: <b>' + tot.toFixed(2) + ' SOL</b></span></div></section>';
+      '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Listen, then trade your side.') + '</span><span>Both pools: <b>' + tot.toFixed(2) + ' SOL</b></span></div></section>';
     var k = $('bpKind'); k.hidden = false; k.textContent = 'Battle ' + B.id;
     var e = $('bpEnd'); e.classList.toggle('on', over);
-    if (over) $('bpEndTx').innerHTML = '<b>This battle has ended.</b> If you traded, your SOL stays in the battle until you withdraw it yourself.';
+    if (over) $('bpEndTx').innerHTML = '<b>Battle ended.</b> Traded? Withdraw to collect your SOL.';
+    var g = $('bpGive'); g.hidden = false;
+    g.innerHTML = '<span>Donate direct &middot; <b>No fees</b></span><button class="bp-btn" type="button" data-give="a"><i class="ka"></i>' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-give="b"><i class="kb"></i>' + esc(B.b.name) + '</button><button class="bp-btn" type="button" data-give="wavewarz">WaveWarZ</button>';
     document.title = B.a.name + ' vs ' + B.b.name + ' | WaveWarZ';
   }
   function runTimer() {
@@ -3109,16 +3132,15 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, lead = pa === pb ? '' : (pa > pb ? 'a' : 'b');
     var pollK = side(f.xPollWinner), judgeK = side(f.humanJudgeWinner || f.djWavyWinner), chartK = side(f.solVoteWinner) || (over ? lead : '');
     var pv = B.poll, pollLive = pv && (pv.a || pv.b) ? (pv.a === pv.b ? '' : pv.a > pv.b ? 'a' : 'b') : '';
-    var rows = '<li><div><h4>The poll</h4><p>' + (quick ? 'Fans vote for the song they like more. Voting is free.' : 'Fans vote in the poll on X during the round.') + '</p></div>' +
-      (pollK ? who(pollK, 'Took the poll') : pollLive ? who(pollLive, 'Ahead ' + pv[pollLive] + ' to ' + pv[pollLive === 'a' ? 'b' : 'a']) : who('', over ? 'Not recorded' : 'Open')) +
+    var rows = '<li><div><h4>Poll</h4></div>' +
+      (pollK ? who(pollK) : pollLive ? who(pollLive, pv[pollLive] + ' to ' + pv[pollLive === 'a' ? 'b' : 'a']) : who('', over ? 'Not recorded' : 'Open')) +
       (quick && !over ? '<div class="bf-vote"><button class="bp-btn" type="button" data-vote="a">Vote ' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-vote="b">Vote ' + esc(B.b.name) + '</button><span class="bc-note" id="bfMsg" role="status" style="margin:0;align-self:center"></span></div>' : '') + '</li>' +
-      '<li><div><h4>' + (quick ? 'DJ Wavy' : 'The judges') + '</h4><p>' + (quick ? 'The WaveWarZ AI judge listens to both songs and picks one.' : 'The judges pick the stronger performance of the round.') + '</p></div>' + (judgeK ? who(judgeK, quick ? 'DJ Wavy pick' : 'Judges pick') : who('', over ? 'Not scored yet' : 'After the round')) + '</li>' +
-      '<li><div><h4>The chart</h4><p>The side with more SOL in its pool when time runs out.</p></div>' + (chartK ? who(chartK, 'Took the chart') : lead ? who(lead, 'Ahead now') : who('', 'Even')) + '</li>';
+      '<li><div><h4>' + (quick ? 'DJ Wavy' : 'Judges') + '</h4></div>' + (judgeK ? who(judgeK) : who('', over ? 'Not scored yet' : 'After the round')) + '</li>' +
+      '<li><div><h4>Chart</h4></div>' + (chartK ? who(chartK) : lead ? who(lead, 'Ahead now') : who('', 'Even')) + '</li>';
     $('bfList').innerHTML = rows;
-    $('bfTitle').textContent = quick ? 'How this battle is decided' : 'How this round is decided';
     var got = { a: 0, b: 0 }; [pollK, judgeK, chartK].forEach(function (k) { if (k) got[k]++; });
-    $('bfRule').innerHTML = B.winner ? '<b>' + esc(name(B.winner)) + '</b> took ' + (quick ? 'the battle' : 'this round') + (got[B.winner] ? ', ' + got[B.winner] + ' of 3.' : '.')
-      : 'Two of three takes ' + (quick ? 'the battle.' : 'the round. Best of three rounds takes the battle.');
+    $('bfRule').innerHTML = B.winner ? '<b>' + esc(name(B.winner)) + '</b> wins' + (quick ? '' : ' the round') + (got[B.winner] ? ', ' + got[B.winner] + ' of 3' : '') : (quick ? '' : 'Best of 3 rounds wins the battle');
+    $('bfRule').hidden = !$('bfRule').innerHTML;
   }
 
   /* ---------- rounds (Main Events) ---------- */
@@ -3163,29 +3185,32 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     }).catch(function () { sampleChart = true; pts = samplePoints(); drawChart(); });
   }
   function nice(v) { var e = Math.pow(10, Math.floor(Math.log10(v || 1))), m = v / e; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * e; }
+  function wall(t) { return new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase(); }
   function clock(ms) { var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   var G = null;
   function drawChart() {
     var el = $('bcPlot'), w = el.clientWidth, h = el.clientHeight; if (!w || !pts.length) return;
-    var L = 46, R = 78, T = 14, Bm = 28, pw = Math.max(40, w - L - R), ph = h - T - Bm;
+    var L = 62, R = 84, T = 12, Bm = 46, pw = Math.max(40, w - L - R), ph = h - T - Bm;
     var t0 = B.start, t1 = Math.max(B.end, pts[pts.length - 1].t), max = 0; pts.forEach(function (p) { max = Math.max(max, p.a, p.b); });
     var stepV = nice((max * 1.05 || 1) / 4), top = stepV * Math.max(1, Math.ceil(max * 1.05 / stepV)), nT = Math.round(top / stepV), dec = stepV >= 1 ? 0 : stepV >= .1 ? 1 : stepV >= .01 ? 2 : 3, X = function (t) { return L + pw * (t - t0) / Math.max(1, t1 - t0); }, Y = function (v) { return T + ph * (1 - v / top); };
     var s = '<svg viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">', i;
     for (i = 0; i <= nT; i++) { var v = stepV * i, y = Y(v); s += '<line class="gl" x1="' + L + '" x2="' + (L + pw) + '" y1="' + y + '" y2="' + y + '"/><text class="ax" x="' + (L - 8) + '" y="' + (y + 4) + '" text-anchor="end">' + v.toFixed(dec) + '</text>'; }
-    var nX = pw < 320 ? 2 : 4; for (i = 0; i <= nX; i++) { var tt = t0 + (t1 - t0) * i / nX; s += '<text class="ax" x="' + X(tt) + '" y="' + (h - 8) + '" text-anchor="' + (i === 0 ? 'start' : i === nX ? 'end' : 'middle') + '">' + clock(tt - t0) + '</text>'; }
+    s += '<rect class="bx" x="' + L + '" y="' + T + '" width="' + pw + '" height="' + ph + '"/><text class="at" transform="translate(14 ' + (T + ph / 2) + ') rotate(-90)" text-anchor="middle">Pool Size (SOL)</text><text class="at" x="' + (L + pw / 2) + '" y="' + (h - 4) + '" text-anchor="middle">Time</text>';
+    var nX = pw < 320 ? 2 : 4; for (i = 0; i <= nX; i++) { var tt = t0 + (t1 - t0) * i / nX; s += (i > 0 && i < nX ? '<line class="gl" x1="' + X(tt) + '" x2="' + X(tt) + '" y1="' + T + '" y2="' + (T + ph) + '"/>' : '') + '<text class="ax" x="' + X(tt) + '" y="' + (T + ph + 16) + '" text-anchor="middle">' + wall(tt) + '</text>'; }
     function path(k) { return pts.map(function (p, j) { return (j ? 'L' : 'M') + X(p.t).toFixed(1) + ' ' + Y(p[k]).toFixed(1); }).join(''); }
     var last = pts[pts.length - 1], ex = X(last.t), ya = Y(last.a), yb = Y(last.b), la = ya, lb = yb;
     if (Math.abs(la - lb) < 16) { var mid = (la + lb) / 2, up = ya <= yb; la = mid + (up ? -8 : 8); lb = mid + (up ? 8 : -8); }
-    s += '<path class="lb" d="' + path('b') + '"/><path class="la" d="' + path('a') + '"/>' +
+    function dots(k) { return pts.length > 60 ? '' : pts.map(function (p) { return '<circle class="p' + k + '" cx="' + X(p.t).toFixed(1) + '" cy="' + Y(p[k]).toFixed(1) + '" r="3"/>'; }).join(''); }
+    s += '<path class="lb" d="' + path('b') + '"/><path class="la" d="' + path('a') + '"/>' + dots('b') + dots('a') +
       '<line class="ch" id="bcCh" y1="' + T + '" y2="' + (T + ph) + '"/>' +
-      '<circle class="eb" cx="' + ex + '" cy="' + yb + '" r="4.5"/><circle class="ea" cx="' + ex + '" cy="' + ya + '" r="4.5"/>' +
+      
       '<text class="el" x="' + (ex + 10) + '" y="' + (la + 4) + '">' + last.a.toFixed(2) + ' SOL</text><text class="el" x="' + (ex + 10) + '" y="' + (lb + 4) + '">' + last.b.toFixed(2) + ' SOL</text>' +
       '<circle class="ea" id="bcDa" r="4.5" style="display:none"/><circle class="eb" id="bcDb" r="4.5" style="display:none"/></svg>';
     el.innerHTML = s; G = { L: L, pw: pw, X: X, Y: Y, t0: t0, w: w };
     var leg = $('bcLeg'); leg.textContent = '';
-    [['a', CA], ['b', CB]].forEach(function (q) { var sp = document.createElement('span'), ic = document.createElement('i'), nm = document.createElement('b'), em = document.createElement('em'); ic.style.background = q[1]; nm.textContent = name(q[0]); em.textContent = sol(last[q[0]]); sp.appendChild(ic); sp.appendChild(nm); sp.appendChild(em); leg.appendChild(sp); });
+    [['a', CA], ['b', CB]].forEach(function (q) { var sp = document.createElement('span'), ic = document.createElement('i'), nm = document.createElement('b'), em = document.createElement('em'); ic.className = 'box'; ic.style.borderColor = q[1]; nm.textContent = name(q[0]); em.textContent = 'Pool Size (SOL)'; sp.appendChild(ic); sp.appendChild(nm); sp.appendChild(em); leg.appendChild(sp); });
     $('bcTag').hidden = !sampleChart;
-    $('bcNote').textContent = sampleChart ? 'The line shape here is a sample that ends on the real pool sizes. On wavewarz.com it is drawn from every trade.' : (ended() ? 'Final.' : 'Updates as people trade.');
+    sendGame();
     el.setAttribute('aria-label', 'Pool size over time. ' + name('a') + ' ' + sol(last.a) + ', ' + name('b') + ' ' + sol(last.b) + '.');
     var step = Math.max(1, Math.floor(pts.length / 8)), rows = pts.filter(function (p, j) { return j % step === 0 || j === pts.length - 1; });
     $('bcTable').innerHTML = '<table><thead><tr><th scope="col">Time</th><th scope="col"><i class="ka"></i>' + esc(name('a')) + '</th><th scope="col"><i class="kb"></i>' + esc(name('b')) + '</th></tr></thead><tbody>' +
@@ -3195,7 +3220,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (!G || !pts[i]) return; var p = pts[i], x = G.X(p.t), tip = $('bcTip'), ch = $('bcCh'), da = $('bcDa'), db = $('bcDb');
     ch.setAttribute('x1', x); ch.setAttribute('x2', x); ch.style.display = 'block';
     da.setAttribute('cx', x); da.setAttribute('cy', G.Y(p.a)); da.style.display = 'block'; db.setAttribute('cx', x); db.setAttribute('cy', G.Y(p.b)); db.style.display = 'block';
-    tip.textContent = ''; var tt = document.createElement('div'); tt.className = 'tt'; tt.textContent = clock(p.t - G.t0) + ' in'; tip.appendChild(tt);
+    tip.textContent = ''; var tt = document.createElement('div'); tt.className = 'tt'; tt.textContent = wall(p.t) + ' \u00b7 ' + clock(p.t - G.t0) + ' in'; tip.appendChild(tt);
     var order = p.a >= p.b ? ['a', 'b'] : ['b', 'a'];
     order.forEach(function (k) { var r = document.createElement('div'), ic = document.createElement('i'), v = document.createElement('b'), n = document.createElement('span'); r.className = 'tr'; ic.style.background = k === 'a' ? CA : CB; v.textContent = sol(p[k], 3); n.textContent = name(k); r.appendChild(ic); r.appendChild(v); r.appendChild(n); tip.appendChild(r); });
     tip.style.display = 'block'; var tw = tip.offsetWidth; tip.style.left = Math.max(0, Math.min(G.w - tw, x + (x > G.w / 2 ? -tw - 12 : 12))) + 'px';
@@ -3210,6 +3235,50 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   $('bcPlot').addEventListener('focus', function () { if (pts.length) { kI = pts.length - 1; tipAt(kI); } });
   $('bcPlot').addEventListener('keydown', function (e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); kI = Math.max(0, Math.min(pts.length - 1, (kI < 0 ? pts.length - 1 : kI) + (e.key === 'ArrowLeft' ? -1 : 1))); tipAt(kI); });
   var rz; addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { tipOff(); drawChart(); }, 120); });
+
+  /* ---------- game views: the stream games (CandyToyBox/WaveWarz-Stream-Battle) react to the same pools and trades ----------
+     The built game lives in games/arena/ and is driven through its postMessage bridge. A real trade can be announced with
+       document.dispatchEvent(new CustomEvent('ww-trade', { detail: { side: 'a', buy: true, sol: 0.1 } }))
+     and the game plays its reaction; without it the page infers moves from pool changes. */
+  var fitGame = function () {}, GAME = window.WW_GAME_URL || 'games/arena/index.html', view = 'chart', gFrame = null, gReady = false, gPools = null;
+  try { var sv = localStorage.getItem('ww-battle-view'); if (/^(chart|dj|racer|dancer|surf)$/.test(sv)) view = sv; } catch (e) {}
+  function gPost(m) { if (gFrame && gFrame.contentWindow) gFrame.contentWindow.postMessage(m, '*'); }
+  function sendGame(force) {
+    if (!gFrame || !gReady || !B) return;
+    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0;
+    if (!gPools || force) {
+      gPost({ type: 'wavewarz:setArtistName', side: 'A', name: B.a.name }); gPost({ type: 'wavewarz:setArtistName', side: 'B', name: B.b.name });
+      var ia = httpsUrl(B.a.albumArtUrl || B.a.profilePictureUrl), ib = httpsUrl(B.b.albumArtUrl || B.b.profilePictureUrl);
+      if (ia) gPost({ type: 'wavewarz:setArtistPhoto', side: 'A', url: ia }); if (ib) gPost({ type: 'wavewarz:setArtistPhoto', side: 'B', url: ib });
+      gPost({ type: 'wavewarz:setRoundDuration', seconds: Math.max(1, Math.round((B.end - Date.now()) / 1000)) });
+    } else {
+      [['A', pa - gPools.a], ['B', pb - gPools.b]].forEach(function (q) { if (Math.abs(q[1]) > 1e-6) gPost({ type: q[1] > 0 ? 'wavewarz:buy' : 'wavewarz:sell', side: q[0], sol: Math.abs(q[1]) }); });
+    }
+    gPost({ type: 'wavewarz:setPool', side: 'A', sol: pa }); gPost({ type: 'wavewarz:setPool', side: 'B', sol: pb });
+    if (B.poll) { gPost({ type: 'wavewarz:setPollVotes', side: 'A', votes: B.poll.a }); gPost({ type: 'wavewarz:setPollVotes', side: 'B', votes: B.poll.b }); }
+    gPools = { a: pa, b: pb };
+  }
+  function setView(v) {
+    view = v; try { localStorage.setItem('ww-battle-view', v); } catch (e) {}
+    var game = v !== 'chart';
+    Array.prototype.forEach.call($('bvTabs').children, function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === v)); });
+    $('bcWrap').hidden = game; $('bcTbl').hidden = game; $('bgWrap').hidden = !game; $('bcTag').hidden = game || !sampleChart;
+    $('bcTitle').textContent = game ? 'The game' : 'The chart';
+    if (!game) { drawChart(); return; }
+    if (!gFrame) {
+      gFrame = document.createElement('iframe'); gFrame.title = 'Battle game view'; gFrame.setAttribute('allow', 'autoplay'); gFrame.loading = 'lazy';
+      gFrame.addEventListener('load', function () { setTimeout(function () { gReady = true; gPools = null; sendGame(true); }, 700); });
+      fitGame = function () { var w = $('bgWrap').clientWidth; if (w) gFrame.style.transform = 'scale(' + (w / 1280) + ')'; };
+      addEventListener('resize', fitGame);
+      gFrame.src = GAME + '?theme=' + encodeURIComponent(v) + '&stream=1'; $('bgWrap').appendChild(gFrame);
+    } else gPost({ type: 'wavewarz:setTheme', theme: v });
+    fitGame();
+  }
+  $('bvTabs').addEventListener('click', function (e) { var b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
+  document.addEventListener('ww-trade', function (e) {
+    var d = e.detail || {}, k = d.side === 'b' ? 'b' : 'a', v = +d.sol || 0; if (!B || !v) return;
+    gPost({ type: d.buy === false ? 'wavewarz:sell' : 'wavewarz:buy', side: k === 'a' ? 'A' : 'B', sol: v });
+  });
 
   /* ---------- trade module (uses the shared #wwAct dialog shell) ---------- */
   var dlg = $('wwAct'), opener = null, busy = false;
@@ -3259,6 +3328,24 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     $('waGo').addEventListener('click', function () { run(this, live, function () { return W.withdraw(B); }, 'Withdrawn.', 'Check your wallet for the SOL from this battle.'); });
     if (!dlg.open) dlg.showModal();
   }
+  /* donations go wallet to wallet with no fee: WW.donate(battle, target, amountSol), target is 'a', 'b' or 'wavewarz' */
+  function openDonate(target, from) {
+    if (!dlg || !dlg.showModal) return;
+    var a = target === 'a' ? B.a : target === 'b' ? B.b : null, nm = a ? a.name : 'WaveWarZ', amt = 0.1, live = typeof W.donate === 'function';
+    var wal = a && a.wallet ? String(a.wallet) : '', short = wal ? wal.slice(0, 4) + '..' + wal.slice(-4) : '';
+    opener = from || null; $('waBody').onclick = null; $('waEb').textContent = 'Donate'; $('waTitle').textContent = 'Donate to ' + nm;
+    $('waBody').innerHTML = (a ? '<div class="wa-s" style="margin-bottom:16px">' + disc(a.albumArtUrl || a.profilePictureUrl) + '<div><strong>' + esc(nm) + '</strong><span>' + esc(short || 'Artist wallet') + '</span></div></div>' : '') +
+      '<div class="bt-amt">' + [0.05, 0.1, 0.25].map(function (v) { return '<button type="button" data-v="' + v + '" aria-pressed="' + (v === amt) + '">' + v.toFixed(2) + ' SOL</button>'; }).join('') + '</div>' +
+      '<label class="bt-in"><input id="bdAmt" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-label="Amount in SOL" placeholder="Other amount…"><span>SOL</span></label>' +
+      '<div class="wa-rows"><div><span>Goes to</span><b>' + (a ? 'The artist, wallet to wallet' : 'WaveWarZ') + '</b></div><div><span>Fees</span><b>None</b></div></div>' +
+      '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">Donate 0.10 SOL</button><span class="wf-fine">' + (live ? 'Your wallet opens to approve. Only the network fee is extra.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
+    function label() { $('waGo').textContent = 'Donate ' + (amt > 0 ? (+amt.toFixed(4)) + ' SOL' : ''); $('waGo').disabled = !(amt > 0); }
+    $('waBody').onclick = function (e) { var v = e.target.closest('[data-v]'); if (!v) return; amt = +v.dataset.v; $('bdAmt').value = ''; Array.prototype.forEach.call($('waBody').querySelectorAll('[data-v]'), function (x) { x.setAttribute('aria-pressed', String(x === v)); }); label(); };
+    $('bdAmt').addEventListener('input', function () { var n = parseFloat(this.value.replace(',', '.')); amt = isFinite(n) && n > 0 ? n : 0; Array.prototype.forEach.call($('waBody').querySelectorAll('[data-v]'), function (x) { x.setAttribute('aria-pressed', 'false'); }); label(); });
+    $('waGo').addEventListener('click', function () { var sent = amt; run(this, live, function () { return W.donate(B, target, sent); }, 'Donation sent.', (+sent.toFixed(4)) + ' SOL went straight to ' + esc(nm) + '.'); });
+    if (!dlg.open) dlg.showModal();
+  }
+  $('bpGive').addEventListener('click', function (e) { var b = e.target.closest('[data-give]'); if (b) openDonate(b.dataset.give, b); });
   if (dlg) dlg.addEventListener('close', function () { if (opener && opener.focus && document.contains(opener)) opener.focus(); opener = null; });
   $('bpDeck').addEventListener('click', function (e) { var b = e.target.closest('[data-trade]'); if (b) openTrade(b.dataset.trade, b); });
   $('bpWithdraw').addEventListener('click', function () { openWithdraw(this); });
@@ -3279,7 +3366,8 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     var end = Date.parse(x.endsAt), start = Date.parse(x.startedAt || x.createdAt) || (end - (x.battleDurationSeconds || 480) * 1000);
     return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, poll: B && B.id === x.battleId ? B.poll : null };
   }
-  function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); }
+  var viewSet = false;
+  function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); if (!viewSet) { viewSet = true; if (view !== 'chart') setView(view); } else sendGame(); }
   function fail() { $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>This battle did not load</span></div><div class="ld-foot"><span>Check the link, or <a href="quick-battles.html" style="color:var(--brand-green)">see all battles</a>.</span></div></section>'; }
   function pick() {
     if (wantId) return jget(API + 'battles/' + wantId);
