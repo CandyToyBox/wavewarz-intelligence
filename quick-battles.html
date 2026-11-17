@@ -2690,6 +2690,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   .ride-stage.is-complete .ride-card { display: none; }
 }
 </style>
+  <script src="ww-celebrate.js" defer></script>
 
 <style id="queue-page-css">
 /* Queue page only. Everything else comes from the homepage styles above. */
@@ -3018,12 +3019,18 @@ body[data-page="queue"] .qp-all { display: none; }
       '<span class="wf-fine">' + (live ? 'Your wallet opens to approve. Network fees are extra.' : 'Preview. Nothing is sent from this page yet.') + '</span></div>';
     $('waGo').addEventListener('click', function () {
       if (busy) return; busy = true; var b = this, label = b.textContent; b.disabled = true; b.textContent = 'Waiting for your wallet…'; $('waErr').textContent = '';
-      Promise.resolve(live ? fn(o.x) : new Promise(function (r) { setTimeout(r, 900); })).then(function () {
+      Promise.resolve(live ? fn(o.x) : new Promise(function (r) { setTimeout(r, 900); })).then(function (res) {
         $('waBody').innerHTML = '<div class="wf-done"><span class="wf-ok" aria-hidden="true"></span><h3>' + (!live ? 'Preview complete.' : launch ? 'Battle launched.' : 'Moved to the front.') + '</h3><p>' +
           (live ? (launch ? 'The music starts in a moment. Open the battle to listen and trade.' : 'Your battle is next. Launch it any time.') : 'This was a preview. No wallet opened and nothing was charged.') +
           '</p><button class="btn-secondary" type="button" id="waDone">Close</button></div>';
         $('waDone').addEventListener('click', close); $('waDone').focus();
         if (live) document.dispatchEvent(new CustomEvent('ww-queue-changed'));
+        /* reward moment, then straight to the battle so nobody wonders what to do next */
+        if (window.WWCelebrate) WWCelebrate(launch ? 'wave' : 'bubbles');
+        if (launch) {
+          var bid = res && (res.battleId || res.battle_id), go = live ? (bid ? 'battle.html?id=' + encodeURIComponent(bid) + '&launched=1' : '') : 'battle.html?demo=live&launched=1';
+          if (go) { var pg = document.createElement('p'); pg.className = 'wf-fine'; pg.style.marginTop = '14px'; pg.textContent = 'Taking you to the battle\u2026'; $('waBody').querySelector('.wf-done').appendChild(pg); $('waDone').textContent = 'Go to the battle'; $('waDone').addEventListener('click', function () { location.href = go; }); setTimeout(function () { location.href = go; }, 2400); }
+        }
       }).catch(function (e) {
         b.disabled = false; b.textContent = label; $('waErr').textContent = (e && e.userMessage) || 'That did not go through. Nothing was charged. Try again.';
       }).then(function () { busy = false; });
