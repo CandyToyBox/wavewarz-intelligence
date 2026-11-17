@@ -202,3 +202,8 @@ Ran the impeccable `polish` pass over all eight pages so they read as one site. 
 - **Brand spelling** in page titles and the share card: WaveWarZ.
 - **Kept on purpose** (the design itself, not defects): the glow, the Wave ID grid backgrounds, the scrolling ribbon, the pulsing live dots, the brand gradient on two headlines, the small labels above section headings, and the side stripe on the featured-artist tags.
 - Backups: scratchpad `before-polish/`. Patch: `apply_polish.py`.
+
+## Battle page: typed amounts and the cellophane jewel case (2026-11-17)
+- Each side has an amount box (SOL) with Buy and Sell side by side under the quick buttons; Enter buys. The value and cursor survive redraws. Phone dock: one amount box per side, button follows the Buy / Sell switch. Sell of a typed SOL amount uses `WW.sellSol` if provided, otherwise the matching percent of the holding.
+- Cover art now sits in a square CD jewel case still in its cellophane: dark hinge spine with knuckles, clear case edge, art under the lid, shrink-wrap fold seam and tear tab across the top, tight-film corner creases, and a light streak that slides across on hover and while that song plays. All CSS, classes `.jc-*` (the homepage already uses `.cd-*` for the WaveZStation shelf).
+- Side columns widened to 270-320px; the chart no longer shows a heavy green focus frame after a click.

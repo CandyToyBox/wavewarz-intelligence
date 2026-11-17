@@ -2718,7 +2718,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bc-leg b { font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 24ch; }
 .bc-leg em { font: 500 .78rem 'JetBrains Mono', monospace; font-style: normal; color: var(--text-muted); }
 .bc-plot { position: relative; height: 360px; touch-action: pan-y; outline: none; border-radius: 12px; }
-.bc-plot:focus-visible { box-shadow: 0 0 0 2px var(--brand-green); }
+.bc-plot:focus { outline: none; } .bc-plot:focus-visible { outline: none; box-shadow: inset 0 0 0 1px rgba(149,254,124,.45); }
 .bc-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
 .bc-plot .gl { stroke: rgba(216,235,252,.08); stroke-width: 1; } .bc-plot .ax { fill: #8d9bb0; font: 400 11px 'JetBrains Mono', monospace; }
 .bc-plot .la { fill: none; stroke: #95fe7c; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; } .bc-plot .lb { fill: none; stroke: #7ec1fb; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
@@ -2803,19 +2803,47 @@ body[data-page="battle"] .mn { display: none; }   /* the Mainnet tag would sit o
 .cb-t.hot span { color: var(--brand-green); }
 .cb-prog { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(216,235,252,.08); } .cb-prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7ec1fb, #95fe7c); transition: width .5s linear; }
 /* three columns that fit the screen */
-.ck-grid { display: grid; grid-template-columns: minmax(250px, 300px) minmax(0, 1fr) minmax(250px, 300px); gap: 16px; margin-top: 14px; height: calc(100svh - 206px); min-height: 560px; max-height: 780px; }
+.ck-grid { display: grid; grid-template-columns: minmax(270px, 320px) minmax(0, 1fr) minmax(270px, 320px); gap: 16px; margin-top: 14px; height: calc(100svh - 206px); min-height: 640px; max-height: 820px; }
 .ck-side, .ck-stage { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-radius: 26px; border: 1px solid var(--hair); background: linear-gradient(180deg, rgba(14,21,34,.9), rgba(6,9,15,.94)); box-shadow: 0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07); }
 .ck-side { padding: 14px; gap: 10px; }
 .ck-side.a { --c: #95fe7c; --cr: 149,254,124; } .ck-side.b { --c: #7ec1fb; --cr: 126,193,251; }
 .ck-side::before { content: ""; position: absolute; left: 26px; right: 26px; top: -1px; height: 2px; border-radius: 2px; background: var(--c); opacity: .85; box-shadow: 0 0 18px rgba(var(--cr), .7); }
-.cs-art { position: relative; flex: 1 1 120px; min-height: 96px; border-radius: 18px; padding: 2px; background: var(--chrome); overflow: hidden; }
-.cs-art > div { position: relative; width: 100%; height: 100%; border-radius: 16px; overflow: hidden; background: radial-gradient(120% 90% at 20% 10%, rgba(var(--cr), .28), rgba(13,19,33,.96) 62%); display: grid; place-items: center; }
-.cs-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.cs-art .mono { font: 300 4.2rem 'Outfit', sans-serif; color: rgba(255,255,255,.22); letter-spacing: -.04em; }
-.cs-tag { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(2,4,8,.72); font: 500 .66rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #fff; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-.cs-play { position: absolute; right: 10px; bottom: 10px; z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; display: grid; place-items: center; background: var(--chrome); box-shadow: inset 0 2px 3px rgba(255,255,255,.85), inset 0 -3px 6px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.6); transition: transform .16s cubic-bezier(.2,.8,.2,1); }
+.cs-artbox { flex: 1 1 150px; min-height: 120px; container-type: size; display: grid; place-items: center; }
+/* The cover sits in a square CD jewel case, still in its cellophane: dark hinge spine, clear case edge, the art under the lid,
+   and a shrink-wrap layer with a fold seam, a tear strip, crinkled corners and a light streak that moves on hover. */
+.jc { position: relative; width: min(100cqw, 100cqh); aspect-ratio: 1; border-radius: 4px; transform: translateZ(0); filter: drop-shadow(0 18px 22px rgba(0,0,0,.55)) drop-shadow(0 3px 4px rgba(0,0,0,.5)); transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.jc-case { position: absolute; inset: 0; border-radius: 4px; overflow: hidden; background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.04) 40%, rgba(255,255,255,.12)); box-shadow: inset 0 0 0 1px rgba(255,255,255,.38), inset 0 0 0 3px rgba(10,14,22,.55), inset 0 0 0 4px rgba(255,255,255,.14); }
+.jc-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 8.5%; background: linear-gradient(90deg, #05070b, #1a222e 45%, #0a0e15); box-shadow: inset -1px 0 0 rgba(255,255,255,.22), 1px 0 0 rgba(0,0,0,.6); }
+.jc-spine::before, .jc-spine::after { content: ""; position: absolute; left: 22%; right: 22%; height: 9%; border-radius: 2px; background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.3), rgba(255,255,255,.08)); }
+.jc-spine::before { top: 6%; } .jc-spine::after { bottom: 6%; }
+.jc-art { position: absolute; left: 11%; top: 3.5%; right: 3.5%; bottom: 3.5%; overflow: hidden; border-radius: 1px; background: radial-gradient(120% 90% at 20% 10%, rgba(var(--cr), .32), rgba(13,19,33,.96) 62%); display: grid; place-items: center; box-shadow: 0 0 0 1px rgba(0,0,0,.6); }
+.jc-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.jc-art .mono { font: 300 clamp(2rem, 30cqw, 5rem) 'Outfit', sans-serif; color: rgba(255,255,255,.24); letter-spacing: -.04em; }
+.jc-wrap { position: absolute; inset: -1px; border-radius: 5px; pointer-events: none; overflow: hidden;
+  background:
+    linear-gradient(118deg, transparent 0 22%, rgba(255,255,255,.26) 29%, rgba(255,255,255,.05) 34%, transparent 40%),
+    linear-gradient(118deg, transparent 0 56%, rgba(255,255,255,.13) 60%, transparent 64%),
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent 9%, transparent 91%, rgba(0,0,0,.18)),
+    linear-gradient(90deg, rgba(255,255,255,.1), transparent 6%, transparent 94%, rgba(255,255,255,.08));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.3), inset 0 1px 0 rgba(255,255,255,.6); }
+/* fold seam and tear strip */
+.jc-wrap::before { content: ""; position: absolute; left: 0; right: 0; top: 7%; height: 4px; background: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,.08) 45%, rgba(0,0,0,.18)); box-shadow: 0 1px 0 rgba(255,255,255,.1); }
+.jc-wrap::after { content: ""; position: absolute; right: 7%; top: calc(7% - 3px); width: 9%; height: 10px; border-radius: 0 0 2px 2px; background: linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,.18)); box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+/* crinkled corners where the film is pulled tight */
+.jc-crease { position: absolute; inset: 0; pointer-events: none; background:
+    linear-gradient(135deg, rgba(255,255,255,.34) 0 2%, transparent 7%),
+    linear-gradient(225deg, rgba(255,255,255,.22) 0 1.5%, transparent 6%),
+    linear-gradient(45deg, rgba(255,255,255,.2) 0 1.5%, transparent 5%),
+    linear-gradient(315deg, rgba(255,255,255,.3) 0 2%, transparent 8%),
+    linear-gradient(160deg, transparent 0 84%, rgba(255,255,255,.12) 86%, transparent 88%); }
+.jc-sheen { position: absolute; inset: -40%; pointer-events: none; background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.22) 49%, rgba(255,255,255,.04) 53%, transparent 58%); transform: translateX(-38%); transition: transform 1.1s cubic-bezier(.16,1,.3,1); }
+.ck-side:hover .jc { transform: translateY(-2px) rotate(-.4deg); }
+.ck-side:hover .jc-sheen, .is-playing .jc-sheen { transform: translateX(38%); }
+.is-playing .jc { filter: drop-shadow(0 18px 24px rgba(0,0,0,.55)) drop-shadow(0 0 22px rgba(var(--cr), .35)); }
+.cs-tag { position: absolute; left: 14%; top: 13%; z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(2,4,8,.72); font: 500 .66rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #fff; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.cs-play { position: absolute; right: 6%; bottom: 6%; z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; display: grid; place-items: center; background: var(--chrome); box-shadow: inset 0 2px 3px rgba(255,255,255,.85), inset 0 -3px 6px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.6); transition: transform .16s cubic-bezier(.2,.8,.2,1); }
 .cs-play:hover { transform: scale(1.06); } .cs-play:active { transform: scale(.94); } .cs-play svg { width: 22px; height: 22px; fill: #0d1321; }
-.cs-eq { position: absolute; left: 12px; bottom: 14px; z-index: 2; display: flex; gap: 3px; align-items: flex-end; height: 22px; opacity: 0; transition: opacity .3s; } .is-playing .cs-eq { opacity: 1; }
+.cs-eq { position: absolute; left: 15%; bottom: 8%; z-index: 2; display: flex; gap: 3px; align-items: flex-end; height: 22px; opacity: 0; transition: opacity .3s; } .is-playing .cs-eq { opacity: 1; }
 .cs-eq i { width: 3px; border-radius: 2px; background: var(--c); animation: csEq 1s ease-in-out infinite; } .cs-eq i:nth-child(2) { animation-delay: .15s; } .cs-eq i:nth-child(3) { animation-delay: .3s; } .cs-eq i:nth-child(4) { animation-delay: .45s; }
 @keyframes csEq { 0%, 100% { height: 5px; } 50% { height: 22px; } }
 .cs-np { font: 500 .58rem 'JetBrains Mono', monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); } .is-playing .cs-np, .cs-np.win { color: var(--c); }
@@ -2839,6 +2867,15 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 .cs-buy:hover:not(:disabled) { background: rgba(var(--cr), .24); border-color: var(--c); }
 .cs-sell { border: 1px solid rgba(216,235,252,.22); background: rgba(255,255,255,.03); color: var(--brand-ice); font-variant-numeric: tabular-nums; }
 .cs-sell:hover:not(:disabled) { border-color: rgba(216,235,252,.6); background: rgba(255,255,255,.08); color: #fff; }
+.cs-cu { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; margin-top: 6px; }
+.cs-in { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 46px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(216,235,252,.2); background: rgba(2,4,8,.5); transition: border-color .16s, box-shadow .16s; }
+.cs-in:focus-within { border-color: var(--c); box-shadow: 0 0 0 3px rgba(var(--cr), .16); }
+.cs-in input { flex: 1; min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; color: #fff; font: 500 .95rem 'Outfit', sans-serif; font-variant-numeric: tabular-nums; }
+.cs-in input::placeholder { color: rgba(216,235,252,.4); }
+.cs-in span { font: 500 .62rem 'JetBrains Mono', monospace; letter-spacing: .14em; color: var(--text-muted); }
+.ck button.cx.cs-go { padding: 0 14px; min-width: 58px; }
+.cs-go.buy { border: 0; background: var(--c); color: #0a0f18; } .cs-go.buy:hover:not(:disabled) { box-shadow: 0 0 20px rgba(var(--cr), .45); }
+.cs-go.sell { border: 1px solid rgba(216,235,252,.32); background: rgba(255,255,255,.04); color: #fff; } .cs-go.sell:hover:not(:disabled) { border-color: #fff; }
 .cs-st { min-height: 1.3em; margin: 0; font: 500 .68rem/1.3 'JetBrains Mono', monospace; letter-spacing: .03em; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cs-st.ok { color: var(--c); }
 .cs-end { display: grid; gap: 8px; }
 /* stage: chart or game, with the stream in a chrome TV when there is one */
@@ -2871,13 +2908,14 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   .ck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto; min-height: 0; max-height: none; gap: 10px; margin-top: 10px; }
   .ck-stage { grid-column: 1 / -1; order: 3; border-radius: 20px; } .ck-side { border-radius: 20px; padding: 10px; gap: 6px; }
   .ck-side { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 6px 10px; align-items: center; }
-  .cs-art { flex: none; width: 56px; height: 56px; min-height: 0; border-radius: 14px; } .cs-art > div { border-radius: 12px; } .cs-tag, .cs-eq { display: none; } .cs-art .mono { font-size: 1.6rem; }
+  .cs-artbox { flex: none; width: 60px; height: 60px; min-height: 0; } .jc-wrap::after, .cs-tag, .cs-eq { display: none; }
   .cs-play { right: 50%; bottom: 50%; width: 34px; height: 34px; transform: translate(50%, 50%); } .cs-play:hover, .cs-play:active { transform: translate(50%, 50%) scale(.96); } .cs-play svg { width: 16px; height: 16px; }
   .cs-nm { font-size: .98rem; -webkit-line-clamp: 1; } .cs-np { font-size: .52rem; } .cs-by { font-size: .74rem; } .cs-pool { grid-column: 1 / -1; padding-top: 6px; } .cs-pool b { font-size: .95rem; }
-  .ck-side .cs-vote, .ck-side .cs-tr, .ck-side .cs-st { display: none; }
+  .ck-side .cs-vote, .ck-side .cs-tr, .ck-side .cs-st, .ck-side .cs-cu { display: none; }
+  .dk-col .cs-cu { margin-top: 0; grid-template-columns: minmax(0, 1fr) auto; } .dk-col .cs-in { min-height: 44px; padding: 0 10px; } .dk-col .cs-in span { display: none; } .ck-dock button.cx.cs-go { min-width: 52px; padding: 0 10px; min-height: 44px; }
   .ck-views.has-tv { grid-template-columns: 1fr; } .ck-main .bc-plot { min-height: 210px; } .ck-main .bg { aspect-ratio: 1280 / 800; flex: none; }
   .ck-meters { gap: 12px; }
-  body[data-page="battle"].has-dock { padding-bottom: calc(196px + env(safe-area-inset-bottom, 0px)); }
+  body[data-page="battle"].has-dock { padding-bottom: calc(250px + env(safe-area-inset-bottom, 0px)); }
   .ck-dock { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(6,9,15,.9); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); border-top: 1px solid rgba(216,235,252,.16); border-radius: 22px 22px 0 0; box-shadow: 0 -18px 40px rgba(0,0,0,.55); --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); }
   .ck-dock[hidden] { display: none; }
   .dk-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
@@ -2891,7 +2929,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   .ck-dock .cs-vote { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; } .ck-dock .cs-buy, .ck-dock .cs-sell { font-size: .78rem; padding: 0; }
   .bp-top { padding: 0 12px; }
 }
-@media (prefers-reduced-motion: reduce) { .cs-eq i { animation: none; height: 14px; } .cb-prog i { transition: none; } .ck button.cx, .cs-play { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .jc, .jc-sheen { transition: none; } .ck-side:hover .jc { transform: none; } .cs-eq i { animation: none; height: 14px; } .cb-prog i { transition: none; } .ck button.cx, .cs-play { transition: none; } }
 /* share module, opened after Withdraw */
 .shr { width: min(720px, calc(100vw - 20px)); height: min(860px, calc(100dvh - 20px)); padding: 0; border: 1px solid rgba(126,193,251,.28); border-radius: 18px; background: #111a2c; overflow: hidden; position: fixed; inset: 0; margin: auto; } .shr::backdrop { background: rgba(3,6,14,.78); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); } .shr iframe { width: 100%; height: 100%; border: 0; display: block; }
 /* donate bar: peer to peer, no fees */
@@ -3225,7 +3263,8 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
      WW.getBattleChart(battleId)        -> { points: [{ t: ms, a: poolSol, b: poolSol }, ...] }
      WW.getPosition(battle)             -> { a: { tokens, valueSol }, b: { tokens, valueSol } }
      WW.buy(battle, side, amountSol)    side is 'a' or 'b'
-     WW.sell(battle, side, percent)     25, 50 or 100
+     WW.sell(battle, side, percent)     25, 50, 100, or the share a typed SOL amount is worth
+     WW.sellSol(battle, side, sol)      optional; sell a typed SOL amount directly
      WW.withdraw(battle)
      WW.getPoll(battle)                 -> { a: votes, b: votes, locked: bool, mine: 'a' | 'b' | null }
      WW.votePoll(battle, side)          free; the wallet signs a message
@@ -3274,26 +3313,53 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
       return '<button type="button" class="cx ' + (buy ? 'cs-buy' : 'cs-sell') + '" data-' + (buy ? 'buy' : 'sell') + '="' + k + '" data-v="' + v + '"' + (busy2 || (!buy && none) ? ' disabled' : '') + ' aria-label="' + (buy ? 'Buy ' + v.toFixed(2) + ' SOL of ' : 'Sell ' + v + ' percent of ') + esc(name(k)) + '">' + (buy ? v.toFixed(2) : v + '%') + '</button>';
     }).join('');
   }
+  /* custom amount: kept across redraws so polling never wipes what someone is typing */
+  var custom = { a: '', b: '' };
+  function customRow(k, mode) {
+    var nm = esc(name(k)), v = esc(custom[k]), dis = busy2 ? ' disabled' : '', none = pos && pos[k] && !(+pos[k].tokens > 0);
+    var field = '<label class="cs-in"><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" enterkeyhint="go" data-amt="' + k + '" value="' + v + '" placeholder="Amount" aria-label="Custom amount in SOL for ' + nm + '"><span>SOL</span></label>';
+    if (mode === 'buy') return '<div class="cs-cu">' + field + '<button type="button" class="cx cs-go buy" data-go="buy" data-k="' + k + '"' + dis + '>Buy</button></div>';
+    if (mode === 'sell') return '<div class="cs-cu">' + field + '<button type="button" class="cx cs-go sell" data-go="sell" data-k="' + k + '"' + (dis || (none ? ' disabled' : '')) + '>Sell</button></div>';
+    return '<div class="cs-cu">' + field + '<button type="button" class="cx cs-go buy" data-go="buy" data-k="' + k + '"' + dis + '>Buy</button><button type="button" class="cx cs-go sell" data-go="sell" data-k="' + k + '"' + (dis || (none ? ' disabled' : '')) + '>Sell</button></div>';
+  }
+  function keepFocus(host, fn) {
+    var ae = document.activeElement, k = ae && ae.dataset && ae.dataset.amt && host.contains(ae) ? ae.dataset.amt : '', st = k ? ae.selectionStart : 0, en = k ? ae.selectionEnd : 0;
+    fn();
+    if (k) { var n = host.querySelector('[data-amt="' + k + '"]'); if (n) { n.focus(); try { n.setSelectionRange(st, en); } catch (e) {} } }
+  }
+  function tradeCustom(k, buy) {
+    var n = parseFloat(String(custom[k]).replace(',', '.'));
+    if (!(n > 0)) { setStat(k, 'Type an amount in SOL first.', false); renderSide(k); renderDock(); var f = document.querySelector('[data-amt="' + k + '"]'); if (f) f.focus(); return; }
+    n = Math.round(n * 1e4) / 1e4;
+    if (buy) { trade(k, true, n); return; }
+    /* selling a SOL amount: WW.sellSol when provided, otherwise the share of the holding that is worth that much */
+    if (typeof W.sellSol === 'function') { trade(k, false, n, true); return; }
+    var p = pos && pos[k], val = p ? +p.valueSol : 0;
+    if (p && val > 0) { trade(k, false, Math.min(100, Math.round(1000 * n / val) / 10)); return; }
+    trade(k, false, n, true);
+  }
   function holdText(k) { var p = pos && pos[k]; return p && +p.tokens > 0 ? 'You hold ' + (+p.tokens).toFixed(0) + ' tokens · ' + sol(p.valueSol, 4) : ''; }
   function renderSide(k) {
     var a = k === 'a' ? B.a : B.b, over = ended(), on = playing === k, by = handle(a) || a.twitterHandle || '', art = httpsUrl(a.albumArtUrl || a.profilePictureUrl), link = httpsUrl(a.musicLink);
     var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, mine = k === 'a' ? pa : pb, pct = tot ? Math.round(100 * mine / tot) : 50;
     var el = $(k === 'a' ? 'sideA' : 'sideB'); el.classList.toggle('is-playing', on);
-    el.innerHTML = '<div class="cs-art"><div><span class="cs-tag">' + (B.type === 'quick' ? 'Song ' : 'Artist ') + k.toUpperCase() + '</span>' +
+    keepFocus(el, function () { el.innerHTML = '<div class="cs-artbox"><div class="jc"><div class="jc-case"><div class="jc-spine"></div><div class="jc-art"><span class="cs-tag">' + (B.type === 'quick' ? 'Song ' : 'Artist ') + k.toUpperCase() + '</span>' +
       (art ? '<img src="' + esc(art) + '" alt="" loading="eager" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '<span class="mono" aria-hidden="true">' + esc((a.name || '?').trim().charAt(0).toUpperCase()) + '</span>' +
-      '<span class="cs-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
+      '</div></div><div class="jc-wrap" aria-hidden="true"><div class="jc-crease"></div><div class="jc-sheen"></div></div><span class="cs-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
       (link ? (inPage(a) ? '<button type="button" class="cs-play" data-play="' + k + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Pause ' : 'Play ') + esc(a.name) + '">' + (on ? PAUSE : PLAY) + '</button>'
                          : '<a class="cs-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>') : '') + '</div></div>' +
       '<div><div class="cs-np' + (over && B.winner === k ? ' win' : '') + '">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h2 class="cs-nm">' + esc(a.name) + '</h2><p class="cs-by">' + (by ? '@' + esc(by) : '&nbsp;') + '</p></div>' +
       '<div class="cs-pool"><b>' + mine.toFixed(4) + '<small>SOL</small></b><span>' + pct + '%</span></div>' +
-      (over ? '' : voteBtn(k) + '<div class="cs-tr"><div class="cs-row"><span>Buy</span>' + amts(k, true) + '</div><div class="cs-row"><span>Sell</span>' + amts(k, false) + '</div></div>' +
-        '<p class="cs-st' + (statOk[k] ? ' ok' : '') + '" role="status">' + esc(stat[k] || holdText(k)) + '</p>');
+      (over ? '' : voteBtn(k) + '<div class="cs-tr"><div class="cs-row"><span>Buy</span>' + amts(k, true) + '</div><div class="cs-row"><span>Sell</span>' + amts(k, false) + '</div>' + customRow(k) + '</div>' +
+        '<p class="cs-st' + (statOk[k] ? ' ok' : '') + '" role="status">' + esc(stat[k] || holdText(k)) + '</p>'); });
   }
   function renderDock() {
-    var d = $('ckDock'), over = ended(); d.hidden = over; document.body.classList.toggle('has-dock', !over); if (over) { d.innerHTML = ''; return; }
+    var d = $('ckDock'), over = ended(); keepFocus(d, function () { renderDockInner(d, over); }); }
+  function renderDockInner(d, over) {
+    d.hidden = over; document.body.classList.toggle('has-dock', !over); if (over) { d.innerHTML = ''; return; }
     var msg = stat.a || stat.b, ok = stat.a ? statOk.a : statOk.b;
     d.innerHTML = '<div class="dk-top"><div class="dk-mode" role="group" aria-label="Buy or sell"><button type="button" data-mode="buy" aria-pressed="' + (dockMode === 'buy') + '">Buy</button><button type="button" data-mode="sell" aria-pressed="' + (dockMode === 'sell') + '">Sell</button></div><span class="dk-st' + (ok ? ' ok' : '') + '" role="status">' + esc(msg || (dockMode === 'buy' ? 'Tap an amount in SOL' : 'Tap how much to sell')) + '</span></div>' +
-      '<div class="dk-cols">' + ['a', 'b'].map(function (k) { return '<div class="dk-col ' + k + '">' + voteBtn(k, true) + '<div class="dk-amt">' + amts(k, dockMode === 'buy') + '</div></div>'; }).join('') + '</div>';
+      '<div class="dk-cols">' + ['a', 'b'].map(function (k) { return '<div class="dk-col ' + k + '">' + voteBtn(k, true) + '<div class="dk-amt">' + amts(k, dockMode === 'buy') + '</div>' + customRow(k, dockMode) + '</div>'; }).join('') + '</div>';
   }
   function renderBar() {
     var over = ended(), tot = (B.a.poolSol || 0) + (B.b.poolSol || 0), rd = EV && B.round ? ' · Round ' + B.round + ' of ' + nRounds() : '';
@@ -3319,12 +3385,12 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   }
   /* one tap trades. The wallet approval is the confirmation; the result shows right under the buttons, once. */
   function setStat(k, t, ok) { stat[k] = t; statOk[k] = !!ok; clearTimeout(statT); if (t && !busy2) statT = setTimeout(function () { stat.a = stat.b = ''; if (B) { renderSide('a'); renderSide('b'); renderDock(); } }, 4500); }
-  function trade(k, buy, v) {
+  function trade(k, buy, v, solSell) {
     if (busy2 || !B || ended()) return;
-    var fn = buy ? W.buy : W.sell, live = typeof fn === 'function', what = buy ? v.toFixed(2) + ' SOL' : v + '%';
+    var fn = buy ? W.buy : (solSell ? W.sellSol : W.sell), live = typeof fn === 'function', what = buy || solSell ? (+v.toFixed(4)) + ' SOL' : v + '%';
     busy2 = k; stat.a = stat.b = ''; stat[k] = live ? 'Approve in your wallet…' : (buy ? 'Buying ' : 'Selling ') + what + '…'; statOk[k] = false; renderSide('a'); renderSide('b'); renderDock();
     Promise.resolve(live ? fn(B, k, v) : new Promise(function (r) { setTimeout(r, 450); })).then(function () {
-      busy2 = ''; setStat(k, (live ? '' : 'Preview: ') + (buy ? 'Bought ' : 'Sold ') + what + (live ? '' : ' · nothing sent'), true);
+      busy2 = ''; setStat(k, (live ? '' : 'Preview: ') + (buy ? 'Bought ' : 'Sold ') + what + (live ? '' : ' · nothing sent'), true); if (custom[k] && Math.abs(parseFloat(custom[k]) - v) < 1e-9) custom[k] = '';
       if (live) { document.dispatchEvent(new CustomEvent('ww-battle-changed', { detail: { id: B.id } })); loadPos(); load(); }
     }).catch(function (e) { busy2 = ''; setStat(k, (e && e.userMessage) || 'Did not go through. Nothing was sent.', false); })
       .then(function () { renderSide('a'); renderSide('b'); renderDock(); });
@@ -3595,9 +3661,20 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   if (dlg) dlg.addEventListener('close', function () { if (opener && opener.focus && document.contains(opener)) opener.focus(); opener = null; });
   document.addEventListener('click', function (e) {
     var t = e.target.closest ? e.target : null; if (!t || !B) return;
+    var go = t.closest('[data-go]'); if (go) { tradeCustom(go.dataset.k, go.dataset.go === 'buy'); return; }
     var b = t.closest('[data-buy]'), sl = t.closest('[data-sell]'), v = t.closest('[data-vote]'), pl = t.closest('[data-play]'), md = t.closest('[data-mode]');
     if (b) trade(b.dataset.buy, true, +b.dataset.v); else if (sl) trade(sl.dataset.sell, false, +sl.dataset.v);
     else if (v) castVote(v.dataset.vote); else if (pl) togglePlay(pl.dataset.play); else if (md) { dockMode = md.dataset.mode; renderDock(); }
+  });
+  document.addEventListener('input', function (e) {
+    var f = e.target; if (!f.dataset || !f.dataset.amt) return;
+    var v = f.value.replace(/[^0-9.,]/g, '').replace(',', '.'); var parts = v.split('.'); if (parts.length > 2) v = parts[0] + '.' + parts.slice(1).join('');
+    if (v !== f.value) { var c = f.selectionStart - (f.value.length - v.length); f.value = v; try { f.setSelectionRange(c, c); } catch (x) {} }
+    custom[f.dataset.amt] = v; if (stat[f.dataset.amt] === 'Type an amount in SOL first.') { stat[f.dataset.amt] = ''; }
+  });
+  document.addEventListener('keydown', function (e) {
+    var f = e.target; if (!f.dataset || !f.dataset.amt || e.key !== 'Enter') return; e.preventDefault();
+    var inDock = !!f.closest('#ckDock'); tradeCustom(f.dataset.amt, inDock ? dockMode === 'buy' : true);
   });
   /* number keys for the fast: 1 2 3 buy side A, 8 9 0 buy side B (ignored while typing in a field) */
   document.addEventListener('keydown', function (e) {
