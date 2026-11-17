@@ -14,6 +14,12 @@ buried here.
 
 ## 2026-11-16
 
+**Wave ID studio updated to Quan's Nov 4 version (WavID #12).** On a Wave ID card
+(`/wavid/card/<handle>`), the ID is now the full picture on a grid background. Hovering,
+holding a finger on it, or tabbing to it reveals callouts tied to the parts of the ID:
+a song and its Quick Battle volume and record on a band, battle activity on a node, and
+win ratio on a cavity. The artist's handle and picture sit at the bottom left. The
+stream strip is labeled host-supplied and shows no made-up number.
 **Public calendar and WaveZStation routes.** `GET /api/public/calendar` returns the
 same schedule as the calendar page (weekly shows plus upcoming dated events), and
 `GET /api/public/wavezstation` passes through the song drops from wavezstation.com.
