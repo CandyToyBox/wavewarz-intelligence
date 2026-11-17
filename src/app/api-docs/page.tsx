@@ -80,6 +80,8 @@ const TOC = [
   { id: 'lb-artists', label: 'GET /api/public/leaderboards/artists' },
   { id: 'lb-traders', label: 'GET /api/public/leaderboards/traders' },
   { id: 'lb-songs', label: 'GET /api/public/leaderboards/songs' },
+  { id: 'calendar', label: 'GET /api/public/calendar' },
+  { id: 'wavezstation', label: 'GET /api/public/wavezstation' },
 ]
 
 export default function ApiDocsPage() {
@@ -316,6 +318,45 @@ export default function ApiDocsPage() {
       "totalVolumeSol": 8.6312, "totalUniqueTraders": 30,
       "lastPlayed": "2026-07-17T01:50:56.696344+00:00"
     }
+  ]
+}`}
+      />
+
+      <Endpoint
+        id="calendar"
+        method="GET"
+        path="/api/public/calendar"
+        summary="The schedule shown at wavewarz.info/calendar: the standing weekly shows (returned once each, with their weekdays, 0 = Sunday) and the dated events from today (Eastern) onward, soonest first. Times are Eastern."
+        params={[{ name: 'limit', type: 'number', desc: 'max dated events, default 50, max 200' }]}
+        example={`curl "https://wavewarz.info/api/public/calendar"`}
+        response={`{
+  "updatedAt": "2026-11-16T20:00:00.000Z",
+  "today": "2026-11-16",
+  "timezone": "America/New_York",
+  "weekly": [
+    { "key": "quick-battlez", "title": "Quick Battlez: X Space + Livestream", "description": "...", "event_type": "BATTLE", "event_time": "9:00 PM ET", "days": [1, 3, 5], "daysLabel": "Mon, Wed, Fri", "location_or_link": "https://x.com/wavewarz" }
+  ],
+  "count": 1,
+  "events": [
+    { "id": "...", "title": "...", "description": "...", "event_date": "2026-11-22", "event_time": "7:00 PM EST", "event_type": "BATTLE", "location_or_link": "https://...", "flyer_url": null, "is_featured": true }
+  ]
+}`}
+      />
+
+      <Endpoint
+        id="wavezstation"
+        method="GET"
+        path="/api/public/wavezstation"
+        summary="A pass-through of the song drops on wavezstation.com, newest first, for pages that cannot read WaveZStation's own feed from the browser. Nothing is stored on wavewarz.info and the numbers are WaveZStation's. stats covers every song in the feed. pool_total_usdc_wei is USDC with 6 decimals. Cached for 5 minutes; returns 502 if WaveZStation is unreachable."
+        params={[{ name: 'limit', type: 'number', desc: 'default 50, max 200' }]}
+        example={`curl "https://wavewarz.info/api/public/wavezstation?limit=5"`}
+        response={`{
+  "updatedAt": "2026-11-16T20:00:00.000Z",
+  "source": "https://www.wavezstation.com/api/discover",
+  "stats": { "songs": 37, "supporters": 237, "poolUsdc": 2891.46 },
+  "count": 1,
+  "songs": [
+    { "id": "beef6af9-...", "title": "...", "artist": "...", "created_at": "2026-11-06T02:22:33.404473+00:00", "cover_image_url": "https://...", "supporter_count": 9, "pool_total_usdc_wei": "95000000", "url": "https://wavezstation.com/song/beef6af9-..." }
   ]
 }`}
       />

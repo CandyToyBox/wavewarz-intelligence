@@ -20,6 +20,11 @@ holding a finger on it, or tabbing to it reveals callouts tied to the parts of t
 a song and its Quick Battle volume and record on a band, battle activity on a node, and
 win ratio on a cavity. The artist's handle and picture sit at the bottom left. The
 stream strip is labeled host-supplied and shows no made-up number.
+**Public calendar and WaveZStation routes.** `GET /api/public/calendar` returns the
+same schedule as the calendar page (weekly shows plus upcoming dated events), and
+`GET /api/public/wavezstation` passes through the song drops from wavezstation.com.
+Both are for the redesigned wavewarz.com homepage, which was reading saved snapshots
+until now. Both are documented at /api-docs.
 
 **Site forms and an admin inbox.** New route `POST /api/public/forms` takes the five
 forms on the redesigned homepage: Featured Battle application (replaces the Tally form),
