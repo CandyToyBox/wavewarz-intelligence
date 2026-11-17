@@ -564,7 +564,7 @@ PAGE_JS = r'''<script id="battle-page-js">
     if (!quick) jw.innerHTML = '';
     else if (j && j.status === 'ready' && (j.winner === 'a' || j.winner === 'b')) {
       var cf = +j.confidence; if (cf > 0 && cf <= 1) cf *= 100;
-      jw.innerHTML = '<div class="bj"><div class="bj-h"><span>DJ Wavy\'s call</span>' + (cf > 0 ? '<span>' + Math.round(cf) + '% confident</span>' : '') + '</div><strong><i class="k' + j.winner + '"></i>' + esc(name(j.winner)) + '</strong>' + (j.notes ? '<p>' + esc(j.notes) + '</p>' : '') + '<p style="margin-top:12px"><a class="bp-btn" href="audius-search.html">Get a DJ Wavy Breakdown</a></p></div>';
+      jw.innerHTML = '<div class="bj"><div class="bj-h"><span>DJ Wavy\'s call</span>' + (cf > 0 ? '<span>' + Math.round(cf) + '% confident</span>' : '') + '</div><strong><i class="k' + j.winner + '"></i>' + esc(name(j.winner)) + '</strong>' + (j.notes ? '<p>' + esc(j.notes) + '</p>' : '') + '<p style="margin-top:12px"><a class="bp-btn" href="dj-wavy.html?la=' + encodeURIComponent(B.a.musicLink || '') + '&lb=' + encodeURIComponent(B.b.musicLink || '') + '">Get your own DJ Wavy Breakdown</a></p></div>';
     } else jw.innerHTML = '<div class="bj locked"><div class="bj-h"><span>DJ Wavy\'s call</span><span>Locked</span></div><p>Revealed when the battle ends.</p></div>';
     $('bfList').innerHTML = rows;
     var quickLabel = quick ? ' the battle' : ' the round'; var got = { a: 0, b: 0 }; [pollK, judgeK, chartK].forEach(function (k) { if (k) got[k]++; });
