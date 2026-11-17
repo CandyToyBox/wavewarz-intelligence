@@ -180,3 +180,14 @@ Sources: Candy on End Battle, `~/wavewarz-homepage-blueprint-2026-10-21.md`, `~/
 - "Best of N rounds" follows the event's round count (three, sometimes five).
 - Trade module always shows the risk line. Withdraw says to use the wallet you traded with. End bar links claim.wavewarz.info.
 - DJ Wavy's call has a "Get a DJ Wavy Breakdown" link.
+
+## Battle page rebuilt as a one-screen cockpit (2026-11-17)
+From Candy's voice note: timing is everything when trading, so everything has to be right there. Buy and sell for both sides next to each other, timer always visible, chart, music, vote and stream on one screen; scrolling is for after the battle. Lighter type, chrome TV for the stream, an app feel on phones, a reward animation on launch and queue, and straight to the battle after launching.
+- Layout: sticky timer bar, then side A, stage, side B in a grid sized to the viewport (`calc(100svh - 206px)`). Details moved below the fold.
+- One-tap buy (0.05 / 0.10 / 0.25 SOL) and sell (25 / 50 / 100 percent) on each side, no pop-up. Keys 1 2 3 and 8 9 0. One status line per side.
+- Type: Outfit 300 to 500 instead of the heavy display weights; thin chrome hairlines instead of thick bezels, except the TV.
+- Stream in a chrome TV beside the chart on Featured and Community battles; battle flyer there when no stream is live. Artists with no picture get a monogram instead of an empty frame.
+- Phone: compact side cards, chart, and a fixed bottom trade dock with a Buy / Sell switch.
+- `ww-celebrate.js`: wave or champagne bubbles on canvas. Launch plays the wave and goes to the battle; reserving plays bubbles.
+- `share-module.html`: Candy's Battle Share Card artifact (https://claude.ai/artifact/SumSU8RQ8tfE4FGZUqE7b1) with an embed mode; opens after Withdraw and from Your battle.
+- The trade pop-up from the earlier passes is gone. Backups: scratchpad `build-battle-page.v3.py`, `index.before-cockpit.html`, `audius-search.before-cockpit.html`. Patch: `cockpit_patch.py`.

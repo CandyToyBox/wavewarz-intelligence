@@ -246,7 +246,8 @@ a.lm-go{text-decoration:none}
 @keyframes pring{0%{transform:scale(.03);opacity:1}70%{opacity:.5}100%{transform:scale(1);opacity:0}}
 @media(prefers-reduced-motion:reduce){.wid-page .wv,.wid-page .st,.wid-page .bn{translate:none}.wid-page .pr{animation:prfade .6s both}@keyframes prfade{0%{transform:scale(.25);opacity:.8}100%{transform:scale(.25);opacity:0}}}
 @media(prefers-reduced-motion:reduce){.wid-page video{display:none}.wid-page .still{display:block}}
-</style></head><body>
+</style><script src="ww-celebrate.js" defer></script>
+</head><body>
 <div class="wid-page" aria-hidden="true"><video class="wv" autoplay muted loop playsinline preload="metadata" poster="wave-id/wave-id-ice.jpeg"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><video class="wv w2" autoplay muted loop playsinline preload="metadata"><source src="wave-id/wave-id-loop-ice.mp4" type="video/mp4"></video><img class="st ic" src="wave-id/wave-id-ice.jpeg" alt=""><img class="st gl" src="wave-id/wave-id-green.jpeg" alt=""><img class="st ar" src="wave-id/wave-id-aqua.jpeg" alt=""><img class="wv still" src="wave-id/wave-id-ice.jpeg" alt=""><div class="gl2"></div><i class="bn n1"></i><i class="bn hot n2"></i><i class="bn n3"></i><i class="bn n4"></i></div>
 <div class="scroller" id="scroller"><div class="page">
 <header><img src="wavewarz-logo.svg?v=3" alt="WaveWarz"><div class="hr"><button class="pillbtn" id="how"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5v-2.7a8 8 0 0 1 16 0v2.7" stroke="#95fe7c"/><rect x="3.4" y="13.6" width="4.2" height="7" rx="1.8" fill="#7ec1fb" stroke="none"/><rect x="16.4" y="13.6" width="4.2" height="7" rx="1.8" fill="#7ec1fb" stroke="none"/><path d="M20.6 20.6c-1.8 1.3-4 1.3-5.8 0" stroke="#daecfd" stroke-width="1.3"/></svg>How it works</button><button class="pillbtn solid" id="wallet">Connect wallet</button></div></header>
@@ -518,7 +519,7 @@ window.WWReserved=(function(){
   else if(id==='how')modal(howHTML());else if(id==='wallet')W.connectWallet();else if(id==='resync')W.resyncAudius();
   else if(id==='dclose'||id==='back')$('dlg').close();
   else if(id==='pay'){var kind=b.dataset.kind;
-   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'quick-battles.html'));WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
+   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'quick-battles.html'));if(window.WWCelebrate)WWCelebrate('bubbles');WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
    else $('dstat').textContent='Prototype: the live app opens your Solana wallet to confirm.'}
   else if(id==='prev'){st.page--;loadTracks();$('browse').scrollIntoView()}else if(id==='next'){st.page++;loadTracks();$('browse').scrollIntoView()}
  });

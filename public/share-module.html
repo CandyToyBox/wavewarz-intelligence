@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- Candy's Battle Share Card concept (claude.ai artifact, 2026-09-23), saved here so the battle page can open it after Withdraw.
+     Only additions: the embed mode and reading this battle's public facts from the URL hash. Personal numbers are still the concept's samples. -->
+<title>Battle Share Card</title>
+<meta name="description" content="Post-battle share module concept: fires once after withdrawal, nine story templates and a full onchain stat catalog, so any way a trader spent the battle has a card to post." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: dark;
+    --void:#080d17;
+    --bg:#0d1321;
+    --card:#111a2c;
+    --card-2:#0f1626;
+    --line: rgba(126,193,251,.14);
+    --line-strong: rgba(126,193,251,.28);
+    --green:#95fe7c;
+    --green-dim: rgba(149,254,124,.14);
+    --blue:#7ec1fb;
+    --blue-dim: rgba(126,193,251,.12);
+    --ice:#daecfd;
+    --mut:#8b97ab;
+    --mut-2:#5f6c82;
+    --red:#ef4444;
+    --red-dim: rgba(239,68,68,.14);
+    --disp:'Rajdhani',sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --radius:16px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{background:var(--bg)}
+  body{
+    margin:0;
+    padding-inline:20px;
+    padding-block:48px 64px;
+    font-family:var(--body);
+    color:var(--ice);
+    background:
+      radial-gradient(900px 480px at 12% -8%, rgba(126,193,251,.09), transparent 60%),
+      radial-gradient(700px 420px at 88% 6%, rgba(149,254,124,.07), transparent 60%),
+      var(--bg);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--green-dim);color:var(--ice)}
+
+  .wrap{max-width:1020px;margin:0 auto}
+
+  /* ---------- header ---------- */
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  }
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 10px 1px var(--green)}
+
+  h1{
+    font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.01em;
+    font-size:clamp(28px,4.6vw,44px);line-height:1.02;margin:0 0 12px;text-wrap:balance;
+  }
+  h1 span{color:var(--green)}
+  .sub{color:var(--mut);font-size:15.5px;line-height:1.6;max-width:660px;margin:0 0 26px}
+  .sub b{color:var(--ice);font-weight:600}
+
+  /* ---------- insight chips ---------- */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px}
+  .chip{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;flex:1 1 250px}
+  .chip .num{
+    font-family:var(--disp);font-weight:700;font-size:19px;color:var(--void);background:var(--green);
+    width:25px;height:25px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:none;line-height:1;
+  }
+  .chip p{margin:0;font-size:13px;line-height:1.5;color:var(--mut)}
+  .chip p b{color:var(--ice);font-weight:600}
+
+  /* ---------- stage ---------- */
+  .stage{position:relative;border:1px solid var(--line);border-radius:20px;background:linear-gradient(180deg, rgba(126,193,251,.05), transparent 140px), var(--void);padding:22px;overflow:hidden}
+  .stage-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  .stage-status{display:flex;align-items:center;gap:10px}
+  .dot-live{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px 1px var(--green);flex:none}
+  .stage-status .t1{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:15px}
+  .stage-status .t2{font-size:12.5px;color:var(--mut)}
+  .stage-status .t2 b{color:var(--blue)}
+
+  .role-row{display:flex;flex-wrap:wrap;gap:6px}
+  .role-btn{
+    font-family:var(--body);font-size:11.5px;font-weight:600;color:var(--mut);
+    background:var(--card-2);border:1px solid var(--line);border-radius:9px;
+    padding:8px 11px;cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .role-btn.active{background:var(--card);color:var(--ice);border-color:var(--green);box-shadow:0 0 0 1px rgba(149,254,124,.18) inset}
+  .role-btn:hover:not(.active){color:var(--ice);border-color:var(--line-strong)}
+
+  /* trigger */
+  .trigger-row{display:flex;flex-direction:column;align-items:center;gap:14px;padding:56px 20px;text-align:center}
+  .trigger-row .lead{font-size:13.5px;color:var(--mut);max-width:400px}
+  .withdraw-btn{
+    font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:16px;color:var(--void);
+    background:var(--green);border:0;border-radius:11px;padding:15px 26px;cursor:pointer;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 0 0 1px rgba(149,254,124,.5), 0 10px 30px -8px rgba(149,254,124,.35);
+    transition:transform .15s;
+  }
+  .withdraw-btn:hover{transform:translateY(-1px)}
+  .withdraw-btn svg{width:18px;height:18px}
+  .trigger-row .fine{font-family:var(--mono);font-size:11px;color:var(--mut-2);letter-spacing:.02em}
+
+  /* ---------- modal ---------- */
+  .modal-backdrop{display:none;background:rgba(3,6,14,.72);backdrop-filter:blur(3px);border-radius:14px;padding:clamp(12px,3vw,26px)}
+  .modal-backdrop.open{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{max-width:680px;margin:0 auto;background:var(--card);border:1px solid var(--line-strong);border-radius:var(--radius);box-shadow:0 30px 70px -20px rgba(0,0,0,.6);animation:pop .18s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--line)}
+  .modal-head h2{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:17px;margin:0}
+  .modal-head .icons{display:flex;gap:6px}
+  .icon-btn{width:29px;height:29px;border-radius:8px;border:1px solid var(--line);background:var(--card-2);color:var(--mut);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+  .icon-btn:hover{color:var(--ice);border-color:var(--line-strong)}
+  .icon-btn svg{width:14px;height:14px}
+  .icon-btn.close:hover{color:var(--red)}
+
+  .modal-body{padding:17px;max-height:74vh;overflow-y:auto}
+
+  /* card preview */
+  .card-frame{position:relative;aspect-ratio:1200/630;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--void)}
+  .card-bg{position:absolute;inset:0}
+  .card-fg{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(13px,3.2vw,24px)}
+
+  .card-frame[data-layout="arena"] .card-bg{background:radial-gradient(60% 90% at 20% 15%, rgba(149,254,124,.22), transparent 60%),radial-gradient(55% 85% at 85% 100%, rgba(126,193,251,.22), transparent 60%),linear-gradient(180deg,#0b1120,#060a14)}
+  .card-frame[data-layout="arena"] .card-bg::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(100deg, rgba(255,255,255,.028) 0 2px, transparent 2px 90px);mix-blend-mode:screen}
+  .card-frame[data-layout="wave"] .card-bg{background:linear-gradient(180deg,#0c1220,#070b15)}
+  .eq{position:absolute;left:0;right:0;bottom:0;height:44%;display:flex;align-items:flex-end;gap:3px;padding:0 4%;opacity:.5}
+  .eq span{flex:1;background:linear-gradient(180deg, var(--green), rgba(149,254,124,0));border-radius:2px 2px 0 0}
+  .card-frame[data-layout="split"] .card-bg{background:linear-gradient(100deg, rgba(149,254,124,.16) 0%, rgba(149,254,124,.16) 46%, transparent 52%),linear-gradient(100deg, transparent 52%, rgba(126,193,251,.16) 58%, rgba(126,193,251,.16) 100%),linear-gradient(180deg,#0c1220,#070b15)}
+  .card-frame[data-layout="split"] .card-bg::after{content:"";position:absolute;top:0;bottom:0;left:50%;width:2px;background:linear-gradient(180deg, transparent, rgba(218,236,253,.35), transparent);transform:skewX(-8deg)}
+  .card-frame[data-layout="chart"] .card-bg{background:linear-gradient(180deg,#0b1120,#060a14)}
+  .chart-svg{position:absolute;inset:0;width:100%;height:100%;opacity:.6}
+  .card-frame[data-layout="minimal"] .card-bg{background:var(--void)}
+
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;letter-spacing:.05em;font-size:clamp(11px,1.9vw,14px);text-transform:uppercase;color:var(--ice)}
+  .brand .mark{width:15px;height:15px;border-radius:5px;background:var(--green);flex:none;box-shadow:0 0 10px 1px rgba(149,254,124,.5)}
+  .result-badge{font-family:var(--mono);font-size:clamp(8.5px,1.5vw,10.5px);font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:5px 9px;border-radius:20px;background:var(--green-dim);color:var(--green);border:1px solid rgba(149,254,124,.35);white-space:nowrap}
+  .result-badge.alt{background:var(--blue-dim);color:var(--blue);border-color:rgba(126,193,251,.35)}
+
+  .card-hero{display:flex;flex-direction:column;gap:4px;margin-top:auto;margin-bottom:auto;max-width:80%}
+  .hero-label{font-family:var(--mono);font-size:clamp(8.5px,1.5vw,10.5px);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+  .hero-num{font-family:var(--disp);font-weight:700;line-height:.98;font-size:clamp(26px,6.6vw,52px);font-variant-numeric:tabular-nums}
+  .hero-num.pos{color:var(--green)}
+  .hero-num.neg{color:var(--red)}
+  .hero-num.info{color:var(--blue)}
+  .hero-num.quote{font-family:var(--body);font-weight:600;font-style:italic;font-size:clamp(14px,2.6vw,19px);line-height:1.4;color:var(--ice)}
+  .hero-sub{font-size:clamp(10.5px,1.8vw,13px);color:var(--mut)}
+  .hero-sub b{color:var(--ice);font-weight:600}
+  .hero-sub .g{color:var(--green);font-weight:600}
+
+  .card-stats{display:flex;flex-wrap:wrap;gap:0;background:rgba(8,13,23,.55);border:1px solid rgba(126,193,251,.14);border-radius:10px;backdrop-filter:blur(2px)}
+  .stat{flex:1 1 0;min-width:70px;padding:7px 9px;border-right:1px solid rgba(126,193,251,.12)}
+  .stat:last-child{border-right:0}
+  .stat .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+  .stat .v{font-family:var(--disp);font-weight:600;font-size:clamp(11px,2.2vw,15px);color:var(--ice);font-variant-numeric:tabular-nums}
+  .stat .v.pos{color:var(--green)}
+  .stat .v.neg{color:var(--red)}
+
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:9px;color:var(--mut-2)}
+
+  /* ---- section labels ---- */
+  .section-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:18px 0 9px;display:flex;align-items:center;gap:8px}
+  .section-label .n{color:var(--mut-2)}
+
+  /* ---- layout swatches ---- */
+  .swatches{display:flex;gap:9px;overflow-x:auto;padding-bottom:2px}
+  .swatch{flex:none;width:74px;cursor:pointer;border:none;background:none;padding:0;display:flex;flex-direction:column;gap:6px;align-items:center}
+  .swatch-thumb{width:74px;height:42px;border-radius:8px;border:1.5px solid var(--line);position:relative;overflow:hidden}
+  .swatch.active .swatch-thumb{border-color:var(--green);box-shadow:0 0 0 2px rgba(149,254,124,.22)}
+  .swatch span{font-size:10px;color:var(--mut);font-weight:600}
+  .swatch.active span{color:var(--ice)}
+  .thumb-arena{background:radial-gradient(70% 100% at 20% 10%,rgba(149,254,124,.35),transparent 60%),radial-gradient(70% 100% at 85% 100%,rgba(126,193,251,.35),transparent 60%),#0b1120}
+  .thumb-wave{background:#0c1220}
+  .thumb-wave::after{content:"";position:absolute;left:6%;right:6%;bottom:0;height:60%;background:repeating-linear-gradient(90deg, var(--green) 0 4px, transparent 4px 8px);opacity:.5;clip-path:polygon(0 100%,0 40%,10% 70%,20% 20%,30% 60%,40% 10%,50% 50%,60% 30%,70% 80%,80% 25%,90% 55%,100% 15%,100% 100%)}
+  .thumb-split{background:linear-gradient(100deg, rgba(149,254,124,.3) 48%, rgba(126,193,251,.3) 52%),#0b1120}
+  .thumb-chart{background:#0b1120}
+  .thumb-chart::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 45%, var(--green) 46%, transparent 47%);opacity:.4;transform:rotate(-8deg) scale(1.4)}
+  .thumb-minimal{background:var(--void)}
+  .thumb-minimal::after{content:"";position:absolute;inset:14px;border:1px solid var(--line-strong);border-radius:3px}
+
+  /* ---- moment strip ---- */
+  .moments{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .moment{
+    flex:none;width:98px;cursor:pointer;border:1px solid var(--line);background:var(--card-2);border-radius:11px;
+    padding:10px 9px;display:flex;flex-direction:column;gap:7px;align-items:flex-start;transition:.15s;
+  }
+  .moment svg{width:16px;height:16px;color:var(--mut)}
+  .moment .mn{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.01em;font-size:11.5px;color:var(--ice);line-height:1.15}
+  .moment.active{border-color:var(--green);background:var(--green-dim)}
+  .moment.active svg{color:var(--green)}
+  .moment:hover:not(.active){border-color:var(--line-strong)}
+
+  /* ---- pills ---- */
+  .stat-groups{display:flex;flex-direction:column;gap:10px}
+  .stat-group .group-label{font-size:10px;color:var(--mut-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pill{font-family:var(--body);font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:20px;cursor:pointer;background:var(--card-2);border:1px solid var(--line);color:var(--mut);transition:.15s}
+  .pill.on{background:var(--green-dim);border-color:rgba(149,254,124,.4);color:var(--green)}
+  .pill:hover:not(.on){border-color:var(--line-strong);color:var(--ice)}
+
+  .meta-line{font-size:11px;color:var(--mut-2);margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .meta-line a{color:var(--blue);text-decoration:none;font-weight:600}
+
+  /* ---- share / cta ---- */
+  .cta-block{padding:14px 17px 18px;border-top:1px solid var(--line)}
+  .social-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .social-chip{
+    flex:none;width:64px;cursor:pointer;border:1px solid var(--line);background:var(--card-2);border-radius:10px;
+    padding:9px 6px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;transition:.15s;
+  }
+  .social-chip:hover{border-color:var(--line-strong);background:var(--card)}
+  .social-chip .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--ice)}
+  .social-chip .ic svg{width:18px;height:18px}
+  .social-chip .ic b{font-family:var(--disp);font-weight:700;font-size:13px}
+  .social-chip span.lb{font-size:9.5px;color:var(--mut);font-weight:600}
+  .util-row{display:flex;gap:8px;flex-wrap:wrap}
+  .cta{flex:1 1 140px;font-family:var(--body);font-weight:600;font-size:12.5px;padding:10px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card-2);color:var(--ice);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
+  .cta svg{width:14px;height:14px;flex:none}
+  .cta:hover{border-color:var(--line-strong)}
+  .cta-note{width:100%;font-size:10px;color:var(--mut-2);text-align:center;margin-top:9px;font-family:var(--mono)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);background:var(--card);border:1px solid var(--line-strong);color:var(--ice);font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:10px;box-shadow:0 14px 34px -10px rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.2s;z-index:50;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- rationale ---------- */
+  .why{margin-top:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .why-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px}
+  .why-card h3{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.02em;font-size:13.5px;margin:0 0 6px;color:var(--green)}
+  .why-card p{margin:0;font-size:12px;line-height:1.55;color:var(--mut)}
+  .why-card p b{color:var(--ice)}
+
+  footer{margin-top:28px;font-size:11.5px;color:var(--mut-2);font-family:var(--mono)}
+
+  @media (max-width:760px){
+    .why{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:700px){
+    body{padding-inline:14px}
+    .modal-head h2{font-size:15px}
+  }
+  @media (max-width:520px){
+    .why{grid-template-columns:1fr}
+    .card-stats{flex-wrap:wrap}
+    .stat{flex:1 1 33%;border-bottom:1px solid rgba(126,193,251,.12)}
+    .card-hero{max-width:100%}
+  }
+
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+  /* embed mode: only the share module, no concept write-up around it */
+  html.embed body{padding:0;background:transparent}
+  html.embed .eyebrow, html.embed h1, html.embed .sub, html.embed .chips, html.embed .why, html.embed footer, html.embed .stage-top{display:none}
+  html.embed .stage{border:0;background:transparent;padding:0}
+  html.embed .modal-backdrop{background:transparent;backdrop-filter:none;padding:0}
+  html.embed .modal{max-width:none;box-shadow:none}
+  html.embed .modal-body{max-height:none}
+  html.embed .modal{border:0;border-radius:0}
+</style>
+
+<div class="wrap">
+
+  <div class="eyebrow">WaveWarz · Share module concept</div>
+  <h1>One battle. <span>Nine</span> ways to tell it.</h1>
+  <p class="sub">
+    A post-battle share card built from every stat a battle actually produces — trades, pools, artist
+    payouts, DJ Wavy's call, a god candle, the withdrawal itself — so however someone spent the battle,
+    there's a true card for it. Still fires once, <b>after Withdrawal</b>, not after every trade.
+  </p>
+
+  <div class="chips">
+    <div class="chip"><div class="num">1</div><p><b>Trigger moved.</b> Fires once, after Withdrawal — not after every trade. No more clicking out mid-battle to place your next order.</p></div>
+    <div class="chip"><div class="num">2</div><p><b>Nine story templates.</b> Trade Recap, Backed the Winner, Underdog Run, Both Sides, Called It, God Candle, DJ Wavy's Verdict, Battle Totals, Withdrawal Receipt.</p></div>
+    <div class="chip"><div class="num">3</div><p><b>Every stat is fair game.</b> Trades, volume, SOL pools, artist fee + payout, poll/charts/DJ Wavy factors, wallet, withdrawal — 21 stats across 6 groups, all toggleable.</p></div>
+  </div>
+
+  <!-- ============ STAGE ============ -->
+  <div class="stage">
+    <div class="stage-top">
+      <div class="stage-status">
+        <span class="dot-live"></span>
+        <div>
+          <div class="t1">LUI defeated R3PLIC4NT</div>
+          <div class="t2">Quick Battle · 3.72 SOL volume · settled 4m ago · <b>2 of 3 factors to LUI</b></div>
+        </div>
+      </div>
+      <div class="role-row" role="group" aria-label="Which role you're sharing as">
+        <button type="button" class="role-btn active" data-role="won">Won on the trade</button>
+        <button type="button" class="role-btn" data-role="backed-down">Backed the winner, still down</button>
+        <button type="button" class="role-btn" data-role="underdog">Backed the underdog</button>
+        <button type="button" class="role-btn" data-role="both-sides">Traded both sides</button>
+      </div>
+    </div>
+
+    <!-- trigger state -->
+    <div class="trigger-row" id="triggerRow">
+      <button class="withdraw-btn" id="openModalBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v13M6 11l6 6 6-6"/><path d="M5 21h14"/></svg>
+        Withdraw Winnings
+      </button>
+      <p class="lead">In production, the share card opens right after this withdrawal confirms — the one moment a trader is already done trading for this battle.</p>
+      <div class="fine">SIMULATED — no funds move in this prototype</div>
+    </div>
+
+    <!-- modal -->
+    <div class="modal-backdrop" id="backdrop">
+      <div class="modal">
+        <div class="modal-head">
+          <h2>Share Your Battle</h2>
+          <div class="icons">
+            <button class="icon-btn" id="copyBtn" title="Copy link" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+            </button>
+            <button class="icon-btn" id="dlBtn" title="Download PNG" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+            </button>
+            <button class="icon-btn close" id="closeBtn" title="Close" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+
+          <!-- card preview -->
+          <div class="card-frame" id="cardFrame" data-layout="arena">
+            <div class="card-bg" id="cardBg"></div>
+            <div class="card-fg">
+              <div class="card-top">
+                <div class="brand"><span class="mark"></span>WaveWarz</div>
+                <div class="result-badge" id="resultBadge">LUI WON THE CHARTS</div>
+              </div>
+              <div class="card-hero">
+                <div class="hero-label" id="heroLabel">WALLET ROI</div>
+                <div class="hero-num" id="heroNum">+42.8%</div>
+                <div class="hero-sub" id="heroSub">Backed <b>LUI</b> · trading PnL <span class="g" id="heroSubPnl">+$18.40</span></div>
+              </div>
+              <div>
+                <div class="card-stats" id="cardStats"></div>
+                <div class="card-foot">
+                  <span id="footNote">Marked from onchain trade + settlement data</span>
+                  <span>wavewarz.info</span>
+                </div>
+              </div>
+            </div>
+            <div class="eq" id="eqBars" aria-hidden="true"></div>
+          </div>
+
+          <!-- layout swatches -->
+          <div class="section-label">Background</div>
+          <div class="swatches" id="swatches">
+            <button class="swatch active" data-layout="arena" type="button"><span class="swatch-thumb thumb-arena"></span><span>Arena</span></button>
+            <button class="swatch" data-layout="wave" type="button"><span class="swatch-thumb thumb-wave"></span><span>Waveform</span></button>
+            <button class="swatch" data-layout="split" type="button"><span class="swatch-thumb thumb-split"></span><span>VS Split</span></button>
+            <button class="swatch" data-layout="chart" type="button"><span class="swatch-thumb thumb-chart"></span><span>Chart Line</span></button>
+            <button class="swatch" data-layout="minimal" type="button"><span class="swatch-thumb thumb-minimal"></span><span>Minimal</span></button>
+          </div>
+
+          <!-- moment strip -->
+          <div class="section-label">What you're sharing <span class="n" id="momentCount">— 9 options</span></div>
+          <div class="moments" id="moments"></div>
+
+          <!-- pills -->
+          <div class="section-label">Show on card <span class="n" id="pillCount"></span></div>
+          <div class="stat-groups" id="statGroups"></div>
+
+          <div class="meta-line">
+            <span id="asOf">Marked from your trade + settlement history. As of just now.</span>
+            <a href="#" id="verifyLink" onclick="return false">Verify onchain →</a>
+          </div>
+
+          <div class="cta-block">
+            <div class="section-label" style="margin-top:0">Share to</div>
+            <div class="social-grid" id="socialGrid"></div>
+            <div class="util-row">
+              <button class="cta" id="copyLink2" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>
+                Copy Link
+              </button>
+              <button class="cta" id="dlBtn2" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                Download PNG
+              </button>
+            </div>
+            <div class="cta-note">Share/Download wire to your existing X, Telegram, Postiz and export pipeline in production — mocked here.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RATIONALE ============ -->
+  <div class="why">
+    <div class="why-card">
+      <h3>Fixes the interrupt</h3>
+      <p>Today's popup fires <b>after every trade</b>. Moving the trigger to Withdrawal means it shows up exactly once, when the trader is actually done for that battle.</p>
+    </div>
+    <div class="why-card">
+      <h3>Fits how people play</h3>
+      <p>Money goes to the artist either way, so a small net loss on a winning side doesn't feel like a loss to most traders. Nine templates mean there's always a true story to post.</p>
+    </div>
+    <div class="why-card">
+      <h3>Not just P&amp;L</h3>
+      <p>Picked the winner, rode the underdog, hedged both sides, caught a god candle, got judged by DJ Wavy, just claimed your withdrawal — each is its own card, not a forced ROI headline.</p>
+    </div>
+    <div class="why-card">
+      <h3>Still honest, either way</h3>
+      <p>Every figure — trades, pools, artist payout, factors — pulls from the same onchain-verified history already used on the Battles page. Template changes emphasis, never the numbers.</p>
+    </div>
+  </div>
+
+  <footer>Concept prototype · not wired to live battle data · for review before build handoff</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var $ = function(id){ return document.getElementById(id); };
+  var fmtMoney = function(n){ return (n<0?"-$":"+$") + Math.abs(n).toFixed(2); };
+  var fmtMoneyPlain = function(n){ return "$" + n.toFixed(2); };
+  var fmtSol = function(n){ return n.toFixed(3).replace(/0$/,"").replace(/\.$/,"") + " SOL"; };
+
+  // ---------- shared battle (one real-shaped example) ----------
+  var BATTLE = {
+    artistA: "LUI", artistB: "R3PLIC4NT",
+    chartsWinner: "LUI",
+    poolA: 2.14, poolB: 1.58,
+    totalVolume: 3.72,
+    type: "Quick Battle",
+    duration: "18m 42s",
+    wallet: "8xQ2…f9Ns",
+    factors: { poll: "LUI", charts: "LUI", djwavy: "LUI" },
+    pollVotesA: 214, pollVotesB: 176,
+    djWavyLine: "LUI's hook doesn't let go — R3PLIC4NT brought heat, but LUI brought the chorus.",
+    artistPayout: { LUI: 0.089, R3PLIC4NT: 0.031 },
+    godCandle: { amountSol: 0.86, side: "LUI", moveExplained: "+11% of the LUI pool in one buy", timestamp: "with 0:04 left on the clock" }
+  };
+
+  // ---------- embed: battle.html passes this battle's public facts in the hash; personal numbers stay sample until wired ----------
+  var EMBED = /[?&]embed=1/.test(location.search);
+  try {
+    var H = JSON.parse(decodeURIComponent(location.hash.slice(1)) || '{}');
+    if (H.a && H.b) {
+      var oldA = BATTLE.artistA, oldB = BATTLE.artistB;
+      BATTLE.artistA = String(H.a); BATTLE.artistB = String(H.b);
+      var w = H.winner === 'b' ? BATTLE.artistB : BATTLE.artistA;
+      BATTLE.chartsWinner = H.chart === 'b' ? BATTLE.artistB : H.chart === 'a' ? BATTLE.artistA : w;
+      BATTLE.poolA = +H.poolA || 0; BATTLE.poolB = +H.poolB || 0; BATTLE.totalVolume = +H.volume || (BATTLE.poolA + BATTLE.poolB);
+      BATTLE.type = String(H.type || BATTLE.type);
+      var pick = function (v) { return v === 'b' ? BATTLE.artistB : BATTLE.artistA; };
+      BATTLE.factors = { poll: pick(H.poll || H.winner), charts: BATTLE.chartsWinner, djwavy: pick(H.judge || H.winner) };
+      if (H.pollA != null) { BATTLE.pollVotesA = +H.pollA || 0; BATTLE.pollVotesB = +H.pollB || 0; }
+      if (H.notes) BATTLE.djWavyLine = String(H.notes).slice(0, 180);
+      BATTLE.artistPayout = {}; BATTLE.artistPayout[BATTLE.artistA] = +H.payA || 0; BATTLE.artistPayout[BATTLE.artistB] = +H.payB || 0;
+      BATTLE.godCandle.side = w;
+      BATTLE._names = [oldA, oldB];
+    }
+  } catch (e) {}
+
+  // ---------- per-role personal data ----------
+  var ROLES = {
+    "won":         { label:"Won on the trade",              side:"__A__",      invested:43.00, trades:4, held:"22m", roi:42.8,  pnl:18.40, volume:71.50 },
+    "backed-down": { label:"Backed the winner, still down",  side:"__A__",      invested:24.60, trades:2, held:"6m",  roi:-12.6, pnl:-3.10, volume:31.10 },
+    "underdog":    { label:"Backed the underdog",            side:"__B__",invested:15.00, trades:3, held:"14m", roi:-8.2,  pnl:-1.23, volume:22.40 },
+    "both-sides":  { label:"Traded both sides",              side:"Both",     invested:38.50, trades:6, held:"25m", roi:6.4,   pnl:2.47,  volume:71.00, sideA:20.00, sideB:18.50 }
+  };
+
+  Object.keys(ROLES).forEach(function (k) { var r = ROLES[k]; if (r.side === "__A__") r.side = BATTLE.artistA; if (r.side === "__B__") r.side = BATTLE.artistB; });
+
+  // ---------- stat catalog, grouped ----------
+  var GROUPS = [
+    { label:"Trading", keys:["roi","pnl","invested","volume","trades","held","side"] },
+    { label:"Battle",  keys:["totalVolume","poolA","poolB","duration","type"] },
+    { label:"Artist",  keys:["artistFeeRate","artistPayout","platformFee"] },
+    { label:"Judging", keys:["winner","factors","pollVotes"] },
+    { label:"Wallet",  keys:["wallet","withdrawn"] },
+    { label:"Highlights", keys:["godCandleSize","godCandleMove"] }
+  ];
+
+  function pillValue(key, ctx){
+    var r = ctx.role, b = BATTLE;
+    switch(key){
+      case "roi": return { label:"ROI", val:(r.roi>=0?"+":"")+r.roi.toFixed(1)+"%", cls:r.roi>=0?"pos":"neg" };
+      case "pnl": return { label:"PnL", val:fmtMoney(r.pnl), cls:r.pnl>=0?"pos":"neg" };
+      case "invested": return { label:"Invested", val:fmtMoneyPlain(r.invested), cls:"" };
+      case "volume": return { label:"Your Volume", val:fmtMoneyPlain(r.volume), cls:"" };
+      case "trades": return { label:"Trades", val:String(r.trades), cls:"" };
+      case "held": return { label:"Held", val:r.held, cls:"" };
+      case "side": return { label:"Side", val: r.side==="Both" ? (b.artistA+" + "+b.artistB) : r.side, cls:"" };
+      case "totalVolume": return { label:"Battle Vol", val:fmtSol(b.totalVolume), cls:"" };
+      case "poolA": return { label:b.artistA+" Pool", val:fmtSol(b.poolA), cls:"" };
+      case "poolB": return { label:b.artistB+" Pool", val:fmtSol(b.poolB), cls:"" };
+      case "duration": return { label:"Duration", val:b.duration, cls:"" };
+      case "type": return { label:"Type", val:b.type, cls:"" };
+      case "artistFeeRate": return { label:"Artist Fee", val:"1.0%", cls:"" };
+      case "artistPayout": {
+        var side = r.side==="Both" ? null : r.side;
+        var val = side ? fmtSol(b.artistPayout[side]) : fmtSol(b.artistPayout[b.artistA]+b.artistPayout[b.artistB]);
+        return { label:"Artist Payout", val: val, cls:"pos" };
+      }
+      case "platformFee": return { label:"Platform Fee", val:"0.5%", cls:"" };
+      case "winner": return { label:"Chart Winner", val:b.chartsWinner, cls:"pos" };
+      case "factors": return { label:"Factors", val:b.factors.poll+"/"+b.factors.charts+"/"+b.factors.djwavy, cls:"" };
+      case "pollVotes": return { label:"Poll", val:b.pollVotesA+"–"+b.pollVotesB, cls:"" };
+      case "wallet": return { label:"Wallet", val:b.wallet, cls:"" };
+      case "withdrawn": return { label:"Withdrawn", val:fmtMoney(r.invested+r.pnl>=0?(r.invested+r.pnl):-(r.invested+r.pnl)).replace("+","+").replace("-$","-$"), cls: (r.invested+r.pnl)>=0?"pos":"neg" };
+      case "godCandleSize": return { label:"Biggest Trade", val:fmtSol(b.godCandle.amountSol), cls:"pos" };
+      case "godCandleMove": return { label:"Pool Move", val:b.godCandle.moveExplained.split(" ")[0], cls:"pos" };
+    }
+    return { label:key, val:"—", cls:"" };
+  }
+
+  // ---------- moment templates ----------
+  var icon = function(d, fill){
+    return '<svg viewBox="0 0 24 24" fill="'+(fill?"currentColor":"none")+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>';
+  };
+  var MOMENTS = [
+    { key:"trade", label:"Trade Recap", icon:icon('<path d="M4 20V12M10 20V6M16 20v-8"/><path d="M2 20h20"/>'),
+      pills:["roi","pnl","invested","trades","held"] },
+    { key:"backer", label:"Backed the Winner", icon:icon('<path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z"/>'),
+      pills:["side","artistPayout","trades","held"] },
+    { key:"underdog-moment", label:"Underdog Run", icon:icon('<path d="M5 21V4"/><path d="M5 5c2-1.5 4-1.5 6 0s4 1.5 6 0v8c-2 1.5-4 1.5-6 0s-4-1.5-6 0V5z"/>'),
+      pills:["side","pnl","artistPayout","trades"] },
+    { key:"both-sides-moment", label:"Both Sides", icon:icon('<path d="M4 7h13l-3-3"/><path d="M20 17H7l3 3"/>'),
+      pills:["invested","volume","trades","pnl"] },
+    { key:"called-it", label:"Called It", icon:icon('<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/>'),
+      pills:["side","factors","pollVotes"] },
+    { key:"god-candle", label:"God Candle", icon:icon('<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>', true),
+      pills:["godCandleSize","godCandleMove","totalVolume"] },
+    { key:"dj-wavy", label:"DJ Wavy's Verdict", icon:icon('<path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/>'),
+      pills:["factors","pollVotes","winner"] },
+    { key:"battle-totals", label:"Battle Totals", icon:icon('<path d="M12 3 3 8l9 5 9-5-9-5z"/><path d="M3 13l9 5 9-5"/>'),
+      pills:["totalVolume","poolA","poolB","artistPayout","duration"] },
+    { key:"withdrawal", label:"Withdrawal Receipt", icon:icon('<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M16.5 13.5h.01"/>'),
+      pills:["withdrawn","invested","wallet","held"] }
+  ];
+
+  var SOCIALS = [
+    { key:"x", label:"X", icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.5 22H1.3l8.2-9.3L1 2h7.2l5 6.6L18.9 2Zm-1.2 18h1.7L7.4 4H5.6l12.1 16Z"/></svg>' },
+    { key:"ig", label:"Instagram", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="16.3" cy="7.7" r="1" fill="currentColor" stroke="none"/></svg>' },
+    { key:"tiktok", label:"TikTok", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M14 4v10.6a3.4 3.4 0 1 1-2-3.1V4h2z"/><path d="M14 4.2c.4 2 2.1 3.5 4 3.7"/></svg>' },
+    { key:"fb", label:"Facebook", icon:'<b>f</b>' },
+    { key:"tg", label:"Telegram", icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 3 2.6 10.6c-1.3.5-1.3 1.2-.2 1.6l4.9 1.5 1.9 5.8c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.8 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.2-.5-1.7-1.4-1.7ZM8.6 13.4l9.3-5.9c.4-.3.8-.1.5.3l-7.7 7-.3 3.2-1.5-4.6Z"/></svg>' },
+    { key:"li", label:"LinkedIn", icon:'<b>in</b>' },
+    { key:"fc", label:"Farcaster", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 20V10a6 6 0 0 1 12 0v10"/><path d="M4 20h4M16 20h4"/></svg>' },
+    { key:"th", label:"Threads", icon:'<b>@</b>' },
+    { key:"dc", label:"Discord", icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="7" width="16" height="11" rx="6"/><circle cx="9.4" cy="12.6" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.6" cy="12.6" r="1.3" fill="currentColor" stroke="none"/></svg>' }
+  ];
+
+  var state = {
+    role: "won",
+    layout: "arena",
+    moment: "trade",
+    pills: {}
+  };
+
+  function applyMomentDefaults(){
+    var m = MOMENTS.filter(function(x){ return x.key === state.moment; })[0];
+    var on = {};
+    m.pills.forEach(function(k){ on[k] = true; });
+    state.pills = on;
+  }
+  applyMomentDefaults();
+
+  function buildEq(){
+    var el = $("eqBars");
+    if (el.childElementCount) return;
+    for (var i=0;i<28;i++){
+      var span = document.createElement("span");
+      var h = 18 + Math.round(Math.sin(i*0.7)*14 + Math.random()*22);
+      span.style.height = Math.max(10,h) + "%";
+      el.appendChild(span);
+    }
+  }
+  buildEq();
+
+  function chartSVG(pos){
+    var pts = pos ? "0,86 12,80 24,70 36,74 48,58 60,60 72,40 84,44 100,18" : "0,20 12,30 24,26 36,40 48,36 60,52 72,50 84,66 100,86";
+    var color = pos ? "#95fe7c" : "#ef4444";
+    return '<svg class="chart-svg" viewBox="0 0 100 100" preserveAspectRatio="none">' +
+      '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.4" vector-effect="non-scaling-stroke"/>' +
+      '<polygon points="' + pts + ' 100,100 0,100" fill="' + color + '" opacity="0.14"/></svg>';
+  }
+
+  function buildMoments(){
+    var wrap = $("moments");
+    wrap.innerHTML = "";
+    MOMENTS.forEach(function(m){
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "moment"; btn.setAttribute("data-moment", m.key);
+      btn.innerHTML = m.icon + '<span class="mn">' + m.label + '</span>';
+      btn.addEventListener("click", function(){
+        state.moment = m.key;
+        applyMomentDefaults();
+        render();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function buildSocials(){
+    var wrap = $("socialGrid");
+    wrap.innerHTML = "";
+    SOCIALS.forEach(function(s){
+      var btn = document.createElement("button");
+      btn.type = "button"; btn.className = "social-chip"; btn.title = "Share to " + s.label;
+      btn.innerHTML = '<span class="ic">' + s.icon + '</span><span class="lb">' + s.label + '</span>';
+      btn.addEventListener("click", function(){ toast("Wireframe — opens " + s.label + " share in production"); });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function heroFor(momentKey, ctx){
+    var r = ctx.role, b = BATTLE, pos = r.pnl >= 0;
+    switch(momentKey){
+      case "trade":
+        return {
+          badge: r.side + (b.chartsWinner===r.side ? " WON THE CHARTS" : " · CHARTS: " + b.chartsWinner),
+          label: "WALLET ROI",
+          num: (pos?"+":"") + r.roi.toFixed(1) + "%", cls: pos?"pos":"neg",
+          sub: 'Backed <b>' + r.side + '</b> · trading PnL <b style="color:' + (pos?'var(--green)':'var(--red)') + '">' + fmtMoney(r.pnl) + '</b>'
+        };
+      case "backer": {
+        var youBacked = r.side === b.chartsWinner;
+        return {
+          badge: b.chartsWinner + " WON THE CHARTS", altBadge:false,
+          label: "BATTLE RESULT",
+          num: b.chartsWinner + " WON", cls: "pos",
+          sub: youBacked
+            ? 'You backed <b>' + b.chartsWinner + '</b> · artist earned <b style="color:var(--green)">' + fmtSol(b.artistPayout[b.chartsWinner]) + '</b> onchain from the room'
+            : b.chartsWinner + ' took the charts · artist earned <b style="color:var(--green)">' + fmtSol(b.artistPayout[b.chartsWinner]) + '</b> onchain from the room'
+        };
+      }
+      case "underdog-moment": {
+        var loser = r.side !== b.chartsWinner ? r.side : (r.side===b.artistA?b.artistB:b.artistA);
+        return {
+          badge: loser + " · CHARTS: " + b.chartsWinner, altBadge:true,
+          label: "UNDERDOG RUN",
+          num: loser, cls: "info",
+          sub: 'Backed the long shot vs <b>' + b.chartsWinner + '</b> · ' + fmtMoney(r.pnl) + ' on the board — artist still earned <b style="color:var(--green)">' + fmtSol(b.artistPayout[loser] || 0.031) + '</b>'
+        };
+      }
+      case "both-sides-moment":
+        return {
+          badge: "TRADED BOTH SIDES", altBadge:true,
+          label: "BOTH SIDES ROI",
+          num: (r.roi>=0?"+":"") + r.roi.toFixed(1) + "%", cls: r.roi>=0?"pos":"neg",
+          sub: 'Split across <b>' + b.artistA + '</b> + <b>' + b.artistB + '</b> · net PnL <b style="color:' + (r.pnl>=0?'var(--green)':'var(--red)') + '">' + fmtMoney(r.pnl) + '</b>'
+        };
+      case "called-it": {
+        var matches = ["poll","charts","djwavy"].filter(function(f){ return b.factors[f] === r.side; }).length;
+        var sweep = r.side === "Both" ? null : matches;
+        var num = r.side === "Both" ? "COVERED" : (matches + "-" + (3-matches));
+        var subText = r.side === "Both"
+          ? "You were on the right side of it either way."
+          : (matches >= 2
+              ? "Poll, Charts and DJ Wavy — " + matches + " of 3 called it with <b>" + r.side + "</b>."
+              : "The room split — you rode with <b>" + r.side + "</b> anyway.");
+        return {
+          badge: r.side === "Both" ? "HEDGED THE CALL" : (matches>=2 ? "CALLED IT" : "WENT AGAINST THE ROOM"),
+          altBadge: !(r.side!=="Both" && matches>=2),
+          label: "PREDICTION",
+          num: num, cls: r.side==="Both" ? "info" : (matches>=2?"pos":"neg"),
+          sub: subText
+        };
+      }
+      case "god-candle":
+        return {
+          badge: "BIGGEST TRADE THIS BATTLE", altBadge:true,
+          label: "GOD CANDLE",
+          num: b.godCandle.amountSol.toFixed(2) + " SOL", cls: "pos",
+          sub: b.godCandle.moveExplained + ' <b>' + b.godCandle.timestamp + '</b>'
+        };
+      case "dj-wavy":
+        return {
+          badge: "JUDGE'S CALL", altBadge:true,
+          label: "DJ WAVY'S VERDICT",
+          num: '"' + b.djWavyLine + '"', cls: "quote",
+          sub: '— DJ Wavy, AI Judge · picked <b>' + b.factors.djwavy + '</b>'
+        };
+      case "battle-totals":
+        return {
+          badge: b.type.toUpperCase(), altBadge:true,
+          label: "BATTLE VOLUME",
+          num: b.totalVolume.toFixed(2) + " SOL", cls: "info",
+          sub: fmtSol(b.poolA) + ' vs ' + fmtSol(b.poolB) + ' pools · ' + b.duration
+        };
+      case "withdrawal": {
+        var amt = r.invested + r.pnl;
+        return {
+          badge: "WITHDRAWAL CONFIRMED", altBadge:true,
+          label: "WITHDRAWN",
+          num: fmtMoneyPlain(Math.abs(amt)), cls: amt>=0?"pos":"neg",
+          sub: 'Claimed to <b>' + b.wallet + '</b> · held ' + r.held
+        };
+      }
+    }
+  }
+
+  function render(){
+    var r = ROLES[state.role];
+    var ctx = { role: r };
+
+    // role buttons
+    document.querySelectorAll(".role-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-role") === state.role);
+    });
+
+    // layout
+    $("cardFrame").setAttribute("data-layout", state.layout);
+    var pos = r.pnl >= 0;
+    $("cardBg").innerHTML = state.layout === "chart" ? chartSVG(pos) : "";
+    $("eqBars").style.display = (state.layout === "wave") ? "flex" : "none";
+    document.querySelectorAll(".swatch").forEach(function(s){ s.classList.toggle("active", s.getAttribute("data-layout") === state.layout); });
+
+    // moment chips
+    document.querySelectorAll(".moment").forEach(function(m){ m.classList.toggle("active", m.getAttribute("data-moment") === state.moment); });
+
+    // hero
+    var h = heroFor(state.moment, ctx);
+    $("resultBadge").textContent = h.badge;
+    $("resultBadge").className = "result-badge" + (h.altBadge ? " alt" : "");
+    $("heroLabel").textContent = h.label;
+    var heroEl = $("heroNum");
+    heroEl.innerHTML = h.num;
+    heroEl.className = "hero-num " + h.cls;
+    $("heroSub").innerHTML = h.sub;
+
+    // stat rail — union of active pills, ordered by group
+    var rail = $("cardStats");
+    rail.innerHTML = "";
+    var any = false;
+    GROUPS.forEach(function(g){
+      g.keys.forEach(function(k){
+        if (!state.pills[k]) return;
+        any = true;
+        var p = pillValue(k, ctx);
+        var s = document.createElement("div");
+        s.className = "stat";
+        s.innerHTML = '<div class="k">' + p.label + '</div><div class="v ' + p.cls + '">' + p.val + '</div>';
+        rail.appendChild(s);
+      });
+    });
+    if (!any){
+      rail.innerHTML = '<div class="stat"><div class="k">Note</div><div class="v" style="font-size:10px;color:var(--mut)">Pick at least one stat below</div></div>';
+    }
+
+    // pill groups
+    var groupsWrap = $("statGroups");
+    groupsWrap.innerHTML = "";
+    var totalOn = 0, totalAll = 0;
+    GROUPS.forEach(function(g){
+      var section = document.createElement("div");
+      section.className = "stat-group";
+      var pillsHtml = g.keys.map(function(k){
+        totalAll++;
+        if (state.pills[k]) totalOn++;
+        var p = pillValue(k, { role:r });
+        var on = !!state.pills[k];
+        return '<button type="button" class="pill' + (on?" on":"") + '" data-key="' + k + '">' + p.label + '</button>';
+      }).join("");
+      section.innerHTML = '<div class="group-label">' + g.label + '</div><div class="pills">' + pillsHtml + '</div>';
+      groupsWrap.appendChild(section);
+    });
+    $("pillCount").textContent = "— " + totalOn + " of " + totalAll + " shown";
+    groupsWrap.querySelectorAll(".pill").forEach(function(p){
+      p.addEventListener("click", function(){
+        var k = p.getAttribute("data-key");
+        state.pills[k] = !state.pills[k];
+        render();
+      });
+    });
+  }
+
+  function toast(msg){
+    var t = $("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toast._h);
+    toast._h = setTimeout(function(){ t.classList.remove("show"); }, 1900);
+  }
+
+  // ---- events ----
+  $("openModalBtn").addEventListener("click", function(){
+    $("backdrop").classList.add("open");
+    $("triggerRow").style.display = "none";
+  });
+  $("closeBtn").addEventListener("click", function(){
+    $("backdrop").classList.remove("open");
+    $("triggerRow").style.display = "flex";
+  });
+
+  document.querySelectorAll(".role-btn").forEach(function(b){
+    b.addEventListener("click", function(){ state.role = b.getAttribute("data-role"); render(); });
+  });
+  document.querySelectorAll(".swatch").forEach(function(s){
+    s.addEventListener("click", function(){ state.layout = s.getAttribute("data-layout"); render(); });
+  });
+
+  function copyLink(){
+    var url = "https://wavewarz.info/battles/share/demo";
+    var done = function(){ toast("Link copied"); };
+    try{
+      navigator.clipboard.writeText(url).then(done, function(){
+        var ta = document.createElement("textarea");
+        ta.value = url; document.body.appendChild(ta); ta.select();
+        try{ document.execCommand("copy"); }catch(e){}
+        document.body.removeChild(ta);
+        done();
+      });
+    }catch(e){ toast("Copy this: " + url); }
+  }
+  $("copyBtn").addEventListener("click", copyLink);
+  $("copyLink2").addEventListener("click", copyLink);
+  $("dlBtn").addEventListener("click", function(){ toast("Wireframe — exports PNG in production"); });
+  $("dlBtn2").addEventListener("click", function(){ toast("Wireframe — exports PNG in production"); });
+
+  buildMoments();
+  buildSocials();
+  render();
+  if (EMBED) {
+    document.documentElement.classList.add('embed');
+    var t1 = document.querySelector('.stage-status .t1'), t2 = document.querySelector('.stage-status .t2');
+    if (t1) t1.textContent = BATTLE.chartsWinner + ' took the charts';
+    if (t2) t2.textContent = BATTLE.type + ' \u00b7 ' + BATTLE.totalVolume.toFixed(4) + ' SOL in the pools';
+    $("backdrop").classList.add("open"); $("triggerRow").style.display = "none";
+    $("closeBtn").addEventListener("click", function () { try { parent.postMessage({ type: 'ww-share-close' }, '*'); } catch (e) {} });
+  }
+})();
+</script>
+
+
+</body>
+</html>

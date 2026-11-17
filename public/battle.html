@@ -2690,10 +2690,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   .ride-stage.is-complete .ride-card { display: none; }
 }
 </style>
+  <script src="ww-celebrate.js" defer></script>
 
 <style id="battle-page-css">
 /* Battle page only. The deck (.ld), panels (.hl-panel), rows and the dialog shell (.wf) come from the homepage styles above. */
-.bp-top { position: relative; z-index: 5; padding: 118px 24px 0; --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); }
+.bp-top { position: relative; z-index: 5; padding: 0 20px; --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .bp-top .ld { display: block; }
 .bp-top .ld-act { width: 100%; cursor: pointer; }
@@ -2705,7 +2706,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bp-end p { margin: 0; flex: 1 1 280px; color: var(--brand-ice); font-size: .98rem; line-height: 1.5; } .bp-end p b { color: #fff; }
 .bp-end .btn-primary { cursor: pointer; border: 0; } .bp-end .btn-primary:disabled { opacity: .5; cursor: default; } .bp-end a { color: var(--brand-green); }
 .bp { padding-top: 28px; }
-.bp .hl-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); align-items: start; }
+.bp .hl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 .bp .hl-grid + .hl-grid { margin-top: 20px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .bp .hl-ph { justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
 .bp .hl-ph { align-items: center; gap: 10px 14px; }
@@ -2784,6 +2785,114 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bm-big { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 2px 0 12px; } .bm-big div { padding: 14px; border-radius: 14px; border: 1px solid rgba(216,235,252,.12); background: rgba(255,255,255,.02); min-width: 0; }
 .bm-big span { display: block; font: 500 .64rem 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted); } .bm-big b { display: block; margin-top: 6px; font: 700 1.15rem 'Outfit', sans-serif; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; } .bm-big b.up { color: var(--brand-green); }
 .bm-act { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 6px; align-items: center; }
+/* ============ COCKPIT: timer, both songs, chart, vote and one-tap trading on one screen ============ */
+.ck { position: relative; z-index: 5; padding: 104px 20px 0; --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); --hair: rgba(216,235,252,.14); }
+.ck-in { max-width: 1480px; margin: 0 auto; }
+.ck [hidden], .ck-dock[hidden] { display: none !important; }
+/* timer bar: always on screen */
+.ck-bar { position: sticky; top: 92px; z-index: 40; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 10px 22px 12px; border-radius: 22px; border: 1px solid var(--hair); background: rgba(6,9,15,.82); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08); overflow: hidden; }
+.cb-l, .cb-r { display: flex; align-items: center; gap: 12px; min-width: 0; font: 500 .68rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+.cb-r { justify-content: flex-end; } .cb-r b { color: #fff; font-weight: 500; letter-spacing: .04em; }
+.cb-l .ld-live { color: var(--brand-green); } .cb-k { overflow: hidden; text-overflow: ellipsis; }
+.cb-c { display: flex; align-items: center; gap: 22px; min-width: 0; }
+.cb-n { font: 500 1rem 'Outfit', sans-serif; letter-spacing: -.005em; color: #fff; max-width: 22ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cb-n.a { text-align: right; }
+.cb-n i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin: 0 8px; vertical-align: 2px; }
+.cb-t { text-align: center; line-height: 1; } .cb-t span { display: block; font: 300 2.5rem/1 'Outfit', sans-serif; letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums; min-width: 3.2ch; }
+.cb-t small { display: block; margin-top: 4px; font: 500 .56rem 'JetBrains Mono', monospace; letter-spacing: .22em; text-transform: uppercase; color: var(--text-muted); }
+.cb-t.hot span { color: var(--brand-green); }
+.cb-prog { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: rgba(216,235,252,.08); } .cb-prog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #7ec1fb, #95fe7c); transition: width .5s linear; }
+/* three columns that fit the screen */
+.ck-grid { display: grid; grid-template-columns: minmax(250px, 300px) minmax(0, 1fr) minmax(250px, 300px); gap: 16px; margin-top: 14px; height: calc(100svh - 206px); min-height: 560px; max-height: 780px; }
+.ck-side, .ck-stage { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-radius: 26px; border: 1px solid var(--hair); background: linear-gradient(180deg, rgba(14,21,34,.9), rgba(6,9,15,.94)); box-shadow: 0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07); }
+.ck-side { padding: 14px; gap: 10px; }
+.ck-side.a { --c: #95fe7c; --cr: 149,254,124; } .ck-side.b { --c: #7ec1fb; --cr: 126,193,251; }
+.ck-side::before { content: ""; position: absolute; left: 26px; right: 26px; top: -1px; height: 2px; border-radius: 2px; background: var(--c); opacity: .85; box-shadow: 0 0 18px rgba(var(--cr), .7); }
+.cs-art { position: relative; flex: 1 1 120px; min-height: 96px; border-radius: 18px; padding: 2px; background: var(--chrome); overflow: hidden; }
+.cs-art > div { position: relative; width: 100%; height: 100%; border-radius: 16px; overflow: hidden; background: radial-gradient(120% 90% at 20% 10%, rgba(var(--cr), .28), rgba(13,19,33,.96) 62%); display: grid; place-items: center; }
+.cs-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cs-art .mono { font: 300 4.2rem 'Outfit', sans-serif; color: rgba(255,255,255,.22); letter-spacing: -.04em; }
+.cs-tag { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(2,4,8,.72); font: 500 .6rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #fff; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.cs-play { position: absolute; right: 10px; bottom: 10px; z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; display: grid; place-items: center; background: var(--chrome); box-shadow: inset 0 2px 3px rgba(255,255,255,.85), inset 0 -3px 6px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.6); transition: transform .16s cubic-bezier(.2,.8,.2,1); }
+.cs-play:hover { transform: scale(1.06); } .cs-play:active { transform: scale(.94); } .cs-play svg { width: 22px; height: 22px; fill: #0d1321; }
+.cs-eq { position: absolute; left: 12px; bottom: 14px; z-index: 2; display: flex; gap: 3px; align-items: flex-end; height: 22px; opacity: 0; transition: opacity .3s; } .is-playing .cs-eq { opacity: 1; }
+.cs-eq i { width: 3px; border-radius: 2px; background: var(--c); animation: csEq 1s ease-in-out infinite; } .cs-eq i:nth-child(2) { animation-delay: .15s; } .cs-eq i:nth-child(3) { animation-delay: .3s; } .cs-eq i:nth-child(4) { animation-delay: .45s; }
+@keyframes csEq { 0%, 100% { height: 5px; } 50% { height: 22px; } }
+.cs-np { font: 500 .58rem 'JetBrains Mono', monospace; letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); } .is-playing .cs-np, .cs-np.win { color: var(--c); }
+.cs-nm { margin: 2px 0 0; font: 500 1.4rem/1.15 'Outfit', sans-serif; letter-spacing: -.015em; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.cs-by { margin: 2px 0 0; font: 400 .82rem 'Outfit', sans-serif; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-pool { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 8px; border-top: 1px solid var(--hair); }
+.cs-pool b { font: 400 1.25rem 'Outfit', sans-serif; color: #fff; font-variant-numeric: tabular-nums; letter-spacing: -.01em; } .cs-pool b small { font: 500 .62rem 'JetBrains Mono', monospace; letter-spacing: .12em; color: var(--text-muted); margin-left: 5px; }
+.cs-pool span { font: 500 .78rem 'JetBrains Mono', monospace; color: var(--c); }
+/* the buttons: big, close together, same on both sides */
+.ck button.cx { min-height: 46px; border-radius: 14px; cursor: pointer; font: 600 .84rem 'Outfit', sans-serif; letter-spacing: .02em; transition: transform .12s cubic-bezier(.2,.8,.2,1), background .16s, border-color .16s, box-shadow .16s, opacity .16s; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.ck button.cx:active:not(:disabled) { transform: scale(.96); } .ck button.cx:disabled { opacity: .38; cursor: default; }
+.ck button.cx:focus-visible, .cs-play:focus-visible, .ck-tabs button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.cs-vote { width: 100%; border: 0; background: var(--c); color: #0a0f18; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 8px 22px rgba(var(--cr), .22); }
+.cs-vote:hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 0 26px rgba(var(--cr), .5); }
+.cs-vote small { margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: rgba(10,15,24,.16); font: 600 .6rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; vertical-align: 1px; }
+.cs-vote.voted { background: transparent; color: var(--c); border: 1px solid var(--c); box-shadow: none; opacity: 1 !important; }
+a.cs-vote { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 14px; text-decoration: none; font: 600 .84rem 'Outfit', sans-serif; }
+.cs-row { display: grid; grid-template-columns: 38px repeat(3, minmax(0, 1fr)); gap: 6px; align-items: center; } .cs-row + .cs-row { margin-top: 6px; }
+.cs-row > span { font: 500 .58rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); }
+.cs-buy { border: 1px solid rgba(var(--cr), .55); background: rgba(var(--cr), .1); color: #fff; font-variant-numeric: tabular-nums; }
+.cs-buy:hover:not(:disabled) { background: rgba(var(--cr), .24); border-color: var(--c); }
+.cs-sell { border: 1px solid rgba(216,235,252,.22); background: rgba(255,255,255,.03); color: var(--brand-ice); font-variant-numeric: tabular-nums; }
+.cs-sell:hover:not(:disabled) { border-color: rgba(216,235,252,.6); background: rgba(255,255,255,.08); color: #fff; }
+.cs-st { min-height: 1.3em; margin: 0; font: 500 .68rem/1.3 'JetBrains Mono', monospace; letter-spacing: .03em; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cs-st.ok { color: var(--c); }
+.cs-end { display: grid; gap: 8px; }
+/* stage: chart or game, with the stream in a chrome TV when there is one */
+.ck-stage { padding: 12px 14px 12px; gap: 10px; }
+.ck-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.ck-tabs { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.04); border: 1px solid var(--hair); max-width: 100%; overflow-x: auto; scrollbar-width: none; } .ck-tabs::-webkit-scrollbar { display: none; }
+.ck-tabs button { min-height: 34px; padding: 0 14px; border: 0; border-radius: 999px; cursor: pointer; background: transparent; color: var(--brand-ice); white-space: nowrap; font: 500 .74rem 'Outfit', sans-serif; letter-spacing: .03em; transition: background .18s, color .18s; }
+.ck-tabs button:hover { color: #fff; } .ck-tabs button[aria-pressed="true"] { background: #fff; color: #0a0f18; }
+.ck-views { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; } .ck-views.has-tv { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+.ck-main { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
+.ck-main .bc { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 0; } .ck-main .bc-plot { flex: 1; min-height: 150px; height: auto; }
+.ck-main .bg { flex: 1; min-height: 0; aspect-ratio: auto; margin: 0; }
+.tv { min-width: 0; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+.tv-case { position: relative; padding: 9px 9px 9px; border-radius: 26px; background: var(--chrome); box-shadow: 0 22px 50px rgba(0,0,0,.6), inset 0 2px 2px rgba(255,255,255,.9), inset 0 -4px 8px rgba(0,0,0,.5); }
+.tv-case::after { content: ""; position: absolute; left: 50%; bottom: -9px; width: 34%; height: 9px; transform: translateX(-50%); border-radius: 0 0 14px 14px; background: linear-gradient(180deg, #5a6b7e, #1b2430); }
+.tv-scr { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #020305; box-shadow: inset 0 0 0 1px rgba(0,0,0,.9), inset 0 0 40px rgba(0,0,0,.8); }
+.tv-scr iframe, .tv-scr img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+.tv-scr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,.1) 0%, transparent 28%); }
+.tv-ft { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font: 500 .6rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); } .tv-ft a { color: var(--brand-green); text-decoration: none; } .tv-ft i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ff5a4d; margin-right: 8px; box-shadow: 0 0 10px #ff5a4d; }
+.ck-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; } .ck-meters:has(> :only-child) { grid-template-columns: 1fr; }
+.ck .ld-split { gap: 5px; } .ck .ld-bar { height: 8px; border: 0; background: var(--brand-blue); } .ck .ld-pc { font: 500 .74rem 'JetBrains Mono', monospace; } .ck .ld-pc em { font: 500 .56rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .2em; color: var(--text-muted); }
+.ck-risk { margin: 10px 0 0; text-align: center; font: 400 .68rem 'JetBrains Mono', monospace; letter-spacing: .04em; color: var(--text-muted); }
+.ck .bp-msg { margin-top: 8px; }
+/* phone: it should feel like an app. Timer on top, trade dock under the thumb. */
+.ck-dock { display: none; }
+@media (max-width: 1000px) {
+  .ck { padding: 86px 12px 0; }
+  .ck-bar { top: 90px; grid-template-columns: 1fr; gap: 4px; padding: 8px 14px 10px; border-radius: 18px; } .cb-l, .cb-r { display: none; }
+  .cb-c { justify-content: space-between; gap: 10px; } .cb-n { flex: 1 1 0; font-size: .86rem; max-width: none; } .cb-t span { font-size: 2rem; }
+  .ck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); height: auto; min-height: 0; max-height: none; gap: 10px; margin-top: 10px; }
+  .ck-stage { grid-column: 1 / -1; order: 3; border-radius: 20px; } .ck-side { border-radius: 20px; padding: 10px; gap: 6px; }
+  .ck-side { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 6px 10px; align-items: center; }
+  .cs-art { flex: none; width: 56px; height: 56px; min-height: 0; border-radius: 14px; } .cs-art > div { border-radius: 12px; } .cs-tag, .cs-eq { display: none; } .cs-art .mono { font-size: 1.6rem; }
+  .cs-play { right: 50%; bottom: 50%; width: 34px; height: 34px; transform: translate(50%, 50%); } .cs-play:hover, .cs-play:active { transform: translate(50%, 50%) scale(.96); } .cs-play svg { width: 16px; height: 16px; }
+  .cs-nm { font-size: .98rem; -webkit-line-clamp: 1; } .cs-np { font-size: .52rem; } .cs-by { font-size: .74rem; } .cs-pool { grid-column: 1 / -1; padding-top: 6px; } .cs-pool b { font-size: .95rem; }
+  .ck-side .cs-vote, .ck-side .cs-tr, .ck-side .cs-st { display: none; }
+  .ck-views.has-tv { grid-template-columns: 1fr; } .ck-main .bc-plot { min-height: 210px; } .ck-main .bg { aspect-ratio: 1280 / 800; flex: none; }
+  .ck-meters { gap: 12px; }
+  body[data-page="battle"].has-dock { padding-bottom: calc(196px + env(safe-area-inset-bottom, 0px)); }
+  .ck-dock { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)); background: rgba(6,9,15,.9); -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4); border-top: 1px solid rgba(216,235,252,.16); border-radius: 22px 22px 0 0; box-shadow: 0 -18px 40px rgba(0,0,0,.55); --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); }
+  .ck-dock[hidden] { display: none; }
+  .dk-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .dk-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid rgba(216,235,252,.14); }
+  .dk-mode button { min-height: 32px; min-width: 64px; border: 0; border-radius: 999px; background: transparent; color: var(--brand-ice); font: 600 .74rem 'Outfit', sans-serif; cursor: pointer; } .dk-mode button[aria-pressed="true"] { background: #fff; color: #0a0f18; }
+  .dk-st { flex: 1; min-width: 0; text-align: right; font: 500 .66rem 'JetBrains Mono', monospace; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .dk-st.ok { color: var(--brand-green); }
+  .dk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .dk-col { display: grid; gap: 6px; min-width: 0; } .dk-col.a { --c: #95fe7c; --cr: 149,254,124; } .dk-col.b { --c: #7ec1fb; --cr: 126,193,251; }
+  .dk-amt { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .ck-dock button.cx { min-height: 48px; border-radius: 14px; cursor: pointer; font: 600 .82rem 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .1s; } .ck-dock button.cx:active:not(:disabled) { transform: scale(.95); } .ck-dock button.cx:disabled { opacity: .38; }
+  .ck-dock .cs-vote { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; } .ck-dock .cs-buy, .ck-dock .cs-sell { font-size: .78rem; padding: 0; }
+  .bp-top { padding: 0 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .cs-eq i { animation: none; height: 14px; } .cb-prog i { transition: none; } .ck button.cx, .cs-play { transition: none; } }
+/* share module, opened after Withdraw */
+.shr { width: min(720px, calc(100vw - 20px)); height: min(860px, calc(100dvh - 20px)); padding: 0; border: 1px solid rgba(126,193,251,.28); border-radius: 18px; background: #111a2c; overflow: hidden; position: fixed; inset: 0; margin: auto; } .shr::backdrop { background: rgba(3,6,14,.78); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); } .shr iframe { width: 100%; height: 100%; border: 0; display: block; }
 /* donate bar: peer to peer, no fees */
 .bp-give { max-width: 1000px; margin: 16px auto 0; display: flex; align-items: center; gap: 10px 12px; flex-wrap: wrap; padding: 14px 22px; border-radius: 22px; border: 1px solid rgba(216,235,252,.16); background: linear-gradient(180deg, rgba(14,21,34,.92), rgba(7,10,16,.95)); }
 .bp-give > span { flex: 1 1 200px; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); } .bp-give > span b { color: var(--brand-green); font-weight: 500; }
@@ -2838,40 +2947,63 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 
   <main>
 
-  <!-- MATCHUP: the Live Battle Deck from the homepage, with Trade buttons that open the trade module -->
+  <!-- COCKPIT: everything needed during a battle on one screen. Timer bar stays in view while the page scrolls. -->
+  <div class="ck" id="ck">
+    <div class="ck-in">
+      <div class="ck-bar" id="ckBar" aria-live="off"><div class="cb-l"><span class="ld-live ended"><i></i>Loading the battle</span></div><div class="cb-c"><div class="cb-t"><span id="ldT">--:--</span><small>&nbsp;</small></div></div><div class="cb-r"></div></div>
+      <div class="ck-grid">
+        <section class="ck-side a" id="sideA" aria-label="Side A"></section>
+        <section class="ck-stage" aria-label="Chart and stream">
+          <div class="ck-top">
+            <div class="ck-tabs" id="bvTabs" role="group" aria-label="Chart or game view">
+              <button type="button" data-view="chart" aria-pressed="true">Chart</button><button type="button" data-view="dj" aria-pressed="false">DJ Clash</button><button type="button" data-view="racer" aria-pressed="false">Racers</button><button type="button" data-view="dancer" aria-pressed="false">Dancers</button><button type="button" data-view="surf" aria-pressed="false">Surf</button>
+            </div>
+            <span class="bp-tag" id="bcTag" hidden>Sample chart</span><span id="bcTitle" hidden></span>
+          </div>
+          <div class="ck-views" id="ckViews">
+            <div class="tv" id="stream" hidden>
+              <div class="tv-case"><div class="tv-scr" id="bsWrap"></div></div>
+              <div class="tv-ft"><span id="tvLabel"><i></i>Live stream</span><a id="bsLink" href="#" target="_blank" rel="noopener">Open</a></div>
+            </div>
+            <div class="ck-main">
+              <div class="bg" id="bgWrap" hidden></div>
+              <div class="bc" id="bcWrap">
+                <div class="bc-leg" id="bcLeg"></div>
+                <div class="bc-plot" id="bcPlot" tabindex="0" role="img" aria-label="Pool size over time for both sides"></div>
+                <div class="bc-tip" id="bcTip"></div>
+              </div>
+            </div>
+          </div>
+          <div class="ck-meters" id="ckMeters"></div>
+        </section>
+        <section class="ck-side b" id="sideB" aria-label="Side B"></section>
+      </div>
+      <p class="bp-msg" id="bpMsg" role="status"></p>
+      <p class="ck-risk" id="ckRisk">Trading carries risk. You can lose what you put in.</p>
+    </div>
+  </div>
+  <div class="ck-dock" id="ckDock" hidden></div>
+  <dialog class="shr" id="shr" aria-label="Share your battle"></dialog>
+
   <div class="bp-top">
-    <div class="bp-back"><a href="quick-battles.html">&larr; All battles</a><span id="bpKind" class="bp-tag" hidden></span></div>
-    <div id="bpDeck" aria-live="polite"><section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>Loading the battle</span></div></section></div>
-    <p class="bp-msg" id="bpMsg" role="status"></p>
     <div class="bp-end" id="bpEnd"><p id="bpEndTx"></p><button class="btn-primary" type="button" id="bpSettle" hidden>Settle battle</button><button class="btn-primary" type="button" id="bpWithdraw">Withdraw</button></div>
     <div class="bp-give" id="bpGive" hidden><span>Donate direct &middot; <b>No fees</b></span></div>
   </div>
 
+  <!-- Below the fold: the result and the record. Nothing down here is needed to trade. -->
   <section class="cp-sec hl bp" aria-label="Battle details">
     <div class="hl-in">
-      <article class="hl-panel bs-panel" id="stream" hidden>
-        <header class="hl-ph"><div><h3>Live stream</h3></div><a class="bp-btn" id="bsLink" href="#" target="_blank" rel="noopener">Open stream</a></header>
-        <div class="bs" id="bsWrap"></div>
-      </article>
       <div class="hl-grid">
-        <article class="hl-panel" id="chart">
-          <header class="hl-ph"><div><h3 id="bcTitle">The chart</h3></div><span class="bp-tag" id="bcTag" hidden>Sample chart</span>
-            <div class="bv" id="bvTabs" role="group" aria-label="Chart or game view">
-              <button type="button" data-view="chart" aria-pressed="true">Chart</button><button type="button" data-view="dj" aria-pressed="false">DJ Clash</button><button type="button" data-view="racer" aria-pressed="false">Racers</button><button type="button" data-view="dancer" aria-pressed="false">Dancers</button><button type="button" data-view="surf" aria-pressed="false">Surf</button>
-            </div></header>
-          <div class="bg" id="bgWrap" hidden></div>
-          <div class="bc" id="bcWrap">
-            <div class="bc-leg" id="bcLeg"></div>
-            <div class="bc-plot" id="bcPlot" tabindex="0" role="img" aria-label="Pool size over time for both sides"></div>
-            <div class="bc-tip" id="bcTip"></div>
-          </div>
-          <details class="bc-tbl" id="bcTbl"><summary>Table</summary><div id="bcTable"></div></details>
-        </article>
         <article class="hl-panel" id="decided">
           <header class="hl-ph"><div><h3 id="bfTitle">2 of 3 wins</h3></div></header>
           <ul class="bf" id="bfList"></ul>
           <div id="bjWrap"></div>
           <p class="bf-rule" id="bfRule"></p>
+        </article>
+        <article class="hl-panel" id="sides">
+          <header class="hl-ph"><div><h3>Side by side</h3></div></header>
+          <div id="bsTable"></div>
+          <details class="bc-tbl" id="bcTbl"><summary>Chart as a table</summary><div id="bcTable"></div></details>
         </article>
       </div>
       <div class="hl-grid">
@@ -2883,10 +3015,6 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
         <article class="hl-panel" id="mine" hidden>
           <header class="hl-ph"><div><h3>Your battle</h3></div><span class="bp-tag" id="bmTag" hidden>Sample</span></header>
           <div id="bmBody"></div>
-        </article>
-        <article class="hl-panel" id="sides">
-          <header class="hl-ph"><div><h3>Side by side</h3></div></header>
-          <div id="bsTable"></div>
         </article>
       </div>
     </div>
@@ -3128,43 +3256,79 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   var PLAY = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"/></svg>', PAUSE = '<svg viewBox="0 0 24 24" fill="#fff"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
   var playing = '', X_POLL = window.WW_POLL_URL || 'https://x.com/wavewarz';
   function inPage(a) { return typeof W.audioUrl === 'function' || /^https:\/\/(www\.)?audius\.co\//.test(a.musicLink || ''); }
-  function sideHTML(k, a, label) {
-    var c = k === 'a' ? 'l' : 'r', by = handle(a) || a.twitterHandle || '', art = httpsUrl(a.albumArtUrl || a.profilePictureUrl), link = httpsUrl(a.musicLink), over = ended(), on = playing === k, fill = c === 'l' ? 'fill-g' : 'fill-b', out = c === 'l' ? 'out-g' : 'out-b';
-    var vote = '';
-    if (!over) {
-      if (B.type === 'quick') vote = B.myVote === k ? '<button type="button" class="ld-act vote voted" disabled>Your vote</button>'
-        : '<button type="button" class="ld-act vote ' + fill + '" data-vote="' + k + '"' + (B.myVote || (B.poll && B.poll.locked) ? ' disabled' : '') + '>Vote ' + esc(a.name) + '<small>Free</small></button>';
-      else vote = '<a class="ld-act vote ' + fill + '" href="' + esc(X_POLL) + '" target="_blank" rel="noopener">Vote on X<small>Free</small></a>';
-    }
-    return '<div class="ld-col ' + c + (on ? ' is-playing' : '') + '"><div class="ld-art"><span class="ld-pill">' + label + '</span>' +
-      (link ? (inPage(a) ? '<button type="button" class="ld-play" data-play="' + k + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Pause ' : 'Play ') + esc(a.name) + '">' + (on ? PAUSE : PLAY) + '</button>'
-                         : '<a class="ld-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>') : '') +
-      (art ? '<img src="' + esc(art) + '" alt="" loading="eager" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '<div class="ld-eq" aria-hidden="true">' + '<i></i>'.repeat(9) + '</div></div>' +
-      '<div class="ld-np">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
-      vote + (over ? '' : '<button type="button" class="ld-act trade ' + out + '" data-trade="' + k + '">Trade</button>') + '</div>';
-  }
+  var busy2 = '', stat = { a: '', b: '' }, statOk = { a: false, b: false }, pos = null, dockMode = 'buy', statT = null;
+  var BUYS = [0.05, 0.1, 0.25], SELLS = [25, 50, 100];
   function split(l, r, label, raw) { var t = l + r, g = t ? Math.round(100 * l / t) : 50; return '<div class="ld-split"><div class="ld-pc"><span class="a">' + (raw ? l : g + '%') + '</span><em>' + label + '</em><span class="c">' + (raw ? r : (100 - g) + '%') + '</span></div><div class="ld-bar" aria-label="' + label + '"><i style="width:' + g + '%"></i></div></div>'; }
+  function voteBtn(k, short) {
+    var a = k === 'a' ? B.a : B.b;
+    if (B.type !== 'quick') return '<a class="cs-vote" href="' + esc(X_POLL) + '" target="_blank" rel="noopener">Vote on X<small>Free</small></a>';
+    if (B.myVote === k) return '<button type="button" class="cx cs-vote voted" disabled>Your vote</button>';
+    return '<button type="button" class="cx cs-vote" data-vote="' + k + '"' + (B.myVote || (B.poll && B.poll.locked) ? ' disabled' : '') + '>Vote' + (short ? ' ' + esc(a.name) : '') + '<small>Free</small></button>';
+  }
+  function amts(k, buy) {
+    var none = pos && pos[k] && !(+pos[k].tokens > 0);
+    return (buy ? BUYS : SELLS).map(function (v) {
+      return '<button type="button" class="cx ' + (buy ? 'cs-buy' : 'cs-sell') + '" data-' + (buy ? 'buy' : 'sell') + '="' + k + '" data-v="' + v + '"' + (busy2 || (!buy && none) ? ' disabled' : '') + ' aria-label="' + (buy ? 'Buy ' + v.toFixed(2) + ' SOL of ' : 'Sell ' + v + ' percent of ') + esc(name(k)) + '">' + (buy ? v.toFixed(2) : v + '%') + '</button>';
+    }).join('');
+  }
+  function holdText(k) { var p = pos && pos[k]; return p && +p.tokens > 0 ? 'You hold ' + (+p.tokens).toFixed(0) + ' tokens · ' + sol(p.valueSol, 4) : ''; }
+  function renderSide(k) {
+    var a = k === 'a' ? B.a : B.b, over = ended(), on = playing === k, by = handle(a) || a.twitterHandle || '', art = httpsUrl(a.albumArtUrl || a.profilePictureUrl), link = httpsUrl(a.musicLink);
+    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, mine = k === 'a' ? pa : pb, pct = tot ? Math.round(100 * mine / tot) : 50;
+    var el = $(k === 'a' ? 'sideA' : 'sideB'); el.classList.toggle('is-playing', on);
+    el.innerHTML = '<div class="cs-art"><div><span class="cs-tag">' + (B.type === 'quick' ? 'Song ' : 'Artist ') + k.toUpperCase() + '</span>' +
+      (art ? '<img src="' + esc(art) + '" alt="" loading="eager" referrerpolicy="no-referrer" onerror="this.remove()">' : '') + '<span class="mono" aria-hidden="true">' + esc((a.name || '?').trim().charAt(0).toUpperCase()) + '</span>' +
+      '<span class="cs-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
+      (link ? (inPage(a) ? '<button type="button" class="cs-play" data-play="' + k + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Pause ' : 'Play ') + esc(a.name) + '">' + (on ? PAUSE : PLAY) + '</button>'
+                         : '<a class="cs-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>') : '') + '</div></div>' +
+      '<div><div class="cs-np' + (over && B.winner === k ? ' win' : '') + '">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h2 class="cs-nm">' + esc(a.name) + '</h2><p class="cs-by">' + (by ? '@' + esc(by) : '&nbsp;') + '</p></div>' +
+      '<div class="cs-pool"><b>' + mine.toFixed(4) + '<small>SOL</small></b><span>' + pct + '%</span></div>' +
+      (over ? '' : voteBtn(k) + '<div class="cs-tr"><div class="cs-row"><span>Buy</span>' + amts(k, true) + '</div><div class="cs-row"><span>Sell</span>' + amts(k, false) + '</div></div>' +
+        '<p class="cs-st' + (statOk[k] ? ' ok' : '') + '" role="status">' + esc(stat[k] || holdText(k)) + '</p>');
+  }
+  function renderDock() {
+    var d = $('ckDock'), over = ended(); d.hidden = over; document.body.classList.toggle('has-dock', !over); if (over) { d.innerHTML = ''; return; }
+    var msg = stat.a || stat.b, ok = stat.a ? statOk.a : statOk.b;
+    d.innerHTML = '<div class="dk-top"><div class="dk-mode" role="group" aria-label="Buy or sell"><button type="button" data-mode="buy" aria-pressed="' + (dockMode === 'buy') + '">Buy</button><button type="button" data-mode="sell" aria-pressed="' + (dockMode === 'sell') + '">Sell</button></div><span class="dk-st' + (ok ? ' ok' : '') + '" role="status">' + esc(msg || (dockMode === 'buy' ? 'Tap an amount in SOL' : 'Tap how much to sell')) + '</span></div>' +
+      '<div class="dk-cols">' + ['a', 'b'].map(function (k) { return '<div class="dk-col ' + k + '">' + voteBtn(k, true) + '<div class="dk-amt">' + amts(k, dockMode === 'buy') + '</div></div>'; }).join('') + '</div>';
+  }
+  function renderBar() {
+    var over = ended(), tot = (B.a.poolSol || 0) + (B.b.poolSol || 0), rd = EV && B.round ? ' · Round ' + B.round + ' of ' + nRounds() : '';
+    $('ckBar').innerHTML = '<div class="cb-l"><span class="ld-live' + (over ? ' ended' : '') + '"><i></i>' + (over ? 'Ended' : 'Live') + '</span><span class="cb-k">' + kindName(B.type) + rd + '</span>' + (B.sample ? '<span class="cb-k">Sample</span>' : '') + '</div>' +
+      '<div class="cb-c"><span class="cb-n a">' + esc(B.a.name) + '<i class="ka"></i></span><div class="cb-t" id="ckT" role="timer" aria-label="Time left to trade"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? (B.winner ? 'Final' : 'Settling') : 'Left to trade') + '</small></div><span class="cb-n b"><i class="kb"></i>' + esc(B.b.name) + '</span></div>' +
+      '<div class="cb-r"><span>Both pools</span><b>' + tot.toFixed(4) + ' SOL</b></div><i class="cb-prog" aria-hidden="true"><i id="ckProg" style="width:' + (over ? 100 : 0) + '%"></i></i>';
+  }
   function renderDeck() {
-    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb, over = ended(), pv = B.poll;
-    var lab = B.type === 'quick' ? ['Song A', 'Song B'] : ['Artist A', 'Artist B'];
-    var rd = EV && B.round ? ' &middot; Round ' + B.round + ' of ' + nRounds() : '';
-    $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live' + (over ? ' ended' : '') + '"><i></i>' + (over ? 'Battle ended' : 'Live') + ' &middot; ' + kindName(B.type) + rd + '</span>' + (B.sample ? '<span>Sample data</span>' : '') + '</div>' +
-      '<div class="ld-stage">' + sideHTML('a', B.a, lab[0]) +
-      '<div class="ld-mid"><div class="ld-ring" role="timer"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle id="ldArc" cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="' + (over ? 289 : 0) + '" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6))"/></svg><div class="ld-time"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? 'FINAL' : 'TIME LEFT') + '</small></div></div><div class="ld-vs">VS</div>' +
-      (pv ? split(pv.a, pv.b, 'POLL', true) : '') + split(pa, pb, 'POOLS') + '</div>' +
-      sideHTML('b', B.b, lab[1]) + '</div>' +
-      '<div class="ld-foot"><span>' + (over ? '<span class="hl">&#9679; ENDED:</span> ' + (B.winner ? 'Winner: <b>' + esc(name(B.winner)) + '</b>' : 'Settling the result.') : '<span class="hl">&#9679; LIVE:</span> Voting is free. Your wallet signs a message and nothing is charged.') + '</span><span>Both pools: <b>' + tot.toFixed(4) + ' SOL</b></span></div></section>';
-    var k = $('bpKind'); k.hidden = false; k.textContent = 'Battle ' + B.id;
+    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, over = ended(), pv = B.poll;
+    renderBar(); renderSide('a'); renderSide('b'); renderDock();
+    $('ckMeters').innerHTML = (pv ? split(pv.a, pv.b, 'Poll', true) : '') + split(pa, pb, 'Pools');
+    $('ckRisk').hidden = over;
     var e = $('bpEnd'); e.classList.toggle('on', over);
     if (over) {
       var done = isSettled(), wd = $('bpWithdraw'), st = $('bpSettle');
       $('bpEndTx').innerHTML = done ? '<b>Battle ended.</b> Traded? Withdraw to collect your SOL. Missed it? <a href="https://claim.wavewarz.info" target="_blank" rel="noopener">claim.wavewarz.info</a>' : '<b>Battle ended.</b> Settling the result. Withdraw opens in a moment.';
-      wd.disabled = !done; wd.textContent = done ? 'Withdraw' : 'Settling\u2026';
+      wd.disabled = !done; wd.textContent = done ? 'Withdraw' : 'Settling…';
       st.hidden = done || typeof W.settle !== 'function' || Date.now() - B.end < 20000;
     }
     var g = $('bpGive'); g.hidden = false;
     g.innerHTML = '<span>Donate direct &middot; <b>No fees</b></span><button class="bp-btn" type="button" data-give="a"><i class="ka"></i>' + esc(B.a.name) + '</button><button class="bp-btn" type="button" data-give="b"><i class="kb"></i>' + esc(B.b.name) + '</button><button class="bp-btn" type="button" data-give="wavewarz">WaveWarZ</button>';
     document.title = B.a.name + ' vs ' + B.b.name + ' | WaveWarZ';
+  }
+  /* one tap trades. The wallet approval is the confirmation; the result shows right under the buttons, once. */
+  function setStat(k, t, ok) { stat[k] = t; statOk[k] = !!ok; clearTimeout(statT); if (t && !busy2) statT = setTimeout(function () { stat.a = stat.b = ''; if (B) { renderSide('a'); renderSide('b'); renderDock(); } }, 4500); }
+  function trade(k, buy, v) {
+    if (busy2 || !B || ended()) return;
+    var fn = buy ? W.buy : W.sell, live = typeof fn === 'function', what = buy ? v.toFixed(2) + ' SOL' : v + '%';
+    busy2 = k; stat.a = stat.b = ''; stat[k] = live ? 'Approve in your wallet…' : (buy ? 'Buying ' : 'Selling ') + what + '…'; statOk[k] = false; renderSide('a'); renderSide('b'); renderDock();
+    Promise.resolve(live ? fn(B, k, v) : new Promise(function (r) { setTimeout(r, 450); })).then(function () {
+      busy2 = ''; setStat(k, (live ? '' : 'Preview: ') + (buy ? 'Bought ' : 'Sold ') + what + (live ? '' : ' · nothing sent'), true);
+      if (live) { document.dispatchEvent(new CustomEvent('ww-battle-changed', { detail: { id: B.id } })); loadPos(); load(); }
+    }).catch(function (e) { busy2 = ''; setStat(k, (e && e.userMessage) || 'Did not go through. Nothing was sent.', false); })
+      .then(function () { renderSide('a'); renderSide('b'); renderDock(); });
+  }
+  function loadPos() {
+    if (typeof W.getPosition !== 'function' || !B) return;
+    Promise.resolve(W.getPosition(B)).then(function (p) { if (p) { pos = p; renderSide('a'); renderSide('b'); renderDock(); } }).catch(function () {});
   }
   /* Settling should happen on its own. The page never shows a red End Battle button: it waits and re-checks, and only if nobody
      has settled after 20 seconds does it offer one green action (WW.settle). WW.isSettled(battle) can report it directly. */
@@ -3196,7 +3360,8 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     function go() {
       var left = Math.max(0, B.end - Date.now()), s = Math.ceil(left / 1000), t = $('ldT'); if (!t) return;
       t.textContent = Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
-      var arc = $('ldArc'); if (arc) arc.setAttribute('stroke-dashoffset', String(289 * (1 - left / Math.max(1, B.end - B.start))));
+      var pr = $('ckProg'); if (pr) pr.style.width = (100 * (1 - left / Math.max(1, B.end - B.start))).toFixed(2) + '%';
+      var ct = $('ckT'); if (ct) ct.classList.toggle('hot', s <= 30);
       if (left <= 0) { clearInterval(tick); paint(); }
     }
     if (!ended()) { go(); tick = setInterval(go, 500); }
@@ -3347,7 +3512,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     view = v; try { localStorage.setItem('ww-battle-view', v); } catch (e) {}
     var game = v !== 'chart';
     Array.prototype.forEach.call($('bvTabs').children, function (b) { b.setAttribute('aria-pressed', String(b.dataset.view === v)); });
-    $('bcWrap').hidden = game; $('bcTbl').hidden = game; $('bgWrap').hidden = !game; $('bcTag').hidden = game || !sampleChart;
+    $('bcWrap').hidden = game; $('bgWrap').hidden = !game; $('bcTag').hidden = game || !sampleChart;
     $('bcTitle').textContent = game ? 'The game' : 'The chart';
     if (!game) { drawChart(); return; }
     if (!gFrame) {
@@ -3372,38 +3537,13 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     $('waBody').innerHTML = '<div class="wf-done"><span class="wf-ok" aria-hidden="true"></span><h3>' + title + '</h3><p>' + text + '</p><button class="btn-secondary" type="button" id="waDone">Close</button></div>';
     $('waDone').addEventListener('click', function () { dlg.close(); }); $('waDone').focus();
   }
-  function run(btn, live, call, okTitle, okText) {
+  function run(btn, live, call, okTitle, okText, after) {
     if (busy) return; busy = true; var label = btn.textContent; btn.disabled = true; btn.textContent = 'Waiting for your wallet…'; var er = $('waErr'); if (er) er.textContent = '';
     Promise.resolve(live ? call() : new Promise(function (r) { setTimeout(r, 900); })).then(function () {
       done(live ? okTitle : 'Preview complete.', live ? okText : 'This was a preview. No wallet opened and nothing was sent.');
+      if (after) { var d0 = $('waDone'); if (d0) { d0.textContent = 'Share your battle'; d0.className = 'btn-primary'; d0.addEventListener('click', function () { setTimeout(after, 60); }); } }
       if (live) { document.dispatchEvent(new CustomEvent('ww-battle-changed', { detail: { id: B.id } })); load(); }
     }).catch(function (e) { btn.disabled = false; btn.textContent = label; if (er) er.textContent = (e && e.userMessage) || 'That did not go through. Nothing was sent. Try again.'; }).then(function () { busy = false; });
-  }
-  function openTrade(k, from) {
-    if (!dlg || !dlg.showModal || ended()) return;
-    var a = k === 'a' ? B.a : B.b, mode = 'buy', amt = 0.1, pct = 50, by = handle(a) || a.twitterHandle || '';
-    opener = from || null; $('waEb').textContent = kindName(B.type); $('waTitle').textContent = 'Trade ' + a.name;
-    function draw() {
-      var live = typeof (mode === 'buy' ? W.buy : W.sell) === 'function';
-      $('waBody').innerHTML = '<div class="wa-s">' + disc(a.albumArtUrl || a.profilePictureUrl) + '<div><strong>' + esc(a.name) + '</strong><span>' + (by ? '@' + esc(by) : kindName(B.type)) + '</span></div></div>' +
-        '<div class="bt-tabs" role="tablist"><button type="button" role="tab" data-m="buy" aria-selected="' + (mode === 'buy') + '">Buy</button><button type="button" role="tab" data-m="sell" aria-selected="' + (mode === 'sell') + '">Sell</button></div>' +
-        (mode === 'buy'
-          ? '<div class="bt-amt">' + [0.05, 0.1, 0.25].map(function (v) { return '<button type="button" data-v="' + v + '" aria-pressed="' + (v === amt) + '">' + v.toFixed(2) + ' SOL</button>'; }).join('') + '</div>'
-          : '<div class="bt-amt">' + [25, 50, 100].map(function (v) { return '<button type="button" data-v="' + v + '" aria-pressed="' + (v === pct) + '">' + v + '%</button>'; }).join('') + '</div><p class="bt-bal" id="btBal">Connect a wallet to see your balance.</p>') +
-        '<div class="wa-rows"><div><span>Goes to the artist</span><b>1% of the trade</b></div><div><span>Platform fee</span><b>0.5% of the trade</b></div></div>' +
-        '<p class="wf-err" id="waErr" role="alert"></p><div class="wf-act"><button class="btn-primary" type="button" id="waGo">' + (mode === 'buy' ? 'Buy ' + amt.toFixed(2) + ' SOL' : 'Sell ' + pct + '%') + '</button>' +
-        '<span class="wf-fine">' + (live ? 'Your wallet opens to approve. ' : 'Preview. Nothing is sent from this page yet. ') + 'Trading carries risk. You can lose what you put in.</span></div>';
-      if (mode === 'sell' && typeof W.getPosition === 'function') Promise.resolve(W.getPosition(B)).then(function (p) { var x = p && p[k], e = $('btBal'); if (x && e) e.textContent = 'Your balance: ' + (+x.tokens || 0).toFixed(3) + ' tokens, about ' + sol(x.valueSol, 4); }).catch(function () {});
-      $('waGo').addEventListener('click', function () {
-        run(this, live, function () { return mode === 'buy' ? W.buy(B, k, amt) : W.sell(B, k, pct); }, mode === 'buy' ? 'Bought.' : 'Sold.', mode === 'buy' ? 'You are in on ' + esc(a.name) + '. Withdraw after the battle ends.' : 'Your sale went through.');
-      });
-    }
-    $('waBody').onclick = function (e) {
-      var m = e.target.closest('[data-m]'), v = e.target.closest('[data-v]');
-      if (m) { mode = m.dataset.m; draw(); $('waBody').querySelector('[data-m="' + mode + '"]').focus(); }
-      else if (v) { if (mode === 'buy') amt = +v.dataset.v; else pct = +v.dataset.v; draw(); $('waBody').querySelector('[data-v="' + v.dataset.v + '"]').focus(); }
-    };
-    draw(); if (!dlg.open) dlg.showModal();
   }
   function openWithdraw(from) {
     if (!dlg || !dlg.showModal) return; var live = typeof W.withdraw === 'function';
@@ -3415,9 +3555,22 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       t.textContent = [['a', p.a], ['b', p.b]].filter(function (q) { return q[1] && +q[1].tokens > 0; }).map(function (q) { return (+q[1].tokens).toFixed(3) + ' on ' + name(q[0]); }).join(', ') || 'None in this battle';
       g.textContent = p.claimSol != null ? sol(p.claimSol, 4) : sol((p.a && +p.a.valueSol || 0) + (p.b && +p.b.valueSol || 0), 4);
     }).catch(function () {});
-    $('waGo').addEventListener('click', function () { run(this, live, function () { return W.withdraw(B); }, 'Withdrawn.', 'Your SOL from this battle is back in your wallet.'); });
+    $('waGo').addEventListener('click', function () { run(this, live, function () { return W.withdraw(B); }, 'Withdrawn.', 'Your SOL from this battle is back in your wallet.', openShare); });
     if (!dlg.open) dlg.showModal();
   }
+  /* Candy's share module (share-module.html) opens after Withdraw, once, and from the Your battle panel */
+  function openShare() {
+    var d = $('shr'); if (!d || !d.showModal || !B) return;
+    var f = B.factors || {}, e = B.earnings || {}, lead = (B.a.poolSol || 0) >= (B.b.poolSol || 0) ? 'a' : 'b';
+    var data = { a: B.a.name, b: B.b.name, winner: B.winner || lead, chart: side(f.solVoteWinner) || lead, poll: side(f.xPollWinner) || (B.poll ? (B.poll.a >= B.poll.b ? 'a' : 'b') : ''), judge: side(f.humanJudgeWinner) || (B.judge && B.judge.winner) || '',
+      poolA: B.a.poolSol, poolB: B.b.poolSol, volume: (B.a.volumeSol || 0) + (B.b.volumeSol || 0), type: kindName(B.type), pollA: B.poll ? B.poll.a : null, pollB: B.poll ? B.poll.b : null, notes: B.judge && B.judge.notes || '', payA: e.artist1 && e.artist1.totalSol, payB: e.artist2 && e.artist2.totalSol };
+    d.textContent = ''; var fr = document.createElement('iframe'); fr.title = 'Share your battle'; fr.src = 'share-module.html?embed=1#' + encodeURIComponent(JSON.stringify(data)); d.appendChild(fr);
+    d.showModal();
+  }
+  addEventListener('message', function (e) { if (e.data && e.data.type === 'ww-share-close') { var d = $('shr'); if (d && d.open) d.close(); } });
+  $('shr').addEventListener('click', function (e) { if (e.target === this) this.close(); });
+  $('shr').addEventListener('close', function () { this.textContent = ''; });
+
   /* donations go wallet to wallet with no fee: WW.donate(battle, target, amountSol), target is 'a', 'b' or 'wavewarz' */
   function openDonate(target, from) {
     if (!dlg || !dlg.showModal) return;
@@ -3437,9 +3590,18 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   }
   $('bpGive').addEventListener('click', function (e) { var b = e.target.closest('[data-give]'); if (b) openDonate(b.dataset.give, b); });
   if (dlg) dlg.addEventListener('close', function () { if (opener && opener.focus && document.contains(opener)) opener.focus(); opener = null; });
-  $('bpDeck').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-trade]'), v = e.target.closest('[data-vote]'), pl = e.target.closest('[data-play]');
-    if (b) openTrade(b.dataset.trade, b); else if (v) castVote(v.dataset.vote); else if (pl) togglePlay(pl.dataset.play);
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest ? e.target : null; if (!t || !B) return;
+    var b = t.closest('[data-buy]'), sl = t.closest('[data-sell]'), v = t.closest('[data-vote]'), pl = t.closest('[data-play]'), md = t.closest('[data-mode]');
+    if (b) trade(b.dataset.buy, true, +b.dataset.v); else if (sl) trade(sl.dataset.sell, false, +sl.dataset.v);
+    else if (v) castVote(v.dataset.vote); else if (pl) togglePlay(pl.dataset.play); else if (md) { dockMode = md.dataset.mode; renderDock(); }
+  });
+  /* number keys for the fast: 1 2 3 buy side A, 8 9 0 buy side B (ignored while typing in a field) */
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey || !B || ended()) return; var tg = e.target, tn = tg && tg.tagName; if (tn === 'INPUT' || tn === 'TEXTAREA' || (tg && tg.isContentEditable)) return;
+    if (document.querySelector('dialog[open]')) return;
+    var i = '123'.indexOf(e.key), j = '890'.indexOf(e.key); if (e.key.length !== 1) return;
+    if (i > -1) trade('a', true, BUYS[i]); else if (j > -1) trade('b', true, BUYS[j]);
   });
   $('bpWithdraw').addEventListener('click', function () { openWithdraw(this); });
   $('bpSettle').addEventListener('click', function () {
@@ -3474,7 +3636,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     p.hidden = false; $('bmTag').hidden = !sample;
     $('bmBody').innerHTML = '<div class="bm-big"><div><span>You put in</span><b>' + sol(inS, 4) + '</b></div><div><span>You got back</span><b>' + sol(out, 4) + '</b></div><div><span>Difference</span><b' + (d > 0 ? ' class="up"' : '') + '>' + (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(4) + ' SOL</b></div></div>' +
       ((m.trades || []).length ? '<table><tbody>' + m.trades.slice(0, 8).map(function (t) { var k = t.side === 'b' ? 'b' : 'a'; return '<tr><th scope="row"><i class="k' + k + '" style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px"></i>' + (t.buy === false ? 'Sold' : 'Bought') + ' ' + esc(name(k)) + '</th><td>' + (+t.tokens || 0).toFixed(0) + ' tokens</td><td>' + sol(t.sol, 4) + '</td></tr>'; }).join('') + '</tbody></table>' : '') +
-      '<div class="bm-act"><button class="bp-btn" type="button" data-share="image">Save image</button><button class="bp-btn" type="button" data-share="x">Post on X</button><button class="bp-btn" type="button" data-share="farcaster">Post on Farcaster</button><span class="bc-note" id="bmMsg" role="status" style="margin:0"></span></div>';
+      '<div class="bm-act"><button class="btn-primary" type="button" data-share="module" style="cursor:pointer;border:0">Share your battle</button></div>';
   }
   function loadMine() {
     if (!B || !ended()) { $('mine').hidden = true; return; }
@@ -3482,11 +3644,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     if (typeof W.getSummary !== 'function') return;
     Promise.resolve(W.getSummary(B)).then(function (m) { renderMine(m, false); }).catch(function () {});
   }
-  $('bmBody').addEventListener('click', function (e) {
-    var b = e.target.closest('[data-share]'); if (!b) return; var msg = $('bmMsg');
-    if (typeof W.shareStats !== 'function') { if (msg) msg.textContent = 'Preview. Sharing turns on at wavewarz.com.'; return; }
-    Promise.resolve(W.shareStats(B, b.dataset.share)).catch(function (er) { if (msg) msg.textContent = (er && er.userMessage) || 'That did not work. Try again.'; });
-  });
+  $('bmBody').addEventListener('click', function (e) { if (e.target.closest('[data-share]')) openShare(); });
   /* live stream above the chart: Featured and Community battles, while the battle is live */
   var streamFor = '';
   function embedUrl(u) {
@@ -3498,23 +3656,27 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
     } catch (e) {} return '';
   }
   function renderStream() {
-    var p = $('stream'), link = httpsUrl(window.WW_STREAM_URL || B.streamLink), show = link && B.type !== 'quick' && !ended();
-    if (!show) { p.hidden = true; $('bsWrap').textContent = ''; streamFor = ''; return; }
-    p.hidden = false; $('bsLink').href = link; if (streamFor === link) return; streamFor = link;
-    var em = embedUrl(link), w = $('bsWrap'); w.textContent = '';
-    if (!em) { w.style.display = 'none'; return; } w.style.display = '';
-    var f = document.createElement('iframe'); f.title = 'Live stream'; f.loading = 'lazy'; f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture'); f.setAttribute('allowfullscreen', ''); f.src = em; w.appendChild(f);
+    var p = $('stream'), w = $('bsWrap'), views = $('ckViews'), link = httpsUrl(window.WW_STREAM_URL || B.streamLink), liveStream = link && B.type !== 'quick' && !ended(), em = liveStream ? embedUrl(link) : '';
+    var flyer = B.type !== 'quick' ? httpsUrl(B.image) : '', key = em ? 's:' + em : flyer ? 'f:' + flyer : '';
+    var had = !p.hidden; p.hidden = !key; views.classList.toggle('has-tv', !!key);
+    if (had !== !!key) setTimeout(function () { drawChart(); fitGame(); }, 30);
+    if (!key) { w.textContent = ''; streamFor = ''; return; }
+    $('bsLink').hidden = !link; if (link) $('bsLink').href = link;
+    $('tvLabel').innerHTML = em ? '<i></i>Live stream' : 'Battle flyer';
+    if (streamFor === key) return; streamFor = key; w.textContent = '';
+    if (em) { var f = document.createElement('iframe'); f.title = 'Live stream'; f.loading = 'lazy'; f.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture'); f.setAttribute('allowfullscreen', ''); f.src = em; w.appendChild(f); }
+    else { var im = document.createElement('img'); im.alt = 'Battle flyer'; im.referrerPolicy = 'no-referrer'; im.onerror = function () { p.hidden = true; views.classList.remove('has-tv'); drawChart(); }; im.src = flyer; w.appendChild(im); }
   }
 
   /* ---------- data ---------- */
   function normalize(x) {
     var end = Date.parse(x.endsAt), start = Date.parse(x.startedAt || x.createdAt) || (end - (x.battleDurationSeconds || 480) * 1000), same = B && B.id === x.battleId, stored = '';
     try { stored = sessionStorage.getItem('ww-vote-' + x.battleId) || ''; } catch (e) {}
-    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, settled: same ? B.settled : false, streamLink: x.streamLink || '', poll: same ? B.poll : (x.poll || null), myVote: same ? B.myVote : stored, judge: same ? B.judge : (x.judge || null) };
+    return { id: x.battleId, type: x.type || 'quick', a: x.artist1, b: x.artist2, start: start, end: end, winner: side(x.winnerSide), factors: x.factors || null, earnings: x.artistEarnings || null, sample: !!x.sample, round: null, image: x.imageUrl || '', settled: same ? B.settled : false, streamLink: x.streamLink || '', poll: same ? B.poll : (x.poll || null), myVote: same ? B.myVote : stored, judge: same ? B.judge : (x.judge || null) };
   }
   var viewSet = false;
   function paint() { renderDeck(); runTimer(); renderDecided(); renderRounds(); renderSides(); renderStream(); loadMine(); if (!viewSet) { viewSet = true; if (view !== 'chart') setView(view); } else sendGame(); }
-  function fail() { $('bpDeck').innerHTML = '<section class="ld" aria-label="Battle"><div class="ld-top"><span class="ld-live ended"><i></i>This battle did not load</span></div><div class="ld-foot"><span>Check the link, or <a href="quick-battles.html" style="color:var(--brand-green)">see all battles</a>.</span></div></section>'; }
+  function fail() { $('ckBar').innerHTML = '<div class="cb-l"><span class="ld-live ended"><i></i>This battle did not load</span></div><div class="cb-c"></div><div class="cb-r"><a href="quick-battles.html" style="color:var(--brand-green)">See all battles</a></div>'; }
   function pick() {
     if (wantId) return jget(API + 'battles/' + wantId);
     return jget(API + 'stats').then(function (d) { var lb = (d.liveBattles && d.liveBattles[0]) || d.liveBattle; if (lb && lb.battleId && !demo) return jget(API + 'battles/' + lb.battleId); return jget(API + 'battles?limit=1').then(function (r) { var x = (r.battles || r)[0]; return jget(API + 'battles/' + x.battleId).catch(function () { return x; }); }); });
@@ -3529,7 +3691,8 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       paint();
       var key = B.id + ':' + B.a.poolSol + ':' + B.b.poolSol + ':' + ended();
       if (key !== lastKey) { lastKey = key; loadChart(); }
-      loadPoll(); if (ended()) loadJudge();
+      loadPoll(); if (first) loadPos(); if (ended()) loadJudge();
+      if (first && qs.get('launched')) { say('Your battle is live.', true); if (window.WWCelebrate) setTimeout(function () { WWCelebrate('wave'); }, 250); try { history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(B.id) + (demo ? '&demo=' + encodeURIComponent(demo) : '')); } catch (e) {} }
       if (first) { if (B.type === 'main') jget(API + 'events?limit=60').then(function (d) { EV = (d.events || []).filter(function (e) { return (e.rounds || []).some(function (r) { return String(r.battleId) === String(B.id); }); })[0] || null; if (EV && demo === 'live') { EV = JSON.parse(JSON.stringify(EV)); EV.winnerSide = null; EV.rounds.forEach(function (r) { if (String(r.battleId) === String(B.id)) { if (r.winnerSide && EV.roundsWon[r.winnerSide]) EV.roundsWon[r.winnerSide]--; r.winnerSide = null; r.live = true; r.artist1PoolSol = B.a.poolSol; r.artist2PoolSol = B.b.poolSol; } }); } if (EV) { setRound(); paint(); } }).catch(function () {}); }
       clearTimeout(poll); if (!ended() && demo !== 'live') poll = setTimeout(load, 30000);
       watchSettle();

@@ -130,6 +130,19 @@ In page order. "Yours" means it needs something from wavewarz.com; everything el
 
 ### The battle page (`battle.html`)
 
+**Read this first: the page is a one-screen cockpit (2026-11-17).** Candy's rule: during a battle nobody should have to scroll to see the timer, see the chart, hear the songs, vote or trade either side. Speed matters most.
+
+- **Timer bar** (`#ckBar`) is sticky and stays on screen for the whole page. It carries both names, the time left to trade and a thin progress line. The digits turn green in the last 30 seconds.
+- **Three columns that fit the screen** (`.ck-grid`): side A, the stage, side B. Each side has the cover with play and pause, the name, the pool, then **Vote (Free)**, a **Buy** row (0.05, 0.10, 0.25 SOL) and a **Sell** row (25, 50, 100 percent). Both sides are identical and the same distance from the middle.
+- **One tap trades.** A buy or sell button calls `WW.buy` or `WW.sell` straight away; the wallet approval is the confirmation. There is no trade pop-up any more. The result shows once, in the line under that side's buttons. While one trade is waiting on the wallet all trade buttons are disabled, so nothing double-fires.
+- **Keyboard:** 1, 2, 3 buy side A; 8, 9, 0 buy side B.
+- **Stage** (`.ck-stage`): Chart or one of the stream games, with the poll and pools meters under it. On Featured and Community battles the live stream sits beside the chart in a chrome TV frame (`.tv`); when there is no live stream the battle flyer shows there.
+- **Phone:** the two sides shrink to compact cards, the chart sits under them, and a trade dock is fixed to the bottom of the screen (`#ckDock`) with Vote for both sides and a Buy / Sell switch over the three amounts for each side. Port it as a fixed bar with the safe-area padding.
+- **Below the fold**, for after the battle: the 2 of 3 result with DJ Wavy's call, side by side numbers, rounds, and Your battle.
+- **After Withdraw** the success state offers "Share your battle", which opens Candy's share module (`share-module.html`, her Battle Share Card concept) with this battle's names, pools and result. The personal numbers in it are still the concept's samples: it needs the wallet's real trade data, and its wording (ROI, PnL, "Backed the winner") has not been through the wording rules yet.
+- **Reward moment** (`ww-celebrate.js`): `WWCelebrate('wave')` or `WWCelebrate('bubbles')`, a short canvas animation. It plays when a battle is launched (wave), when one is added to the queue (bubbles), and on arriving at `battle.html?...&launched=1`.
+- **After launch, go to the battle.** The launch module now sends the person to the battle page about two seconds after `WW.launchNext` resolves. For that, **resolve `WW.launchNext` with `{ battleId }`**. After adding a battle, the setup page shows "You are in the queue" with the link to the queue.
+
 Built from the homepage pieces: the Live Battle Deck is the matchup, and the panels are the Top 5 panel shell.
 
 - **One chart, same as today's.** Your current page already plots both sides' Pool Size (SOL) over time, once in each artist card. The new page keeps that chart (same measure, axes, legend and point markers) and shows it once. Until `WW.getBattleChart` exists the line shape is a labeled sample that ends on the real pool sizes.
@@ -144,7 +157,6 @@ Built from the homepage pieces: the Live Battle Deck is the matchup, and the pan
 - **After the battle.** Withdraw shows the tokens held and the SOL the person will receive before they approve (`WW.getPosition` may return `claimSol`). A "Your battle" panel shows what they put in, what they got back and the difference to four decimals, never a red negative zero for a winner, with the save and share actions.
 - **Donate bar.** Under the matchup: donate to either artist or to WaveWarZ, wallet to wallet, no fees.
 - **How it is decided.** Three rows: the poll, the judges (DJ Wavy on Quick BattleZ) and the chart, each showing who holds it. Two of three takes the round, and on Sunday Featured battles best of three rounds takes the battle. Results come from wavewarz.info `/battles/:id` (`factors`) and `/events` (rounds).
-- **Trade module.** The Trade button on each side opens one dialog with Buy (0.05, 0.10, 0.25 SOL) and Sell (25, 50, 100 percent), the same choices as today's page.
 - **After the battle.** The deck shows the winner and a Withdraw bar appears.
 - The battle object passed to the hooks is `{ id, type, a, b, start, end, winner, factors }`, where `a` and `b` are the `artist1` and `artist2` objects from wavewarz.info.
 - Left off on purpose: the intro pop-up and the yellow Mainnet banner.
