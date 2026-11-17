@@ -14,6 +14,12 @@ buried here.
 
 ## 2026-11-16
 
+**Public calendar and WaveZStation routes.** `GET /api/public/calendar` returns the
+same schedule as the calendar page (weekly shows plus upcoming dated events), and
+`GET /api/public/wavezstation` passes through the song drops from wavezstation.com.
+Both are for the redesigned wavewarz.com homepage, which was reading saved snapshots
+until now. Both are documented at /api-docs.
+
 **Site forms and an admin inbox.** New route `POST /api/public/forms` takes the five
 forms on the redesigned homepage: Featured Battle application (replaces the Tally form),
 sponsorship, support, feedback and Sunday battle reminders. Submissions are stored in a
