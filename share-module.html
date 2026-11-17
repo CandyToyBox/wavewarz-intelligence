@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <!-- Candy's Battle Share Card concept (claude.ai artifact, 2026-09-23), saved here so the battle page can open it after Withdraw.
      Only additions: the embed mode and reading this battle's public facts from the URL hash. Personal numbers are still the concept's samples. -->
-<title>Battle Share Card</title>
+<title>Share your battle | WaveWarZ</title>
 <meta name="description" content="Post-battle share module concept: fires once after withdrawal, nine story templates and a full onchain stat catalog, so any way a trader spent the battle has a card to post." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme: dark;
@@ -25,11 +25,11 @@
     --blue-dim: rgba(126,193,251,.12);
     --ice:#daecfd;
     --mut:#8b97ab;
-    --mut-2:#5f6c82;
+    --mut-2:#8391a8;
     --red:#ef4444;
     --red-dim: rgba(239,68,68,.14);
-    --disp:'Rajdhani',sans-serif;
-    --body:'Inter',system-ui,sans-serif;
+    --disp:'Space Grotesk',sans-serif;
+    --body:'Outfit',system-ui,sans-serif;
     --mono:'JetBrains Mono',ui-monospace,monospace;
     --radius:16px;
   }
@@ -162,15 +162,15 @@
   .card-stats{display:flex;flex-wrap:wrap;gap:0;background:rgba(8,13,23,.55);border:1px solid rgba(126,193,251,.14);border-radius:10px;backdrop-filter:blur(2px)}
   .stat{flex:1 1 0;min-width:70px;padding:7px 9px;border-right:1px solid rgba(126,193,251,.12)}
   .stat:last-child{border-right:0}
-  .stat .k{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+  .stat .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
   .stat .v{font-family:var(--disp);font-weight:600;font-size:clamp(11px,2.2vw,15px);color:var(--ice);font-variant-numeric:tabular-nums}
   .stat .v.pos{color:var(--green)}
   .stat .v.neg{color:var(--red)}
 
-  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:9px;color:var(--mut-2)}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:10px;color:var(--mut-2)}
 
   /* ---- section labels ---- */
-  .section-label{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:18px 0 9px;display:flex;align-items:center;gap:8px}
+  .section-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:18px 0 9px;display:flex;align-items:center;gap:8px}
   .section-label .n{color:var(--mut-2)}
 
   /* ---- layout swatches ---- */
@@ -178,7 +178,7 @@
   .swatch{flex:none;width:74px;cursor:pointer;border:none;background:none;padding:0;display:flex;flex-direction:column;gap:6px;align-items:center}
   .swatch-thumb{width:74px;height:42px;border-radius:8px;border:1.5px solid var(--line);position:relative;overflow:hidden}
   .swatch.active .swatch-thumb{border-color:var(--green);box-shadow:0 0 0 2px rgba(149,254,124,.22)}
-  .swatch span{font-size:10px;color:var(--mut);font-weight:600}
+  .swatch span{font-size:11px;color:var(--mut);font-weight:600}
   .swatch.active span{color:var(--ice)}
   .thumb-arena{background:radial-gradient(70% 100% at 20% 10%,rgba(149,254,124,.35),transparent 60%),radial-gradient(70% 100% at 85% 100%,rgba(126,193,251,.35),transparent 60%),#0b1120}
   .thumb-wave{background:#0c1220}
@@ -203,7 +203,7 @@
 
   /* ---- pills ---- */
   .stat-groups{display:flex;flex-direction:column;gap:10px}
-  .stat-group .group-label{font-size:10px;color:var(--mut-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+  .stat-group .group-label{font-size:11px;color:var(--mut-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
   .pills{display:flex;flex-wrap:wrap;gap:6px}
   .pill{font-family:var(--body);font-size:11.5px;font-weight:600;padding:6px 11px;border-radius:20px;cursor:pointer;background:var(--card-2);border:1px solid var(--line);color:var(--mut);transition:.15s}
   .pill.on{background:var(--green-dim);border-color:rgba(149,254,124,.4);color:var(--green)}
@@ -223,12 +223,12 @@
   .social-chip .ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--ice)}
   .social-chip .ic svg{width:18px;height:18px}
   .social-chip .ic b{font-family:var(--disp);font-weight:700;font-size:13px}
-  .social-chip span.lb{font-size:9.5px;color:var(--mut);font-weight:600}
+  .social-chip span.lb{font-size:11px;color:var(--mut);font-weight:600}
   .util-row{display:flex;gap:8px;flex-wrap:wrap}
   .cta{flex:1 1 140px;font-family:var(--body);font-weight:600;font-size:12.5px;padding:10px 13px;border-radius:10px;border:1px solid var(--line);background:var(--card-2);color:var(--ice);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
   .cta svg{width:14px;height:14px;flex:none}
   .cta:hover{border-color:var(--line-strong)}
-  .cta-note{width:100%;font-size:10px;color:var(--mut-2);text-align:center;margin-top:9px;font-family:var(--mono)}
+  .cta-note{width:100%;font-size:11px;color:var(--mut-2);text-align:center;margin-top:9px;font-family:var(--mono)}
 
   .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(8px);background:var(--card);border:1px solid var(--line-strong);color:var(--ice);font-size:12.5px;font-weight:600;padding:10px 16px;border-radius:10px;box-shadow:0 14px 34px -10px rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:.2s;z-index:50;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -265,7 +265,8 @@
   html.embed .modal{max-width:none;box-shadow:none}
   html.embed .modal-body{max-height:none}
   html.embed .modal{border:0;border-radius:0}
-</style>
+</style><link rel="stylesheet" href="ww-base.css">
+
 
 <div class="wrap">
 
@@ -336,7 +337,7 @@
             <div class="card-bg" id="cardBg"></div>
             <div class="card-fg">
               <div class="card-top">
-                <div class="brand"><span class="mark"></span>WaveWarz</div>
+                <div class="brand"><span class="mark"></span>WaveWarZ</div>
                 <div class="result-badge" id="resultBadge">LUI WON THE CHARTS</div>
               </div>
               <div class="card-hero">

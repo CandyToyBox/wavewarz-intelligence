@@ -14,7 +14,7 @@
   <!-- Fonts: Outfit, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Model Viewer for 3D DJ Wavy -->
 
@@ -2788,10 +2788,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 /* ============ COCKPIT: timer, both songs, chart, vote and one-tap trading on one screen ============ */
 .ck { position: relative; z-index: 5; padding: 104px 20px 0; --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); --hair: rgba(216,235,252,.14); }
 .ck-in { max-width: 1480px; margin: 0 auto; }
+body[data-page="battle"] .mn { display: none; }   /* the Mainnet tag would sit on the timer bar */
 .ck [hidden], .ck-dock[hidden] { display: none !important; }
 /* timer bar: always on screen */
 .ck-bar { position: sticky; top: 92px; z-index: 40; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 10px 22px 12px; border-radius: 22px; border: 1px solid var(--hair); background: rgba(6,9,15,.82); -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3); box-shadow: 0 18px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08); overflow: hidden; }
-.cb-l, .cb-r { display: flex; align-items: center; gap: 12px; min-width: 0; font: 500 .68rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+.cb-l, .cb-r { display: flex; align-items: center; gap: 12px; min-width: 0; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
 .cb-r { justify-content: flex-end; } .cb-r b { color: #fff; font-weight: 500; letter-spacing: .04em; }
 .cb-l .ld-live { color: var(--brand-green); } .cb-k { overflow: hidden; text-overflow: ellipsis; }
 .cb-c { display: flex; align-items: center; gap: 22px; min-width: 0; }
@@ -2811,7 +2812,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .cs-art > div { position: relative; width: 100%; height: 100%; border-radius: 16px; overflow: hidden; background: radial-gradient(120% 90% at 20% 10%, rgba(var(--cr), .28), rgba(13,19,33,.96) 62%); display: grid; place-items: center; }
 .cs-art img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cs-art .mono { font: 300 4.2rem 'Outfit', sans-serif; color: rgba(255,255,255,.22); letter-spacing: -.04em; }
-.cs-tag { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(2,4,8,.72); font: 500 .6rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #fff; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.cs-tag { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 5px 10px; border-radius: 999px; background: rgba(2,4,8,.72); font: 500 .66rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: #fff; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .cs-play { position: absolute; right: 10px; bottom: 10px; z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; display: grid; place-items: center; background: var(--chrome); box-shadow: inset 0 2px 3px rgba(255,255,255,.85), inset 0 -3px 6px rgba(0,0,0,.45), 0 8px 18px rgba(0,0,0,.6); transition: transform .16s cubic-bezier(.2,.8,.2,1); }
 .cs-play:hover { transform: scale(1.06); } .cs-play:active { transform: scale(.94); } .cs-play svg { width: 22px; height: 22px; fill: #0d1321; }
 .cs-eq { position: absolute; left: 12px; bottom: 14px; z-index: 2; display: flex; gap: 3px; align-items: flex-end; height: 22px; opacity: 0; transition: opacity .3s; } .is-playing .cs-eq { opacity: 1; }
@@ -2856,7 +2857,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 .tv-scr { position: relative; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #020305; box-shadow: inset 0 0 0 1px rgba(0,0,0,.9), inset 0 0 40px rgba(0,0,0,.8); }
 .tv-scr iframe, .tv-scr img { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
 .tv-scr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,.1) 0%, transparent 28%); }
-.tv-ft { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font: 500 .6rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); } .tv-ft a { color: var(--brand-green); text-decoration: none; } .tv-ft i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ff5a4d; margin-right: 8px; box-shadow: 0 0 10px #ff5a4d; }
+.tv-ft { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font: 500 .7rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); } .tv-ft a { color: var(--brand-green); text-decoration: none; } .tv-ft i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ff5a4d; margin-right: 8px; box-shadow: 0 0 10px #ff5a4d; }
 .ck-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; } .ck-meters:has(> :only-child) { grid-template-columns: 1fr; }
 .ck .ld-split { gap: 5px; } .ck .ld-bar { height: 8px; border: 0; background: var(--brand-blue); } .ck .ld-pc { font: 500 .74rem 'JetBrains Mono', monospace; } .ck .ld-pc em { font: 500 .56rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .2em; color: var(--text-muted); }
 .ck-risk { margin: 10px 0 0; text-align: center; font: 400 .68rem 'JetBrains Mono', monospace; letter-spacing: .04em; color: var(--text-muted); }
@@ -2913,6 +2914,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 @media (max-width: 860px) { .bp-top { padding: 104px 16px 0; } .bc-plot { height: 260px; } .bm-big { grid-template-columns: 1fr; } }
 @media (prefers-reduced-transparency: reduce) { .bc-tip { background: rgba(7,14,12,.96); -webkit-backdrop-filter: none; backdrop-filter: none; } }
 </style>
+<link rel="stylesheet" href="ww-base.css">
 </head>
 
 <body data-page="battle">
@@ -2931,6 +2933,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
         <li><a href="home.html#tonight">Schedule</a></li>
         <li><a href="home.html#how-it-works">How it works</a></li>
         <li><a href="home.html#for-artists">For Artists</a></li>
+        <li><a href="quick-battles.html">Queue</a></li>
         <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
         <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
       </ul>
@@ -2938,7 +2941,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
       <div class="nav-actions">
         <!-- Prototype: opens the live app, where the wallet picker lives. -->
         <a href="https://www.wavewarz.com" target="_blank" rel="noopener" class="btn-primary" title="Opens wavewarz.com to connect a wallet">
-          Select Wallet
+          Connect wallet
         </a>
         <div class="mn" id="mnCall"><i aria-hidden="true"></i><span>Live on <b>Solana Mainnet</b></span></div>
       </div>
