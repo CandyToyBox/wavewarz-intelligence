@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk, Outfit, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
@@ -28,6 +28,14 @@ const mono = JetBrains_Mono({
   weight: ['400', '500', '700'],
   variable: '--font-geist-mono',
 })
+
+// Phones: paint under the notch and home bar (the fixed nav and radio bar pad back out with env()), black browser chrome
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#000000',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wavewarz.info'),

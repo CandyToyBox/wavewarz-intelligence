@@ -11,7 +11,7 @@ export function IgniteRadio() {
   if (dismissed || pathname.startsWith('/playbook')) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
+    <div className="fixed bottom-0 left-0 right-0 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <div className="relative">
         <button
           onClick={() => setDismissed(true)}

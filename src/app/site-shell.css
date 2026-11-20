@@ -3,6 +3,11 @@
 
 /* Real weights only, so headings never get a fake bold */
 html { font-synthesis-weight: none; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scrollbar-width: thin; scrollbar-color: rgba(216, 235, 252, .24) #06090f; }
+/* Phones: no gray tap flash, no 300 ms wait, no selecting a control's label on long-press, no zoom into small fields */
+html { -webkit-tap-highlight-color: transparent; }
+button, a, [role="button"], summary, label { touch-action: manipulation; }
+button, [role="button"], summary, .ww-chip, .ww-btn, .ww-cta { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+@media (pointer: coarse) { input, textarea, select { font-size: 16px !important; } }
 ::selection { background: rgba(149, 254, 124, .3); color: #fff; }
 input, textarea, [contenteditable="true"] { caret-color: #95fe7c; }
 a { text-underline-offset: .22em; text-decoration-thickness: 1px; }
@@ -27,10 +32,10 @@ body::before {
 }
 
 /* ---------- main nav: floating pill ---------- */
-.ww-nav-wrap { position: fixed; top: 18px; left: 0; right: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; padding: 0 20px; pointer-events: none; }
+.ww-nav-wrap { position: fixed; top: calc(18px + env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; padding: 0 20px; pointer-events: none; }
 .ww-navbar { pointer-events: auto; display: flex; align-items: center; justify-content: space-between; gap: 24px; width: 100%; max-width: 1320px; padding: 12px 24px; border-radius: 999px; background: rgba(0, 0, 0, .82); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border: 1px solid rgba(126, 193, 251, .22); box-shadow: 0 20px 50px rgba(0, 0, 0, .8), 0 0 25px rgba(126, 193, 251, .12); }
 .ww-logo { display: block; height: 50px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .6)); transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
-.ww-logo:hover { transform: scale(1.07) rotate(-1.5deg); }
+@media (hover: hover) and (pointer: fine) { .ww-logo:hover { transform: scale(1.07) rotate(-1.5deg); } }
 .ww-links { display: flex; align-items: center; gap: 24px; list-style: none; margin: 0; padding: 0; }
 .ww-links a, .ww-watch > summary { color: #daecfd; text-decoration: none; font: 600 .92rem 'Outfit', sans-serif; transition: color .2s ease; }
 .ww-links a:hover, .ww-watch > summary:hover, .ww-links a.is-section { color: #95fe7c; }
@@ -60,7 +65,8 @@ body::before {
 .ww-rail { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 2px; -webkit-mask: linear-gradient(90deg, #000 calc(100% - 32px), transparent); mask: linear-gradient(90deg, #000 calc(100% - 32px), transparent); }
 .ww-rail::-webkit-scrollbar { display: none; }
 .ww-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(216, 235, 252, .16); background: rgba(255, 255, 255, .03); color: #daecfd; text-decoration: none; font: 500 .88rem 'Outfit', sans-serif; transition: color .2s ease, border-color .2s ease, background-color .2s ease; }
-.ww-chip:hover { border-color: rgba(149, 254, 124, .5); color: #fff; }
+@media (hover: hover) and (pointer: fine) { .ww-chip:hover { border-color: rgba(149, 254, 124, .5); color: #fff; } }
+.ww-chip { transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform 160ms cubic-bezier(.23, 1, .32, 1); } .ww-chip:active { transform: scale(.97); }
 .ww-chip[aria-current="page"] { background: rgba(149, 254, 124, .12); border-color: rgba(149, 254, 124, .55); color: #95fe7c; }
 
 /* ---------- footer ---------- */
@@ -70,7 +76,7 @@ body::before {
 
 @media (max-width: 1100px) { .ww-links { display: none; } .ww-menu-btn { display: inline-flex; } }
 @media (max-width: 640px) {
-  .ww-nav-wrap { top: 10px; padding: 0 10px; }
+  .ww-nav-wrap { top: calc(10px + env(safe-area-inset-top, 0px)); padding: 0 10px; }
   .ww-navbar { padding: 8px 10px 8px 16px; gap: 10px; }
   .ww-logo { height: 38px; }
   .ww-btn { min-height: 40px; padding: 0 14px; font-size: .74rem; }
@@ -78,7 +84,7 @@ body::before {
   .ww-rail-wrap { padding: 78px 16px 0; }
   .ww-foot { padding: 22px 16px 28px; }
 }
-@media (hover: none) { .ww-logo:hover, .ww-btn.solid:hover { transform: none; } }
+@media (hover: none) { .ww-btn.solid:hover { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .ww-logo, .ww-btn, .ww-chev { transition: none; } .ww-logo:hover, .ww-btn:hover { transform: none; } .ww-watch-menu, .ww-menu { animation: none; } }
 
 /* ---------- page buttons: the redesign's pills ---------- */
@@ -92,5 +98,5 @@ body::before {
 .ww-cta.amber { background: #f2a74b; color: #06090f; border-color: rgba(255, 255, 255, .3); }
 .ww-cta.amber:hover { background: #f6bd73; }
 .ww-cta svg { flex: none; }
-@media (hover: none) { .ww-cta:hover { transform: none; } }
+@media (hover: none) { .ww-cta:hover { transform: none; background: #95fe7c; } .ww-cta.ghost:hover { background: rgba(255, 255, 255, .03); border-color: rgba(216, 235, 252, .3); } }
 @media (prefers-reduced-motion: reduce) { .ww-cta { transition: none; } .ww-cta:hover, .ww-cta:active { transform: none; } }

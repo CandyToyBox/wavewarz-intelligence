@@ -13,7 +13,6 @@ export function SiteNav() {
 
   // keep the current Stats page in view on narrow screens
   useEffect(() => {
-    setOpen(false)
     const cur = rail.current?.querySelector('[aria-current="page"]') as HTMLElement | null
     if (cur && rail.current) rail.current.scrollLeft = cur.offsetLeft - 16
   }, [pathname])
@@ -60,7 +59,7 @@ export function SiteNav() {
           </div>
         </nav>
         {open && (
-          <div className="ww-menu" id="ww-menu">
+          <div className="ww-menu" id="ww-menu" onClick={e => { if ((e.target as HTMLElement).closest('a')) setOpen(false) }}>
             {WATCH.slice(0, 1).map(w => <a key={w.href} href={w.href} target="_blank" rel="noopener">Watch live</a>)}
             {MAIN_NAV.filter(l => !l.stats).map(l => <a key={l.label} href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}>{l.label}</a>)}
           </div>
