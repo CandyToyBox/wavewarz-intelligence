@@ -9,6 +9,9 @@ import { SolscanLink } from '@/components/solscan-link'
 import { ArtistAvatarImg } from '@/components/artist-avatar-img'
 import { LiveArena } from './live-arena'
 import { isBattleLive } from '@/lib/battle-metrics'
+import { audiusHandle } from '@/lib/song-identity'
+import { getWavIdRoster, findWavIdArtist } from '@/lib/wavid/roster'
+import { BattleWavIdMatchup } from '@/components/wavid/battle-wavid-matchup'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -187,6 +190,19 @@ export default async function BattleDetailPage({ params }: Props) {
   const typeLabel = isQuick ? 'Quick Battle' : isCommunity ? 'Community Battle' : 'Main Event'
   const typeColor = isQuick ? '#7ec1fb' : isCommunity ? '#f59e0b' : '#95fe7c'
 
+  // WavID prototype: resolve each side to an eligible roster artist. Quick Battle
+  // sides are songs, so the Audius link is the identity; Main Events also try the
+  // wallet and name. A side with no match simply shows no WavID.
+  const wavIdRoster = await getWavIdRoster()
+  const wavIdSide = (musicLink: string | null | undefined, wallet: string | null | undefined, name: string) =>
+    findWavIdArtist(wavIdRoster, {
+      audiusHandle: audiusHandle(musicLink),
+      wallet: isQuick ? null : wallet,
+      name: isQuick ? null : name,
+    })
+  const wavId1 = wavIdSide(battle.artist1_music_link, battle.artist1_wallet, battle.artist1_name)
+  const wavId2 = wavIdSide(battle.artist2_music_link, battle.artist2_wallet, battle.artist2_name)
+
   // Same avatar precedence SidePanel uses below (quick-battle song art > stored
   // profile picture > Twitter avatar via unavatar), resolved here too since the
   // live arena needs plain URL strings, not the SidePanel JSX.
@@ -262,6 +278,16 @@ export default async function BattleDetailPage({ params }: Props) {
           artist2AvatarUrl={avatar2}
           battleDurationSec={battle.battle_duration ?? null}
           createdAtIso={battle.created_at ?? null}
+        />
+      )}
+
+      {/* WavID head-to-head (prototype): shown when at least one side has a WavID */}
+      {wavIdRoster && (wavId1 || wavId2) && (
+        <BattleWavIdMatchup
+          a={{ name: battle.artist1_name, handle: wavId1?.identity.audiusHandle ?? null, artist: wavId1?.displayName ?? null, won: a1Won }}
+          b={{ name: battle.artist2_name, handle: wavId2?.identity.audiusHandle ?? null, artist: wavId2?.displayName ?? null, won: !a1Won }}
+          settled={isSettled && !isSplitTie}
+          checkedAt={wavIdRoster.checkpoint.checkedAt}
         />
       )}
 

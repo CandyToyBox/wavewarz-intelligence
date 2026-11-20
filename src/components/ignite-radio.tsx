@@ -8,7 +8,7 @@ export function IgniteRadio() {
   const pathname = usePathname()
 
   // Not on the artist Playbook: it would cover the Submit buttons.
-  if (dismissed || pathname.startsWith('/playbook')) return null
+  if (dismissed || pathname?.startsWith('/playbook')) return null
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
