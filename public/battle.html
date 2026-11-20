@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#000000" />
   <title>Battle | WaveWarZ</title>
@@ -440,7 +440,7 @@
     .hero-stage {
       position: relative;
       width: 100%;
-      min-height: 100vh;
+      min-height: 100vh; min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1263,7 +1263,7 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      height: 100vh;
+      height: 100vh; height: 100dvh;
       width: 100%;
       overflow: hidden;
       display: flex;
@@ -1725,7 +1725,7 @@
     .royal-3d-sticky {
       position: sticky;
       top: 0;
-      height: 100vh;
+      height: 100vh; height: 100dvh;
       width: 100%;
       overflow: hidden;
       display: flex;
@@ -2560,7 +2560,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 
 /* Quick BattleZ queue: pinned for a screen and a half so nobody scrolls past it */
 .qp { padding: 0; overflow: clip; height: 240vh; }
-.qp-pin { position: sticky; top: 0; height: 100vh; box-sizing: border-box; display: flex; align-items: center; padding: 92px 24px 20px; overflow: clip; }
+.qp-pin { position: sticky; top: 0; height: 100vh; height: 100dvh; box-sizing: border-box; display: flex; align-items: center; padding: 92px 24px 20px; overflow: clip; }
 .qp-pin > .qp-in { width: 100%; max-width: 1240px; margin: 0 auto; }
 .qp.is-flow { height: auto; padding: var(--sec-y) 16px; }
 .qp.is-flow .qp-pin { position: relative; height: auto; display: block; padding: 0; overflow: visible; }
@@ -2824,6 +2824,18 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bc-plot .ea { fill: #95fe7c; stroke: #0a0f18; stroke-width: 2; } .bc-plot .eb { fill: #7ec1fb; stroke: #0a0f18; stroke-width: 2; }
 .bc-plot .el { fill: #fff; font: 600 12px 'JetBrains Mono', monospace; }
 .bc-plot .ch { stroke: rgba(216,235,252,.4); stroke-width: 1; display: none; }
+/* a new trade: the newest stretch of line draws in, the end point rings once, and the amount rises off it */
+.bc-plot .grow { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); animation: bcGrow .55s cubic-bezier(.16,1,.3,1) forwards; }
+@keyframes bcGrow { to { stroke-dashoffset: 0; } }
+.bc-plot .ring { fill: none; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: bcRing .9s cubic-bezier(.16,1,.3,1) .2s both; }
+.bc-plot .ring.a { stroke: #95fe7c; } .bc-plot .ring.b { stroke: #7ec1fb; }
+@keyframes bcRing { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(3.2); } }
+.bc-plot .dl { font: 700 12px 'JetBrains Mono', monospace; animation: bcRise 1.6s cubic-bezier(.16,1,.3,1) .15s both; }
+.bc-plot .dl.a { fill: #95fe7c; } .bc-plot .dl.b { fill: #7ec1fb; }
+@keyframes bcRise { 0% { opacity: 0; transform: translateY(6px); } 18% { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
+.cs-pool b.bump { animation: csBump .5s cubic-bezier(.16,1,.3,1); }
+@keyframes csBump { 40% { color: #fff; text-shadow: 0 0 18px currentColor; } }
+@media (prefers-reduced-motion: reduce) { .bc-plot .grow { animation: none; stroke-dashoffset: 0; } .bc-plot .ring { display: none; } .bc-plot .dl { animation-duration: .01s; animation-delay: 0s; opacity: 0; } .cs-pool b.bump { animation: none; } }
 .bc-tip { position: absolute; z-index: 3; top: 8px; min-width: 150px; pointer-events: none; display: none; padding: 9px 11px; border-radius: 8px; background: rgba(7,14,12,.86); border: 1px solid rgba(188,241,207,.42); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font: 400 .78rem/1.5 'JetBrains Mono', monospace; color: #d7f5e4; }
 .bc-tip .tt { color: var(--text-muted); letter-spacing: .08em; text-transform: uppercase; font-size: .68rem; }
 .bc-tip .tr { display: flex; align-items: center; gap: 8px; } .bc-tip .tr i { width: 12px; height: 2px; flex: none; } .bc-tip .tr b { color: #fff; font-weight: 600; } .bc-tip .tr span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 18ch; }
@@ -2844,7 +2856,8 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bf-who small { display: block; margin-top: 2px; font: 400 .66rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
 .bf-vote { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; }
 .bp-btn { min-height: 44px; padding: 0 16px; border-radius: 999px; cursor: pointer; font: 700 .72rem 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-ice); background: rgba(255,255,255,.04); border: 1px solid rgba(216,235,252,.28); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: none; display: inline-flex; align-items: center; }
-.bp-btn:hover { border-color: var(--brand-green); color: var(--brand-green); } .bp-btn:disabled { opacity: .5; cursor: default; }
+@media (hover: hover) and (pointer: fine) { .bp-btn:hover { border-color: var(--brand-green); color: var(--brand-green); } }
+.bp-btn { transition: transform 160ms cubic-bezier(.23,1,.32,1), border-color .2s ease, color .2s ease; } .bp-btn:active:not(:disabled) { transform: scale(.97); } .bp-btn:disabled { opacity: .5; cursor: default; }
 .bf-rule { margin: 12px 4px 6px; padding-top: 12px; border-top: 1px solid rgba(216,235,252,.08); font: 400 .85rem/1.5 'Outfit', sans-serif; color: var(--brand-ice); } .bf-rule b { color: var(--brand-green); font-weight: 600; }
 /* rounds */
 .br { list-style: none; margin: 0; padding: 0; }
@@ -2956,16 +2969,17 @@ body[data-page="battle"] .mn { display: none; }   /* the Mainnet tag would sit o
 .ck button.cx:active:not(:disabled) { transform: scale(.96); } .ck button.cx:disabled { opacity: .38; cursor: default; }
 .ck button.cx:focus-visible, .cs-play:focus-visible, .ck-tabs button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .cs-vote { width: 100%; border: 0; background: var(--c); color: #0a0f18; box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 8px 22px rgba(var(--cr), .22); }
-.cs-vote:hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 0 26px rgba(var(--cr), .5); }
+@media (hover: hover) and (pointer: fine) { .cs-vote:hover:not(:disabled) { box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 0 26px rgba(var(--cr), .5); } }
+.cs-vote .vn { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cs-vote small { flex-shrink: 0; }
 .cs-vote small { margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: rgba(10,15,24,.16); font: 600 .6rem 'JetBrains Mono', monospace; letter-spacing: .14em; text-transform: uppercase; vertical-align: 1px; }
 .cs-vote.voted { background: transparent; color: var(--c); border: 1px solid var(--c); box-shadow: none; opacity: 1 !important; }
 a.cs-vote { display: flex; align-items: center; justify-content: center; min-height: 46px; border-radius: 14px; text-decoration: none; font: 600 .84rem 'Outfit', sans-serif; }
 .cs-row { display: grid; grid-template-columns: 38px repeat(3, minmax(0, 1fr)); gap: 6px; align-items: center; } .cs-row + .cs-row { margin-top: 6px; }
 .cs-row > span { font: 500 .58rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); }
 .cs-buy { border: 1px solid rgba(var(--cr), .55); background: rgba(var(--cr), .1); color: #fff; font-variant-numeric: tabular-nums; }
-.cs-buy:hover:not(:disabled) { background: rgba(var(--cr), .24); border-color: var(--c); }
+@media (hover: hover) and (pointer: fine) { .cs-buy:hover:not(:disabled) { background: rgba(var(--cr), .24); border-color: var(--c); } }
 .cs-sell { border: 1px solid rgba(216,235,252,.22); background: rgba(255,255,255,.03); color: var(--brand-ice); font-variant-numeric: tabular-nums; }
-.cs-sell:hover:not(:disabled) { border-color: rgba(216,235,252,.6); background: rgba(255,255,255,.08); color: #fff; }
+@media (hover: hover) and (pointer: fine) { .cs-sell:hover:not(:disabled) { border-color: rgba(216,235,252,.6); background: rgba(255,255,255,.08); color: #fff; } }
 .cs-cu { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px; margin-top: 6px; }
 .cs-in { display: flex; align-items: center; gap: 6px; min-width: 0; min-height: 46px; padding: 0 12px; border-radius: 14px; border: 1px solid rgba(216,235,252,.2); background: rgba(2,4,8,.5); transition: border-color .16s, box-shadow .16s; }
 .cs-in:focus-within { border-color: var(--c); box-shadow: 0 0 0 3px rgba(var(--cr), .16); }
@@ -2973,7 +2987,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 .cs-in input::placeholder { color: rgba(216,235,252,.4); }
 .cs-in span { font: 500 .62rem 'JetBrains Mono', monospace; letter-spacing: .14em; color: var(--text-muted); }
 .ck button.cx.cs-go { padding: 0 14px; min-width: 58px; }
-.cs-go.buy { border: 0; background: var(--c); color: #0a0f18; } .cs-go.buy:hover:not(:disabled) { box-shadow: 0 0 20px rgba(var(--cr), .45); }
+.cs-go.buy { border: 0; background: var(--c); color: #0a0f18; } @media (hover: hover) and (pointer: fine) { .cs-go.buy:hover:not(:disabled) { box-shadow: 0 0 20px rgba(var(--cr), .45); } }
 .cs-go.sell { border: 1px solid rgba(216,235,252,.32); background: rgba(255,255,255,.04); color: #fff; } .cs-go.sell:hover:not(:disabled) { border-color: #fff; }
 .cs-st { min-height: 1.3em; margin: 0; font: 500 .68rem/1.3 'JetBrains Mono', monospace; letter-spacing: .03em; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cs-st.ok { color: var(--c); }
 .cs-end { display: grid; gap: 8px; }
@@ -3021,11 +3035,11 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   .dk-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid rgba(216,235,252,.14); }
   .dk-mode button { min-height: 32px; min-width: 64px; border: 0; border-radius: 999px; background: transparent; color: var(--brand-ice); font: 600 .74rem 'Outfit', sans-serif; cursor: pointer; } .dk-mode button[aria-pressed="true"] { background: #fff; color: #0a0f18; }
   .dk-st { flex: 1; min-width: 0; text-align: right; font: 500 .66rem 'JetBrains Mono', monospace; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .dk-st.ok { color: var(--brand-green); }
-  .dk-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .dk-col { display: grid; gap: 6px; min-width: 0; } .dk-col.a { --c: #95fe7c; --cr: 149,254,124; } .dk-col.b { --c: #7ec1fb; --cr: 126,193,251; }
+  .dk-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
+  .dk-col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; } .dk-col.a { --c: #95fe7c; --cr: 149,254,124; } .dk-col.b { --c: #7ec1fb; --cr: 126,193,251; }
   .dk-amt { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
   .ck-dock button.cx { min-height: 48px; border-radius: 14px; cursor: pointer; font: 600 .82rem 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .1s; } .ck-dock button.cx:active:not(:disabled) { transform: scale(.95); } .ck-dock button.cx:disabled { opacity: .38; }
-  .ck-dock .cs-vote { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 10px; } .ck-dock .cs-buy, .ck-dock .cs-sell { font-size: .78rem; padding: 0; }
+  .ck-dock .cs-vote { display: flex; align-items: center; justify-content: center; white-space: nowrap; padding: 0 10px; min-width: 0; } .ck-dock .cs-buy, .ck-dock .cs-sell { font-size: .78rem; padding: 0; }
   .bp-top { padding: 0 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .jc, .jc-sheen { transition: none; } .ck-side:hover .jc { transform: none; } .cs-eq i { animation: none; height: 14px; } .cb-prog i { transition: none; } .ck button.cx, .cs-play { transition: none; } }
@@ -3071,7 +3085,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
         <li><a href="index.html#how-it-works">How it works</a></li>
         <li><a href="index.html#for-artists">For Artists</a></li>
         <li><a href="quick-battles.html">Queue</a></li>
-        <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
+        <li><a href="https://wavewarz.info">Stats</a></li>
         <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
       </ul>
 
@@ -3202,7 +3216,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
           <li><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch live</a></li>
           <li><a href="index.html#how-it-works">How it works</a></li>
           <li><a href="index.html#for-artists">For Artists</a></li>
-          <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
+          <li><a href="https://wavewarz.info">Stats</a></li>
           <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
           <li><a href="https://www.wavewarz.com/docs" target="_blank" rel="noopener">Docs</a></li>
           <li><a href="https://www.wavewarz.com/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a></li>
@@ -3374,6 +3388,18 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
      WW.donate(battle, target, sol)     target is 'a', 'b' or 'wavewarz'
      WW.isSettled(battle)               optional -> true once withdrawals are open
      WW.settle(battle)                  optional; only offered if nobody has settled 20 seconds after the end
+   Keeping the chart and pools moving while a battle is live (any one of these is enough; they can be combined):
+     WW.onBattleUpdate(battle, cb)      RECOMMENDED. Subscribe to the battle's onchain pools (for example a Helius account
+                                        subscription on both vault PDAs) and call cb({ a: poolSol, b: poolSol, t: ms,
+                                        trade: { side: 'a' | 'b', buy: bool, sol } }) on every change, everyone's trades
+                                        included. Return a function that unsubscribes.
+     WW.getPools(battle)                optional -> { a: poolSol, b: poolSol }, read straight from chain. Polled every 4 s
+                                        while live when there is no subscription.
+     WW.buy / WW.sell / WW.sellSol      may resolve { a: poolSol, b: poolSol } after confirming, so the trader's own chart
+                                        jumps to the confirmed pools at once.
+     or dispatch   document.dispatchEvent(new CustomEvent('ww-pool', { detail: { a, b, t, trade } }))
+   With none of them the page moves the chart itself right after the trader's own trade (an estimate from the amount) and
+   re-reads wavewarz.info every 8 s, which only changes after the indexer has caught up.
    Pick a battle with ?id=<battleId>. With no id the page shows the live battle, or the most recent one.
    Design review: ?demo=live shows a battle in progress, ?demo=ended a finished one, both with sample numbers. */
 (function () {
@@ -3404,7 +3430,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
     var a = k === 'a' ? B.a : B.b;
     if (B.type !== 'quick') return '<a class="cs-vote" href="' + esc(X_POLL) + '" target="_blank" rel="noopener">Vote on X<small>Free</small></a>';
     if (B.myVote === k) return '<button type="button" class="cx cs-vote voted" disabled>Your vote</button>';
-    return '<button type="button" class="cx cs-vote" data-vote="' + k + '"' + (B.myVote || (B.poll && B.poll.locked) ? ' disabled' : '') + '>Vote' + (short ? ' ' + esc(a.name) : '') + '<small>Free</small></button>';
+    return '<button type="button" class="cx cs-vote" data-vote="' + k + '"' + (B.myVote || (B.poll && B.poll.locked) ? ' disabled' : '') + ' title="Vote for ' + esc(a.name) + '">' + (short ? '<span class="vn">Vote ' + esc(a.name) + '</span>' : 'Vote') + '<small>Free</small></button>';
   }
   function amts(k, buy) {
     var none = pos && pos[k] && !(+pos[k].tokens > 0);
@@ -3447,8 +3473,8 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
       '</div></div><div class="jc-wrap" aria-hidden="true"><div class="jc-crease"></div><div class="jc-sheen"></div></div><span class="cs-eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
       (link ? (inPage(a) ? '<button type="button" class="cs-play" data-play="' + k + '" aria-pressed="' + on + '" aria-label="' + (on ? 'Pause ' : 'Play ') + esc(a.name) + '">' + (on ? PAUSE : PLAY) + '</button>'
                          : '<a class="cs-play" href="' + esc(link) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + '">' + PLAY + '</a>') : '') + '</div></div>' +
-      '<div><div class="cs-np' + (over && B.winner === k ? ' win' : '') + '">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h2 class="cs-nm">' + esc(a.name) + '</h2><p class="cs-by">' + (by ? '@' + esc(by) : '&nbsp;') + '</p></div>' +
-      '<div class="cs-pool"><b>' + mine.toFixed(4) + '<small>SOL</small></b><span>' + pct + '%</span></div>' +
+      '<div><div class="cs-np' + (over && B.winner === k ? ' win' : '') + '">' + (on ? 'Now playing' : over ? (B.winner === k ? 'Winner' : 'Final') : (link ? 'Press play' : '&nbsp;')) + '</div><h2 class="cs-nm" title="' + esc(a.name) + '">' + esc(a.name) + '</h2><p class="cs-by">' + (by ? '@' + esc(by) : '&nbsp;') + '</p></div>' +
+      '<div class="cs-pool"><b' + (bumpK === k && Date.now() - bumpT < 600 ? ' class="bump"' : '') + '>' + mine.toFixed(4) + '<small>SOL</small></b><span>' + pct + '%</span></div>' +
       (over ? '' : voteBtn(k) + '<div class="cs-tr"><div class="cs-row"><span>Buy</span>' + amts(k, true) + '</div><div class="cs-row"><span>Sell</span>' + amts(k, false) + '</div>' + customRow(k) + '</div>' +
         '<p class="cs-st' + (statOk[k] ? ' ok' : '') + '" role="status">' + esc(stat[k] || holdText(k)) + '</p>'); });
   }
@@ -3463,7 +3489,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   function renderBar() {
     var over = ended(), tot = (B.a.poolSol || 0) + (B.b.poolSol || 0), rd = EV && B.round ? ' · Round ' + B.round + ' of ' + nRounds() : '';
     $('ckBar').innerHTML = '<div class="cb-l"><span class="ld-live' + (over ? ' ended' : '') + '"><i></i>' + (over ? 'Ended' : 'Live') + '</span><span class="cb-k">' + kindName(B.type) + rd + '</span>' + (B.sample ? '<span class="cb-k">Sample</span>' : '') + '</div>' +
-      '<div class="cb-c"><span class="cb-n a">' + esc(B.a.name) + '<i class="ka"></i></span><div class="cb-t" id="ckT" role="timer" aria-label="Time left to trade"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? (B.winner ? 'Final' : 'Settling') : 'Left to trade') + '</small></div><span class="cb-n b"><i class="kb"></i>' + esc(B.b.name) + '</span></div>' +
+      '<div class="cb-c"><span class="cb-n a" title="' + esc(B.a.name) + '">' + esc(B.a.name) + '<i class="ka"></i></span><div class="cb-t" id="ckT" role="timer" aria-label="Time left to trade"><span id="ldT">' + (over ? '0:00' : '--:--') + '</span><small>' + (over ? (B.winner ? 'Final' : 'Settling') : 'Left to trade') + '</small></div><span class="cb-n b" title="' + esc(B.b.name) + '"><i class="kb"></i>' + esc(B.b.name) + '</span></div>' +
       '<div class="cb-r"><span>Both pools</span><b>' + tot.toFixed(4) + ' SOL</b></div><i class="cb-prog" aria-hidden="true"><i id="ckProg" style="width:' + (over ? 100 : 0) + '%"></i></i>';
   }
   function renderDeck() {
@@ -3488,11 +3514,68 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
     if (busy2 || !B || ended()) return;
     var fn = buy ? W.buy : (solSell ? W.sellSol : W.sell), live = typeof fn === 'function', what = buy || solSell ? (+v.toFixed(4)) + ' SOL' : v + '%';
     busy2 = k; stat.a = stat.b = ''; stat[k] = live ? 'Approve in your wallet…' : (buy ? 'Buying ' : 'Selling ') + what + '…'; statOk[k] = false; renderSide('a'); renderSide('b'); renderDock();
-    Promise.resolve(live ? fn(B, k, v) : new Promise(function (r) { setTimeout(r, 450); })).then(function () {
+    Promise.resolve(live ? fn(B, k, v) : new Promise(function (r) { setTimeout(r, 450); })).then(function (res) {
       busy2 = ''; setStat(k, (live ? '' : 'Preview: ') + (buy ? 'Bought ' : 'Sold ') + what + (live ? '' : ' · nothing sent'), true); if (custom[k] && Math.abs(parseFloat(custom[k]) - v) < 1e-9) custom[k] = '';
-      if (live) { document.dispatchEvent(new CustomEvent('ww-battle-changed', { detail: { id: B.id } })); loadPos(); load(); }
+      /* move the chart now: confirmed pools when the wallet code returns them, otherwise the trade's own amount */
+      var solAmt = buy || solSell ? v : tradeValue(k, v);
+      if (res && isFinite(res.a) && isFinite(res.b)) applyPools(+res.a, +res.b, { side: k, buy: buy, sol: solAmt, own: true });
+      else applyTrade({ side: k, buy: buy, sol: solAmt, own: true });
+      if (live) { document.dispatchEvent(new CustomEvent('ww-battle-changed', { detail: { id: B.id } })); document.dispatchEvent(new CustomEvent('ww-trade-done', { detail: { side: k, buy: buy, sol: solAmt } })); loadPos(); }
     }).catch(function (e) { busy2 = ''; setStat(k, (e && e.userMessage) || 'Did not go through. Nothing was sent.', false); })
       .then(function () { renderSide('a'); renderSide('b'); renderDock(); });
+  }
+  /* ---------- live pools: every source of a pool change ends here, so the chart, the deck, the bar and the game all move together ---------- */
+  var livePools = null, bumpK = '', bumpT = 0, pulse = null, unsub = null, fast = null;
+  function tradeValue(k, pct) {   /* SOL a percent sell is worth: from the position when known, otherwise a small stand-in */
+    var p = pos && pos[k]; if (p && +p.valueSol > 0) return +p.valueSol * pct / 100;
+    var pool = (k === 'a' ? B.a.poolSol : B.b.poolSol) || 0; return Math.min(pool, 0.2 * pct / 100);
+  }
+  function applyTrade(t) {
+    if (!B || !t || !(+t.sol > 0)) return; var k = t.side === 'b' ? 'b' : 'a', d = (t.buy === false ? -1 : 1) * +t.sol;
+    var a = B.a.poolSol || 0, b = B.b.poolSol || 0; if (k === 'a') a = Math.max(0, a + d); else b = Math.max(0, b + d);
+    applyPools(a, b, t);
+  }
+  function applyPools(a, b, t, at) {
+    if (!B || !isFinite(a) || !isFinite(b) || (ended() && !(at && at <= B.end))) return;
+    var now = Math.min(at || Date.now(), Math.max(B.end, Date.now())), oa = B.a.poolSol || 0, ob = B.b.poolSol || 0;
+    if (Math.abs(a - oa) < 1e-9 && Math.abs(b - ob) < 1e-9) return;
+    B.a.poolSol = a; B.b.poolSol = b; livePools = { a: a, b: b, t: Date.now() };
+    var k = t && (t.side === 'a' || t.side === 'b') ? t.side : (Math.abs(a - oa) >= Math.abs(b - ob) ? 'a' : 'b'), dv = k === 'a' ? a - oa : b - ob;
+    if (pts.length) { if (pts[pts.length - 1].t >= now) now = pts[pts.length - 1].t + 1; pts.push({ t: now, a: a, b: b }); }
+    pulse = { k: k, d: dv }; bumpK = k; bumpT = Date.now();
+    lastKey = B.id + ':' + a + ':' + b + ':' + ended();   /* the poll will not re-fetch the chart just because of this change */
+    if (t && t.own) { renderDeck(); runTimer(); } else poolsInPlace();
+    renderDecided(); renderSides(); drawChart(); sendGame();
+  }
+  /* other people's trades: touch only the numbers, never the buttons, so a press in progress is never swallowed */
+  function poolsInPlace() {
+    var pa = B.a.poolSol || 0, pb = B.b.poolSol || 0, tot = pa + pb;
+    ['a', 'b'].forEach(function (k) {
+      var box = document.querySelector('#' + (k === 'a' ? 'sideA' : 'sideB') + ' .cs-pool'); if (!box) return;
+      var mine = k === 'a' ? pa : pb, pct = tot ? Math.round(100 * mine / tot) : 50;
+      box.innerHTML = '<b' + (bumpK === k ? ' class="bump"' : '') + '>' + mine.toFixed(4) + '<small>SOL</small></b><span>' + pct + '%</span>';
+    });
+    var pv = B.poll; $('ckMeters').innerHTML = (pv ? split(pv.a, pv.b, 'Poll', true) : '') + split(pa, pb, 'Pools');
+    var tb = document.querySelector('#ckBar .cb-r b'); if (tb) tb.textContent = tot.toFixed(4) + ' SOL';
+  }
+  /* wavewarz.info can lag the chain; for 45 s after a live change, fresher pools win over what it returns */
+  function keepLive(x) { if (livePools && Date.now() - livePools.t < 45000 && x && x.artist1 && x.artist2 && x.battleId === (B && B.id)) { x.artist1.poolSol = livePools.a; x.artist2.poolSol = livePools.b; } return x; }
+  function startLive() {
+    if (!B || ended()) return;
+    if (!unsub && typeof W.onBattleUpdate === 'function') {
+      try { var u = W.onBattleUpdate(B, function (m) { if (m && isFinite(m.a) && isFinite(m.b)) applyPools(+m.a, +m.b, m.trade, m.t); }); unsub = typeof u === 'function' ? u : function () {}; } catch (e) { unsub = null; }
+    }
+    if (!unsub && !fast && typeof W.getPools === 'function') fast = setInterval(function () {
+      if (!B || ended()) { clearInterval(fast); fast = null; return; }
+      Promise.resolve(W.getPools(B)).then(function (p) { if (p && isFinite(p.a) && isFinite(p.b)) applyPools(+p.a, +p.b); }).catch(function () {});
+    }, 4000);
+  }
+  function stopLive() { if (unsub) { try { unsub(); } catch (e) {} unsub = null; } if (fast) { clearInterval(fast); fast = null; } }
+  document.addEventListener('ww-pool', function (e) { var m = e.detail || {}; if (isFinite(m.a) && isFinite(m.b)) applyPools(+m.a, +m.b, m.trade, m.t); else if (m.trade) applyTrade(m.trade); });
+  /* sample crowd for ?demo=live: small trades from both sides so the motion can be reviewed without a wallet */
+  function demoCrowd() {
+    if (demo !== 'live') return;
+    (function next() { setTimeout(function () { if (!B || ended()) return; var k = Math.random() < .5 ? 'a' : 'b', buy = Math.random() < .78, s = Math.round((buy ? .05 + Math.random() * .6 : .03 + Math.random() * .25) * 100) / 100; applyTrade({ side: k, buy: buy, sol: s }); next(); }, 3500 + Math.random() * 5000); })();
   }
   function loadPos() {
     if (typeof W.getPosition !== 'function' || !B) return;
@@ -3606,6 +3689,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   function wall(t) { return new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase(); }
   function clock(ms) { var s = Math.max(0, Math.round(ms / 1000)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   var G = null;
+  function fmtEnd(v) { return v > 0 && v < 0.01 ? v.toFixed(4) : v.toFixed(2); }   /* a 0.0004 pool never reads as 0.00 */
   function drawChart() {
     var el = $('bcPlot'), w = el.clientWidth, h = el.clientHeight; if (!w || !pts.length) return;
     var L = 62, R = 84, T = 12, Bm = 46, pw = Math.max(40, w - L - R), ph = h - T - Bm;
@@ -3618,11 +3702,22 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
     function path(k) { return pts.map(function (p, j) { return (j ? 'L' : 'M') + X(p.t).toFixed(1) + ' ' + Y(p[k]).toFixed(1); }).join(''); }
     var last = pts[pts.length - 1], ex = X(last.t), ya = Y(last.a), yb = Y(last.b), la = ya, lb = yb;
     if (Math.abs(la - lb) < 16) { var mid = (la + lb) / 2, up = ya <= yb; la = mid + (up ? -8 : 8); lb = mid + (up ? 8 : -8); }
-    function dots(k) { return pts.length > 60 ? '' : pts.map(function (p) { return '<circle class="p' + k + '" cx="' + X(p.t).toFixed(1) + '" cy="' + Y(p[k]).toFixed(1) + '" r="3"/>'; }).join(''); }
-    s += '<path class="lb" d="' + path('b') + '"/><path class="la" d="' + path('a') + '"/>' + dots('b') + dots('a') +
+    function dots(k) { return pts.length > 60 ? '' : (pz ? pts.slice(0, -1) : pts).map(function (p) { return '<circle class="p' + k + '" cx="' + X(p.t).toFixed(1) + '" cy="' + Y(p[k]).toFixed(1) + '" r="3"/>'; }).join(''); }
+    var pz = pulse; pulse = null; if (pz && pts.length < 2) pz = null;
+    var grow = '', flair = '';
+    if (pz) {   /* draw every line up to the point before last, then the last stretch as its own path that draws in */
+      var pv = pts[pts.length - 2], segs = ['b', 'a'].map(function (k) { var x0 = X(pv.t), y0 = Y(pv[k]), x1 = X(last.t), y1 = Y(last[k]), len = Math.hypot(x1 - x0, y1 - y0) + 1;
+        return '<path class="l' + k + ' grow" style="--len:' + len.toFixed(1) + '" d="M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + 'L' + x1.toFixed(1) + ' ' + y1.toFixed(1) + '"/>'; });
+      grow = segs.join('');
+      var yk = pz.k === 'a' ? ya : yb, amt = (pz.d >= 0 ? '+' : '\u2212') + Math.abs(pz.d).toFixed(2);
+      flair = '<circle class="ring ' + pz.k + '" cx="' + ex.toFixed(1) + '" cy="' + yk.toFixed(1) + '" r="5"/><text class="dl ' + pz.k + '" x="' + (ex - 8).toFixed(1) + '" y="' + (yk - 12).toFixed(1) + '" text-anchor="end">' + amt + '</text>';
+    }
+    function pathTo(k, n) { return pts.slice(0, n).map(function (p, j) { return (j ? 'L' : 'M') + X(p.t).toFixed(1) + ' ' + Y(p[k]).toFixed(1); }).join(''); }
+    var cut = pz ? pts.length - 1 : pts.length;
+    s += '<path class="lb" d="' + pathTo('b', cut) + '"/><path class="la" d="' + pathTo('a', cut) + '"/>' + grow + dots('b') + dots('a') + flair +
       '<line class="ch" id="bcCh" y1="' + T + '" y2="' + (T + ph) + '"/>' +
       
-      '<text class="el" x="' + (ex + 10) + '" y="' + (la + 4) + '">' + last.a.toFixed(2) + ' SOL</text><text class="el" x="' + (ex + 10) + '" y="' + (lb + 4) + '">' + last.b.toFixed(2) + ' SOL</text>' +
+      '<text class="el" x="' + (ex + 10) + '" y="' + (la + 4) + '">' + fmtEnd(last.a) + ' SOL</text><text class="el" x="' + (ex + 10) + '" y="' + (lb + 4) + '">' + fmtEnd(last.b) + ' SOL</text>' +
       '<circle class="ea" id="bcDa" r="4.5" style="display:none"/><circle class="eb" id="bcDb" r="4.5" style="display:none"/></svg>';
     el.innerHTML = s; G = { L: L, pw: pw, X: X, Y: Y, t0: t0, w: w };
     var leg = $('bcLeg'); leg.textContent = '';
@@ -3694,8 +3789,8 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   }
   $('bvTabs').addEventListener('click', function (e) { var b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
   document.addEventListener('ww-trade', function (e) {
-    var d = e.detail || {}, k = d.side === 'b' ? 'b' : 'a', v = +d.sol || 0; if (!B || !v) return;
-    gPost({ type: d.buy === false ? 'wavewarz:sell' : 'wavewarz:buy', side: k === 'a' ? 'A' : 'B', sol: v });
+    var d = e.detail || {}; if (!B || !(+d.sol > 0)) return;
+    if (isFinite(d.a) && isFinite(d.b)) applyPools(+d.a, +d.b, d); else applyTrade(d);
   });
 
   /* ---------- trade module (uses the shared #wwAct dialog shell) ---------- */
@@ -3865,7 +3960,8 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
       if (!x || !x.artist1 || !x.artist2) throw 0;
       if (demo === 'live') { x = JSON.parse(JSON.stringify(x)); x.sample = true; x.winnerSide = null; x.factors = null; x.endsAt = new Date(Date.now() + 169000).toISOString(); x.createdAt = new Date(Date.now() - 311000).toISOString(); x.startedAt = null; x.artist1.poolSol = 24.1; x.artist2.poolSol = 18.75; x.artist1.volumeSol = 31.4; x.artist2.volumeSol = 22.9; x.artistEarnings = null; x.poll = { a: 14, b: 9, locked: false }; }
       if (demo === 'ended') { x = JSON.parse(JSON.stringify(x)); x.sample = true; x.type = 'quick'; x.factors = null; x.winnerSide = 'artist2'; x.artist1.poolSol = 0.0227; x.artist2.poolSol = 0.1084; x.poll = { a: 3, b: 5, locked: true }; x.judge = { status: 'ready', winner: 'a', confidence: 90, notes: 'Sample verdict. Track A is a raw lyrical exercise with a clear point of view. Track B is well produced but plays it safe. A brought the conviction.' }; }
-      var first = !B; B = normalize(x);
+      x = stress(x);
+      var first = !B; B = normalize(keepLive(x));
       if (EV) setRound();
       paint();
       var key = B.id + ':' + B.a.poolSol + ':' + B.b.poolSol + ':' + ended();
@@ -3873,10 +3969,34 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
       loadPoll(); if (first) loadPos(); if (ended()) loadJudge();
       if (first && qs.get('launched')) { say('Your battle is live.', true); if (window.WWCelebrate) setTimeout(function () { WWCelebrate('wave'); }, 250); try { history.replaceState(null, '', location.pathname + '?id=' + encodeURIComponent(B.id) + (demo ? '&demo=' + encodeURIComponent(demo) : '')); } catch (e) {} }
       if (first) { if (B.type === 'main') jget(API + 'events?limit=60').then(function (d) { EV = (d.events || []).filter(function (e) { return (e.rounds || []).some(function (r) { return String(r.battleId) === String(B.id); }); })[0] || null; if (EV && demo === 'live') { EV = JSON.parse(JSON.stringify(EV)); EV.winnerSide = null; EV.rounds.forEach(function (r) { if (String(r.battleId) === String(B.id)) { if (r.winnerSide && EV.roundsWon[r.winnerSide]) EV.roundsWon[r.winnerSide]--; r.winnerSide = null; r.live = true; r.artist1PoolSol = B.a.poolSol; r.artist2PoolSol = B.b.poolSol; } }); } if (EV) { setRound(); paint(); } }).catch(function () {}); }
-      clearTimeout(poll); if (!ended() && demo !== 'live') poll = setTimeout(load, 30000);
+      if (first) { startLive(); demoCrowd(); } if (ended()) stopLive();
+      clearTimeout(poll); if (!ended() && demo !== 'live') poll = setTimeout(load, unsub ? 30000 : 8000);
       watchSettle();
     }).catch(function () { if (!B) fail(); });
   }
+  /* ---------- design review only (with ?demo=): Demo data / Worst case / Zero pools, swapped at the data boundary ---------- */
+  var DATA = qs.get('data') || '';
+  function stress(x) {
+    if (!demo || !DATA) return x; x = JSON.parse(JSON.stringify(x));
+    if (DATA === 'worst') {
+      x.artist1.name = 'BestWavez x Hurric4n3Ike (Prod. x Hurric4n3Ike) 432 hz'; x.artist1.musicLink = 'https://audius.co/Hurric4n3Ike/bestwavez-x-hurric4n3ike-prod-x-hurric4n3ike-432-hz'; x.artist1.albumArtUrl = null; x.artist1.profilePictureUrl = null;
+      x.artist2.name = 'Jo'; x.artist2.albumArtUrl = 'https://example.invalid/missing.jpg'; x.artist2.twitterHandle = 'aleksandra_wisniewska_kowalczyk';
+      x.artist1.poolSol = 1284.5678; x.artist2.poolSol = 0.0004; x.artist1.volumeSol = 31284.1234; x.artist2.volumeSol = 0.0004;
+      if (x.poll) x.poll = { a: 1284, b: 1, locked: false };
+    } else if (DATA === 'zero') { x.artist1.poolSol = 0; x.artist2.poolSol = 0; x.artist1.volumeSol = 0; x.artist2.volumeSol = 0; if (x.poll) x.poll = { a: 0, b: 0, locked: false }; }
+    return x;
+  }
+  if (demo) (function () {
+    var bar = document.createElement('div'); bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Review data');
+    bar.style.cssText = 'position:fixed;left:50%;bottom:12px;transform:translateX(-50%);z-index:9999;display:flex;gap:2px;padding:3px;background:#3a3a3a;border-radius:999px;font:500 12px system-ui,sans-serif';
+    [['', 'Demo data'], ['worst', 'Worst case'], ['zero', 'Zero pools']].forEach(function (o) {
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = o[1]; var on = DATA === o[0];
+      b.style.cssText = 'border:0;border-radius:999px;padding:6px 12px;cursor:pointer;background:' + (on ? '#fff' : 'transparent') + ';color:' + (on ? '#111' : '#ddd');
+      b.onclick = function () { var u = new URLSearchParams(location.search); if (o[0]) u.set('data', o[0]); else u.delete('data'); location.search = u.toString(); };
+      bar.appendChild(b);
+    });
+    document.body.appendChild(bar);
+  })();
   function setRound() { var r = (EV.rounds || []).filter(function (r) { return String(r.battleId) === String(B.id); })[0]; B.round = r ? r.roundNumber : null; }
   load();
 })();

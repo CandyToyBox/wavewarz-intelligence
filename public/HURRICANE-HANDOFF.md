@@ -46,9 +46,11 @@ Everything wallet-related goes through one global, `window.WW`. Each function re
 | `WW.getMyCatalog({ address })` | `audius-connect.html` step 4 | The artist's songs in the WaveWarZ catalog | `{ linked, handle, tracks: [...] }` |
 | `WW.resyncCatalog({ address })` | `audius-connect.html` step 4 | Resync, then return the catalog | same as `getMyCatalog` |
 | `WW.getBattleChart(battleId)` | `battle.html`, the chart | Pool size of each side over time, from your trade history | `{ points: [{ t, a, b }] }` (`t` in ms, `a` and `b` in SOL) |
-| `WW.buy(battle, side, amountSol)` | `battle.html`, trade module | Buy on one side. `side` is `'a'` or `'b'` | anything |
-| `WW.sell(battle, side, percent)` | `battle.html`, trade module | Sell 25, 50 or 100 percent of the holder's tokens on that side | anything |
-| `WW.sellSol(battle, side, sol)` | `battle.html`, typed amount + Sell | Optional. Sell a typed SOL amount. Without it the page converts the SOL amount to a percent of the holding using `WW.getPosition` | anything |
+| `WW.onBattleUpdate(battle, cb)` | `battle.html`, chart, pools, timer bar, game views | **Needed for the chart to move live.** Subscribe to the battle's pools onchain (for example a Helius `accountSubscribe` on both vault PDAs) and call `cb` on every change, everyone's trades included. Return an unsubscribe function | calls `cb({ a, b, t, trade: { side, buy, sol } })` (`a`, `b` = pool SOL, `t` ms, `trade` optional) |
+| `WW.getPools(battle)` | `battle.html` | Optional fallback when there is no subscription: current pools read from chain, polled every 4 s while live | `{ a, b }` |
+| `WW.buy(battle, side, amountSol)` | `battle.html`, trade module | Buy on one side. `side` is `'a'` or `'b'` | ideally `{ a, b }`, the confirmed pools, so the trader's own chart jumps to the real numbers; anything else works (the page then estimates from the amount) |
+| `WW.sell(battle, side, percent)` | `battle.html`, trade module | Sell 25, 50 or 100 percent of the holder's tokens on that side | ideally `{ a, b }` as with buy |
+| `WW.sellSol(battle, side, sol)` | `battle.html`, typed amount + Sell | Optional. Sell a typed SOL amount. Without it the page converts the SOL amount to a percent of the holding using `WW.getPosition` | ideally `{ a, b }` as with buy |
 | `WW.getPosition(battle)` | `battle.html`, Sell tab | The connected wallet's balance on each side | `{ a: { tokens, valueSol }, b: { tokens, valueSol } }` |
 | `WW.donate(battle, target, amountSol)` | `battle.html`, donate bar | Your existing wallet-to-wallet donation, no fee. `target` is `'a'`, `'b'` or `'wavewarz'` | anything |
 | `WW.withdraw(battle)` | `battle.html`, after the battle ends | Your existing Withdraw | anything |
@@ -72,6 +74,15 @@ After a successful launch or skip the action module fires a `ww-queue-changed` e
 The "Select wallet" button in the nav is a plain link today. Replace it with your wallet button from the layout.
 
 ---
+
+### Why the chart did not move after a trade (fixed in the design, needs the hook)
+
+Candy traded on the preview and the chart stayed still. Three causes, all handled on the page now:
+1. In preview a trade changed nothing. Now every trade moves the pools, the chart, the timer-bar total and the game view at once: the newest stretch of line draws in, the end point rings, and the amount (+0.25) rises off it.
+2. After a real trade the page re-read wavewarz.info, which only changes once the indexer has caught up. Now the page moves on the trade itself (confirmed pools if `WW.buy`/`WW.sell` return `{ a, b }`, otherwise the trade amount), and for 45 s fresher live pools win over a lagging wavewarz.info reply.
+3. Nothing told the page about other people's trades, and it re-read every 30 s. Now it subscribes through `WW.onBattleUpdate` (or polls `WW.getPools` every 4 s, or re-reads wavewarz.info every 8 s with neither). If you already push trades somewhere else, `document.dispatchEvent(new CustomEvent('ww-pool', { detail: { a, b, t, trade } }))` does the same; the older `ww-trade` event now runs through the same path.
+
+To review the motion without a wallet: `battle.html?demo=live` plays sample trades from both sides every few seconds.
 
 ## 3. Data each page reads
 
