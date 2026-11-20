@@ -8,6 +8,13 @@
    bold, which is what read as chunky. With synthesis off, those headings render the real 700. */
 html { font-synthesis-weight: none; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
+/* Phones: no gray flash on tap (every control has its own :active), no 300 ms wait, no text selection on long-press of a control */
+html { -webkit-tap-highlight-color: transparent; }
+button, a, [role="button"], summary, label { touch-action: manipulation; }
+button, [role="button"], summary { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+/* iOS zooms into any field under 16px and never zooms back: amounts, search and forms stay at 16px on touch screens */
+@media (pointer: coarse) { input, textarea, select { font-size: 16px !important; } }
+
 /* Controls take the page's type instead of the system font */
 button, input, select, textarea { font-family: inherit; }
 
@@ -68,10 +75,13 @@ body.ww-flow .cp-watch-menu p { margin: 6px 14px 8px; font: 400 .72rem/1.5 'JetB
   body.ww-flow .ww-btn.ghost .lbl { display: none; } body.ww-flow .ww-btn.ghost { width: 40px; padding: 0; }
   body.ww-flow .ww-under-nav { padding-top: 84px; }
 }
+/* With viewport-fit=cover the floating nav clears the notch on its own */
+.nav-wrapper, body.ww-flow .nav-wrapper { top: calc(18px + env(safe-area-inset-top, 0px)); }
+
 /* Every page's nav sizes the same on a phone, so the wallet button never wraps */
 .nav-actions .btn-primary { white-space: nowrap; }
 @media (max-width: 640px) {
-  .nav-wrapper { top: 10px; padding: 0 10px; }
+  .nav-wrapper, body.ww-flow .nav-wrapper { top: calc(10px + env(safe-area-inset-top, 0px)); padding: 0 10px; }
   .navbar { padding: 8px 10px 8px 16px; gap: 10px; }
   .nav-logo { height: 38px; }
   .nav-actions .btn-primary { min-height: 40px; padding: 0 14px; font-size: .74rem; }

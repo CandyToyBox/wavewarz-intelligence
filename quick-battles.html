@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#000000" />
   <title>Quick BattleZ queue | WaveWarZ</title>
@@ -440,7 +440,7 @@
     .hero-stage {
       position: relative;
       width: 100%;
-      min-height: 100vh;
+      min-height: 100vh; min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1263,7 +1263,7 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      height: 100vh;
+      height: 100vh; height: 100dvh;
       width: 100%;
       overflow: hidden;
       display: flex;
@@ -1725,7 +1725,7 @@
     .royal-3d-sticky {
       position: sticky;
       top: 0;
-      height: 100vh;
+      height: 100vh; height: 100dvh;
       width: 100%;
       overflow: hidden;
       display: flex;
@@ -2560,7 +2560,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 
 /* Quick BattleZ queue: pinned for a screen and a half so nobody scrolls past it */
 .qp { padding: 0; overflow: clip; height: 240vh; }
-.qp-pin { position: sticky; top: 0; height: 100vh; box-sizing: border-box; display: flex; align-items: center; padding: 92px 24px 20px; overflow: clip; }
+.qp-pin { position: sticky; top: 0; height: 100vh; height: 100dvh; box-sizing: border-box; display: flex; align-items: center; padding: 92px 24px 20px; overflow: clip; }
 .qp-pin > .qp-in { width: 100%; max-width: 1240px; margin: 0 auto; }
 .qp.is-flow { height: auto; padding: var(--sec-y) 16px; }
 .qp.is-flow .qp-pin { position: relative; height: auto; display: block; padding: 0; overflow: visible; }
@@ -2743,6 +2743,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .spx-copy p{margin:0 0 22px;max-width:46ch;font:400 1rem/1.6 'Outfit',sans-serif;color:var(--brand-ice)}
 .spx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:36px 56px}
 .spx-logo{display:flex;align-items:center;justify-content:center;height:96px;text-decoration:none;opacity:.92;transition:opacity .25s ease,transform .25s ease,filter .25s ease;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.spx-logo.round,.spx-logo.round img{height:128px}.spx-logo.round img{border-radius:50%}
 .spx-logo:hover{opacity:1;transform:translateY(-3px) scale(1.03)}
 .spx-logo img{display:block;height:96px;width:auto;max-width:220px;object-fit:contain}
 .cp-foot .cp-so{display:inline-flex;align-items:center;gap:10px}.cp-foot .cp-so svg{width:16px;height:16px;fill:currentColor;flex:none;opacity:.85}
@@ -2754,11 +2755,41 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
   .tw-dh{flex-direction:column;align-items:flex-start;border:0;padding:4px 0 0}
   .tw-day .evs{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
   .tw-ev{flex:1 1 140px}
-  .spx-logo,.spx-logo img{height:68px}.spx-logos{gap:28px 36px}
+  .spx-logo,.spx-logo img{height:68px}.spx-logo.round,.spx-logo.round img{height:96px}.spx-logos{gap:28px 36px}
 }
 @media(prefers-reduced-motion:reduce){.tw-so,.tw-ev,.spx-logo{transition:none}.tw-so:hover,.tw-ev:hover,.spx-logo:hover{transform:none}}
 </style>
   <script src="ww-celebrate.js" defer></script>
+<style id="dwb-css">
+/* DJ Wavy Breakdown strip: a small band after the queue. The sticker peels in, floats, and changes face when tapped. */
+.dwb{position:relative;z-index:5;padding:clamp(40px,6vw,72px) 24px;background:linear-gradient(180deg,transparent,rgba(126,193,251,.05) 50%,transparent)}
+.dwb-in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(18px,3vw,28px) clamp(18px,3vw,36px);border-radius:24px;background:radial-gradient(60% 120% at 0% 50%,rgba(149,254,124,.10),transparent 60%),rgba(10,16,28,.82);border:1px solid rgba(216,235,252,.14);box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.dwb-w{position:relative;width:clamp(116px,13vw,156px);border:0;padding:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dwb-w img{display:block;width:100%;height:auto;filter:drop-shadow(0 14px 24px rgba(0,0,0,.55));transform:translateY(30px) rotate(-16deg) scale(.6);opacity:0;transition:transform .9s cubic-bezier(.34,1.56,.64,1),opacity .4s}
+.dwb.in .dwb-w img{transform:none;opacity:1;animation:dwbFloat 5.5s ease-in-out 1s infinite}
+.dwb-w.pop img{animation:dwbPop .5s cubic-bezier(.34,1.56,.64,1),dwbFloat 5.5s ease-in-out .5s infinite}
+@keyframes dwbFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+@keyframes dwbPop{0%{transform:scale(.8) rotate(-8deg)}60%{transform:scale(1.08) rotate(3deg)}100%{transform:none}}
+.dwb-q{position:absolute;left:62%;top:-40px;z-index:2;width:max-content;max-width:200px;padding:8px 12px;border-radius:12px;background:#fff;color:#0d1321;font:600 .84rem/1.3 'Outfit',sans-serif;box-shadow:0 10px 24px rgba(0,0,0,.45);opacity:0;transform:translateY(6px) scale(.95);transition:opacity .25s,transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:left}
+.dwb-q.on{opacity:1;transform:none}
+.dwb h2{margin:0;font:700 clamp(1.5rem,2.6vw,2.1rem)/1.1 'Space Grotesk',sans-serif;letter-spacing:-.02em;color:#fff;text-wrap:balance}
+.dwb h2 em{font-style:normal;color:var(--brand-green)}
+.dwb-c p{margin:10px 0 0;max-width:54ch;font:400 1rem/1.55 'Outfit',sans-serif;color:var(--brand-ice)}
+.dwb-r{display:flex;flex-direction:column;align-items:stretch;gap:12px;min-width:250px}
+.dwb-s{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.dwb-s span{display:block;font:400 .74rem/1.3 'Outfit',sans-serif;color:#8d9bb0}
+.dwb-s b{display:block;font:600 .9rem 'JetBrains Mono',monospace;color:#fff}
+.dwb-s i{display:block;height:6px;margin-bottom:7px;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.dwb-s span:nth-child(1) i{background:#95fe7c;border-radius:999px 2px 2px 999px}.dwb-s span:nth-child(2) i{background:#7ec1fb;transition-delay:.12s}.dwb-s span:nth-child(3) i{background:#e9f1f8;border-radius:2px 999px 999px 2px;transition-delay:.24s}
+.dwb.in .dwb-s i{transform:none}
+.dwb-b{display:flex;gap:10px;flex-wrap:wrap}
+.dwb-b .btn-primary{flex:1}
+.dwb-b a.dwb-l{align-self:center;color:var(--brand-ice);font:500 .9rem 'Outfit',sans-serif;text-underline-offset:.22em}
+.dwb-b a.dwb-l:hover{color:var(--brand-green)}
+@media (max-width:900px){.dwb-in{grid-template-columns:auto minmax(0,1fr)}.dwb-r{grid-column:1/-1;min-width:0}}
+@media (max-width:560px){.dwb{padding:36px 16px}.dwb-in{grid-template-columns:1fr;gap:16px}.dwb-w{width:120px}.dwb-q{left:100%;top:10px}}
+@media (prefers-reduced-motion:reduce){.dwb-w img,.dwb.in .dwb-w img,.dwb-w.pop img{transform:none;opacity:1;animation:none;transition:none}.dwb-s i{transform:none;transition:none}}
+</style>
 
 <style id="queue-page-css">
 /* Queue page only. Everything else comes from the homepage styles above. */
@@ -2798,7 +2829,7 @@ body[data-page="queue"] .qp-all { display: none; }
         <li><a href="home.html#how-it-works">How it works</a></li>
         <li><a href="home.html#for-artists">For Artists</a></li>
         <li><a href="quick-battles.html">Queue</a></li>
-        <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
+        <li><a href="https://wavewarz.info">Stats</a></li>
         <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
       </ul>
 
@@ -2915,7 +2946,7 @@ body[data-page="queue"] .qp-all { display: none; }
           <li><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch live</a></li>
           <li><a href="home.html#how-it-works">How it works</a></li>
           <li><a href="home.html#for-artists">For Artists</a></li>
-          <li><a href="https://wavewarz.info" target="_blank" rel="noopener">Stats</a></li>
+          <li><a href="https://wavewarz.info">Stats</a></li>
           <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
           <li><a href="https://www.wavewarz.com/docs" target="_blank" rel="noopener">Docs</a></li>
           <li><a href="https://www.wavewarz.com/terms" target="_blank" rel="noopener">Terms &amp; Conditions</a></li>
