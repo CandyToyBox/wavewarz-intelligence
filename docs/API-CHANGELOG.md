@@ -18,6 +18,20 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-19 — Two trader withdrawals added to one battle
+
+**Endpoints:** `/stats` (`traderClaims.totalSol`, `traderClaims.withdrawalCount`), `/leaderboards/traders` where a trader's withdrawals are counted — **Type:** CORRECTION
+
+Battle `1789007976` (Designer V1 x LUI vs BookedWavez x Hurr...) was missing its two trader withdrawals. They were read again from the chain and added.
+
+**How much your numbers move:** `traderClaims.totalSol` rises by 0.2364 SOL, from 529.6765 to 529.9129 SOL, and `withdrawalCount` rises by 2, from 3,655 to 3,657. The two traders' profit and loss on that battle move by the same amounts.
+
+**Not changed:** four other battles still carry no withdrawals that happened on chain (5 withdrawals, 0.6728 SOL between them, on `1787568630`, `1788019189`, `1792030153` and `1792635467`). They are listed for repair and will get their own entry when fixed. A wider re-check of every settled battle since 2026-10-15 matched the stored withdrawals exactly.
+
+**Verify:** `SELECT count(*), sum(amount_sol) FROM trades WHERE trade_type = 'claim' AND battle_id = 1789007976` returns 2 and 0.2364.
+
+---
+
 ## 2026-11-16 — Two new read endpoints: calendar and WaveZStation
 
 **Endpoints:** `GET /calendar` (new), `GET /wavezstation` (new) — **Type:** ADDITIVE
