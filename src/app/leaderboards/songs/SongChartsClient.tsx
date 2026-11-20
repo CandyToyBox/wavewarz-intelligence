@@ -1,13 +1,9 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { useState, useMemo } from 'react'
 import { RankPanel, RankRow, RankEmpty, RANK_ICONS } from '@/components/rank-list'
-import { Tip } from '@/components/tip'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import { OutboundLink } from '@/components/outbound-link'
-import { DJWavyModel } from '@/components/dj-wavy-model'
-import Link from 'next/link'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -51,19 +47,21 @@ type RankedSong = SongData & {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-const PERIOD_LABELS: Record<Period, string>   = { today: 'Today', week: 'This Week', month: 'This Month', all: 'All Time' }
-const CATEGORY_LABELS: Record<Category, string> = { trending: 'Trending', played: 'Most Played', volume: 'Most Volume', traders: 'Most Traders', genre: 'By Genre' }
+const PERIOD_LABELS: Record<Period, string> = { today: 'Today', week: 'This week', month: 'This month', all: 'All time' }
+// Plain names that say what the list is sorted by; the hint is the button's tooltip and screen-reader description.
+const CATEGORIES: { key: Category; label: string; hint: string }[] = [
+  { key: 'trending', label: 'Trending', hint: 'Songs with the most action lately: trading, close battles and traders' },
+  { key: 'played', label: 'Most battles', hint: 'Songs that played the most Quick Battles' },
+  { key: 'volume', label: 'Most SOL traded', hint: 'Songs with the most SOL traded on them' },
+  { key: 'traders', label: 'Most traders', hint: 'Songs the most different people traded on' },
+  { key: 'genre', label: 'By genre', hint: 'Top songs in each genre' },
+]
 const PAGE_SIZE = 25
 
 // V2 winner system: Poll + Charts (SOL) + DJ Wavy AI Judge (2/3 wins)
 // V1 was charts-only. Cutoff: March 10, 2026 YouTube livestream launch.
 const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
 const isV2Battle = (b: SongBattle) => new Date(b.createdAt) >= V2_QB_LAUNCH
-
-const PALETTE = ['#95fe7c', '#7ec1fb', '#f2a74b', '#76f3df', '#e5c25a', '#62b8df'] // brand + Wave ID accents, no pink or purple
-function colorForLetter(letter: string) {
-  return PALETTE[letter.toUpperCase().charCodeAt(0) % PALETTE.length]
-}
 
 // ── Trending score formula ───────────────────────────────────────────────────
 // score = velocity × competitiveness × recency_decay × engagement_boost
@@ -155,160 +153,67 @@ function formatSolShort(sol: number): string {
   return sol.toFixed(4)
 }
 
-// ── Sub-components ───────────────────────────────────────────────────────────
-
-function SongAvatar({ song, size = 10 }: { song: RankedSong | SongData; size?: number }) {
-  const initial = song.songTitle.charAt(0).toUpperCase()
-  const color   = colorForLetter(initial)
-  const cls     = `shrink-0 w-${size} h-${size} rounded-lg`
-  // Art that fails to load falls back to the letter tile instead of showing broken alt text
-  const [broken, setBroken] = useState(false)
-  return song.artUrl && !broken ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={song.artUrl} alt="" onError={() => setBroken(true)} className={`${cls} object-cover border border-border`} />
-  ) : (
-    <div
-      className={`${cls} border flex items-center justify-center font-rajdhani font-bold text-lg`}
-      style={{ backgroundColor: `${color}18`, borderColor: `${color}40`, color }}
-    >
-      {initial}
-    </div>
-  )
-}
-
-// ── Rank icons for full leaderboard ──────────────────────────────────────────
-
-function RankCell({ position }: { position: number }) {
-  const icons = [
-    // Crown — #1
-    <svg key="crown" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" stroke="#f59e0b" strokeWidth="0.5" strokeLinejoin="round"/>
-      <path d="M4 18h16" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
-      <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
-      <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
-    </svg>,
-    // Lightning — #2
-    <svg key="zap" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#7ec1fb" stroke="#7ec1fb" strokeWidth="0.5" strokeLinejoin="round"/>
-    </svg>,
-    // Flame — #3
-    <svg key="flame" width="14" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#f97316" stroke="#f97316" strokeWidth="0.5"/>
-      <path d="M12 13C12 13 10 14.5 10 16.5C10 18 11 19.5 12 20C13 19.5 14 18 14 16.5C14 14.5 12 13 12 13Z" fill="#fbbf24"/>
-    </svg>,
-  ]
-  const bgColors = ['#f59e0b', '#7ec1fb', '#f97316']
-  const tips = ['Chart King', 'High Momentum', 'Heating Up']
-
-  if (position < 3) {
-    return (
-      <Tip text={tips[position]}>
-        <div
-          className="w-6 h-6 rounded-md flex items-center justify-center"
-          style={{ background: `${bgColors[position]}18`, border: `1px solid ${bgColors[position]}35` }}
-        >
-          {icons[position]}
-        </div>
-      </Tip>
-    )
-  }
-  return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
-}
-
 const SUBTITLE: Record<Exclude<Category, 'genre'>, string> = {
-  trending: 'Quick BattleZ · trending now',
-  volume: 'Quick BattleZ · most SOL traded',
-  traders: 'Quick BattleZ · most traders',
-  played: 'Quick BattleZ · most played',
+  trending: 'trending',
+  volume: 'most SOL traded',
+  traders: 'most traders',
+  played: 'most battles',
 }
 
 // ── Main chart table ─────────────────────────────────────────────────────────
 
-function ChartTable({
-  songs,
-  category,
-  maxScore,
-  page,
-  onPageChange,
-}: {
+function songRow(song: RankedSong, rank: number, category: Category, maxScore: number) {
+  const heat = relativeHeat(song.trendingScore, maxScore)
+  const sub = [song.handle ? `@${song.handle}` : null, song.genre, `last played ${timeAgo(song.lastPlayed)}`].filter(Boolean).join(' · ')
+  const record = { k: 'Record', v: `${song.wins}W ${song.losses}L` }
+  const traded = { k: 'Traded', v: `${formatSolShort(song.totalVolume)} SOL` }
+  const [stat, small, extras] =
+    category === 'volume' ? [`${formatSolShort(song.totalVolume)} SOL`, 'Traded', [record]]
+    : category === 'traders' ? [song.totalUniqueTraders.toLocaleString('en-US'), 'Traders', [record, traded]]
+    : category === 'played' ? [`${song.totalBattles}`, song.totalBattles === 1 ? 'Battle' : 'Battles', [record, traded]]
+    : category === 'genre' ? [`${song.wins}W ${song.losses}L`, 'Record', [traded]]
+    : [`${song.wins} ${song.wins === 1 ? 'win' : 'wins'}`, `${Math.round(song.winRate)}% win rate`, [{ k: 'Heat', v: String(heat) }, traded]]
+  return (
+    <RankRow key={song.key} rank={rank} art={song.artUrl} cover href={song.musicLink ?? undefined} external
+      title={song.songTitle} sub={sub} extras={extras} stat={stat} small={small} />
+  )
+}
+
+function ChartTable({ songs, category, period, maxScore, page, onPageChange, controls }: {
   songs: RankedSong[]
   category: Exclude<Category, 'genre'>
+  period: Period
   maxScore: number
   page: number
   onPageChange: (p: number) => void
+  controls: React.ReactNode
 }) {
   const totalPages = Math.max(1, Math.ceil(songs.length / PAGE_SIZE))
   const start = (page - 1) * PAGE_SIZE
   const pageSongs = songs.slice(start, start + PAGE_SIZE)
-  const globalOffset = start  // to keep rank numbers accurate across pages
+  const count = `${songs.length.toLocaleString('en-US')} ${songs.length === 1 ? 'song' : 'songs'} · ${PERIOD_LABELS[period].toLowerCase()} · ${SUBTITLE[category]}`
 
   return (
     <div className="space-y-3">
-    <RankPanel icon={RANK_ICONS.songs} title="Top songs" sub={SUBTITLE[category]}>
-      {pageSongs.map((song, i) => {
-        const heat = relativeHeat(song.trendingScore, maxScore)
-        const sub = [song.handle ? `@${song.handle}` : null, song.genre, `last played ${timeAgo(song.lastPlayed)}`].filter(Boolean).join(' · ')
-        const record = { k: 'Record', v: `${song.wins}W ${song.losses}L` }
-        const traded = { k: 'Traded', v: `${formatSolShort(song.totalVolume)} SOL` }
-        const [stat, small, extras] =
-          category === 'volume' ? [`${formatSolShort(song.totalVolume)} SOL`, 'Traded', [record]]
-          : category === 'traders' ? [song.totalUniqueTraders.toLocaleString('en-US'), 'Traders', [record, traded]]
-          : category === 'played' ? [`${song.totalBattles}`, song.totalBattles === 1 ? 'Battle' : 'Battles', [record, traded]]
-          : [`${song.wins} ${song.wins === 1 ? 'win' : 'wins'}`, `${Math.round(song.winRate)}% win rate`, [{ k: 'Heat', v: String(heat) }, traded]]
-        return (
-          <RankRow
-            key={song.key}
-            rank={globalOffset + i + 1}
-            art={song.artUrl}
-            cover
-            href={song.musicLink ?? undefined}
-            external
-            title={song.songTitle}
-            sub={sub}
-            extras={extras}
-            stat={stat}
-            small={small}
-          />
-        )
-      })}
-      {pageSongs.length === 0 && <RankEmpty>No quick battles in this time period yet.</RankEmpty>}
-    </RankPanel>
+      <RankPanel icon={RANK_ICONS.songs} title="Top songs" sub={count} tools={controls}>
+        {pageSongs.map((song, i) => songRow(song, start + i + 1, category, maxScore))}
+        {pageSongs.length === 0 && <RankEmpty>No Quick Battles {period === 'today' ? 'today' : `in ${PERIOD_LABELS[period].toLowerCase()}`} yet. Try a longer time.</RankEmpty>}
+      </RankPanel>
 
-    {/* Pagination */}
-    {totalPages > 1 && (
-      <div className="flex items-center justify-between px-1">
-        <span className="text-xs text-muted-foreground">
-          Showing {start + 1}–{Math.min(start + PAGE_SIZE, songs.length)} of <span className="text-white font-mono">{songs.length}</span> songs
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg border border-border text-xs font-mono text-muted-foreground hover:text-white hover:border-border/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
-            ← Prev
-          </button>
-          <span className="font-mono text-xs text-muted-foreground">
-            {page} / {totalPages}
-          </span>
-          <button
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-            className="px-3 py-1.5 rounded-lg border border-border text-xs font-mono text-muted-foreground hover:text-white hover:border-border/80 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-          >
-            Next →
-          </button>
-        </div>
-      </div>
-    )}
+      {totalPages > 1 && (
+        <nav className="ww-pager" aria-label="Pages">
+          <button type="button" className="ww-chip" onClick={() => onPageChange(page - 1)} disabled={page === 1}>Previous</button>
+          <span>Page {page} of {totalPages}</span>
+          <button type="button" className="ww-chip" onClick={() => onPageChange(page + 1)} disabled={page === totalPages}>Next</button>
+        </nav>
+      )}
     </div>
   )
 }
 
-// ── Genre view ───────────────────────────────────────────────────────────────
+// ── Genre view: one panel per genre, top five songs each ────────────────────
 
-function GenreView({ songs }: { songs: RankedSong[] }) {
+function GenreView({ songs, controls }: { songs: RankedSong[]; controls: React.ReactNode }) {
   const grouped = useMemo(() => {
     const map = new Map<string, RankedSong[]>()
     for (const s of songs) {
@@ -316,125 +221,41 @@ function GenreView({ songs }: { songs: RankedSong[] }) {
       if (!map.has(g)) map.set(g, [])
       map.get(g)!.push(s)
     }
-    // Sort each genre group by wins then volume
-    for (const [, arr] of map) {
-      arr.sort((a, b) => b.wins - a.wins || b.totalVolume - a.totalVolume)
-    }
-    // Sort genres by total volume
-    return [...map.entries()].sort((a, b) => {
-      const volA = a[1].reduce((s, x) => s + x.totalVolume, 0)
-      const volB = b[1].reduce((s, x) => s + x.totalVolume, 0)
-      return volB - volA
-    })
+    for (const [, arr] of map) arr.sort((a, b) => b.wins - a.wins || b.totalVolume - a.totalVolume)
+    return [...map.entries()].sort((a, b) => b[1].reduce((s, x) => s + x.totalVolume, 0) - a[1].reduce((s, x) => s + x.totalVolume, 0))
   }, [songs])
 
-  if (grouped.length === 0) {
-    return (
-      <div className="text-center py-12 text-muted-foreground text-sm">
-        No genre data available for this period. Genre is resolved from Audius metadata.
-      </div>
-    )
-  }
-
   return (
-    <div className="space-y-6">
-      {grouped.map(([genre, genreSongs]) => {
-        const totalVol = genreSongs.reduce((s, x) => s + x.totalVolume, 0)
-        return (
-          <div key={genre} className="rounded-xl border border-border overflow-hidden">
-            <div className="bg-[#111827] px-4 py-3 flex items-center justify-between border-b border-border">
-              <div className="flex items-center gap-3">
-                <span className="font-rajdhani font-bold text-white text-lg tracking-wide">{genre}</span>
-                <Badge className="bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20 text-[9px] tracking-widest">
-                  {genreSongs.length} song{genreSongs.length !== 1 ? 's' : ''}
-                </Badge>
-              </div>
-              <span className="text-[10px] text-muted-foreground font-mono">{formatSolShort(totalVol)} SOL</span>
-            </div>
-            <div className="divide-y divide-border/50">
-              {genreSongs.slice(0, 5).map((song, i) => (
-                <div key={song.key} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
-                  <div className="w-5 shrink-0 flex items-center justify-center">
-                    <RankCell position={i} />
-                  </div>
-                  <SongAvatar song={song} size={8} />
-                  <div className="flex-1 min-w-0">
-                    {song.musicLink ? (
-                      <a
-                        href={song.musicLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm flex items-center gap-1"
-                      >
-                        <span className="truncate">{song.songTitle}</span>
-                        <span className="text-[10px] text-[#7ec1fb] shrink-0">↗</span>
-                      </a>
-                    ) : (
-                      <p className="font-rajdhani font-bold text-sm text-white truncate">{song.songTitle}</p>
-                    )}
-                    {song.handle && <p className="text-[10px] text-muted-foreground">@{song.handle}</p>}
-                  </div>
-                  <div className="text-right shrink-0 hidden sm:block">
-                    <p className="font-mono text-xs">
-                      <span className="text-[#7ec1fb]">{song.wins}W</span>
-                      <span className="text-muted-foreground">–</span>
-                      <span className="text-red-400">{song.losses}L</span>
-                    </p>
-                    {song.wins > 0 && (
-                      <div className="flex items-center justify-end gap-1 mt-1 flex-wrap">
-                        {song.v1Wins > 0 && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border"
-                            style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
-                            V1·{song.v1Wins}W
-                          </span>
-                        )}
-                        {song.v2Wins > 0 && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border"
-                            style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
-                            V2·{song.v2Wins}W
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    <p className="text-[10px] text-muted-foreground">{formatSolShort(song.totalVolume)} SOL</p>
-                  </div>
-                </div>
-              ))}
-              {genreSongs.length > 5 && (
-                <div className="px-4 py-2 text-[10px] text-muted-foreground text-center">
-                  +{genreSongs.length - 5} more songs in this genre
-                </div>
-              )}
-            </div>
-          </div>
-        )
-      })}
+    <div className="space-y-5">
+      <RankPanel icon={RANK_ICONS.songs} title="Top songs by genre" sub={`${grouped.length} ${grouped.length === 1 ? 'genre' : 'genres'} · genre comes from Audius`} tools={controls}>
+        {grouped.length === 0 && <RankEmpty>No songs with a genre in this time yet. Try a longer time.</RankEmpty>}
+      </RankPanel>
+      {grouped.map(([genre, list]) => (
+        <RankPanel key={genre} icon={RANK_ICONS.songs} title={genre}
+          sub={`${list.length} ${list.length === 1 ? 'song' : 'songs'} · ${formatSolShort(list.reduce((s, x) => s + x.totalVolume, 0))} SOL traded`}>
+          {list.slice(0, 5).map((song, i) => songRow(song, i + 1, 'genre', 0))}
+        </RankPanel>
+      ))}
     </div>
   )
 }
 
-// ── Tab button ───────────────────────────────────────────────────────────────
+// ── How songs win (closed by default) ───────────────────────────────────────
 
-function TabBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
+function HowItWorks() {
   return (
-    <button
-      onClick={onClick}
-      className={`px-3 py-1.5 text-xs font-mono uppercase tracking-widest rounded-lg transition-all whitespace-nowrap ${
-        active
-          ? 'bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/50'
-          : 'text-muted-foreground border border-transparent hover:bg-white/[0.06] hover:text-white'
-      }`}
-    >
-      {children}
-    </button>
+    <details className="ww-explain">
+      <summary>How songs win, and what the numbers mean</summary>
+      <div>
+        <p><b>Who wins a Quick Battle.</b> Since March 10, 2026 a song needs 2 of 3: the live listener poll, the charts (the bigger SOL pool) and DJ Wavy&apos;s verdict. Before that date the bigger pool alone decided it. Older records count the same way they were called at the time.</p>
+        <p><b>Trending and Heat.</b> Trending ranks songs by recent action: SOL traded per minute, how close the battle was, how many people traded, and how recent it was. Heat is that score next to the top song in the list, which is 100.</p>
+        <p><b>Traded.</b> SOL traded on the song across its battles. Every trade pays the artist 1%.</p>
+        <p className="ww-explain-cta">
+          Want DJ Wavy&apos;s take on your own track?{' '}
+          <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer">Get a DJ Wavy Breakdown</OutboundLink>
+        </p>
+      </div>
+    </details>
   )
 }
 
@@ -445,16 +266,11 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
   const [category, setCategory] = useState<Category>('trending')
   const [page,     setPage]     = useState(1)
 
-  // Reset to page 1 whenever the sort/filter changes
-  useEffect(() => { setPage(1) }, [period, category])
 
-  const { rankedSongs, maxScore, totalSongs } = useMemo(() => {
-    // Aggregate each song for the selected period
+  const { rankedSongs, maxScore } = useMemo(() => {
     const aggregated = songs
       .map(s => aggregateSong(s, period))
       .filter((s): s is RankedSong => s !== null)
-
-    // Sort by selected category
     let sorted: RankedSong[]
     switch (category) {
       case 'played':  sorted = [...aggregated].sort((a, b) => b.totalBattles   - a.totalBattles); break
@@ -463,127 +279,40 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
       case 'genre':   sorted = [...aggregated].sort((a, b) => b.wins - a.wins || b.totalVolume - a.totalVolume); break
       default:        sorted = [...aggregated].sort((a, b) => b.trendingScore  - a.trendingScore)
     }
-
-    const maxScore = sorted[0]?.trendingScore ?? 0
-    return { rankedSongs: sorted, maxScore, totalSongs: sorted.length }
+    return { rankedSongs: sorted, maxScore: sorted[0]?.trendingScore ?? 0 }
   }, [songs, period, category])
+
+  // One row of controls, inside the panel it changes: what to rank by, and over what time.
+  const controls = (
+    <div className="ww-sortbar">
+      <div className="ww-seg" role="group" aria-label="Rank songs by">
+        {CATEGORIES.map(c => (
+          <button key={c.key} type="button" aria-pressed={category === c.key} title={c.hint} onClick={() => { setCategory(c.key); setPage(1) }}>{c.label}</button>
+        ))}
+      </div>
+      <label className="ww-when">
+        <span className="sr-only">Time</span>
+        <select value={period} onChange={e => { setPeriod(e.target.value as Period); setPage(1) }}>
+          {(Object.keys(PERIOD_LABELS) as Period[]).map(p => <option key={p} value={p}>{PERIOD_LABELS[p]}</option>)}
+        </select>
+      </label>
+    </div>
+  )
 
   return (
     <div className="space-y-6">
       <LeaderboardNav />
 
-      {/* Page header */}
-      <div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
-            Song <span className="text-[#7ec1fb]">Charts</span>
-          </h1>
-          <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest">
-            QUICK BATTLES
-          </Badge>
-          <span className="text-xs text-muted-foreground ml-auto">{totalSongs} songs · {PERIOD_LABELS[period]}</span>
-        </div>
-        <p className="text-muted-foreground text-sm mt-1">
-          Trending scores factor volume velocity, battle closeness, recency, and trader engagement.
-        </p>
-      </div>
+      <header>
+        <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">Song <span className="text-[#7ec1fb]">Charts</span></h1>
+        <p className="text-muted-foreground text-sm mt-1">Every song that has played a Quick Battle. Tap a song to listen on Audius.</p>
+      </header>
 
-      {/* Meet DJ Wavy — AI Judge */}
-      <div className="rounded-xl border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-4 flex items-center gap-4 flex-wrap sm:flex-nowrap">
-        <div className="w-16 h-16 shrink-0 rounded-lg bg-black/20 border border-[#95fe7c]/20 overflow-hidden">
-          <DJWavyModel className="w-full h-full" />
-        </div>
-        <div className="flex-1 min-w-[200px]">
-          <p className="text-sm font-rajdhani font-bold text-white">DJ Wavy calls every V2 verdict</p>
-          <p className="text-xs text-muted-foreground">Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. Want his take on your own track?</p>
-        </div>
-        <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
-          className="shrink-0 inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-xs font-bold px-4 py-2 rounded-lg transition-colors">
-          Get a DJ Wavy Breakdown ↗
-        </OutboundLink>
-      </div>
+      {category === 'genre'
+        ? <GenreView songs={rankedSongs} controls={controls} />
+        : <ChartTable songs={rankedSongs} category={category} period={period} maxScore={maxScore} page={page} onPageChange={setPage} controls={controls} />}
 
-      {/* Period + Category filters */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">Period</span>
-          <div className="flex items-center gap-1 bg-[#070a10] border border-border/60 rounded-xl p-1">
-            {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
-              <TabBtn key={p} active={period === p} onClick={() => setPeriod(p)}>
-                {PERIOD_LABELS[p]}
-              </TabBtn>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">View</span>
-          <div className="flex items-center gap-1 bg-[#070a10] border border-border/60 rounded-xl p-1">
-            {(Object.keys(CATEGORY_LABELS) as Category[]).map(c => (
-              <TabBtn key={c} active={category === c} onClick={() => setCategory(c)}>
-                {CATEGORY_LABELS[c]}
-              </TabBtn>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Winner system legend */}
-      <div className="flex flex-wrap items-center gap-4 text-xs border border-border rounded-lg py-2.5 px-4 bg-muted/20">
-        <span className="font-bold text-white uppercase tracking-wider text-[11px]">Winner System:</span>
-        <Tip text="Before March 10, 2026 — winner determined by whichever song had the larger SOL pool when the timer ended.">
-          <div className="flex items-center gap-2 cursor-help">
-            <span className="font-bold px-2 py-0.5 rounded border text-[11px]"
-              style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
-              V1
-            </span>
-            <span className="text-muted-foreground">Charts only <span className="text-muted-foreground/60">· before Mar 10, 2026</span></span>
-          </div>
-        </Tip>
-        <span className="text-border">|</span>
-        <Tip text="From March 10, 2026 (YouTube livestream launch) — winner needs 2 of 3: Poll (live listener vote) + Charts (SOL pool) + DJ Wavy (AI Judge).">
-          <div className="flex items-center gap-2 cursor-help">
-            <span className="font-bold px-2 py-0.5 rounded border text-[11px]"
-              style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
-              V2
-            </span>
-            <span className="text-muted-foreground">Poll + Charts + DJ Wavy <span className="text-muted-foreground/60">· Mar 10, 2026+</span></span>
-          </div>
-        </Tip>
-      </div>
-
-      {/* Trending score legend (trending view only) */}
-      {category === 'trending' && (
-        <div className="flex items-center gap-4 text-[10px] text-muted-foreground px-1">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-1.5 rounded-full bg-[#95fe7c]" />
-            <span>Hot (66–100)</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-1.5 rounded-full bg-[#7ec1fb]" />
-            <span>Warm (33–65)</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-1.5 rounded-full bg-[#4a4a4a]" />
-            <span>Cool (0–32)</span>
-          </div>
-          <Tip text="Heat score is relative to the top song in this time period. A song at 100 is the hottest right now.">
-            <span className="underline underline-offset-2 cursor-help">How is this calculated?</span>
-          </Tip>
-        </div>
-      )}
-
-      {/* Content */}
-      {category === 'genre' ? (
-        <GenreView songs={rankedSongs} />
-      ) : (
-        <ChartTable
-          songs={rankedSongs}
-          category={category}
-          maxScore={maxScore}
-          page={page}
-          onPageChange={setPage}
-        />
-      )}
+      <HowItWorks />
     </div>
   )
 }

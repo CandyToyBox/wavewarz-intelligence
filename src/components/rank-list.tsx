@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
 import { CdCase } from '@/components/cd-case'
 
-export function RankPanel({ icon, title, sub, aside, children }: { icon: ReactNode; title: string; sub?: string; aside?: ReactNode; children: ReactNode }) {
+export function RankPanel({ icon, title, sub, aside, tools, children }: { icon: ReactNode; title: string; sub?: string; aside?: ReactNode; tools?: ReactNode; children?: ReactNode }) {
   return (
     <section className="ww-hl-panel">
       <header className="ww-hl-ph">
@@ -17,7 +17,8 @@ export function RankPanel({ icon, title, sub, aside, children }: { icon: ReactNo
         </div>
         {aside}
       </header>
-      <ol className="ww-hl-list">{children}</ol>
+      {tools}
+      {children && <ol className="ww-hl-list">{children}</ol>}
     </section>
   )
 }

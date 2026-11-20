@@ -321,3 +321,29 @@ body { background: #000; }
 @media (min-width: 861px) { .wa-ring { position: absolute; inset: 0; } }
 @media (prefers-reduced-transparency: reduce) { .wa-co { background: rgba(7, 14, 12, .88); -webkit-backdrop-filter: none; backdrop-filter: none; } }
 @media (prefers-contrast: more) { .wa-co { background: rgba(4, 8, 7, .92); border-color: rgba(188, 241, 207, .95); } }
+
+/* ---------- song charts controls: one row inside the panel it changes ---------- */
+.ww-sortbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin: 4px 0 10px; padding-bottom: 14px; border-bottom: 1px solid rgba(216, 235, 252, .08); }
+.ww-seg { display: flex; flex-wrap: wrap; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.ww-seg button { min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid rgba(216, 235, 252, .16); background: transparent; color: #c3cfdc; font: 500 .88rem 'Outfit', sans-serif; cursor: pointer; touch-action: manipulation; transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform 160ms cubic-bezier(.23, 1, .32, 1); }
+.ww-seg button:active { transform: scale(.97); }
+.ww-seg button[aria-pressed="true"] { background: #95fe7c; border-color: #95fe7c; color: #0d1321; font-weight: 600; }
+@media (hover: hover) and (pointer: fine) { .ww-seg button:not([aria-pressed="true"]):hover { border-color: rgba(149, 254, 124, .5); color: #fff; } }
+.ww-seg button:focus-visible, .ww-when select:focus-visible, .ww-explain summary:focus-visible { outline: 2px solid #95fe7c; outline-offset: 2px; }
+.ww-when { position: relative; flex: none; margin-left: auto; }
+.ww-when select { appearance: none; -webkit-appearance: none; min-height: 38px; padding: 0 36px 0 14px; border-radius: 999px; border: 1px solid rgba(216, 235, 252, .22); background: #04070d; color: #fff; font: 500 1rem 'Outfit', sans-serif; cursor: pointer; }
+.ww-when::after { content: ""; position: absolute; right: 15px; top: 50%; width: 7px; height: 7px; margin-top: -6px; border-right: 1.6px solid #c3cfdc; border-bottom: 1.6px solid #c3cfdc; transform: rotate(45deg); pointer-events: none; }
+.ww-when select option { background: #0b111c; color: #fff; }
+@media (max-width: 640px) { .ww-when { margin-left: 0; } .ww-seg button { padding: 0 12px; font-size: .84rem; } }
+.ww-pager { display: flex; align-items: center; justify-content: center; gap: 14px; font: 500 .8rem 'JetBrains Mono', monospace; color: #8d9bb0; }
+.ww-pager .ww-chip:disabled { opacity: .35; pointer-events: none; }
+.ww-explain { max-width: 980px; border-top: 1px solid rgba(216, 235, 252, .1); }
+.ww-explain summary { display: flex; align-items: center; gap: 10px; min-height: 48px; cursor: pointer; list-style: none; font: 600 .95rem 'Outfit', sans-serif; color: #daecfd; }
+.ww-explain summary::-webkit-details-marker { display: none; }
+.ww-explain summary::before { content: ""; width: 7px; height: 7px; border-right: 1.6px solid #95fe7c; border-bottom: 1.6px solid #95fe7c; transform: rotate(-45deg); transition: transform .2s cubic-bezier(.23, 1, .32, 1); }
+.ww-explain[open] summary::before { transform: rotate(45deg); }
+.ww-explain > div { display: grid; gap: 12px; max-width: 68ch; padding: 4px 0 20px 17px; font: 400 .92rem/1.6 'Outfit', sans-serif; color: #b6c3d1; }
+.ww-explain p { margin: 0; } .ww-explain b { color: #fff; font-weight: 600; }
+.ww-explain a { color: #95fe7c; text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .ww-explain summary::before { transition: none; } }
+.ww-hl-panel > .ww-sortbar:last-child { border-bottom: 0; padding-bottom: 0; margin-bottom: 0; }
