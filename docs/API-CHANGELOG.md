@@ -18,17 +18,25 @@ move · how to verify it yourself.
 
 ---
 
-## 2026-11-19 — Two trader withdrawals added to one battle
+## 2026-11-19 — Eight trader withdrawals added to five battles
 
 **Endpoints:** `/stats` (`traderClaims.totalSol`, `traderClaims.withdrawalCount`), `/leaderboards/traders` where a trader's withdrawals are counted — **Type:** CORRECTION
 
-Battle `1789007976` (Designer V1 x LUI vs BookedWavez x Hurr...) was missing its two trader withdrawals. They were read again from the chain and added.
+Five battles were missing trader withdrawals that happened on chain. They were read again from the chain and added. Each of these battles was one whose final status never reached our record, so the nightly check skipped it.
 
-**How much your numbers move:** `traderClaims.totalSol` rises by 0.2364 SOL, from 529.6765 to 529.9129 SOL, and `withdrawalCount` rises by 2, from 3,655 to 3,657. The two traders' profit and loss on that battle move by the same amounts.
+| Battle | Withdrawals added | SOL |
+|---|---|---|
+| `1787568630` | 1 | 0.0493 |
+| `1788019189` | 2 | 0.1034 |
+| `1789007976` | 2 | 0.2364 |
+| `1792030153` | 1 | 0.1428 |
+| `1792635467` | 2 | 0.3841 |
 
-**Not changed:** four other battles still carry no withdrawals that happened on chain (5 withdrawals, 0.6728 SOL between them, on `1787568630`, `1788019189`, `1792030153` and `1792635467`). They are listed for repair and will get their own entry when fixed. A wider re-check of every settled battle since 2026-10-15 matched the stored withdrawals exactly.
+**How much your numbers move:** `traderClaims.totalSol` rises by 0.9160 SOL, from 529.6765 to 530.5925 SOL, and `withdrawalCount` rises by 8, from 3,655 to 3,663. The traders' profit and loss on those battles move by the same amounts. Battle results, winners and volume are not changed.
 
-**Verify:** `SELECT count(*), sum(amount_sol) FROM trades WHERE trade_type = 'claim' AND battle_id = 1789007976` returns 2 and 0.2364.
+**Not changed:** two more battles carry withdrawals on chain that we have not recorded yet (3 withdrawals, 0.1955 SOL, on `1793069326` and `1794889708`). They will get their own entry when added. The nightly check is being widened to include battles whose final status never arrived, so this class of gap is caught automatically from then on.
+
+**Verify:** `SELECT count(*), sum(amount_sol) FROM trades WHERE trade_type = 'claim' AND battle_id IN (1787568630, 1788019189, 1789007976, 1792030153, 1792635467)` returns 8 and 0.9160.
 
 ---
 

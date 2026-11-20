@@ -23,6 +23,11 @@
  *     # job so claims trickling in later (traders can withdraw any time) get
  *     # picked up, not just the first claim seen.
  *
+ * --include-unsettled adds battles older than two days that have no winner and no
+ * stored distribution amount (battles whose "finished" webhook never arrived).
+ * Use it with --resync in the scheduled job. It only reads chain and only writes
+ * trade_type='claim' rows, never the battles table.
+ *
  * Without --resync: battles that already have claim rows in trades are skipped
  * (fast path for a one-off historical backfill).
  * Requires .env.local: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
@@ -108,6 +113,32 @@ async function main() {
     if (sinceArg) q = q.gte('created_at', sinceArg.replace('--since=', ''))
     return q
   })
+
+  // --include-unsettled: also check battles that LOOK unsettled (no winner, no
+  // stored distribution amount) once they are older than two days, at any age.
+  // Such a battle usually never received its "finished" webhook, so the settled
+  // filter above skips it forever even though traders have claimed on chain
+  // (found 2026-11-19: 1787568630, 1788019189, 1792030153, 1792635467). The
+  // check is read-only on chain and only ever writes trade_type='claim' rows;
+  // it never touches the battles table. A battle with no claims is left alone.
+  if (process.argv.includes('--include-unsettled')) {
+    const cutoff = new Date(Date.now() - 2 * 24 * 3600 * 1000).toISOString()
+    const older = await fetchAll<{ battle_id: number; artist1_name: string; artist2_name: string; created_at: string; winner_decided: boolean | null; total_distribution_amount: number | string | null }>((from, to) => {
+      let q = supabase
+        .from('battles')
+        .select('battle_id, artist1_name, artist2_name, created_at, winner_decided, total_distribution_amount')
+        .eq('is_test_battle', false)
+        .lt('created_at', cutoff)
+        .order('created_at', { ascending: false })
+        .range(from, to)
+      if (idsFilter) q = q.in('battle_id', idsFilter)
+      return q
+    })
+    const have = new Set(battles.map(b => b.battle_id))
+    const unsettled = older.filter(b => !have.has(b.battle_id) && b.winner_decided !== true && !(Number(b.total_distribution_amount) > 0))
+    console.log(`Unsettled-looking battles older than 2 days added to the check: ${unsettled.length}`)
+    for (const b of unsettled) battles.push({ battle_id: b.battle_id, artist1_name: b.artist1_name, artist2_name: b.artist2_name, created_at: b.created_at })
+  }
 
   let targets = resync ? battles : battles.filter(b => !haveClaims.has(b.battle_id))
   if (limitArg) targets = targets.slice(0, Number(limitArg.replace('--limit=', '')) || targets.length)
