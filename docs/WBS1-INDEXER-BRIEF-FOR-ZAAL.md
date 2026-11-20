@@ -4,7 +4,7 @@
 **For:** Zaal + his agents, WBS-1 build
 **Repo this describes:** `CandyToyBox/wavewarz-intelligence` ("Statz App V2"), live at `wavewarz-intelligence.vercel.app` and `wavewarz.info`
 **DB:** Supabase project `supabase-wavewarz` (Postgres)
-**Date of the numbers here:** 2026-09-06. Counts drift daily; treat them as "shape", re-pull for anything load-bearing.
+**Date of the numbers here:** sections 0 to 13 describe 2026-09-06. **Section 14 is the refresh of 2026-11-19** and supersedes any figure or statement in 0 to 13 that it contradicts. Counts drift daily; treat them as "shape", re-pull for anything load-bearing.
 
 This is written so your agents can design against facts, not inferences from the public API. Nothing here is secret — every field is public onchain data or already exposed through `wavewarz.info/api/public/*`. No keys, no secrets in this doc.
 
@@ -105,7 +105,7 @@ QB winner shortcut: if `quick_battles_winner_decided` is true in the payload, it
 - Winner: for ENDED battles, if onchain `winner_decided` → use it. Else for Quick Battles compute 2-of-3 (Charts = larger pool, Poll = `poll_winner`, DJ Wavy = `dj_wavy_winner`); Charts always counts, Poll and DJ Wavy count when parseable; ≥2 decides; charts-only fallback otherwise. Main/Community are **never** auto-decided — they wait for the admin judging panel.
 
 **b) Per-trade history + true volume.** Only for ENDED battles with valid `start_time_sec` / `end_time_sec`. `fetchBattleTradesFromChain(battleId, start, end)`:
-- Derive `battle_vault` PDA, GET `https://api-mainnet.helius-rpc.com/v0/addresses/<vault>/transactions?api-key=…&limit=100`, paginate `before=<signature>`, cap 20 pages / 2000 tx.
+- Derive `battle_vault` PDA, GET `https://api-mainnet.helius-rpc.com/v0/addresses/<vault>/transactions?api-key=…&limit=100`, paginate `before=<signature>`, cap 20 pages / 2000 tx *(raised to 200 pages / 20,000 tx on 2026-09-09; see §14)*.
 - 429 handling: up to 6 retries with linear backoff. **If Helius still fails, the function returns `null` and the whole volume/trade write is skipped** — partial history is never mistaken for complete history.
 - For each tx within `[start, end]`: find the instruction whose `programId` is the WaveWarZ program, base58-decode its data.
   - byte 16 (`data[16] !== 0`) = **isArtistA** flag.
@@ -122,7 +122,7 @@ QB winner shortcut: if `quick_battles_winner_decided` is true in the payload, it
 
 | Data | Why not | How it's filled |
 |---|---|---|
-| Claims (trader settlement withdrawals, `trade_type='claim'`) | Happen any time after `end_time`, including weeks later via `claim.wavewarz.info`. Not bounded by the battle window. | Nightly `scripts/backfill-claims-from-chain.ts`. `replace_battle_trades` deliberately **excludes** `claim` rows from its delete so a re-fired webhook can't wipe them. |
+| Claims (trader settlement withdrawals, `trade_type='claim'`) | Happen any time after `end_time`, including weeks later via `claim.wavewarz.info`. Not bounded by the battle window. | `scripts/backfill-claims-from-chain.ts --resync`, run nightly by a local macOS job (see §14.3 for what it skips). `replace_battle_trades` deliberately **excludes** `claim` rows from its delete so a re-fired webhook can't wipe them. |
 | Skip Queue / Add to Queue fees | Plain SystemProgram SOL transfers straight to the treasury wallet — outside the Anchor program. No instruction data, no memo, nothing tying them to a `battle_id`. | `scripts/backfill-queue-fees.ts` → `treasury_fee_events`. Classified purely by amount (0.005 = add_to_queue; 0.02 + n·0.01 = skip_queue). Amount-based classification is fuzzy — a round-number donation to the same wallet would misclassify. |
 | **Launch fees** | Same problem — if charged, it's a transfer at init with no battle linkage we parse. | **Nothing. Not tracked.** |
 | Sponsorships / donations | Off-protocol. | Not tracked in this system. |
@@ -521,3 +521,46 @@ Base: `https://wavewarz.info/api/public`. All GET, no auth, CORS `*`, `Cache-Con
 | `battle_id` range | 7,777,777 → 1,788,580,997 |
 
 Re-pull anything load-bearing — `execute_sql` against the `supabase-wavewarz` project, or hit `/api/public/stats`.
+
+---
+
+## 14. Refresh of 2026-11-19 (supersedes sections 0 to 13 where they differ)
+
+Measured on 2026-11-19 against the record layer's database, `wavewarz.info/api/public/stats`, the code on `main` (5f628d0) and the protocol repo at 619e051. Nothing here is secret: counts, field names and public routes only.
+
+### 14.1 Numbers
+
+| Metric | 2026-09-06 | 2026-11-19 |
+|---|---|---|
+| `battles` rows | 1,594 (1,501 non-test) | 1,811 (1,724 non-test, 87 test) |
+| public API: quick / community / main rounds / main events | 1,307 / 141 / 171 / n.a. | 1,486 / 38 / 200 / 66 *(classification is now mutually exclusive: quick first, then community, then main)* |
+| `trades` rows | 10,371 | 16,396: buy_a 4,960, buy_b 5,042, sell_a 1,429, sell_b 1,302, claim 3,663 |
+| trader withdrawals (`traderClaims`) | n.a. | 3,663, 530.5925 SOL (after the 2026-11-19 repair of five battles) |
+| lifetime volume (`volume.totalSol`) | about 922 to 924 (record layer vs chain, see the protocol repo) | 1,016.44 SOL |
+| battles with `total_distribution_amount` > 0 | 197 (44.15 SOL) | applied from chain on 2026-09-09 (about 449 SOL over 1,436 battles) |
+| non-test battles with `trades_status` null | n.a. | 113 (see 14.3) |
+| non-test battles storing 0.0042 on a side | n.a. | 30, unchanged, waiting on Hurricane |
+
+### 14.2 What changed since the 2026-09-06 brief
+
+- **Trades are complete.** The 20-page vault cap was the cause of the 43% undercount; it is 200 pages now, a partial list returns null instead of being stored as complete, and every battle carries `trades_status` (`complete`, `incomplete`, `no_onchain_trades`, null). Trader P&L is hidden for any wallet whose battles are not all `complete`. Claims are stored as `trade_type = 'claim'` and are what `traderClaims` sums.
+- **Fee rate.** The platform leg is 0.495% and the artist leg 1.005% of volume (1.5% total, split 67/33). Public copy keeps the rounded 1% and 0.5%.
+- **Volume.** Volume is the sum of BUY amounts and SELL vault outflows. The webhook no longer overwrites chain-derived volume when a battle already has trade rows (2026-10-12). Repairs of 2026-09-13 and 2026-10-12 are in `docs/API-CHANGELOG.md`.
+- **Hydration status check.** The webhook treats ended, completed and settled, in any case, as finished (fixed 2026-10-12; before that the status `Ended` was skipped).
+- **Public API.** Seven routes in 2026-09 (`stats`, `battles`, `battles/:id`, `events`, `leaderboards/artists|songs|traders`). Added 2026-11-16: `calendar`, `wavezstation` (reads) and `forms` (write-only). `launcher_wallet` and `volume_source` are still announced as "coming soon" and have not shipped. The PRD's `/api/v1/...` paths do not exist.
+- **WavID.** A third-party WavID studio is embedded on wavewarz.info and reads the public API.
+- **Self-battles** count one win and one loss per artist in Quick Battle records (shipped 2026-09-08).
+
+### 14.3 Known gaps, current
+
+1. **A battle whose finished status never arrives is never completed.** 19 battles older than two days still read `Active`; 113 non-test battles have no `trades_status` (96 hold trade rows that were never stamped, 17 hold none). The webhook is a push from wavewarz.com and nothing on our side polls the chain, so a missed or never-sent "finished" delivery leaves a battle unsettled in our record. Five such battles were missing claims (`1787568630`, `1788019189`, `1789007976`, `1792030153`, `1792635467`); all five were repaired on 2026-11-19. A sweep of the 20 unsettled-looking battles older than two days found two more with claims on chain that are not yet recorded (`1793069326`, 1 claim 0.1428 SOL; `1794889708`, 2 claims 0.0527 SOL); the other 16 have none on chain. Not written yet, they are new finds and wait for Samantha's go.
+2. **The nightly re-sync has two blind spots.** It runs from a launchd job on one Mac (`ops/com.wavewarz.statz.integrity.plist`, 04:00), so a night the machine is asleep or off is skipped. It re-checks only battles created in the last 60 days and only "settled" ones (a winner stored, or a stored distribution amount). A battle older than 60 days (`1789007976`) or one that never reached end hydration is invisible to it. That is how five battles ended up 7 claims and 0.9092 SOL short against the protocol repo's chain read of 2026-10-22; all five were repaired on 2026-11-19 (8 claims, 0.9160 SOL; `1788019189` also gained a claim made on 2026-10-29, after the protocol repo's read). **Fix built on branch `docs/wbs1-refresh-2026-11-19`, not yet live:** `.github/workflows/nightly-integrity.yml` runs the same three steps in GitHub Actions at 09:00 UTC, so no laptop is involved, and the claims step takes a new `--include-unsettled` flag that also checks any battle older than two days with no winner and no stored distribution amount, at any age. It needs three repository secrets before it can run. The Mac job got the same flag and stays as a backup until the cloud job has run once. Re-syncing battles older than the window is a manual run with a wider `since`, because a wide window spends more Helius credits.
+3. **Live battles show the site's numbers.** Pool values update from chain on any webhook delivery, but volume is read from chain only after the battle ends. A live battle with no delivery after trading starts reads 0 and 0 (observed 2026-10-29, battle 1793240846).
+4. **No `getTransaction` calls anywhere.** Chain reads use `getAccountInfo` and Helius's enhanced transaction history, so version-1 transactions are not refused. Whether a pay-in (pump.fun sale and `buy_shares` in one transaction) is parsed correctly is not yet compared against the protocol repo's pay-in scan.
+5. Still open from section 11: no independent chain tailer, `battle_id` second-collision (program level), `trades` has no unique constraint, `treasury_fee_events` RLS, dead `artist_a/b_profile_id` columns, fuzzy queue-fee classification, no flag that separates true from fallback volume (`volume_source` not shipped).
+
+### 14.4 Open questions that are not ours
+
+- Hurricane: the 0.0042 on 30 battles; a USDC-native program versus an adapter (research: protocol repo `docs/USDC-NATIVE-OPTIONS-2026-11-19.md`); the upgrade, second PDA seed and multisig as one deployment; `WEBHOOK_SECRET` rotation.
+- Pay-in token (decided 2026-11-19 on our side: record it): field names to be matched to the protocol repo's `input_assets_used` and `tools/payin-scan.py`.
+

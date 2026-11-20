@@ -1,0 +1,84 @@
+# WaveWarz Statz: nightly data integrity check, run in GitHub Actions so it no
+# longer depends on one laptop being awake.
+#
+# Replaces the launchd job in ops/ (com.wavewarz.statz.integrity.plist), which
+# only ran when the Mac was on, re-synced claims for the last 60 days only, and
+# skipped any battle that never looked "settled". Same three steps, same
+# scripts; the claims step now also checks unsettled-looking battles of any age.
+#
+# Needs three repository secrets (Settings > Secrets and variables > Actions):
+#   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_HELIUS_API_KEY
+# Until they are set the job stops at the first step and fails, on purpose.
+#
+# Manual run with a wider window: Actions > Nightly integrity check > Run
+# workflow, set "since" (for example 2025-11-01). A wide window spends more
+# Helius credits, so it is manual only.
+
+name: Nightly integrity check
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 09:00 UTC, about 04:00 US Eastern, same hour as the old job
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Claims re-sync window start (YYYY-MM-DD). Empty = last 60 days.'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-integrity
+  cancel-in-progress: false
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_HELIUS_API_KEY: ${{ secrets.NEXT_PUBLIC_HELIUS_API_KEY }}
+      SINCE_INPUT: ${{ github.event.inputs.since }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check secrets are set
+        run: |
+          missing=0
+          for v in NEXT_PUBLIC_SUPABASE_URL SUPABASE_SERVICE_ROLE_KEY NEXT_PUBLIC_HELIUS_API_KEY; do
+            if [ -z "${!v}" ]; then echo "::error::repository secret $v is not set"; missing=1; fi
+          done
+          exit $missing
+
+      - run: npm ci
+
+      # The scripts read .env.local from the working directory. It lives only on
+      # this runner and is discarded when the job ends. Values are never echoed.
+      - name: Write .env.local on the runner
+        run: |
+          {
+            printf 'NEXT_PUBLIC_SUPABASE_URL=%s\n' "$NEXT_PUBLIC_SUPABASE_URL"
+            printf 'SUPABASE_SERVICE_ROLE_KEY=%s\n' "$SUPABASE_SERVICE_ROLE_KEY"
+            printf 'NEXT_PUBLIC_HELIUS_API_KEY=%s\n' "$NEXT_PUBLIC_HELIUS_API_KEY"
+          } > .env.local
+
+      - name: Volume fix (detects the webhook fallback corruption pattern)
+        run: npx tsx scripts/fix-volume-from-chain.ts
+
+      - name: Claims re-sync (window plus unsettled-looking battles of any age)
+        run: |
+          SINCE="$SINCE_INPUT"
+          if [ -z "$SINCE" ]; then SINCE=$(date -u -d "60 days ago" +%Y-%m-%d); fi
+          echo "claims re-sync since $SINCE"
+          npx tsx scripts/backfill-claims-from-chain.ts --resync --include-unsettled --since="$SINCE"
+
+      - name: Queue fees sync (skip queue and add to queue)
+        run: npx tsx scripts/backfill-queue-fees.ts

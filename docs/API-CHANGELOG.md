@@ -18,6 +18,28 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-19 — Eight trader withdrawals added to five battles
+
+**Endpoints:** `/stats` (`traderClaims.totalSol`, `traderClaims.withdrawalCount`), `/leaderboards/traders` where a trader's withdrawals are counted — **Type:** CORRECTION
+
+Five battles were missing trader withdrawals that happened on chain. They were read again from the chain and added. Each of these battles was one whose final status never reached our record, so the nightly check skipped it.
+
+| Battle | Withdrawals added | SOL |
+|---|---|---|
+| `1787568630` | 1 | 0.0493 |
+| `1788019189` | 2 | 0.1034 |
+| `1789007976` | 2 | 0.2364 |
+| `1792030153` | 1 | 0.1428 |
+| `1792635467` | 2 | 0.3841 |
+
+**How much your numbers move:** `traderClaims.totalSol` rises by 0.9160 SOL, from 529.6765 to 530.5925 SOL, and `withdrawalCount` rises by 8, from 3,655 to 3,663. The traders' profit and loss on those battles move by the same amounts. Battle results, winners and volume are not changed.
+
+**Not changed:** two more battles carry withdrawals on chain that we have not recorded yet (3 withdrawals, 0.1955 SOL, on `1793069326` and `1794889708`). They will get their own entry when added. The nightly check is being widened to include battles whose final status never arrived, so this class of gap is caught automatically from then on.
+
+**Verify:** `SELECT count(*), sum(amount_sol) FROM trades WHERE trade_type = 'claim' AND battle_id IN (1787568630, 1788019189, 1789007976, 1792030153, 1792635467)` returns 8 and 0.9160.
+
+---
+
 ## 2026-11-16 — Two new read endpoints: calendar and WaveZStation
 
 **Endpoints:** `GET /calendar` (new), `GET /wavezstation` (new) — **Type:** ADDITIVE

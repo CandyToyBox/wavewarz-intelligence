@@ -27,7 +27,7 @@ echo "--- volume fix (auto-detect corruption pattern) ---"
 npx tsx scripts/fix-volume-from-chain.ts
 
 echo "--- claims resync (since $SINCE) ---"
-npx tsx scripts/backfill-claims-from-chain.ts --resync --since="$SINCE"
+npx tsx scripts/backfill-claims-from-chain.ts --resync --include-unsettled --since="$SINCE"
 
 echo "--- queue fees sync (skip queue + add to queue) ---"
 npx tsx scripts/backfill-queue-fees.ts
