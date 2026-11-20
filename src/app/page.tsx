@@ -5,6 +5,9 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { platformMetrics, isBattleLive, type MetricsBattle } from '@/lib/battle-metrics'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ShareStatz } from '@/components/share-statz'
+import { shareOgImages } from '@/lib/share-options'
+import type { Metadata } from 'next'
 import { Tip } from '@/components/tip'
 import Link from 'next/link'
 import { resolveAudiusTrack } from '@/lib/audius'
@@ -252,6 +255,13 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
   }
 }
 
+// A shared Statz link unfurls with the card the sharer picked (?card=bg.headline)
+export async function generateMetadata({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }): Promise<Metadata> {
+  const { card } = await searchParams
+  const images = shareOgImages('platform', 'all', card)
+  return { openGraph: { images }, twitter: { card: 'summary_large_image', images: images.map(i => i.url) } }
+}
+
 export default async function HomePage() {
   const [stats, calendarEvents, spotify, solPrice, qbSongs] = await Promise.all([
     getGlobalStats(),
@@ -289,6 +299,7 @@ export default async function HomePage() {
           <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 px-4 py-1 text-[10px] font-bold tracking-widest">
             LIVE
           </Badge>
+          <ShareStatz kind="platform" id="all" />
         </div>
       </header>
 

@@ -9,7 +9,7 @@ export function SiteFooter() {
       <nav aria-label="Footer">
         <a href={main('/')}>Home</a>
         <a href={main('/quick-battles')}>Queue</a>
-        <Link href="/">Stats</Link>
+        <Link href="/">Statz</Link>
         <a href="https://claim.wavewarz.info" target="_blank" rel="noopener">Claim</a>
         <Link href="/privacy">Privacy</Link>
         <Link href="/terms">Terms</Link>

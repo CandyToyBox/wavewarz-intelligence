@@ -18,7 +18,7 @@ export const MAIN_NAV = [
   { href: main('/#how-it-works'), label: 'How it works' },
   { href: main('/#for-artists'), label: 'For Artists' },
   { href: main('/quick-battles'), label: 'Queue' },
-  { href: '/', label: 'Stats', stats: true },
+  { href: '/', label: 'Statz', stats: true },
   { href: 'https://merch.wavewarz.info', label: 'Merch', external: true },
 ]
 

@@ -5,13 +5,16 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { getArtistStats, isUUID, type Battle } from '@/lib/artist-stats'
 import { Badge } from '@/components/ui/badge'
+import { ShareStatz } from '@/components/share-statz'
+import { shareOgImages } from '@/lib/share-options'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
 // ─── OG Metadata ──────────────────────────────────────────────────────────────
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ id: string }>; searchParams?: Promise<Record<string, string | string[] | undefined>> }): Promise<Metadata> {
   const { id } = await params
+  const { card } = (await searchParams) ?? {}
   const stats = await getArtistStats(id)
   if (!stats) return { title: 'Artist Not Found — WaveWarZ' }
   return {
@@ -20,8 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${stats.displayName} — WaveWarZ`,
       description: `${stats.wins}W ${stats.losses}L · ${formatSol(stats.totalEarningsSol)} SOL earned`,
-      images: stats.pfpUrl ? [stats.pfpUrl] : [],
+      images: shareOgImages('artist', id, card),
     },
+    twitter: { card: 'summary_large_image', images: shareOgImages('artist', id, card).map(i => i.url) },
   }
 }
 
@@ -50,6 +54,8 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
+
+      <div className="flex justify-end"><ShareStatz kind="artist" id={id} /></div>
 
       {/* ── PLAYER CARD (the shareable hero) ── */}
       <div className="relative rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden shadow-2xl shadow-[#95fe7c]/5">

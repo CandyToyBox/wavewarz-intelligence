@@ -4,6 +4,8 @@ import { formatSol, calculateArtistEarnings, calculatePlatformRevenue, calculate
 import { resolveAudiusTrack } from '@/lib/audius'
 import { getBattleAddress, getBattleVaultAddress, getArtistAMintAddress, getArtistBMintAddress, PROGRAM_ID } from '@/lib/solana/pda'
 import { Badge } from '@/components/ui/badge'
+import { ShareStatz } from '@/components/share-statz'
+import { shareOgImages } from '@/lib/share-options'
 import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
 import { ArtistAvatarImg } from '@/components/artist-avatar-img'
@@ -13,13 +15,17 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = { params: Promise<{ id: string }>; searchParams?: Promise<Record<string, string | string[] | undefined>> }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { id } = await params
+  const { card } = (await searchParams) ?? {}
+  const images = shareOgImages('battle', id, card)
   return {
     title: `Battle #${id}`,
     description: `Detailed stats for WaveWarZ battle #${id}.`,
+    openGraph: { images },
+    twitter: { card: 'summary_large_image', images: images.map(i => i.url) },
   }
 }
 
@@ -144,6 +150,15 @@ export default async function BattleDetailPage({ params }: Props) {
 
   const { winnerPool, loserPool } = getWinnerLoserPools(p1, p2, a1Won)
 
+  // Display only: show stored factor codes ("A", "artist_a", "TIE") as the side's name. Never changes the result.
+  const factorLabel = (raw: string | null | undefined) => {
+    const v = (raw ?? '').trim(), up = v.toUpperCase()
+    if (up === 'A' || up === 'ARTIST_A') return battle.artist1_name ?? 'Side A'
+    if (up === 'B' || up === 'ARTIST_B') return battle.artist2_name ?? 'Side B'
+    if (up === 'TIE') return 'Tie'
+    return v
+  }
+
   const a1Earn = totalVol > 0
     ? calculateArtistEarnings(vol1, loserPool, a1Won)
     : null
@@ -225,7 +240,7 @@ export default async function BattleDetailPage({ params }: Props) {
             <p className="text-xs text-muted-foreground mt-1">{fmtDate(battle.created_at)}</p>
           )}
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {durationSecs !== null && (
             <div className="text-right">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Duration</p>
@@ -233,17 +248,16 @@ export default async function BattleDetailPage({ params }: Props) {
             </div>
           )}
           {battle.stream_link && (
-            <a href={battle.stream_link} target="_blank" rel="noreferrer"
-              className="text-xs border border-[#7ec1fb]/30 text-[#7ec1fb] hover:bg-[#7ec1fb]/10 px-3 py-1.5 rounded-lg transition-colors">
+            <a href={battle.stream_link} target="_blank" rel="noreferrer" className="ww-cta blue ww-share-trigger">
               Watch Stream ↗
             </a>
           )}
           {battle.youtube_replay_link && (
-            <a href={battle.youtube_replay_link} target="_blank" rel="noreferrer"
-              className="text-xs border border-red-500/30 text-red-400 hover:bg-red-500/10 px-3 py-1.5 rounded-lg transition-colors">
+            <a href={battle.youtube_replay_link} target="_blank" rel="noreferrer" className="ww-cta ghost ww-share-trigger">
               YouTube Replay ↗
             </a>
           )}
+          <ShareStatz kind="battle" id={String(battleId)} />
         </div>
       </div>
 
@@ -267,7 +281,7 @@ export default async function BattleDetailPage({ params }: Props) {
 
       {/* Head-to-Head */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="grid grid-cols-[1fr_auto_1fr]">
+        <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr]">
           {/* Side A */}
           <SidePanel
             name={battle.artist1_name}
@@ -288,9 +302,9 @@ export default async function BattleDetailPage({ params }: Props) {
           />
 
           {/* VS divider */}
-          <div className="flex flex-col items-center justify-center px-3 sm:px-5 py-6 border-x border-border bg-[#0c121c]">
+          <div className="flex sm:flex-col items-center justify-center gap-4 sm:gap-0 px-3 sm:px-5 py-3 sm:py-6 border-y sm:border-y-0 sm:border-x border-border bg-[#0c121c]">
             <span className="font-rajdhani font-bold text-2xl text-muted-foreground">VS</span>
-            <div className="mt-3 text-center">
+            <div className="sm:mt-3 text-center">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Vol</p>
               <p className="font-mono text-xs text-white">{formatSol(totalVol)} SOL</p>
               <p className="text-[10px] text-muted-foreground">{solToUsd(totalVol, solPrice)}</p>
@@ -337,18 +351,18 @@ export default async function BattleDetailPage({ params }: Props) {
 
       {/* Quick Battle 3-Factor Result */}
       {isQuick && isSettled && (
-        <div className="rounded-xl border border-[#7ec1fb]/20 bg-[#111827] p-5">
+        <div className="rounded-xl border border-[#7ec1fb]/20 bg-card p-5">
           <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">
             3-Factor Result
             <span className="text-xs font-normal text-muted-foreground ml-2">Poll · Charts · DJ Wavy — 2 of 3 wins</span>
           </h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Poll */}
             <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Poll</p>
               {battle.poll_winner ? (
                 <>
-                  <p className="font-rajdhani font-bold text-white text-sm">{battle.poll_winner}</p>
+                  <p className="font-rajdhani font-bold text-white text-sm">{factorLabel(battle.poll_winner)}</p>
                   {battle.poll_votes_a != null && battle.poll_votes_b != null && (
                     <p className="text-[10px] text-muted-foreground mt-1 font-mono">
                       {battle.artist1_name}: {battle.poll_votes_a} · {battle.artist2_name}: {battle.poll_votes_b}
@@ -374,7 +388,7 @@ export default async function BattleDetailPage({ params }: Props) {
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">DJ Wavy</p>
               {battle.dj_wavy_winner ? (
                 <>
-                  <p className="font-rajdhani font-bold text-white text-sm">{battle.dj_wavy_winner}</p>
+                  <p className="font-rajdhani font-bold text-white text-sm">{factorLabel(battle.dj_wavy_winner)}</p>
                   {battle.dj_wavy_reasoning && (
                     <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed italic line-clamp-3">
                       {battle.dj_wavy_reasoning}
@@ -570,14 +584,16 @@ function SidePanel({
   solPrice: number | null
   side: 'left' | 'right'
 }) {
-  const align = side === 'left' ? 'items-start text-left' : 'items-end text-right'
+  // Phones stack the two sides, so both read left-aligned; side by side from sm up.
+  const align = side === 'left' ? 'items-start text-left' : 'items-start text-left sm:items-end sm:text-right'
+  const badgeSelf = side === 'left' ? 'self-start' : 'self-start sm:self-end'
   const initial = (name ?? '?').charAt(0).toUpperCase()
   // Priority: stored profile picture → Twitter avatar via unavatar → letter fallback
   const pfpUrl = profile?.profile_picture_url ?? (twitterHandle ? `https://unavatar.io/twitter/${twitterHandle}` : null)
   const profileHref = profile?.artist_id ? `/artist/${profile.artist_id}` : wallet ? `/artist/${wallet}` : null
 
   const avatar = artUrl
-    ? <ArtistAvatarImg imgSrc={artUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20" imgClassName="w-full h-full rounded-lg object-cover border border-border" />
+    ? <ArtistAvatarImg imgSrc={artUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center overflow-hidden font-rajdhani font-bold text-3xl text-[#95fe7c]" imgClassName="w-full h-full rounded-lg object-cover" />
     : pfpUrl
     ? <ArtistAvatarImg imgSrc={pfpUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#1f2937] border-2 border-[#95fe7c]/30 flex items-center justify-center overflow-hidden" imgClassName="w-full h-full rounded-full object-cover" />
     : null
@@ -596,12 +612,12 @@ function SidePanel({
       {/* Name + winner badge */}
       <div className={`flex flex-col gap-1 ${align}`}>
         {settled && isWinner && (
-          <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c] bg-[#95fe7c]/10 border border-[#95fe7c]/30 px-2 py-0.5 rounded self-start">
+          <span className={`text-[9px] font-bold uppercase tracking-widest text-[#95fe7c] bg-[#95fe7c]/10 border border-[#95fe7c]/30 px-2 py-0.5 rounded ${badgeSelf}`}>
             WINNER
           </span>
         )}
         {settled && isLoser && (
-          <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground bg-white/5 border border-border px-2 py-0.5 rounded self-start">
+          <span className={`text-[9px] font-bold uppercase tracking-widest text-muted-foreground bg-white/5 border border-border px-2 py-0.5 rounded ${badgeSelf}`}>
             RUNNER UP
           </span>
         )}

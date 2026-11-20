@@ -14,35 +14,17 @@ const TABS = [
 export function LeaderboardNav() {
   const pathname = usePathname()
 
+  // Same pill chips as the Statz rail, so the two rows read as one system
   return (
-    <nav className="mb-6">
+    <nav className="mb-6" aria-label="Leaderboards">
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-        <Link
-          href="/leaderboards"
-          className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-white transition-colors shrink-0"
-        >
-          ← All
-        </Link>
-        <div className="w-px h-4 bg-border shrink-0" />
-        <div className="flex items-center gap-1 bg-[#070a10] border border-border/60 rounded-xl p-1 overflow-x-auto scrollbar-none">
-          {TABS.map(tab => {
-            const isActive = pathname.startsWith(tab.href)
-            return (
-              <Link
-                key={tab.href}
-                href={tab.href}
-                className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded-lg whitespace-nowrap transition-all ${
-                  isActive
-                    ? 'text-[#0d1321]'
-                    : 'text-muted-foreground hover:bg-white/[0.06] hover:text-white'
-                }`}
-                style={isActive ? { backgroundColor: tab.color } : undefined}
-              >
-                {tab.label}
-              </Link>
-            )
-          })}
-        </div>
+        <Link href="/leaderboards" className="ww-chip" aria-current={pathname === '/leaderboards' ? 'page' : undefined}>All boards</Link>
+        {TABS.map(tab => (
+          <Link key={tab.href} href={tab.href} className="ww-chip" aria-current={pathname.startsWith(tab.href) ? 'page' : undefined}>
+            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: tab.color }} aria-hidden="true" />
+            {tab.label}
+          </Link>
+        ))}
       </div>
     </nav>
   )

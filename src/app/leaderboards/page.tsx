@@ -80,31 +80,17 @@ export default function LeaderboardsHub() {
           <span className="text-[#95fe7c]">Leader</span>boards
         </h1>
         <p className="text-muted-foreground mt-2 max-w-lg">
-          Five ranking boards — choose one below. All stats derived from onchain data. Test battles and charity events excluded.
+          Five ranking boards. Pick one below. All stats derived from onchain data. Test battles and charity events excluded.
         </p>
       </header>
 
-      {/* Quick nav strip */}
-      <div className="flex flex-wrap gap-2">
-        {BOARDS.map(b => (
+      {/* 3 across, then 2 wide: five boards with no empty slot */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-5">
+        {BOARDS.map((b, i) => (
           <Link
             key={b.href}
             href={b.href}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${b.borderColor} text-xs font-mono uppercase tracking-widest transition-all hover:scale-[1.02]`}
-          >
-            <b.Icon color={b.hex} className="w-3.5 h-3.5 shrink-0" />
-            <span className="text-white">{b.title}</span>
-            <Badge className={`${b.badgeColor} border text-[9px] font-bold tracking-widest ml-1 hidden sm:inline-flex`}>{b.badge}</Badge>
-          </Link>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {BOARDS.map(b => (
-          <Link
-            key={b.href}
-            href={b.href}
-            className={`group rounded-xl border ${b.borderColor} bg-card p-5 flex flex-col transition-all hover:scale-[1.01]`}
+            className={`group rounded-xl border ${b.borderColor} bg-card p-5 flex flex-col transition-colors hover:bg-white/[0.03] ${i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'} ${i === 4 ? 'sm:col-span-2 lg:col-span-3' : ''}`}
           >
             <div className="flex items-start justify-between mb-3">
               <div

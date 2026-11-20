@@ -67,7 +67,7 @@ export function SiteNav() {
       </div>
 
       <div className="ww-rail-wrap">
-        <div className="ww-rail" ref={rail} role="navigation" aria-label="Stats">
+        <div className="ww-rail" ref={rail} role="navigation" aria-label="Statz">
           {STATS_NAV.map(l => l.external
             ? <a key={l.href} href={l.href} target="_blank" rel="noopener" className="ww-chip">{l.label}<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg></a>
             : <Link key={l.href} href={l.href} className="ww-chip" aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</Link>)}
