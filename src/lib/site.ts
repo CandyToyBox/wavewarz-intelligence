@@ -23,7 +23,7 @@ export const MAIN_NAV = [
 ]
 
 // The Stats section's own pages
-export const STATS_NAV = [
+export const STATS_NAV: { href: string; label: string; external?: boolean }[] = [
   { href: '/', label: 'Overview' },
   { href: '/battles', label: 'Battles' },
   { href: '/leaderboards', label: 'Leaderboards' },
@@ -33,5 +33,5 @@ export const STATS_NAV = [
   { href: '/benefits', label: 'Benefits' },
   { href: '/blog', label: 'Blog' },
   { href: '/api-docs', label: 'API' },
-  { href: 'https://claim.wavewarz.info', label: 'Claim', external: true },
+  { href: '/claim', label: 'Claim' },
 ]

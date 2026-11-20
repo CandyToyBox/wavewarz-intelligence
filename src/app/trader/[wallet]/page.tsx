@@ -132,11 +132,10 @@ export default async function TraderPage({ params }: Props) {
               Solscan ↗
             </a>
             <a
-              href={`https://claim.wavewarz.info`}
-              target="_blank" rel="noreferrer"
+              href={`/claim?wallet=${wallet}`}
               className="text-[10px] text-muted-foreground border border-border px-2 py-0.5 rounded hover:text-white transition-colors"
             >
-              Claim Funds ↗
+              Claim funds
             </a>
           </div>
         </div>
@@ -292,7 +291,7 @@ export default async function TraderPage({ params }: Props) {
         <div className="rounded-xl border border-border bg-card p-12 text-center">
           <p className="font-bold text-white mb-1">No trade history found</p>
           <p className="text-sm text-muted-foreground">This wallet has no recorded trades in the WaveWarZ database yet.</p>
-          <p className="text-xs text-muted-foreground mt-2">Use the <a href="https://claim.wavewarz.info" target="_blank" rel="noopener noreferrer" className="text-[#7ec1fb] hover:underline">Claim tool</a> to check for onchain holdings.</p>
+          <p className="text-xs text-muted-foreground mt-2">Use the <a href={`/claim?wallet=${wallet}`} className="text-[#7ec1fb] hover:underline">Claim page</a> to check for onchain holdings.</p>
         </div>
       )}
 

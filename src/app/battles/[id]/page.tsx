@@ -451,7 +451,7 @@ export default async function BattleDetailPage({ params }: Props) {
           <p className="text-xs text-muted-foreground mb-4">
             How payouts were distributed to traders who held tokens in this battle.
             Traders must manually claim via the <span className="text-white">Withdrawal</span> button on the battle page or at{' '}
-            <a href="https://claim.wavewarz.info" target="_blank" rel="noreferrer" className="text-[#7ec1fb] hover:underline">claim.wavewarz.info</a>.
+            <a href="/claim" className="text-[#7ec1fb] hover:underline">the claim page</a>.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="rounded-lg border border-[#95fe7c]/20 bg-[#95fe7c]/5 p-4">

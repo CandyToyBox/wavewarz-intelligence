@@ -595,14 +595,9 @@ export default async function HomePage() {
             Artist payouts are instant and onchain. Traders withdraw their SOL after each battle, on the battle page or the claim page.
           </p>
         </div>
-        <a
-          href="https://claim.wavewarz.info"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ww-cta amber shrink-0"
-        >
+        <Link href="/claim" className="ww-cta amber shrink-0">
           Open the claim page <ArrowUpRight size={15} aria-hidden="true" />
-        </a>
+        </Link>
       </section>
 
       {/* Quick Battle Charts Preview */}
