@@ -286,7 +286,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
         {/* Bottom bar */}
         <div className="px-8 py-3 bg-[#0c121c]/60 border-t border-border flex items-center justify-between">
           <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
-            WaveWarZ Intelligence · Community Clips HQ
+            WaveWarZ Statz · Community Clips HQ
           </span>
           <span className="text-[10px] text-orange-400/60 font-mono">
             Member since {new Date(profile.recentClips[profile.recentClips.length - 1]?.created_at ?? Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}

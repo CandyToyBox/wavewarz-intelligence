@@ -7,7 +7,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Benefits & Philanthropy — WaveWarZ Intelligence',
+  title: 'Benefits & Philanthropy',
   description: 'Every SOL raised moves directly from the arena to the cause. No overhead. No middlemen. Verifiable onchain.',
 }
 

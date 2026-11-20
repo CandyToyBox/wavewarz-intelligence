@@ -276,7 +276,7 @@ export default async function HomePage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
-            WaveWarZ <span className="text-[#7ec1fb]">Stats</span>
+            WaveWarZ <span className="text-[#7ec1fb]">Statz</span>
           </h1>
           <p className="text-muted-foreground mt-2 text-lg tracking-wide">
             Every battle. Every number. <span className="text-white font-bold">ONCHAIN</span>

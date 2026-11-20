@@ -1,4 +1,4 @@
-# WaveWarZ Intelligence
+# WaveWarZ Statz
 
 > Verifiable onchain analytics for WaveWarZ — the decentralized music battle platform on Solana.
 > Artists go head-to-head in timed battles while fans trade ephemeral tokens on the outcome.

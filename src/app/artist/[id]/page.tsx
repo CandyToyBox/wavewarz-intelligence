@@ -248,7 +248,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
         {/* Bottom accent */}
         <div className="px-8 py-3 bg-[#0c121c]/60 border-t border-border flex items-center justify-between">
           <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
-            WaveWarZ Intelligence · Solana Mainnet
+            WaveWarZ Statz · Solana Mainnet
           </span>
           <span className="text-[10px] text-muted-foreground font-mono">
             1 SOL = {solToUsd(1, solPrice)}

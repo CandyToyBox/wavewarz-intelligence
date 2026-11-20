@@ -40,16 +40,16 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://wavewarz.info'),
   title: {
-    default: 'WaveWarZ Intelligence',
-    template: '%s | WaveWarZ Intelligence',
+    default: 'WaveWarZ Statz',
+    template: '%s | WaveWarZ Statz',
   },
   description: 'Every battle. Every number. ONCHAIN. Verifiable analytics for WaveWarZ — decentralized music battles on Solana.',
   alternates: { canonical: '/' },
   keywords: ['WaveWarZ', 'music battles', 'Solana', 'onchain analytics', 'music trading', 'Audius', 'quick battles'],
   openGraph: {
-    title: 'WaveWarZ Intelligence',
+    title: 'WaveWarZ Statz',
     description: 'Every battle. Every number. ONCHAIN.',
-    siteName: 'WaveWarZ Intelligence',
+    siteName: 'WaveWarZ Statz',
     url: 'https://wavewarz.info',
     type: 'website',
     images: [{ url: '/og-card.png', width: 1200, height: 630, alt: 'WaveWarZ' }],
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@wavewarz',
-    title: 'WaveWarZ Intelligence',
+    title: 'WaveWarZ Statz',
     description: 'Every battle. Every number. ONCHAIN.',
     images: ['/og-card.png'],
   },
@@ -80,7 +80,7 @@ const jsonLd = {
     {
       '@type': 'WebSite',
       '@id': 'https://wavewarz.info/#site',
-      name: 'WaveWarZ Intelligence',
+      name: 'WaveWarZ Statz',
       url: 'https://wavewarz.info',
       publisher: { '@id': 'https://wavewarz.info/#org' },
       description:

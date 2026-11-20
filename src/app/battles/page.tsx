@@ -14,7 +14,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Battles Feed — WaveWarZ Intelligence',
+  title: 'Battles Feed',
   description: 'Live chronological feed of every WaveWarZ battle. Main events grouped by round.',
 }
 

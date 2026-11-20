@@ -9,10 +9,11 @@ import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import { TraderLookup } from './trader-lookup'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { TraderNote } from '@/components/trader-note'
 
 export const metadata: Metadata = {
-  title: 'Trader Rankings — WaveWarZ Intelligence',
-  description: 'Top traders ranked by volume, win rate, and net P&L across all WaveWarZ battles.',
+  title: 'Trader Rankings',
+  description: 'WaveWarZ traders ranked by total SOL traded across all battles, from public onchain records.',
 }
 
 export default async function TradersLeaderboardPage() {
@@ -34,7 +35,7 @@ export default async function TradersLeaderboardPage() {
           <p className="text-xs text-muted-foreground leading-relaxed">
             Per-trade records for the largest battles are being re-fetched from Solana
             {completeShare > 0 && <> ({(completeShare * 100).toFixed(0)}% verified so far)</>}.
-            Net&nbsp;P&amp;L is hidden for wallets whose trade history is not yet fully verified,
+            Net SOL is hidden for wallets whose trade history is not yet fully verified,
             and volume for those wallets is a lower bound. Platform volume, artist payouts and
             settlement figures on the other pages are unaffected — those come from settled
             battle state, not per-trade data.
@@ -53,7 +54,7 @@ export default async function TradersLeaderboardPage() {
               TRADERS
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">Fans and speculators ranked by total SOL traded across all battles.</p>
+          <p className="text-sm text-muted-foreground mt-1">Fans and traders ranked by total SOL traded across all battles.</p>
         </div>
         <div className="text-right shrink-0">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Ranked Trader Volume{anyIncomplete && <span className="text-[#f59e0b]"> ·&nbsp;partial</span>}</p>
@@ -82,10 +83,10 @@ export default async function TradersLeaderboardPage() {
                 <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden sm:table-cell">Trades</th>
                 <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden md:table-cell">Battles</th>
                 <th className="text-center px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden lg:table-cell">
-                  <Tip text="Win rate across settled battles">Win Rate</Tip>
+                  <Tip text="Settled battles where the side this wallet backed won the battle">Backed the winner</Tip>
                 </th>
                 <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hidden md:table-cell">
-                  <Tip text="SOL received back — mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced from onchain vault transactions." wide>Net P&L</Tip>
+                  <Tip text="SOL received back — mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced from onchain vault transactions. Past results do not predict future ones." wide>Net SOL</Tip>
                 </th>
                 <th className="px-4 py-3 w-8" />
               </tr>
@@ -106,7 +107,7 @@ export default async function TradersLeaderboardPage() {
                           </Link>
                           <SolscanLink address={r.wallet} label="↗" className="!px-1 !py-0 !border-0" />
                         </div>
-                        <p className="text-[10px] text-muted-foreground">{r.wins}W · {r.losses}L</p>
+                        <p className="text-[10px] text-muted-foreground">{r.wins + r.losses > 0 ? `backed the winner ${r.wins} of ${r.wins + r.losses}` : 'no settled battles'}</p>
                       </div>
                     </div>
                   </td>
@@ -137,7 +138,7 @@ export default async function TradersLeaderboardPage() {
                       </Tip>
                     ) : r.netPnlSol !== 0 ? (
                       <>
-                        <p className={`font-mono text-xs font-bold ${r.netPnlPositive ? 'text-[#95fe7c]' : 'text-red-400'}`}>
+                        <p className="font-mono text-xs text-white">
                           {r.netPnlPositive ? '+' : '-'}{r.netPnlFmt} SOL
                         </p>
                         <p className="text-[10px] text-muted-foreground">{r.netPnlUsd}</p>
@@ -160,8 +161,9 @@ export default async function TradersLeaderboardPage() {
       )}
 
       <p className="text-[10px] text-muted-foreground text-center">
-        Trade data sourced from WaveWarZ onchain records. Net P&L requires buy/sell side data in trade records.
+        Trade data sourced from WaveWarZ onchain records. Net SOL needs the buy and sell side of each trade.
       </p>
+      <TraderNote />
     </div>
   )
 }
