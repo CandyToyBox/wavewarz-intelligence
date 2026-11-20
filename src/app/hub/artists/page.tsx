@@ -93,7 +93,7 @@ export default async function HubArtists() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-1.5 flex-1 rounded-full bg-[#0d1321] overflow-hidden">
+              <div className="h-1.5 flex-1 rounded-full bg-[#0c121c] overflow-hidden">
                 <div className="h-full rounded-full bg-[#95fe7c]" style={{ width: `${a.completeness}%` }} />
               </div>
               <span className="text-xs text-muted-foreground w-9 text-right">{a.completeness}%</span>

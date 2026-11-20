@@ -73,7 +73,7 @@ export default async function TradersLeaderboardPage() {
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border bg-[#0d1321]">
+              <tr className="border-b border-border bg-[#0c121c]">
                 <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground w-10">#</th>
                 <th className="text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Wallet</th>
                 <th className="text-right px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">

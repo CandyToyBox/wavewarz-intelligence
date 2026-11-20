@@ -184,7 +184,7 @@ export default async function BenefitsPage() {
     <div className="space-y-12">
 
       {/* ── HERO ── */}
-      <header className="relative rounded-2xl overflow-hidden border border-[#95fe7c]/20 bg-gradient-to-br from-[#0d1321] via-[#0a1a0a] to-[#0d1321] p-10">
+      <header className="relative rounded-2xl overflow-hidden border border-[#95fe7c]/20 bg-gradient-to-br from-[#070a10] via-[#0a1a0a] to-[#070a10] p-10">
         <div className="absolute inset-0 opacity-5"
           style={{
             backgroundImage: 'radial-gradient(circle at 20% 50%, #95fe7c 0%, transparent 60%), radial-gradient(circle at 80% 50%, #7ec1fb 0%, transparent 60%)',
@@ -250,7 +250,7 @@ export default async function BenefitsPage() {
         </div>
 
         {/* Grand Total Banner */}
-        <div className="rounded-xl border border-[#95fe7c]/40 bg-gradient-to-r from-[#95fe7c]/10 via-[#0d1321] to-[#7ec1fb]/10 p-5 mb-6">
+        <div className="rounded-xl border border-[#95fe7c]/40 bg-gradient-to-r from-[#95fe7c]/10 via-[#070a10] to-[#7ec1fb]/10 p-5 mb-6">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 text-center">
             Grand Total — WaveWarZ Benefit Battles Has Raised for Charity
           </p>
@@ -713,7 +713,7 @@ function StaticBenefitCard({ title, subtitle, date, fiatUsd, fiatSolscanUrl }: {
           <p className="text-xs text-muted-foreground">{subtitle} &middot; {date}</p>
         </div>
       </div>
-      <div className="rounded-lg bg-[#0d1321] p-4">
+      <div className="rounded-lg bg-[#0c121c] p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1">Fiat Raised</p>
@@ -804,7 +804,7 @@ function OverheadCompare({ label, reach, desc, bad, good }: {
   const color = good ? 'text-[#95fe7c]' : bad ? 'text-red-400' : 'text-amber-400'
   const border = good ? 'border-[#95fe7c]/20' : bad ? 'border-red-500/20' : 'border-amber-500/20'
   return (
-    <div className={`rounded-lg border ${border} bg-[#0d1321] p-4`}>
+    <div className={`rounded-lg border ${border} bg-[#0c121c] p-4`}>
       <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-xl font-rajdhani font-bold ${color} mb-2`}>{reach}</p>
       <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
@@ -930,7 +930,7 @@ function MiniStat({ label, value, sub, highlight }: {
   label: string; value: string; sub: string; highlight?: boolean
 }) {
   return (
-    <div className="rounded-lg bg-[#0d1321] p-3">
+    <div className="rounded-lg bg-[#0c121c] p-3">
       <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-sm font-rajdhani font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground">{sub}</p>

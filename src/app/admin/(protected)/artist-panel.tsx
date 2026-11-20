@@ -142,7 +142,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
           placeholder="Search artist or wallet…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-64"
+          className="bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-64"
         />
         <button
           onClick={openCreate}
@@ -169,7 +169,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
             {editing ? 'Edit Artist Profile' : 'Create New Artist Profile'}
           </h3>
           {editing && (
-            <div className="mb-4 p-3 bg-[#0d1321] rounded-lg">
+            <div className="mb-4 p-3 bg-[#0c121c] rounded-lg">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Artist UUID</p>
               <p className="font-mono text-xs text-[#7ec1fb] select-all">{editing}</p>
             </div>
@@ -278,7 +278,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
             </div>
 
             {/* Linked Wallets */}
-            <div className="px-5 py-3 border-t border-border bg-[#0d1321]/50">
+            <div className="px-5 py-3 border-t border-border bg-[#0c121c]/50">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Linked Wallets</p>
               <div className="flex flex-wrap gap-2 mb-2">
                 {a.wallets.length === 0 && (
@@ -333,7 +333,7 @@ function Field({ label, value, onChange, placeholder, mono }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 transition-colors ${mono ? 'font-mono text-xs' : ''}`}
+        className={`w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 transition-colors ${mono ? 'font-mono text-xs' : ''}`}
       />
     </div>
   )
@@ -427,7 +427,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
           placeholder="Paste wallet address…"
           value={wallet}
           onChange={e => setWallet(e.target.value)}
-          className="flex-1 max-w-md bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-xs font-mono text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#7ec1fb]/50"
+          className="flex-1 max-w-md bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-xs font-mono text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#7ec1fb]/50"
         />
         <button
           onClick={load}
@@ -448,7 +448,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
         <>
           <div className="space-y-2 mb-4 max-h-72 overflow-y-auto">
             {battles.map(b => (
-              <label key={b.battle_id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#0d1321] border border-border cursor-pointer hover:border-[#7ec1fb]/30">
+              <label key={b.battle_id} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#0c121c] border border-border cursor-pointer hover:border-[#7ec1fb]/30">
                 <input
                   type="checkbox"
                   checked={selected.has(b.battle_id)}
@@ -482,7 +482,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
             <select
               value={targetArtistId}
               onChange={e => setTargetArtistId(e.target.value)}
-              className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#95fe7c]/50"
+              className="bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#95fe7c]/50"
             >
               <option value="">Assign selected to profile…</option>
               {profiles.map(p => (

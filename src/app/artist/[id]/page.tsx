@@ -52,7 +52,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
     <div className="space-y-8 max-w-4xl mx-auto">
 
       {/* ── PLAYER CARD (the shareable hero) ── */}
-      <div className="relative rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden shadow-2xl shadow-[#95fe7c]/5">
+      <div className="relative rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden shadow-2xl shadow-[#95fe7c]/5">
 
         {/* Top accent bar */}
         <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
@@ -78,7 +78,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
                     </span>
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#95fe7c] rounded-full border-2 border-[#0d1321]" />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#95fe7c] rounded-full border-2 border-[#0c121c]" />
               </div>
 
               <div>
@@ -138,7 +138,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
             {/* W/L Record badge */}
             <div className="text-right shrink-0 space-y-2">
               {/* Overall record */}
-              <div className="inline-flex items-center gap-2 bg-[#0d1321] border border-border rounded-xl px-5 py-3">
+              <div className="inline-flex items-center gap-2 bg-[#0c121c] border border-border rounded-xl px-5 py-3">
                 <div className="text-center">
                   <p className="text-3xl font-rajdhani font-bold text-[#95fe7c]">{stats.wins}</p>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Wins</p>
@@ -215,7 +215,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
           </div>
 
           {/* Spotify equivalency */}
-          <div className="rounded-xl bg-[#0d1321] border border-[#7ec1fb]/20 p-4 flex items-center justify-between">
+          <div className="rounded-xl bg-[#0c121c] border border-[#7ec1fb]/20 p-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
                 Spotify Stream Equivalent
@@ -246,7 +246,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
         </div>
 
         {/* Bottom accent */}
-        <div className="px-8 py-3 bg-[#0d1321]/60 border-t border-border flex items-center justify-between">
+        <div className="px-8 py-3 bg-[#0c121c]/60 border-t border-border flex items-center justify-between">
           <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
             WaveWarZ Intelligence · Solana Mainnet
           </span>
@@ -391,7 +391,7 @@ function StatBox({ label, value, sub, highlight = false }: {
   label: string; value: string; sub?: string; highlight?: boolean
 }) {
   return (
-    <div className="rounded-xl border border-border bg-[#0d1321] p-4">
+    <div className="rounded-xl border border-border bg-[#0c121c] p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-lg font-rajdhani font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
         {value}
@@ -412,7 +412,7 @@ function SocialIcon({ href, label, color, children }: {
       rel="noreferrer"
       title={label}
       style={{ color }}
-      className="w-8 h-8 rounded-lg border border-border bg-[#0d1321] flex items-center justify-center hover:border-current/50 hover:bg-white/5 transition-colors opacity-70 hover:opacity-100"
+      className="w-8 h-8 rounded-lg border border-border bg-[#0c121c] flex items-center justify-center hover:border-current/50 hover:bg-white/5 transition-colors opacity-70 hover:opacity-100"
     >
       {children}
     </a>

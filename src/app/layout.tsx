@@ -1,26 +1,31 @@
 import type { Metadata } from 'next'
-import { Rajdhani, Inter, Geist_Mono } from 'next/font/google'
+import { Space_Grotesk, Outfit, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import { NavBar } from '@/components/nav-bar'
+import './site-shell.css'
+import { SiteNav } from '@/components/site-nav'
+import { SiteFooter } from '@/components/site-footer'
 import { IgniteRadio } from '@/components/ignite-radio'
 import { AdClickCapture } from '@/components/ad-click-capture'
-import { OutboundLink } from '@/components/outbound-link'
 import { Analytics } from '@vercel/analytics/next'
 
-const rajdhani = Rajdhani({
+// Same three faces as the redesigned wavewarz.com. The old variable names stay, pointed at the new faces, so every
+// existing font-rajdhani / font-sans / font-mono class follows without edits.
+const display = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['600', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-rajdhani',
 })
 
-const inter = Inter({
+const body = Outfit({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
 })
 
-const geistMono = Geist_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
   variable: '--font-geist-mono',
 })
 
@@ -83,7 +88,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${rajdhani.variable} ${inter.variable} ${geistMono.variable} font-sans antialiased min-h-screen flex flex-col pb-24 overflow-x-clip`}>
+      <body className={`${display.variable} ${body.variable} ${mono.variable} font-sans antialiased min-h-screen flex flex-col pb-24 overflow-x-clip`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -96,21 +101,12 @@ export default function RootLayout({
           twq('config','reaex');`}
         </Script>
         <AdClickCapture />
-        <NavBar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <SiteNav />
+        <main className="max-w-[1320px] mx-auto px-4 sm:px-5 py-8 flex-1 w-full">
           {children}
         </main>
         <IgniteRadio />
-        <footer className="border-t border-border mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-            <span>© {new Date().getFullYear()} WaveWarZ. All rights reserved.</span>
-            <div className="flex items-center gap-4">
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-              <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">wavewarz.com ↗</OutboundLink>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter />
         <Analytics />
       </body>
     </html>

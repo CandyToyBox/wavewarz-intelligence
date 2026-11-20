@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="rounded-lg border border-border bg-[#0a0f1a] p-4 overflow-x-auto text-xs leading-relaxed">
+    <pre className="rounded-lg border border-border bg-[#0c121c] p-4 overflow-x-auto text-xs leading-relaxed">
       <code className="text-[#95fe7c] font-mono whitespace-pre">{children}</code>
     </pre>
   )

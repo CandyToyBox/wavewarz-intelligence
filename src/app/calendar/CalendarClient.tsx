@@ -51,7 +51,10 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
 
   const upcoming = useMemo(() => {
     const now = todayYmd()
-    return events.filter(e => !e.recurring && e.event_date >= now).slice(0, 8)
+    const oneOff = events.filter(e => !e.recurring && e.event_date >= now)
+    if (oneOff.length) return oneOff.slice(0, 8)
+    // nothing special posted: show the next standing shows, so this panel never sits empty
+    return events.filter(e => e.recurring && e.event_date >= now).sort((a, b) => a.event_date.localeCompare(b.event_date)).slice(0, 3)
   }, [events])
 
   const cells = useMemo(() => {

@@ -237,7 +237,7 @@ export default async function TraderPage({ params }: Props) {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-border bg-[#0d1321]">
+                <tr className="border-b border-border bg-[#0c121c]">
                   <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Battle</th>
                   <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Type</th>
                   <th className="text-right px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Amount</th>

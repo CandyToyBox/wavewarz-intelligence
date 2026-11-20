@@ -14,6 +14,9 @@ import type { PinnedEvent } from '@/config/pinned-event'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
+import { main } from '@/lib/site'
+import { WEEKLY_SHOWS } from '@/lib/weekly-schedule'
+import { Trophy, Clapperboard, Mic, PlayCircle, HeartHandshake, BarChart3, ArrowUpRight, ArrowRight } from 'lucide-react'
 import { DJWavyModel } from '@/components/dj-wavy-model'
 
 async function getGlobalStats() {
@@ -38,18 +41,6 @@ async function getGlobalStats() {
     quickBattles: m.quickCount,
     totalArtistPayouts: m.artistPayouts,
   }
-}
-
-async function getSchedule() {
-  try {
-    const supabase = await createClient()
-    const { data } = await supabase
-      .from('platform_events')
-      .select('*')
-      .eq('is_active', true)
-      .order('sort_order')
-    return data ?? []
-  } catch { return [] }
 }
 
 type CalendarEventPreview = {
@@ -262,9 +253,8 @@ async function getLiveArena(totalBattles: number): Promise<LiveArenaData | null>
 }
 
 export default async function HomePage() {
-  const [stats, schedule, calendarEvents, spotify, solPrice, qbSongs] = await Promise.all([
+  const [stats, calendarEvents, spotify, solPrice, qbSongs] = await Promise.all([
     getGlobalStats(),
-    getSchedule(),
     getCalendarEvents(),
     getSpotifyStats(),
     getLiveSolPrice(),
@@ -286,7 +276,7 @@ export default async function HomePage() {
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
-            WaveWarZ <span className="text-[#7ec1fb]">Intelligence</span>
+            WaveWarZ <span className="text-[#7ec1fb]">Stats</span>
           </h1>
           <p className="text-muted-foreground mt-2 text-lg tracking-wide">
             Every battle. Every number. <span className="text-white font-bold">ONCHAIN</span>
@@ -296,7 +286,7 @@ export default async function HomePage() {
           <span className="text-sm text-muted-foreground font-mono">
             1 SOL = {solToUsd(1, solPrice)}
           </span>
-          <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 px-4 py-1 text-[10px] font-bold tracking-widest animate-pulse">
+          <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 px-4 py-1 text-[10px] font-bold tracking-widest">
             LIVE
           </Badge>
         </div>
@@ -371,8 +361,8 @@ export default async function HomePage() {
               {activePinnedEvent.bullets.map(b => <li key={b}>• {b}</li>)}
             </ul>
             <a href={activePinnedEvent.href} target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#7ec1fb] hover:bg-[#5aaae8] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              {activePinnedEvent.cta} ↗
+              className="ww-cta">
+              {activePinnedEvent.cta} <ArrowUpRight size={15} aria-hidden="true" />
             </a>
           </div>
 
@@ -420,23 +410,20 @@ export default async function HomePage() {
       <section className="rounded-2xl border border-[#7ec1fb]/20 bg-[#7ec1fb]/5 p-6 md:p-8 space-y-4">
         <h2 className="text-3xl font-rajdhani font-bold text-white">What Is WaveWarZ?</h2>
         <p className="text-gray-300 leading-relaxed max-w-3xl">
-          WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade ephemeral tokens on who they think will win. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
+          WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade each side&apos;s battle tokens as the songs play. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
         </p>
         <p className="text-gray-400 leading-relaxed max-w-3xl text-sm">
-          We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans put real money behind the artists they believe in — and lets artists earn directly from that conviction, instantly, every time.
+          We built WaveWarZ because music deserves a real economy. Streams pay fractions of a cent. WaveWarZ lets fans trade on the artists they believe in, and the artists earn from every trade, instantly.
         </p>
         <div className="pt-2 flex flex-wrap gap-3">
-          <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-            Enter the Arena ↗
+          <OutboundLink href={main('/')} className="ww-cta">
+            Enter the arena <ArrowRight size={15} aria-hidden="true" />
           </OutboundLink>
-          <OutboundLink href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer" eventType="live_show"
-            className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-            Watch on YouTube ↗
+          <OutboundLink href="https://www.youtube.com/@wavewarz" target="_blank" rel="noreferrer" eventType="live_show" className="ww-cta ghost">
+            Replays on YouTube <ArrowUpRight size={15} aria-hidden="true" />
           </OutboundLink>
-          <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer"
-            className="inline-flex items-center gap-2 border border-[#7ec1fb]/30 hover:border-[#7ec1fb] text-[#7ec1fb] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors font-mono">
-            View Program on Solscan ↗
+          <a href="https://solscan.io/account/9TUfEHvk5fN5vogtQyrefgNqzKy2Bqb4nWVhSFUg2fYo" target="_blank" rel="noreferrer" className="ww-cta blue">
+            Program on Solscan <ArrowUpRight size={15} aria-hidden="true" />
           </a>
         </div>
       </section>
@@ -455,20 +442,17 @@ export default async function HomePage() {
             DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
           </p>
           <p className="text-gray-400 leading-relaxed max-w-2xl text-sm">
-            Want his take on your own track before you battle? DJ Wavy does 1-on-1 breakdowns on wavewarz.com — pick your song and get a full listen + verdict. Or pull him up in AR and take a photo with him, right from your phone.
+            Want his take on your own track before you battle? Get a 1 on 1 with DJ Wavy on wavewarz.com: pick two songs, and he scores both, picks one and says what to fix. Both artists get paid. Or pull him up in AR and take a photo with him, right from your phone.
           </p>
           <div className="flex flex-wrap gap-3 pt-1">
-            <OutboundLink href="https://www.wavewarz.com/audius/search" target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-[#95fe7c] hover:bg-[#7de86a] text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Get Your DJ Wavy Breakdown ↗
+            <OutboundLink href={main('/dj-wavy/create')} className="ww-cta">
+              Get a DJ Wavy Breakdown <ArrowRight size={15} aria-hidden="true" />
             </OutboundLink>
-            <a href="https://ar.illust.space/web/AttaBotty/djwavy" target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 border border-[#95fe7c]/40 hover:border-[#95fe7c] text-[#95fe7c] text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              Take a Photo with DJ Wavy (AR) ↗
+            <a href="https://ar.illust.space/web/AttaBotty/djwavy" target="_blank" rel="noreferrer" className="ww-cta ghost">
+              Photo with DJ Wavy (AR) <ArrowUpRight size={15} aria-hidden="true" />
             </a>
-            <Link href="/leaderboards/songs"
-              className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white text-sm font-bold px-5 py-2.5 rounded-lg transition-colors">
-              See His Picks on the Song Leaderboard →
+            <Link href="/leaderboards/songs" className="ww-cta ghost">
+              His picks on the song charts <ArrowRight size={15} aria-hidden="true" />
             </Link>
           </div>
         </div>
@@ -482,42 +466,42 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <FeatureCard
-            icon="🏆"
+            icon={<Trophy size={22} aria-hidden="true" />}
             title="Leaderboards"
             desc="Artist and song rankings by volume, wins, and battle count. See who&apos;s dominating the arena."
             href="/leaderboards"
           />
           <FeatureCard
-            icon="🎬"
+            icon={<Clapperboard size={22} aria-hidden="true" />}
             title="WaveWarZ Clippers"
             desc="Community members submit battle highlights. Approved clips go out on YouTube, X, and TikTok. Submit your clip and earn points."
             href="https://t.me/wavewarzclipshq"
             external
           />
           <FeatureCard
-            icon="🎙"
-            title="X Spaces — Daily"
-            desc="Join us live Mon–Fri at 8:30 PM EST for the Quick Battle Livestream. Trade the charts in real-time while the music plays."
+            icon={<Mic size={22} aria-hidden="true" />}
+            title="X Spaces"
+            desc="Daily X Space Mon–Fri at 11 AM ET. Quick Battlez live Mon, Wed and Fri at 9 PM ET: trade the charts while the music plays."
             href="https://x.com/wavewarz"
             external
             trackConversion
           />
           <FeatureCard
-            icon="📺"
-            title="YouTube Livestream"
-            desc="Quick Battles stream live on YouTube every weeknight at 8:30 PM EST. Two songs battle it out — fans vote and trade in real-time."
+            icon={<PlayCircle size={22} aria-hidden="true" />}
+            title="Replays on YouTube"
+            desc="Watch past battles any time. Live shows stream on X, Kick and Twitch."
             href="https://www.youtube.com/@wavewarz"
             external
             trackConversion
           />
           <FeatureCard
-            icon="🎗️"
+            icon={<HeartHandshake size={22} aria-hidden="true" />}
             title="Benefits & Charities"
             desc="Battles where every trade, vote, and SOL moves directly from the arena to the cause — verifiable onchain."
             href="/benefits"
           />
           <FeatureCard
-            icon="📊"
+            icon={<BarChart3 size={22} aria-hidden="true" />}
             title="Battle Analytics"
             desc="Verified onchain stats for every battle. Volume, pools, trader counts, and payout breakdowns — all sourced directly from Solana."
             href="/battles"
@@ -573,60 +557,40 @@ export default async function HomePage() {
           <div>
             <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide flex items-center gap-3">
               Live Schedule
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-white/10 text-muted-foreground border border-border">𝕏</span>
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Join us live — trade the charts in real-time or drop in for community AMA</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Every week, Eastern time. <Link href="/calendar" className="text-[#7ec1fb] hover:underline">Full calendar</Link></p>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {schedule.length > 0 ? schedule.map((evt: {
-            id: number; title: string; description: string
-            day_of_week: string; time_est: string; event_type: string; platform_link: string
-          }) => (
-            <ScheduleCard
-              key={evt.id}
-              title={evt.title}
-              time={`${evt.day_of_week} · ${evt.time_est} EST`}
-              desc={evt.description}
-              href={evt.platform_link}
-              titleColor={evt.event_type === 'X_SPACE' && evt.id % 2 === 1 ? 'text-[#95fe7c]' : 'text-[#7ec1fb]'}
-            />
-          )) : (
-            <>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* src/lib/weekly-schedule.ts is the source of truth for the standing shows (same as /calendar) */}
+          {WEEKLY_SHOWS.map((w, n) => (
               <ScheduleCard
-                title="Live Quick Battle Trading"
-                time="Mon–Fri · 9:00 PM EST"
-                desc="Join us on X Spaces to trade the charts live. Watch the 30-second final windows play out in real-time."
-                href="https://x.com/wavewarz"
-                titleColor="text-[#95fe7c]"
+                key={w.key}
+                title={w.title}
+                time={`${w.daysLabel} · ${w.event_time}`}
+                desc={w.description}
+                href={w.location_or_link}
+                titleColor={n % 2 === 0 ? 'text-[#95fe7c]' : 'text-[#7ec1fb]'}
               />
-              <ScheduleCard
-                title="Community AMA & Feedback"
-                time="Mon–Fri · 11:00 AM EST"
-                desc="Talk directly with the founders, give feedback, and help shape the platform's future."
-                href="https://x.com/wavewarz"
-                titleColor="text-[#7ec1fb]"
-              />
-            </>
-          )}
+            ))}
         </div>
       </section>
 
       {/* Trader Claim Disclaimer */}
-      <section className="border border-yellow-500/30 bg-yellow-500/5 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <section className="border border-[#f2a74b]/35 bg-[#f2a74b]/[0.06] rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-bold text-yellow-300 mb-1">Traders: Your winnings are NOT automatic</p>
-          <p className="text-xs text-yellow-300/80">
-            Artist payouts are instant and onchain. Trader winnings must be manually claimed after each battle.
+          <p className="text-sm font-bold text-[#f6bd73] mb-1">Traders: withdrawing is not automatic</p>
+          <p className="text-xs text-[#f2a74b]/85">
+            Artist payouts are instant and onchain. Traders withdraw their SOL after each battle, on the battle page or the claim page.
           </p>
         </div>
         <a
           href="https://claim.wavewarz.info"
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black text-sm font-bold px-5 py-2.5 rounded-lg transition-colors"
+          className="ww-cta amber shrink-0"
         >
-          Claim Winnings ↗
+          Open the claim page <ArrowUpRight size={15} aria-hidden="true" />
         </a>
       </section>
 
@@ -721,7 +685,7 @@ function StatCard({
   label: React.ReactNode; primary: string; secondary?: string; sub?: string; highlight?: boolean
 }) {
   return (
-    <Card className={`bg-card border-border anim-fade-up ${highlight ? 'glow-pulse-green' : ''}`}>
+    <Card className={`bg-card border-border anim-fade-up ${highlight ? 'border-[#95fe7c]/35' : ''}`}>
       <CardHeader className="pb-2">
         <CardTitle className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           {label}
@@ -760,13 +724,13 @@ function ScheduleCard({
       target="_blank"
       rel="noreferrer"
       eventType="live_show"
-      className="block p-6 border border-border bg-card rounded-xl hover:border-[#7ec1fb] transition-colors group"
+      className="block h-full p-6 border border-border bg-card rounded-2xl hover:border-[#7ec1fb]/60 transition-colors group"
     >
       <h3 className={`text-lg font-bold font-rajdhani mb-1 ${titleColor}`}>{title}</h3>
       <p className="text-xs text-muted-foreground mb-3">{time}</p>
       <p className="text-sm text-gray-300 mb-4">{desc}</p>
       <span className="text-sm font-bold text-[#7ec1fb] group-hover:underline">
-        Join X Space →
+        Join on X →
       </span>
     </OutboundLink>
   )
@@ -775,11 +739,11 @@ function ScheduleCard({
 function FeatureCard({
   icon, title, desc, href, external = false, trackConversion = false,
 }: {
-  icon: string; title: string; desc: string; href: string; external?: boolean; trackConversion?: boolean
+  icon: React.ReactNode; title: string; desc: string; href: string; external?: boolean; trackConversion?: boolean
 }) {
   const inner = (
-    <div className="h-full p-5 rounded-xl border border-border bg-card hover:border-[#7ec1fb]/40 transition-colors group space-y-2">
-      <div className="text-2xl">{icon}</div>
+    <div className="h-full p-5 rounded-2xl border border-border bg-card hover:border-[#7ec1fb]/40 transition-colors group space-y-2">
+      <div className="text-[#7ec1fb] group-hover:text-[#95fe7c] transition-colors">{icon}</div>
       <h3 className="font-rajdhani font-bold text-white text-base group-hover:text-[#7ec1fb] transition-colors">{title}</h3>
       <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
     </div>

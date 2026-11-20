@@ -110,14 +110,14 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
           placeholder="Search by name or wallet…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-full max-w-xs"
+          className="bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-full max-w-xs"
         />
         <span className="text-xs text-muted-foreground ml-auto">
           {filtered.length}{search ? ` of ${rows.length}` : ''} artists
         </span>
       </div>
 
-      <div className="rounded-xl border border-border overflow-hidden bg-[#0d1321]">
+      <div className="rounded-xl border border-border overflow-hidden bg-[#0c121c]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[520px]">
             <thead>
@@ -142,7 +142,7 @@ export function ArtistTable({ rows }: { rows: ArtistRowClient[] }) {
               {filtered.map((a, i) => {
                 const isTop3 = i < 3 && !search
                 const leftBorderClass = isTop3 ? TOP3_LEFT_BORDER[i] : ''
-                const rowBg = i % 2 === 0 ? 'bg-[#0d1321]' : 'bg-[#0a0f1c]'
+                const rowBg = i % 2 === 0 ? 'bg-[#0c121c]' : 'bg-[#0c121c]'
 
                 return (
                   <tr

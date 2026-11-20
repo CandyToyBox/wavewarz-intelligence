@@ -53,7 +53,7 @@ export function RunwayChecklist({ slug, runway, keys, title = 'Promotion Runway'
         <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">{title}</h3>
         <span className="text-xs text-muted-foreground">{done}/{items.length} · {pct}%{pending ? ' · saving…' : ''}</span>
       </div>
-      <div className="h-1 w-full bg-[#0d1321]">
+      <div className="h-1 w-full bg-[#0c121c]">
         <div className="h-full bg-[#95fe7c] transition-all" style={{ width: `${pct}%` }} />
       </div>
       <ul className="divide-y divide-border">

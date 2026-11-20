@@ -14,7 +14,7 @@ export function TraderLookup() {
   }
 
   return (
-    <div className="rounded-xl border border-[#7ec1fb]/25 bg-[#0d1321] p-4">
+    <div className="rounded-xl border border-[#7ec1fb]/25 bg-[#0c121c] p-4">
       <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-3">
         Look Up Your Trading Stats
       </p>

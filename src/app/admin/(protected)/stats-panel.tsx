@@ -39,13 +39,13 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
 
         {/* Current values */}
         <div className="grid grid-cols-2 gap-4 mb-5">
-          <div className="bg-[#0d1321] rounded-lg p-3">
+          <div className="bg-[#0c121c] rounded-lg p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Monthly Listeners (current)</p>
             <p className="font-rajdhani font-bold text-xl text-[#1DB954]">
               {stats.spotify_monthly_streams > 0 ? stats.spotify_monthly_streams.toLocaleString() : '—'}
             </p>
           </div>
-          <div className="bg-[#0d1321] rounded-lg p-3">
+          <div className="bg-[#0c121c] rounded-lg p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Streams (current)</p>
             <p className="font-rajdhani font-bold text-xl text-[#1DB954]">
               {stats.spotify_total_streams > 0 ? stats.spotify_total_streams.toLocaleString() : '—'}
@@ -64,7 +64,7 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
                 name="spotify_monthly_streams"
                 defaultValue={stats.spotify_monthly_streams || ''}
                 min={0}
-                className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
+                className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
                 placeholder="e.g. 45000"
               />
             </div>
@@ -77,7 +77,7 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
                 name="spotify_total_streams"
                 defaultValue={stats.spotify_total_streams || ''}
                 min={0}
-                className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
+                className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
                 placeholder="e.g. 250000"
               />
             </div>
@@ -89,7 +89,7 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
                 type="url"
                 name="spotify_profile_url"
                 defaultValue={stats.spotify_profile_url ?? ''}
-                className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
+                className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#1DB954]"
                 placeholder="https://open.spotify.com/artist/..."
               />
             </div>

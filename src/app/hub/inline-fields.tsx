@@ -95,13 +95,13 @@ export function InlineFields({
                   onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
                   placeholder={f.placeholder}
                   rows={4}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
                 />
               ) : f.type === 'select' ? (
                 <select
                   value={val}
                   onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
                 >
                   <option value="">—</option>
                   {(f.options ?? []).map(o => <option key={o} value={o}>{o}</option>)}
@@ -111,7 +111,7 @@ export function InlineFields({
                   value={val}
                   onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
                   placeholder={f.placeholder}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
                 />
               )}
               {f.hint && editing && <p className="text-[10px] text-muted-foreground/60 mt-1">{f.hint}</p>}

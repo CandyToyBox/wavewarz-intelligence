@@ -75,7 +75,7 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
       <Link href="/hub/events" className="text-xs text-muted-foreground hover:text-white">← All events</Link>
 
       {/* Header */}
-      <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden">
+      <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden">
         <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
         <div className="p-6">
           <div className="flex items-center gap-4 flex-wrap">

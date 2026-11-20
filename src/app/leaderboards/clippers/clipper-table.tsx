@@ -73,7 +73,7 @@ export function ClipperTable({ rows }: { rows: ClipperRowClient[] }) {
           placeholder="Search by name or wallet…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-orange-500/50 w-full max-w-xs"
+          className="bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-orange-500/50 w-full max-w-xs"
         />
         <span className="text-xs text-muted-foreground ml-auto">
           {filtered.length}{search ? ` of ${rows.length}` : ''} contributors

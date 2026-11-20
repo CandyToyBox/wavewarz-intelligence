@@ -114,7 +114,7 @@ function InvitePanel({ artistId, artistName, invite }: { artistId: string; artis
         </div>
       </div>
       {link && (
-        <div className="rounded-lg border border-[#95fe7c]/40 bg-[#0d1321] p-3 space-y-2">
+        <div className="rounded-lg border border-[#95fe7c]/40 bg-[#0c121c] p-3 space-y-2">
           <p className="text-xs text-[#95fe7c]">Copy it now. For safety the full link is shown only once; make a new one if it gets lost.</p>
           <div className="flex gap-2">
             <input readOnly value={link} onFocus={e => e.currentTarget.select()} className="flex-1 min-w-0 bg-[#111827] border border-border rounded px-2 py-1.5 text-xs text-white font-mono" aria-label="Private playbook link" />
@@ -155,7 +155,7 @@ function ModuleBlock({ artistId, m, fields, help }: { artistId: string; m: Modul
     m.status === 'submitted' ? 'text-[#95fe7c]' : m.status === 'edited' ? 'text-amber-400' : m.status === 'none' ? 'text-muted-foreground' : 'text-[#7ec1fb]'
 
   return (
-    <details className="rounded-lg border border-border bg-[#0d1321]/40" style={{ borderLeft: `4px solid ${m.color}` }} open={m.toReview > 0 && fields.length > 0 && m.status !== 'none'}>
+    <details className="rounded-lg border border-border bg-[#0c121c]/40" style={{ borderLeft: `4px solid ${m.color}` }} open={m.toReview > 0 && fields.length > 0 && m.status !== 'none'}>
       <summary className="cursor-pointer list-none flex items-center gap-3 flex-wrap px-4 py-3">
         <span className="inline-flex items-center justify-center w-7 h-7 rounded-md font-rajdhani font-bold text-[#0d1321]" style={{ background: m.color }}>{m.order}</span>
         <span className="font-rajdhani font-bold text-white tracking-wide uppercase text-lg">{m.title}</span>
@@ -283,7 +283,7 @@ function FieldCard({ artistId, f, help }: { artistId: string; f: ReviewField; he
             value={text}
             onChange={e => setText(e.target.value)}
             rows={Math.min(8, Math.max(3, text.split('\n').length + 1))}
-            className="w-full bg-[#0d1321] border border-border rounded px-2 py-1.5 text-sm text-white"
+            className="w-full bg-[#0c121c] border border-border rounded px-2 py-1.5 text-sm text-white"
             aria-label="Edit before accepting"
           />
         </div>

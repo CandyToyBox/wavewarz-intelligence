@@ -82,7 +82,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
           placeholder="Search battle or ID…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-52"
+          className="bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 w-52"
         />
         <div className="flex gap-1">
           {(['all', 'main', 'quick', 'community'] as const).map(t => (
@@ -197,7 +197,7 @@ function MediaInput({ label, value, onChange, placeholder, hasValue }: {
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-[#0d1321] border border-border rounded px-2 py-1.5 text-xs text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#95fe7c]/40 transition-colors font-mono"
+        className="w-full bg-[#0c121c] border border-border rounded px-2 py-1.5 text-xs text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#95fe7c]/40 transition-colors font-mono"
       />
     </div>
   )

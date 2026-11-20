@@ -73,7 +73,7 @@ export function SpotlightEventCard({ group }: { group: SpotlightGroup }) {
         </div>
       ) : (
         // Fallback: VS-style avatar strip
-        <div className="flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-[#7ec1fb]/5 via-[#0d1321] to-[#95fe7c]/5 border-b border-[#7ec1fb]/10">
+        <div className="flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-[#7ec1fb]/5 via-[#070a10] to-[#95fe7c]/5 border-b border-[#7ec1fb]/10">
           {a1 && (
             <div className="flex flex-col items-center gap-1.5">
               <div className="w-14 h-14 rounded-full bg-[#7ec1fb]/15 border-2 border-[#7ec1fb]/40 flex items-center justify-center">
@@ -148,7 +148,7 @@ export function SpotlightEventCard({ group }: { group: SpotlightGroup }) {
         </div>
 
         {/* Artist breakdown mini-table */}
-        <div className="rounded-lg bg-[#0d1321] overflow-hidden">
+        <div className="rounded-lg bg-[#0c121c] overflow-hidden">
           <div className="grid grid-cols-4 gap-2 px-3 py-2 border-b border-border">
             <span className="text-[9px] text-muted-foreground uppercase tracking-widest col-span-2">Artist</span>
             <span className="text-[9px] text-muted-foreground uppercase tracking-widest text-right">Volume</span>
@@ -222,7 +222,7 @@ export function SpotlightEventCard({ group }: { group: SpotlightGroup }) {
 
 function AggregateStat({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
-    <div className="rounded-lg bg-[#0d1321] p-3">
+    <div className="rounded-lg bg-[#0c121c] p-3">
       <p className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className="text-sm font-rajdhani font-bold text-[#7ec1fb]">{value}</p>
       <p className="text-[10px] text-muted-foreground">{sub}</p>

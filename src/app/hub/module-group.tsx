@@ -34,7 +34,7 @@ export function ModuleGroup({ subject, modules, states, nodes, autoProgress }: P
           {done.length} of {modules.length} modules complete
           {open.length > 0 && <> · up next: <span className="text-white">{open[0].title}</span></>}
         </p>
-        <div className="h-1.5 w-40 rounded-full bg-[#0d1321] overflow-hidden">
+        <div className="h-1.5 w-40 rounded-full bg-[#0c121c] overflow-hidden">
           <div className="h-full rounded-full bg-[#95fe7c]" style={{ width: `${Math.round((done.length / Math.max(modules.length, 1)) * 100)}%` }} />
         </div>
       </div>
@@ -159,7 +159,7 @@ function ModuleCard({ subject, spec, state, progress, defaultOpen, children }: {
         </div>
       </button>
       {totalCount > 0 && (
-        <div className="h-0.5 w-full bg-[#0d1321]">
+        <div className="h-0.5 w-full bg-[#0c121c]">
           <div className="h-full bg-[#95fe7c] transition-all" style={{ width: `${pct}%` }} />
         </div>
       )}
