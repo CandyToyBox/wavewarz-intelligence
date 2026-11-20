@@ -161,9 +161,11 @@ function SongAvatar({ song, size = 10 }: { song: RankedSong | SongData; size?: n
   const initial = song.songTitle.charAt(0).toUpperCase()
   const color   = colorForLetter(initial)
   const cls     = `shrink-0 w-${size} h-${size} rounded-lg`
-  return song.artUrl ? (
+  // Art that fails to load falls back to the letter tile instead of showing broken alt text
+  const [broken, setBroken] = useState(false)
+  return song.artUrl && !broken ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={song.artUrl} alt={song.songTitle} className={`${cls} object-cover border border-border`} />
+    <img src={song.artUrl} alt="" onError={() => setBroken(true)} className={`${cls} object-cover border border-border`} />
   ) : (
     <div
       className={`${cls} border flex items-center justify-center font-rajdhani font-bold text-lg`}
@@ -193,7 +195,7 @@ function SongName({ song }: { song: RankedSong }) {
       <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
         {song.handle && <p className="text-[10px] text-muted-foreground">@{song.handle}</p>}
         {song.genre && (
-          <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20">
+          <span title={song.genre} className="max-w-full truncate text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20">
             {song.genre}
           </span>
         )}
@@ -265,10 +267,10 @@ function ChartTable({
   return (
     <div className="space-y-3">
     <div className="rounded-xl border border-border overflow-x-auto bg-[#0c121c]">
-      <table className="w-full text-sm min-w-[540px]">
+      <table className="w-full text-sm sm:min-w-[540px]">
         <thead>
           <tr className="border-b border-border bg-[#111827]">
-            <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest w-10">#</th>
+            <th className="text-left px-2 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest w-10">#</th>
             <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">Song</th>
             {category === 'trending' && (
               <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden sm:table-cell">
@@ -310,10 +312,11 @@ function ChartTable({
             const heat = relativeHeat(song.trendingScore, maxScore)
             return (
               <tr key={song.key} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
-                <td className="px-3 sm:px-4 py-3">
+                <td className="px-2 sm:px-4 py-3">
                   <RankCell position={absPos} />
                 </td>
-                <td className="px-3 sm:px-4 py-3">
+                {/* w-full + max-w-0 lets long titles truncate inside the table instead of widening it */}
+                <td className="px-2 sm:px-4 py-3 w-full max-w-0">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <SongAvatar song={song} />
                     <SongName song={song} />

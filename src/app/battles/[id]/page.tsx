@@ -376,8 +376,9 @@ export default async function BattleDetailPage({ params }: Props) {
             {/* Charts */}
             <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Charts (SOL)</p>
+              {/* Charts = the side with the bigger SOL pool, which is not always the overall winner */}
               <p className="font-rajdhani font-bold text-white text-sm">
-                {a1Won ? battle.artist1_name : battle.artist2_name}
+                {p1 > p2 ? battle.artist1_name : p2 > p1 ? battle.artist2_name : 'Tie'}
               </p>
               <p className="text-[10px] text-muted-foreground mt-1 font-mono">
                 {p1.toFixed(4)} vs {p2.toFixed(4)} SOL
