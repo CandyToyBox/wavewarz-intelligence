@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 
 export function IgniteRadio() {
   const [dismissed, setDismissed] = useState(false)
-  const pathname = usePathname()
+  const pathname = usePathname() ?? ''
 
   // Not on the artist Playbook: it would cover the Submit buttons.
   if (dismissed || pathname.startsWith('/playbook')) return null

@@ -184,12 +184,7 @@ export default async function BenefitsPage() {
     <div className="space-y-12">
 
       {/* ── HERO ── */}
-      <header className="relative rounded-2xl overflow-hidden border border-[#95fe7c]/20 bg-gradient-to-br from-[#070a10] via-[#0a1a0a] to-[#070a10] p-10">
-        <div className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 20% 50%, #95fe7c 0%, transparent 60%), radial-gradient(circle at 80% 50%, #7ec1fb 0%, transparent 60%)',
-          }}
-        />
+      <header className="relative rounded-2xl overflow-hidden border border-[#95fe7c]/20 bg-[#0b111c] p-10">
         <div className="relative">
           <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest mb-4">
             BENEFIT BATTLES & SPOTLIGHTS
@@ -250,7 +245,7 @@ export default async function BenefitsPage() {
         </div>
 
         {/* Grand Total Banner */}
-        <div className="rounded-xl border border-[#95fe7c]/40 bg-gradient-to-r from-[#95fe7c]/10 via-[#070a10] to-[#7ec1fb]/10 p-5 mb-6">
+        <div className="rounded-xl border border-[#95fe7c]/40 bg-[#95fe7c]/[.06] p-5 mb-6">
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2 text-center">
             Grand Total — WaveWarZ Benefit Battles Has Raised for Charity
           </p>

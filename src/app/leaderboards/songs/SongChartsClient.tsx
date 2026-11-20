@@ -261,6 +261,7 @@ function ChartTable({
             key={song.key}
             rank={globalOffset + i + 1}
             art={song.artUrl}
+            cover
             href={song.musicLink ?? undefined}
             external
             title={song.songTitle}

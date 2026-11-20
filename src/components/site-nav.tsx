@@ -7,7 +7,7 @@ import { MAIN_NAV, STATS_NAV, WATCH, main } from '@/lib/site'
 
 // Same floating pill nav as the redesigned wavewarz.com, plus the Stats section rail underneath.
 export function SiteNav() {
-  const pathname = usePathname()
+  const pathname = usePathname() ?? ''
   const [open, setOpen] = useState(false)
   const rail = useRef<HTMLDivElement>(null)
 

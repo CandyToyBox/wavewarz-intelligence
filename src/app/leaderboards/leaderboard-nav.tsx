@@ -12,7 +12,7 @@ const TABS = [
 ]
 
 export function LeaderboardNav() {
-  const pathname = usePathname()
+  const pathname = usePathname() ?? ''
 
   // Same pill chips as the Statz rail, so the two rows read as one system
   return (

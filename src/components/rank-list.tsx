@@ -4,6 +4,7 @@
 // .hl-panel, .hl-row, .hl-art in wavewarz-homepage-candy-work/index.html). CSS lives in site-shell.css (.ww-hl-*).
 import Link from 'next/link'
 import { useState, type ReactNode } from 'react'
+import { CdCase } from '@/components/cd-case'
 
 export function RankPanel({ icon, title, sub, aside, children }: { icon: ReactNode; title: string; sub?: string; aside?: ReactNode; children: ReactNode }) {
   return (
@@ -32,9 +33,11 @@ function Pic({ src }: { src: string | null | undefined }) {
 
 export type RankExtra = { k: string; v: ReactNode }
 
-export function RankRow({ rank, art, pair, title, sub, extras, stat, small, href, external }: {
+export function RankRow({ rank, art, cover, pair, title, sub, extras, stat, small, href, external }: {
   rank: number
   art?: string | null
+  /** draw the art as a CD jewel case (songs) instead of the round chrome avatar (people) */
+  cover?: boolean
   pair?: [string | null, string | null]
   title: ReactNode
   sub?: ReactNode
@@ -47,7 +50,9 @@ export function RankRow({ rank, art, pair, title, sub, extras, stat, small, href
   const body = (
     <>
       <span className="ww-hl-rk">{rank}</span>
-      {pair
+      {cover
+        ? <span className="ww-hl-art cd"><CdCase src={art} /></span>
+        : pair
         ? <span className="ww-hl-art pair" aria-hidden="true"><i><Pic src={pair[0]} /></i><i><Pic src={pair[1]} /></i></span>
         : <span className="ww-hl-art" aria-hidden="true"><Pic src={art} /></span>}
       <span className="ww-hl-tx">

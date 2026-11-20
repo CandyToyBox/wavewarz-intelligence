@@ -134,8 +134,8 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
           <div className="font-rajdhani font-bold text-2xl text-white" style={{ textShadow: '0 0 18px rgba(218,236,253,.5)' }}>VS</div>
           <div className="w-full max-w-[260px]">
             <div className="h-3 rounded-full overflow-hidden flex border border-white/[.18] bg-[#070a10]">
-              <div className="h-full bg-gradient-to-r from-[#4f97d8] to-[#7ec1fb] transition-all duration-1000" style={{ width: `${pct1}%` }} />
-              <div className="h-full flex-1 bg-gradient-to-r from-[#95fe7c] to-[#5fdf49]" />
+              <div className="h-full bg-[#7ec1fb] transition-all duration-1000" style={{ width: `${pct1}%` }} />
+              <div className="h-full flex-1 bg-[#95fe7c]" />
             </div>
             <div className="flex justify-between font-mono text-[.66rem] text-muted-foreground mt-2 tabular-nums">
               <span className="text-[#7ec1fb]">{data.side1.poolSol.toFixed(2)} SOL</span>

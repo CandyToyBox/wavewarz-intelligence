@@ -149,10 +149,10 @@ export default async function ContributorProfilePage({ params }: { params: Promi
       </Link>
 
       {/* ── CONTRIBUTOR CARD ── */}
-      <div className="relative rounded-2xl border border-orange-500/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden shadow-2xl shadow-orange-500/5">
+      <div className="relative rounded-2xl border border-orange-500/30 bg-[#0b111c] overflow-hidden shadow-2xl shadow-orange-500/5">
 
         {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-orange-500 via-[#95fe7c] to-[#7ec1fb]" />
+        <div className="h-1 w-full bg-orange-500/70" />
 
         <div className="p-8">
           <div className="flex items-start justify-between gap-6">

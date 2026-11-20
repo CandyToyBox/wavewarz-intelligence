@@ -50,8 +50,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       <Link href="/hub/artists" className="text-xs text-muted-foreground hover:text-white">← All artists</Link>
 
       {/* ── BOOKER CARD (Phase 36) ── */}
-      <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden">
-        <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
+      <div className="rounded-2xl border border-[#95fe7c]/30 bg-[#0b111c] overflow-hidden">
         <div className="p-6">
           <div className="flex items-start justify-between gap-6 flex-wrap">
             <div className="flex items-center gap-4">

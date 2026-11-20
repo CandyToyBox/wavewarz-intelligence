@@ -73,7 +73,7 @@ export function SpotlightEventCard({ group }: { group: SpotlightGroup }) {
         </div>
       ) : (
         // Fallback: VS-style avatar strip
-        <div className="flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-[#7ec1fb]/5 via-[#070a10] to-[#95fe7c]/5 border-b border-[#7ec1fb]/10">
+        <div className="flex items-center justify-center gap-4 py-5 bg-[#070a10] border-b border-[#7ec1fb]/10">
           {a1 && (
             <div className="flex flex-col items-center gap-1.5">
               <div className="w-14 h-14 rounded-full bg-[#7ec1fb]/15 border-2 border-[#7ec1fb]/40 flex items-center justify-center">
