@@ -149,7 +149,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
       </Link>
 
       {/* ── CONTRIBUTOR CARD ── */}
-      <div className="relative rounded-2xl border border-orange-500/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden shadow-2xl shadow-orange-500/5">
+      <div className="relative rounded-2xl border border-orange-500/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden shadow-2xl shadow-orange-500/5">
 
         {/* Top accent bar */}
         <div className="h-1 w-full bg-gradient-to-r from-orange-500 via-[#95fe7c] to-[#7ec1fb]" />
@@ -171,7 +171,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                     </span>
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-500 rounded-full border-2 border-[#0d1321]" />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-500 rounded-full border-2 border-[#0c121c]" />
               </div>
 
               <div>
@@ -217,7 +217,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
 
             {/* Points badge */}
             <div className="text-right shrink-0">
-              <div className="inline-flex flex-col items-center bg-[#0d1321] border border-orange-500/30 rounded-xl px-6 py-4">
+              <div className="inline-flex flex-col items-center bg-[#0c121c] border border-orange-500/30 rounded-xl px-6 py-4">
                 <p className="text-4xl font-rajdhani font-bold text-orange-400">
                   {profile.points.toLocaleString()}
                 </p>
@@ -236,7 +236,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
 
           {/* Artist battle stats (if applicable) */}
           {profile.isArtist && profile.totalBattles > 0 && (
-            <div className="mt-6 rounded-xl border border-[#95fe7c]/20 bg-[#0d1321] p-5">
+            <div className="mt-6 rounded-xl border border-[#95fe7c]/20 bg-[#0c121c] p-5">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">
@@ -284,9 +284,9 @@ export default async function ContributorProfilePage({ params }: { params: Promi
         </div>
 
         {/* Bottom bar */}
-        <div className="px-8 py-3 bg-[#0d1321]/60 border-t border-border flex items-center justify-between">
+        <div className="px-8 py-3 bg-[#0c121c]/60 border-t border-border flex items-center justify-between">
           <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
-            WaveWarZ Intelligence · Community Clips HQ
+            WaveWarZ Statz · Community Clips HQ
           </span>
           <span className="text-[10px] text-orange-400/60 font-mono">
             Member since {new Date(profile.recentClips[profile.recentClips.length - 1]?.created_at ?? Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
@@ -357,7 +357,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                   {(clip.pending_platforms ?? []).map(p => (
                     <span
                       key={p}
-                      className="text-[9px] font-bold font-mono bg-[#0d1321] border border-border rounded px-1.5 py-0.5 text-muted-foreground"
+                      className="text-[9px] font-bold font-mono bg-[#0c121c] border border-border rounded px-1.5 py-0.5 text-muted-foreground"
                     >
                       {PLATFORM_ICONS[p] ?? p.toUpperCase()}
                     </span>
@@ -392,7 +392,7 @@ function StatBox({ label, value, sub, highlight = false }: {
   label: string; value: string; sub?: string; highlight?: boolean
 }) {
   return (
-    <div className="rounded-xl border border-border bg-[#0d1321] p-4">
+    <div className="rounded-xl border border-border bg-[#0c121c] p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-xl font-rajdhani font-bold ${highlight ? 'text-orange-400' : 'text-white'}`}>
         {value}

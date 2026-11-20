@@ -12,7 +12,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Community Rankings — WaveWarZ Intelligence',
+  title: 'Community Rankings',
   description: 'Community battle competitors ranked by wins, volume, and win rate.',
 }
 

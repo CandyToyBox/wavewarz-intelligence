@@ -18,7 +18,7 @@ type Props = { params: Promise<{ id: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   return {
-    title: `Battle #${id} — WaveWarZ Intelligence`,
+    title: `Battle #${id}`,
     description: `Detailed stats for WaveWarZ battle #${id}.`,
   }
 }
@@ -288,7 +288,7 @@ export default async function BattleDetailPage({ params }: Props) {
           />
 
           {/* VS divider */}
-          <div className="flex flex-col items-center justify-center px-3 sm:px-5 py-6 border-x border-border bg-[#0d1321]">
+          <div className="flex flex-col items-center justify-center px-3 sm:px-5 py-6 border-x border-border bg-[#0c121c]">
             <span className="font-rajdhani font-bold text-2xl text-muted-foreground">VS</span>
             <div className="mt-3 text-center">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Vol</p>
@@ -344,7 +344,7 @@ export default async function BattleDetailPage({ params }: Props) {
           </h2>
           <div className="grid grid-cols-3 gap-3">
             {/* Poll */}
-            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+            <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Poll</p>
               {battle.poll_winner ? (
                 <>
@@ -360,7 +360,7 @@ export default async function BattleDetailPage({ params }: Props) {
               )}
             </div>
             {/* Charts */}
-            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+            <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Charts (SOL)</p>
               <p className="font-rajdhani font-bold text-white text-sm">
                 {a1Won ? battle.artist1_name : battle.artist2_name}
@@ -370,7 +370,7 @@ export default async function BattleDetailPage({ params }: Props) {
               </p>
             </div>
             {/* DJ Wavy */}
-            <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+            <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">DJ Wavy</p>
               {battle.dj_wavy_winner ? (
                 <>
@@ -674,7 +674,7 @@ function SettleBox({
   label: string; sub: string; value: number; solPrice: number | null; color: string
 }) {
   return (
-    <div className="rounded-lg border border-border bg-[#0d1321] p-3">
+    <div className="rounded-lg border border-border bg-[#0c121c] p-3">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1 leading-tight">{label}</p>
       <p className="font-mono text-xs font-bold" style={{ color }}>{formatSol(value)} SOL</p>
       <p className="text-[10px] text-muted-foreground">{solToUsd(value, solPrice ?? 0)}</p>
@@ -732,7 +732,7 @@ function ArtistProfileCard({
   const borderColor = isWinner ? 'border-[#95fe7c]/40' : 'border-border'
 
   return (
-    <div className={`rounded-lg border p-4 flex gap-4 ${isWinner ? 'border-[#95fe7c]/30 bg-[#95fe7c]/5' : 'border-border bg-[#0d1321]'}`}>
+    <div className={`rounded-lg border p-4 flex gap-4 ${isWinner ? 'border-[#95fe7c]/30 bg-[#95fe7c]/5' : 'border-border bg-[#0c121c]'}`}>
       {/* Avatar */}
       <div className="shrink-0">
         {imgSrc ? (

@@ -108,7 +108,7 @@ export function ArtistArchiveEditor({ artistId, bible, fields }: {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-[#0d1321]/40">
+    <div className="rounded-lg border border-border bg-[#0c121c]/40">
       <div className="flex items-center justify-between px-4 py-2 border-b border-border">
         <h4 className="font-rajdhani font-bold text-white tracking-wide text-sm">Artist Archive fields</h4>
         {editing ? (
@@ -136,7 +136,7 @@ export function ArtistArchiveEditor({ artistId, bible, fields }: {
         {names.map(name => {
           const f = FIELD_DEFS[name]
           const val = flat[name] ?? ''
-          const cls = 'w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
+          const cls = 'w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
           return (
             <div key={name} className={f.ta ? 'md:col-span-2' : ''}>
               <label className="block text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{f.label}</label>
@@ -207,7 +207,7 @@ export function RolloutControl({ artistId, founding, batch }: { artistId: string
           value={b}
           onChange={e => setB(e.target.value.replace(/\D/g, ''))}
           onBlur={() => save(founding, b)}
-          className="w-10 rounded bg-[#0d1321] border border-border px-1.5 py-0.5 text-white"
+          className="w-10 rounded bg-[#0c121c] border border-border px-1.5 py-0.5 text-white"
         />
       </label>
     </div>

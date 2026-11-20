@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 import { renderMarkdown } from '@/lib/simple-markdown'
 
 export const metadata: Metadata = {
-  title: 'API Changelog — WaveWarZ Intelligence',
+  title: 'API Changelog',
   description:
     'Every change to what the WaveWarZ public API returns — corrected values, new fields, recomputed formulas — with how much your numbers move and how to verify it.',
 }

@@ -8,13 +8,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import TraderHoldings from './trader-holdings'
+import { TraderNote } from '@/components/trader-note'
 
 type Props = { params: Promise<{ wallet: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { wallet } = await params
   return {
-    title: `Trader ${wallet.slice(0, 8)}… — WaveWarZ Intelligence`,
+    title: `Trader ${wallet.slice(0, 8)}…`,
   }
 }
 
@@ -146,7 +147,7 @@ export default async function TraderPage({ params }: Props) {
           <p className="text-xs text-[#f59e0b] font-bold uppercase tracking-widest mb-1">Trade history being verified</p>
           <p className="text-xs text-muted-foreground leading-relaxed">
             This wallet traded in a battle whose per-trade records are still being re-fetched
-            from Solana. Volume and win/loss below are a lower bound and Net&nbsp;P&amp;L is hidden
+            from Solana. Volume and the battle record below are a lower bound, and Net SOL is hidden
             until every battle is verified.
           </p>
         </div>
@@ -157,15 +158,14 @@ export default async function TraderPage({ params }: Props) {
         <StatCard label={dataComplete ? 'Total Volume' : 'Volume (min.)'} value={`${formatSol(totalVolume)} SOL`} sub={solToUsd(totalVolume, sp)} accent="#7ec1fb" />
         <StatCard label="Battles" value={String(battleIds.length)} sub={`${trades.length} trades`} />
         <StatCard
-          label={<Tip text="Win rate across settled battles where side (A/B) is recorded">Win Rate</Tip>}
+          label={<Tip text="Settled battles where the side this wallet backed won the battle. A record of the music result, not of money made.">Backed the winner</Tip>}
           value={winRate !== null ? `${winRate.toFixed(0)}%` : '—'}
-          sub={wins + losses > 0 ? `${wins}W · ${losses}L` : 'no side data'}
+          sub={wins + losses > 0 ? `${wins} of ${wins + losses} settled battles` : 'no side data'}
         />
         <StatCard
-          label={<Tip text="SOL received back — from mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced directly from onchain vault transactions, including withdrawals claimed after settlement." wide>Net P&L</Tip>}
+          label={<Tip text="SOL received back — from mid-battle sells plus real settlement claims (claimShares) — minus SOL spent on buys. Sourced directly from onchain vault transactions, including withdrawals claimed after settlement. Past results do not predict future ones." wide>Net SOL</Tip>}
           value={!dataComplete ? '—' : netPnl !== 0 ? `${netPnl >= 0 ? '+' : ''}${formatSol(netPnl)} SOL` : '—'}
           sub={!dataComplete ? 'verifying trade history' : netPnl !== 0 ? solToUsd(Math.abs(netPnl), sp) : 'no buy/sell data'}
-          accent={!dataComplete ? undefined : netPnl > 0 ? '#95fe7c' : netPnl < 0 ? '#ef4444' : undefined}
         />
       </div>
 
@@ -197,8 +197,8 @@ export default async function TraderPage({ params }: Props) {
                 <div key={bid} className="px-5 py-4 flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="shrink-0">
-                      {won === true && <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c] bg-[#95fe7c]/10 border border-[#95fe7c]/30 px-1.5 py-0.5 rounded">W</span>}
-                      {won === false && <span className="text-[9px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 border border-red-500/30 px-1.5 py-0.5 rounded">L</span>}
+                      {won === true && <span title="The side this wallet backed won the battle" className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c] bg-[#95fe7c]/10 border border-[#95fe7c]/30 px-1.5 py-0.5 rounded">Winning side</span>}
+                      {won === false && <span title="The side this wallet backed lost the battle" className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground bg-white/5 border border-border px-1.5 py-0.5 rounded">Other side</span>}
                       {won === null && <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground bg-white/5 border border-border px-1.5 py-0.5 rounded">—</span>}
                     </div>
                     <div className="min-w-0">
@@ -237,7 +237,7 @@ export default async function TraderPage({ params }: Props) {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-border bg-[#0d1321]">
+                <tr className="border-b border-border bg-[#0c121c]">
                   <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Battle</th>
                   <th className="text-left px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Type</th>
                   <th className="text-right px-4 py-2.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Amount</th>
@@ -295,6 +295,8 @@ export default async function TraderPage({ params }: Props) {
           <p className="text-xs text-muted-foreground mt-2">Use the <a href="https://claim.wavewarz.info" target="_blank" rel="noopener noreferrer" className="text-[#7ec1fb] hover:underline">Claim tool</a> to check for onchain holdings.</p>
         </div>
       )}
+
+      <TraderNote />
     </div>
   )
 }

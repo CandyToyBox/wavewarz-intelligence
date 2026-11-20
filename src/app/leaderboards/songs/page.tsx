@@ -3,7 +3,7 @@ import SongChartsClient from './SongChartsClient'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Song Charts — WaveWarZ Intelligence',
+  title: 'Song Charts',
   description: 'Quick battle song charts: trending, most played, most volume, most traders, by genre.',
 }
 

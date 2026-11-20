@@ -77,7 +77,7 @@ export function RecordMarkEditor({
                 <select
                   value={draft.artistId}
                   onChange={e => setDraft(d => ({ ...d, artistId: e.target.value }))}
-                  className="rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+                  className="rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
                 >
                   <option value="">— no artist —</option>
                   {artists.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -86,19 +86,19 @@ export function RecordMarkEditor({
                   value={draft.value}
                   onChange={e => setDraft(d => ({ ...d, value: e.target.value }))}
                   placeholder="value (e.g. 'came back from 0–2')"
-                  className="rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+                  className="rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
                 />
                 <input
                   value={draft.battleId}
                   onChange={e => setDraft(d => ({ ...d, battleId: e.target.value.replace(/\D/g, '') }))}
                   placeholder="battle id (optional)"
-                  className="rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+                  className="rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
                 />
                 <input
                   value={draft.note}
                   onChange={e => setDraft(d => ({ ...d, note: e.target.value }))}
                   placeholder="note (optional)"
-                  className="rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+                  className="rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
                 />
               </div>
             )}

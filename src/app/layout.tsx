@@ -1,42 +1,55 @@
-import type { Metadata } from 'next'
-import { Rajdhani, Inter, Geist_Mono } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Space_Grotesk, Outfit, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
-import { NavBar } from '@/components/nav-bar'
+import './site-shell.css'
+import { SiteNav } from '@/components/site-nav'
+import { SiteFooter } from '@/components/site-footer'
 import { IgniteRadio } from '@/components/ignite-radio'
 import { AdClickCapture } from '@/components/ad-click-capture'
-import { OutboundLink } from '@/components/outbound-link'
 import { Analytics } from '@vercel/analytics/next'
 
-const rajdhani = Rajdhani({
+// Same three faces as the redesigned wavewarz.com. The old variable names stay, pointed at the new faces, so every
+// existing font-rajdhani / font-sans / font-mono class follows without edits.
+const display = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['600', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-rajdhani',
 })
 
-const inter = Inter({
+const body = Outfit({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-inter',
 })
 
-const geistMono = Geist_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
   variable: '--font-geist-mono',
 })
+
+// Phones: paint under the notch and home bar (the fixed nav and radio bar pad back out with env()), black browser chrome
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#000000',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wavewarz.info'),
   title: {
-    default: 'WaveWarZ Intelligence',
-    template: '%s | WaveWarZ Intelligence',
+    default: 'WaveWarZ Statz',
+    template: '%s | WaveWarZ Statz',
   },
   description: 'Every battle. Every number. ONCHAIN. Verifiable analytics for WaveWarZ — decentralized music battles on Solana.',
   alternates: { canonical: '/' },
   keywords: ['WaveWarZ', 'music battles', 'Solana', 'onchain analytics', 'music trading', 'Audius', 'quick battles'],
   openGraph: {
-    title: 'WaveWarZ Intelligence',
+    title: 'WaveWarZ Statz',
     description: 'Every battle. Every number. ONCHAIN.',
-    siteName: 'WaveWarZ Intelligence',
+    siteName: 'WaveWarZ Statz',
     url: 'https://wavewarz.info',
     type: 'website',
     images: [{ url: '/og-card.png', width: 1200, height: 630, alt: 'WaveWarZ' }],
@@ -44,7 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     site: '@wavewarz',
-    title: 'WaveWarZ Intelligence',
+    title: 'WaveWarZ Statz',
     description: 'Every battle. Every number. ONCHAIN.',
     images: ['/og-card.png'],
   },
@@ -67,7 +80,7 @@ const jsonLd = {
     {
       '@type': 'WebSite',
       '@id': 'https://wavewarz.info/#site',
-      name: 'WaveWarZ Intelligence',
+      name: 'WaveWarZ Statz',
       url: 'https://wavewarz.info',
       publisher: { '@id': 'https://wavewarz.info/#org' },
       description:
@@ -83,7 +96,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${rajdhani.variable} ${inter.variable} ${geistMono.variable} font-sans antialiased min-h-screen flex flex-col pb-24 overflow-x-clip`}>
+      <body className={`${display.variable} ${body.variable} ${mono.variable} font-sans antialiased min-h-screen flex flex-col pb-24 overflow-x-clip`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -96,21 +109,12 @@ export default function RootLayout({
           twq('config','reaex');`}
         </Script>
         <AdClickCapture />
-        <NavBar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        <SiteNav />
+        <main className="max-w-[1320px] mx-auto px-4 sm:px-5 py-8 flex-1 w-full">
           {children}
         </main>
         <IgniteRadio />
-        <footer className="border-t border-border mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-            <span>© {new Date().getFullYear()} WaveWarZ. All rights reserved.</span>
-            <div className="flex items-center gap-4">
-              <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
-              <OutboundLink href="https://wavewarz.com" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">wavewarz.com ↗</OutboundLink>
-            </div>
-          </div>
-        </footer>
+        <SiteFooter />
         <Analytics />
       </body>
     </html>

@@ -138,7 +138,7 @@ export function LeagueArchiveEditor({ bible, only }: { bible: LeagueBible; only:
               onChange={e => setDraft(d => ({ ...d, glossary: e.target.value }))}
               rows={8}
               placeholder="THE WALK — a short personalized entrance moment before an artist's first song"
-              className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+              className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
             />
             <p className="text-[10px] text-muted-foreground/60 mt-1">One term per line: <code>term — definition</code></p>
           </div>
@@ -197,10 +197,10 @@ function FieldRow({ label, value, editing, ta, hint, onChange }: {
         <p className={`text-sm whitespace-pre-wrap ${value ? 'text-white' : 'text-muted-foreground/40 italic'}`}>{value || 'not set'}</p>
       ) : ta ? (
         <textarea value={value} onChange={e => onChange(e.target.value)} rows={3}
-          className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
+          className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
       ) : (
         <input value={value} onChange={e => onChange(e.target.value)}
-          className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
+          className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
       )}
       {hint && editing && <p className="text-[10px] text-muted-foreground/60 mt-1">{hint}</p>}
     </div>

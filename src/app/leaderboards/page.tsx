@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { TrophyIcon, EqualizerIcon, PeopleIcon, TrendIcon, ClapperboardIcon } from './leaderboard-icons'
 
 export const metadata: Metadata = {
-  title: 'Leaderboards — WaveWarZ Intelligence',
+  title: 'Leaderboards',
   description: 'Artist, Song, and Community leaderboards for WaveWarZ battles on Solana.',
 }
 
@@ -54,8 +54,8 @@ const BOARDS = [
     hex: '#f59e0b',
     Icon: TrendIcon,
     title: 'Trader Rankings',
-    desc: 'Fans and speculators ranked by trading volume, win rate, and net P&L. Click any wallet to scan onchain.',
-    stats: ['Total SOL traded across all battles', 'Battle win rate', 'Net P&L (payout − invested)', 'Live onchain scan per wallet'],
+    desc: 'Fans and traders ranked by total SOL traded. Click any wallet to see its public onchain record.',
+    stats: ['Total SOL traded across all battles', 'How often they backed the winning side', 'Net SOL (received back minus spent)', 'Live onchain scan per wallet'],
   },
   {
     href: '/leaderboards/clippers',
@@ -75,7 +75,7 @@ export default function LeaderboardsHub() {
   return (
     <div className="space-y-8">
       <header>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">WaveWarZ Intelligence</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">WaveWarZ Statz</p>
         <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
           <span className="text-[#95fe7c]">Leader</span>boards
         </h1>

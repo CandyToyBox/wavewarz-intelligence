@@ -60,7 +60,7 @@ const PAGE_SIZE = 25
 const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
 const isV2Battle = (b: SongBattle) => new Date(b.createdAt) >= V2_QB_LAUNCH
 
-const PALETTE = ['#95fe7c', '#7ec1fb', '#f59e0b', '#f472b6', '#a78bfa', '#34d399']
+const PALETTE = ['#95fe7c', '#7ec1fb', '#f2a74b', '#76f3df', '#e5c25a', '#62b8df'] // brand + Wave ID accents, no pink or purple
 function colorForLetter(letter: string) {
   return PALETTE[letter.toUpperCase().charCodeAt(0) % PALETTE.length]
 }
@@ -264,7 +264,7 @@ function ChartTable({
 
   return (
     <div className="space-y-3">
-    <div className="rounded-xl border border-border overflow-x-auto bg-[#0d1321]">
+    <div className="rounded-xl border border-border overflow-x-auto bg-[#0c121c]">
       <table className="w-full text-sm min-w-[540px]">
         <thead>
           <tr className="border-b border-border bg-[#111827]">
@@ -651,7 +651,7 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
       <div className="space-y-2">
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">Period</span>
-          <div className="flex items-center gap-1 bg-[#080d18] border border-border/60 rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-[#070a10] border border-border/60 rounded-xl p-1">
             {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
               <TabBtn key={p} active={period === p} onClick={() => setPeriod(p)}>
                 {PERIOD_LABELS[p]}
@@ -661,7 +661,7 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest shrink-0 w-12">View</span>
-          <div className="flex items-center gap-1 bg-[#080d18] border border-border/60 rounded-xl p-1">
+          <div className="flex items-center gap-1 bg-[#070a10] border border-border/60 rounded-xl p-1">
             {(Object.keys(CATEGORY_LABELS) as Category[]).map(c => (
               <TabBtn key={c} active={category === c} onClick={() => setCategory(c)}>
                 {CATEGORY_LABELS[c]}

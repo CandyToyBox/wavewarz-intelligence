@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
               value={secret}
               onChange={e => setSecret(e.target.value)}
               placeholder="Enter admin secret"
-              className="w-full bg-[#0d1321] border border-border rounded-lg px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 transition-colors"
+              className="w-full bg-[#0c121c] border border-border rounded-lg px-4 py-3 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 transition-colors"
               autoFocus
             />
             {error && (

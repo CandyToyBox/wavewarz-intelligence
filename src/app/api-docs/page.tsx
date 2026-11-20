@@ -2,13 +2,13 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Public API — WaveWarZ Intelligence',
+  title: 'Public API',
   description: 'Free, no-auth JSON API for querying WaveWarZ battle, artist, trader, and song data — built for AI agents and developers.',
 }
 
 function Code({ children }: { children: string }) {
   return (
-    <pre className="rounded-lg border border-border bg-[#0a0f1a] p-4 overflow-x-auto text-xs leading-relaxed">
+    <pre className="rounded-lg border border-border bg-[#0c121c] p-4 overflow-x-auto text-xs leading-relaxed">
       <code className="text-[#95fe7c] font-mono whitespace-pre">{children}</code>
     </pre>
   )
@@ -275,7 +275,7 @@ export default function ApiDocsPage() {
         id="lb-traders"
         method="GET"
         path="/api/public/leaderboards/traders"
-        summary="Trader rankings by total SOL volume, with win rate and net P&L. Net P&L includes both mid-battle sells and real settlement claims (claimShares), parsed directly from on-chain vault transactions — not just recorded trade rows."
+        summary="Trader rankings by total SOL volume, with how often each wallet backed the winning side and its net SOL (received back minus spent; returned as netPnlSol). Net SOL includes both mid-battle sells and real settlement claims (claimShares), parsed directly from onchain vault transactions, not just recorded trade rows. Show it as a public record, never as a promise of returns."
         params={[{ name: 'limit', type: 'number', desc: 'default 100, max 500' }]}
         example={`curl "https://wavewarz.info/api/public/leaderboards/traders?limit=10"`}
         response={`{

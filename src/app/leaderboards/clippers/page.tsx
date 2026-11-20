@@ -5,7 +5,7 @@ import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Clipper Rankings — WaveWarZ Intelligence',
+  title: 'Clipper Rankings',
   description: 'Community clip contributors ranked by submissions, approvals, and points. Many are also WaveWarZ battle artists.',
 }
 

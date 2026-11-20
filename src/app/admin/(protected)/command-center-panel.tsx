@@ -27,7 +27,7 @@ export function CommandCenterPanel({
       {/* ── LEAGUE HUB ── */}
       <a
         href="/hub"
-        className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] to-[#111827] p-4 hover:border-[#95fe7c]/60 transition-colors"
+        className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] to-[#111827] p-4 hover:border-[#95fe7c]/60 transition-colors"
       >
         <div>
           <p className="font-rajdhani font-bold text-white tracking-wide">League Hub →</p>
@@ -137,7 +137,7 @@ export function CommandCenterPanel({
 
 function Kpi({ label, value, sub, dim }: { label: string; value: string; sub: string; dim?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 text-center ${dim ? 'border-border bg-[#111827]' : 'border-[#95fe7c]/20 bg-gradient-to-b from-[#0d1321] to-[#111827]'}`}>
+    <div className={`rounded-xl border p-4 text-center ${dim ? 'border-border bg-[#111827]' : 'border-[#95fe7c]/20 bg-gradient-to-b from-[#070a10] to-[#111827]'}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
       <p className={`font-rajdhani font-bold text-2xl ${dim ? 'text-white' : 'text-[#95fe7c]'}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>
@@ -167,7 +167,7 @@ function TableRow({ label, value, green, bold }: { label: string; value: string;
 
 function ScheduleItem({ day, time, desc, badge }: { day: string; time: string; desc: string; badge?: string }) {
   return (
-    <div className="rounded-lg border border-[#95fe7c]/20 bg-[#0d1321] p-4">
+    <div className="rounded-lg border border-[#95fe7c]/20 bg-[#0c121c] p-4">
       <p className="text-[10px] font-bold uppercase tracking-widest text-white mb-1">{day}</p>
       <p className="font-rajdhani font-bold text-xl text-[#95fe7c] mb-1">{time}</p>
       <p className="text-xs text-muted-foreground">{desc}</p>

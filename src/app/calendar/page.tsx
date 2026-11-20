@@ -4,7 +4,7 @@ import { expandWeeklyShows } from '@/lib/weekly-schedule'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Events Calendar — WaveWarZ Intelligence',
+  title: 'Events Calendar',
   description: 'Every upcoming Main Event, Quick Battle stream, community battle, and X Space on WaveWarZ — in one calendar.',
 }
 

@@ -14,7 +14,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Battles Feed — WaveWarZ Intelligence',
+  title: 'Battles Feed',
   description: 'Live chronological feed of every WaveWarZ battle. Main events grouped by round.',
 }
 
@@ -36,7 +36,7 @@ const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
 type SortKey   = 'newest' | 'oldest' | 'volume'
 type FilterKey = 'all' | 'main' | 'quick' | 'community'
 
-const PALETTE = ['#95fe7c', '#7ec1fb', '#f59e0b', '#f472b6', '#a78bfa', '#34d399']
+const PALETTE = ['#95fe7c', '#7ec1fb', '#f2a74b', '#76f3df', '#e5c25a', '#62b8df'] // brand + Wave ID accents, no pink or purple
 function colorFor(str: string): string {
   let hash = 0
   for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)

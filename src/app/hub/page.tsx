@@ -18,7 +18,7 @@ const LIBRARY = {
 
 function Bar({ pct }: { pct: number }) {
   return (
-    <div className="h-1.5 w-full rounded-full bg-[#0d1321] overflow-hidden">
+    <div className="h-1.5 w-full rounded-full bg-[#0c121c] overflow-hidden">
       <div
         className="h-full rounded-full bg-[#95fe7c] transition-all"
         style={{ width: `${pct}%` }}

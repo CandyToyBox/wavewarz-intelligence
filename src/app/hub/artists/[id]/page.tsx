@@ -50,7 +50,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       <Link href="/hub/artists" className="text-xs text-muted-foreground hover:text-white">← All artists</Link>
 
       {/* ── BOOKER CARD (Phase 36) ── */}
-      <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden">
+      <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] overflow-hidden">
         <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
         <div className="p-6">
           <div className="flex items-start justify-between gap-6 flex-wrap">
@@ -142,7 +142,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
           <p className="text-xs text-muted-foreground">Accepted playbook answers that have no Artist Archive field of their own.</p>
           <dl className="grid gap-2 sm:grid-cols-2">
             {extras.map(([k, val]) => (
-              <div key={k} className="rounded-lg border border-border bg-[#0d1321]/40 p-3">
+              <div key={k} className="rounded-lg border border-border bg-[#0c121c]/40 p-3">
                 <dt className="text-[10px] uppercase tracking-widest text-muted-foreground">{EXTRA_LABELS[k] ?? k}</dt>
                 <dd className="text-sm text-white whitespace-pre-wrap break-words mt-0.5">{val}</dd>
               </div>
@@ -225,7 +225,7 @@ function Metric({ label, value, sub, highlight, danger }: {
   label: string; value: string; sub?: string; highlight?: boolean; danger?: boolean
 }) {
   return (
-    <div className="text-center bg-[#0d1321] border border-border rounded-xl px-3 py-2 min-w-[64px]">
+    <div className="text-center bg-[#0c121c] border border-border rounded-xl px-3 py-2 min-w-[64px]">
       <p className={`text-xl font-rajdhani font-bold ${danger ? 'text-red-400' : highlight ? 'text-[#95fe7c]' : 'text-white'}`}>{value}</p>
       <p className="text-[9px] text-muted-foreground uppercase tracking-widest">{sub ? `${label} · ${sub}` : label}</p>
     </div>

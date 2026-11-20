@@ -281,7 +281,7 @@ function JudgeInput({ label, battleId, field, current, nameA, nameB, onChange }:
             className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold font-rajdhani border transition-colors ${
               current === side
                 ? 'bg-[#95fe7c]/20 border-[#95fe7c]/60 text-[#95fe7c]'
-                : 'bg-[#0d1321] border-border text-muted-foreground hover:text-white hover:border-border/80'
+                : 'bg-[#0c121c] border-border text-muted-foreground hover:text-white hover:border-border/80'
             }`}
           >
             {side === 'a' ? nameA : nameB}

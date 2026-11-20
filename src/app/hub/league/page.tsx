@@ -50,7 +50,7 @@ export default async function HubLeaguePage() {
       {m.key === 'family' && (
         <dl className="grid gap-2 sm:grid-cols-2">
           {FAMILY.map(f => (
-            <div key={f} className="rounded-lg border border-border bg-[#0d1321]/40 p-3">
+            <div key={f} className="rounded-lg border border-border bg-[#0c121c]/40 p-3">
               <dt className="font-rajdhani font-bold text-white">{f}</dt>
               <dd className={`text-xs mt-0.5 ${FAMILY_NOTES[f] ? 'text-muted-foreground' : 'text-amber-400'}`}>
                 {FAMILY_NOTES[f] ?? 'Description needed.'}
