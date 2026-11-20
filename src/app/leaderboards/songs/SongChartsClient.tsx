@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { Badge } from '@/components/ui/badge'
-import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
+import { RankPanel, RankRow, RankEmpty, RANK_ICONS } from '@/components/rank-list'
 import { Tip } from '@/components/tip'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import { OutboundLink } from '@/components/outbound-link'
@@ -176,34 +176,6 @@ function SongAvatar({ song, size = 10 }: { song: RankedSong | SongData; size?: n
   )
 }
 
-function SongName({ song }: { song: RankedSong }) {
-  return (
-    <div className="min-w-0">
-      {song.musicLink ? (
-        <a
-          href={song.musicLink}
-          target="_blank"
-          rel="noreferrer"
-          className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm sm:text-base leading-tight flex items-center gap-1"
-        >
-          <span className="truncate">{song.songTitle}</span>
-          <span className="text-[10px] text-[#7ec1fb] shrink-0">↗</span>
-        </a>
-      ) : (
-        <p className="font-rajdhani font-bold text-white text-sm sm:text-base leading-tight truncate">{song.songTitle}</p>
-      )}
-      <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-        {song.handle && <p className="text-[10px] text-muted-foreground">@{song.handle}</p>}
-        {song.genre && (
-          <span title={song.genre} className="max-w-full truncate text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20">
-            {song.genre}
-          </span>
-        )}
-      </div>
-    </div>
-  )
-}
-
 // ── Rank icons for full leaderboard ──────────────────────────────────────────
 
 function RankCell({ position }: { position: number }) {
@@ -244,6 +216,13 @@ function RankCell({ position }: { position: number }) {
   return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
 }
 
+const SUBTITLE: Record<Exclude<Category, 'genre'>, string> = {
+  trending: 'Quick BattleZ · trending now',
+  volume: 'Quick BattleZ · most SOL traded',
+  traders: 'Quick BattleZ · most traders',
+  played: 'Quick BattleZ · most played',
+}
+
 // ── Main chart table ─────────────────────────────────────────────────────────
 
 function ChartTable({
@@ -266,161 +245,34 @@ function ChartTable({
 
   return (
     <div className="space-y-3">
-    <div className="rounded-xl border border-border overflow-x-auto bg-[#0c121c]">
-      <table className="w-full text-sm sm:min-w-[540px]">
-        <thead>
-          <tr className="border-b border-border bg-[#111827]">
-            <th className="text-left px-2 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest w-10">#</th>
-            <th className="text-left px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">Song</th>
-            {category === 'trending' && (
-              <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden sm:table-cell">
-                <Tip text="Composite score: volume velocity × competitiveness × recency × trader engagement. Decays over time.">Heat</Tip>
-              </th>
-            )}
-            <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
-              <Tip text="W-L record in quick battles. V1 wins (before Mar 10 2026) = Charts only. V2 wins (Mar 10+ 2026) = Poll + Charts + DJ Wavy, 2/3 wins.">Record</Tip>
-            </th>
-            <th className="text-center px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden md:table-cell">
-              <Tip text="Percentage of quick battles this song has won.">Win %</Tip>
-            </th>
-            {category === 'volume' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
-                <Tip text="Total SOL traded by fans backing this song.">Volume</Tip>
-              </th>
-            )}
-            {category === 'traders' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
-                <Tip text="Sum of unique traders across all battles in this period.">Traders</Tip>
-              </th>
-            )}
-            {category === 'played' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest">
-                <Tip text="Number of quick battles this song has competed in.">Battles</Tip>
-              </th>
-            )}
-            {category === 'trending' && (
-              <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden md:table-cell">
-                <Tip text="Total SOL traded by fans backing this song.">Volume</Tip>
-              </th>
-            )}
-            <th className="text-right px-3 sm:px-4 py-3 text-xs text-muted-foreground uppercase tracking-widest hidden lg:table-cell">Last</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pageSongs.map((song, i) => {
-            const absPos = globalOffset + i
-            const heat = relativeHeat(song.trendingScore, maxScore)
-            return (
-              <tr key={song.key} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
-                <td className="px-2 sm:px-4 py-3">
-                  <RankCell position={absPos} />
-                </td>
-                {/* w-full + max-w-0 lets long titles truncate inside the table instead of widening it */}
-                <td className="px-2 sm:px-4 py-3 w-full max-w-0">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <SongAvatar song={song} />
-                    <SongName song={song} />
-                  </div>
-                </td>
-
-                {/* Heat bar — trending only */}
-                {category === 'trending' && (
-                  <td className="px-3 sm:px-4 py-3 hidden sm:table-cell">
-                    <div className="flex items-center gap-2">
-                      <div className="w-20 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all"
-                          style={{
-                            width: `${heat}%`,
-                            background: heat > 66
-                              ? '#95fe7c'
-                              : heat > 33
-                              ? '#7ec1fb'
-                              : '#4a4a4a',
-                          }}
-                        />
-                      </div>
-                      <span className="text-[10px] font-mono text-muted-foreground w-8">{heat}</span>
-                    </div>
-                  </td>
-                )}
-
-                <td className="px-3 sm:px-4 py-3 text-center">
-                  {/* W – L headline */}
-                  <div className="flex items-center justify-center gap-1 whitespace-nowrap">
-                    <span className="font-rajdhani font-bold text-[#7ec1fb]">{song.wins}W</span>
-                    <span className="text-muted-foreground">–</span>
-                    <span className="font-rajdhani font-bold text-red-400">{song.losses}L</span>
-                  </div>
-                  {/* V1 / V2 win split */}
-                  {song.wins > 0 && (
-                    <div className="flex items-center justify-center gap-1 mt-1.5 flex-wrap">
-                      {song.v1Wins > 0 && (
-                        <Tip text="V1 — Charts only. Winner = larger SOL pool. Before Mar 10, 2026.">
-                          <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded border cursor-help"
-                            style={{ background: 'rgba(245,158,11,0.12)', borderColor: 'rgba(245,158,11,0.35)', color: '#f59e0b' }}>
-                            V1 · {song.v1Wins}W
-                          </span>
-                        </Tip>
-                      )}
-                      {song.v2Wins > 0 && (
-                        <Tip text="V2 — Poll + Charts (SOL) + DJ Wavy. 2/3 wins. Mar 10, 2026+.">
-                          <span className="inline-flex items-center gap-0.5 text-[11px] font-bold px-2 py-0.5 rounded border cursor-help"
-                            style={{ background: 'rgba(126,193,251,0.12)', borderColor: 'rgba(126,193,251,0.35)', color: '#7ec1fb' }}>
-                            V2 · {song.v2Wins}W
-                          </span>
-                        </Tip>
-                      )}
-                    </div>
-                  )}
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-center hidden md:table-cell">
-                  <WinRateBar rate={song.winRate} color="blue" />
-                </td>
-
-                {category === 'volume' && (
-                  <td className="px-3 sm:px-4 py-3 text-right">
-                    <p className="font-mono text-xs">
-                      <span className="text-[#7ec1fb]">{formatSolShort(song.totalVolume)}</span>{' '}
-                      <span className="text-muted-foreground">SOL</span>
-                    </p>
-                  </td>
-                )}
-                {category === 'traders' && (
-                  <td className="px-3 sm:px-4 py-3 text-right">
-                    <span className="font-mono text-xs text-[#95fe7c]">{song.totalUniqueTraders.toLocaleString()}</span>
-                  </td>
-                )}
-                {category === 'played' && (
-                  <td className="px-3 sm:px-4 py-3 text-right">
-                    <span className="font-mono text-xs text-white">{song.totalBattles}</span>
-                  </td>
-                )}
-                {category === 'trending' && (
-                  <td className="px-3 sm:px-4 py-3 text-right hidden md:table-cell">
-                    <p className="font-mono text-xs">
-                      <span className="text-[#7ec1fb]">{formatSolShort(song.totalVolume)}</span>{' '}
-                      <span className="text-muted-foreground">SOL</span>
-                    </p>
-                  </td>
-                )}
-
-                <td className="px-3 sm:px-4 py-3 text-right text-[10px] text-muted-foreground hidden lg:table-cell whitespace-nowrap">
-                  {timeAgo(song.lastPlayed)}
-                </td>
-              </tr>
-            )
-          })}
-          {pageSongs.length === 0 && (
-            <tr>
-              <td colSpan={7} className="px-4 py-12 text-center text-muted-foreground text-sm">
-                No quick battles in this time period yet.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <RankPanel icon={RANK_ICONS.songs} title="Top songs" sub={SUBTITLE[category]}>
+      {pageSongs.map((song, i) => {
+        const heat = relativeHeat(song.trendingScore, maxScore)
+        const sub = [song.handle ? `@${song.handle}` : null, song.genre, `last played ${timeAgo(song.lastPlayed)}`].filter(Boolean).join(' · ')
+        const record = { k: 'Record', v: `${song.wins}W ${song.losses}L` }
+        const traded = { k: 'Traded', v: `${formatSolShort(song.totalVolume)} SOL` }
+        const [stat, small, extras] =
+          category === 'volume' ? [`${formatSolShort(song.totalVolume)} SOL`, 'Traded', [record]]
+          : category === 'traders' ? [song.totalUniqueTraders.toLocaleString('en-US'), 'Traders', [record, traded]]
+          : category === 'played' ? [`${song.totalBattles}`, song.totalBattles === 1 ? 'Battle' : 'Battles', [record, traded]]
+          : [`${song.wins} ${song.wins === 1 ? 'win' : 'wins'}`, `${Math.round(song.winRate)}% win rate`, [{ k: 'Heat', v: String(heat) }, traded]]
+        return (
+          <RankRow
+            key={song.key}
+            rank={globalOffset + i + 1}
+            art={song.artUrl}
+            href={song.musicLink ?? undefined}
+            external
+            title={song.songTitle}
+            sub={sub}
+            extras={extras}
+            stat={stat}
+            small={small}
+          />
+        )
+      })}
+      {pageSongs.length === 0 && <RankEmpty>No quick battles in this time period yet.</RankEmpty>}
+    </RankPanel>
 
     {/* Pagination */}
     {totalPages > 1 && (

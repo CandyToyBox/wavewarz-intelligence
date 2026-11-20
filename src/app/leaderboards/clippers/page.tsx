@@ -82,7 +82,7 @@ export default async function ClipperLeaderboardPage() {
         </div>
         <p className="text-muted-foreground text-sm mt-1">
           Ranked by points. Contributors earn points for every clip submitted, approved, and posted.
-          {artistCount > 0 && ` ${artistCount} contributors are also active WaveWarZ battle artists.`}
+          {artistCount > 0 && (artistCount === 1 ? ` 1 contributor is also an active WaveWarZ battle artist.` : ` ${artistCount} contributors are also active WaveWarZ battle artists.`)}
         </p>
       </div>
 

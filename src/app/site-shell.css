@@ -154,3 +154,56 @@ body::before {
   .ww-share-actions { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .ww-share[open], .ww-share[open]::backdrop { animation: none; } .ww-share-shimmer { animation: none; } }
+
+/* ---------- leaderboard panels (components/rank-list.tsx) ----------
+   Ported from the redesigned homepage's Top artists / Top songs cards (.hl-panel, .hl-row, .hl-art). */
+.ww-hl-panel { --chrome: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); position: relative; border: 1px solid rgba(216, 235, 252, .16); border-radius: 28px; background: linear-gradient(180deg, rgba(14, 21, 34, .92), rgba(7, 10, 16, .95)); padding: 24px 20px 14px; box-shadow: 0 24px 60px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .1); }
+.ww-hl-panel::before { content: ""; position: absolute; left: 24px; right: 24px; top: 0; height: 2px; background: var(--chrome); opacity: .7; border-radius: 0 0 2px 2px; }
+.ww-hl-ph { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.ww-hl-ico { width: 44px; height: 44px; border-radius: 12px; background: #04070d; display: grid; place-items: center; flex: none; box-shadow: inset 0 0 0 1px rgba(216, 235, 252, .12); }
+.ww-hl-ph h2 { margin: 0; font: 700 1.2rem/1.2 'Space Grotesk', sans-serif; letter-spacing: -.005em; color: #fff; text-transform: none; }
+.ww-hl-ph p { margin: 2px 0 0; font: 600 .72rem 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #8d9bb0; }
+.ww-hl-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.ww-hl-row { display: grid; grid-template-columns: 28px 58px minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 12px 4px; border-top: 1px solid rgba(216, 235, 252, .08); color: inherit; text-decoration: none; border-radius: 4px; }
+.ww-hl-list li:first-child .ww-hl-row { border-top: 0; }
+.ww-hl-row:focus-visible { outline-offset: 0; }
+@media (hover: hover) and (pointer: fine) { a.ww-hl-row:hover .ww-hl-t { color: #95fe7c; } }
+.ww-hl-rk { font: 700 1.1rem 'Space Grotesk', sans-serif; color: #f2a74b; text-align: center; font-variant-numeric: tabular-nums; }
+.ww-hl-art { position: relative; width: 58px; height: 58px; border-radius: 50%; padding: 3px; background: var(--chrome); box-shadow: 0 8px 18px rgba(0, 0, 0, .55); }
+.ww-hl-art b, .ww-hl-art.pair i b { position: relative; display: block; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #0c121c; }
+.ww-hl-art b img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ww-hl-art b:empty { background: radial-gradient(circle at 35% 30%, #1b2c42, #0c121c 70%); }
+.ww-hl-art b:empty::before { content: ""; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2296%22 height=%2296%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpath d=%22M9.5 18.2V6.2L19.5 4.2v11.6%22 stroke=%22%2395fe7c%22/%3E%3Cpath d=%22M9.5 6.2 19.5 4.2v3L9.5 9.2z%22 fill=%22%237ec1fb%22 stroke=%22none%22/%3E%3Ccircle cx=%226.9%22 cy=%2218.2%22 r=%222.6%22 stroke=%22%2395fe7c%22/%3E%3Ccircle cx=%2216.9%22 cy=%2215.8%22 r=%222.6%22 stroke=%22%237ec1fb%22/%3E%3C/svg%3E") center/46% no-repeat; }
+.ww-hl-art.pair { width: 70px; border-radius: 30px; background: none; padding: 0; box-shadow: none; display: flex; align-items: center; }
+.ww-hl-art.pair i { display: block; position: relative; width: 42px; height: 42px; border-radius: 50%; padding: 2px; background: var(--chrome); box-shadow: 0 6px 14px rgba(0, 0, 0, .55); }
+.ww-hl-art.pair i + i { margin-left: -14px; }
+.ww-hl-tx { min-width: 0; display: flex; flex-direction: column; }
+.ww-hl-t { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font: 700 .98rem/1.25 'Space Grotesk', sans-serif; color: #fff; overflow: hidden; overflow-wrap: anywhere; transition: color .2s ease; }
+.ww-hl-s { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-top: 2px; font: 400 .72rem/1.4 'JetBrains Mono', monospace; letter-spacing: .02em; color: #8d9bb0; overflow: hidden; overflow-wrap: anywhere; }
+.ww-hl-x { display: flex; gap: 28px; }
+.ww-hl-x > span { display: flex; flex-direction: column; align-items: flex-end; min-width: 64px; }
+.ww-hl-x b { font: 700 .8rem 'JetBrains Mono', monospace; color: #daecfd; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ww-hl-x small, .ww-hl-st small { display: block; margin-top: 2px; font: 400 .72rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: #8d9bb0; white-space: nowrap; }
+.ww-hl-st { text-align: right; font: 700 .8rem 'JetBrains Mono', monospace; color: #95fe7c; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ww-hl-empty { padding: 18px 4px; color: #8d9bb0; font-size: .9rem; }
+.ww-hl-search { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ww-hl-search input { flex: 1; max-width: 340px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid rgba(216, 235, 252, .18); background: rgba(255, 255, 255, .03); color: #fff; font: 500 .9rem 'Outfit', sans-serif; }
+.ww-hl-search input:focus { outline: none; border-color: rgba(149, 254, 124, .6); }
+.ww-hl-search span { margin-left: auto; font: 500 .72rem 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: #8d9bb0; }
+@media (max-width: 900px) { .ww-hl-x { display: none; } }
+@media (max-width: 640px) {
+  .ww-hl-panel { padding: 20px 12px 8px; border-radius: 22px; }
+  .ww-hl-row { grid-template-columns: 22px 48px minmax(0, 1fr) auto; gap: 10px; }
+  .ww-hl-row .ww-hl-x { display: none; }
+  .ww-hl-art { width: 48px; height: 48px; }
+  .ww-hl-art.pair { width: 60px; }
+  .ww-hl-art.pair i { width: 36px; height: 36px; }
+  .ww-hl-rk { font-size: 1rem; }
+}
+/* boards are long single lists: keep them a readable width, left-aligned with the page title */
+.ww-hl-panel { max-width: 980px; }
+.ww-hl-search { max-width: 980px; }
+@media (max-width: 640px) {
+  .ww-hl-s { -webkit-line-clamp: 1; }
+  .ww-hl-st small { font-size: .62rem; letter-spacing: .04em; }
+}

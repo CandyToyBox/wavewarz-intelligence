@@ -4,11 +4,8 @@ import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { isBattleLive } from '@/lib/battle-metrics'
 import { Badge } from '@/components/ui/badge'
-import { WinRateBar } from '@/app/leaderboards/win-rate-bar'
-import { Tip } from '@/components/tip'
-import { SolscanLink } from '@/components/solscan-link'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
-import Link from 'next/link'
+import { RankPanel, RankRow, RankEmpty, RANK_ICONS } from '@/components/rank-list'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -116,34 +113,6 @@ async function getData() {
   return { rows, solPrice }
 }
 
-function RankCell({ position }: { position: number }) {
-  if (position === 0) return (
-    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#f59e0b]/15 border border-[#f59e0b]/30">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" strokeLinejoin="round"/>
-        <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
-        <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
-        <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
-      </svg>
-    </div>
-  )
-  if (position === 1) return (
-    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-400/10 border border-zinc-400/25">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#a1a1aa"/>
-      </svg>
-    </div>
-  )
-  if (position === 2) return (
-    <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-orange-700/10 border border-orange-700/25">
-      <svg width="13" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#c2410c"/>
-      </svg>
-    </div>
-  )
-  return <span className="font-mono text-xs text-muted-foreground">{position + 1}</span>
-}
-
 export default async function CommunityLeaderboardPage() {
   const { rows, solPrice } = await getData()
 
@@ -166,82 +135,22 @@ export default async function CommunityLeaderboardPage() {
         </p>
       </div>
 
-      <div className="rounded-xl border border-border overflow-x-auto">
-        <table className="w-full text-sm min-w-[480px]">
-          <thead>
-            <tr className="border-b border-border bg-[#111827]">
-              <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest w-10">#</th>
-              <th className="text-left px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">Competitor</th>
-              <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
-                <Tip text="Wins and losses across all community battles.">Record</Tip>
-              </th>
-              <th className="text-center px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
-                <Tip text="Percentage of community battles won.">Win %</Tip>
-              </th>
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest hidden md:table-cell">
-                <Tip text="Total SOL traded on this competitor across all community battles.">Volume</Tip>
-              </th>
-              <th className="text-right px-3 sm:px-4 py-3 text-[10px] text-muted-foreground uppercase tracking-widest">
-                <Tip text="Total community battles competed in.">Battles</Tip>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((c, i) => (
-              <tr key={c.wallet} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
-                <td className="px-3 sm:px-4 py-3">
-                  <RankCell position={i} />
-                </td>
-                <td className="px-3 sm:px-4 py-3">
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden border border-border bg-[#1f2937] flex items-center justify-center">
-                      {c.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={c.imageUrl} alt={c.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="font-rajdhani font-bold text-amber-400 text-lg">
-                          {c.name.charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <Link href={`/artist/${c.wallet}`} className="font-rajdhani font-bold text-white hover:text-[#95fe7c] transition-colors text-sm sm:text-base leading-tight truncate block">
-                        {c.name}
-                      </Link>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <p className="font-mono text-[10px] text-muted-foreground truncate">
-                          {c.wallet.slice(0, 6)}…{c.wallet.slice(-4)}
-                        </p>
-                        <SolscanLink address={c.wallet} label="↗" className="!px-1 !py-0 !border-0" />
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-center whitespace-nowrap">
-                  <span className="font-rajdhani font-bold text-amber-400">{c.wins}W</span>
-                  <span className="text-muted-foreground mx-1">–</span>
-                  <span className="font-rajdhani font-bold text-red-400">{c.losses}L</span>
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-center hidden md:table-cell">
-                  <WinRateBar rate={c.winRate} color="amber" />
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-right hidden md:table-cell">
-                  <p className="font-mono text-xs"><span className="text-amber-400">{formatSol(c.totalVolume)}</span> <span className="text-muted-foreground">SOL</span></p>
-                  <p className="text-[10px] text-muted-foreground">{solToUsd(c.totalVolume, solPrice)}</p>
-                </td>
-                <td className="px-3 sm:px-4 py-3 text-right text-muted-foreground text-xs">{c.battles}</td>
-              </tr>
-            ))}
-            {rows.length === 0 && (
-              <tr>
-                <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
-                  No community battle data yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <RankPanel icon={RANK_ICONS.community} title="Top community competitors" sub="Community battles · most wins">
+        {rows.map((c, i) => (
+          <RankRow
+            key={c.wallet}
+            rank={i + 1}
+            art={c.imageUrl}
+            href={`/artist/${c.wallet}`}
+            title={c.name}
+            sub={`${c.wins}W ${c.losses}L · ${c.winRate}% win rate · ${c.wallet.slice(0, 4)}…${c.wallet.slice(-4)}`}
+            extras={[{ k: 'Traded', v: `${formatSol(c.totalVolume)} SOL` }, { k: 'USD', v: solToUsd(c.totalVolume, solPrice) }]}
+            stat={`${c.battles} ${c.battles === 1 ? 'battle' : 'battles'}`}
+            small="Played"
+          />
+        ))}
+        {rows.length === 0 && <RankEmpty>No community battle data yet.</RankEmpty>}
+      </RankPanel>
     </div>
   )
 }
