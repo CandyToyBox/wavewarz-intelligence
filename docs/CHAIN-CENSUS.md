@@ -35,4 +35,10 @@ Thirty non-test Quick Battles from 2025-12 to 2026-03 store a volume of exactly 
 - Vault, 0 bytes: (0 + 128) x 6,960 = 890,880 lamports
 - Sum: 4,238,640 lamports = 0.00423864 SOL
 
-So it is rent held by the accounts, not trading volume, and it only appears where the webhook fell back to reading the vault balance because no trade existed. The true volume of those battles is 0. Together they overstate platform volume by 0.1272 SOL (30 x 0.00423864). The same value sits on test battles, which are not counted.
+So it is rent held by the accounts, not trading volume, and it only appears where the webhook fell back to reading the vault balance because no trade existed. The true volume of those battles was 0, and together they overstated platform volume by 0.1272 SOL (30 x 0.00423864). **Corrected 2026-11-21:** the 30 battles now read volume 0, 0 trades, 0 traders, with a changelog entry. The same value sits on test battles, which are not counted and were left as they were.
+
+## Operators (added 2026-11-21)
+
+The census also resolves which operator (arena) ran each battle, from the chain's fee wallet (offset 100) and launcher (offset 257) set against the registry in `spec/operators.json`, and writes the result to four columns on `battles`: `launcher_wallet`, `fee_wallet_chain`, `operator_id`, `operator_basis`. Nothing else on a battle is written. The registry is projected into the database by `scripts/sync-operators.ts` whenever it changes; run `npx tsx scripts/sync-operators.ts --file=<operators.json>`.
+
+Each operator has a `listing_mode`, which is the grant and is changed by hand, never by sync: `off` (registered, nothing listed), `main` (its battles reach the main index the usual way), `partner` (battles found on chain are pulled into `partner_battles`, a separate table, when the fee wallet **and** a registered launcher match, or the battle is explicitly claimed). Anything the pull cannot list is logged in `intake_events` (service role only). `npx tsx scripts/chain-census.ts --dry-run --assume-partner=<id>` rehearses what a grant would list, without granting anything. Rule tests: `npx tsx scripts/test-operator-resolve.ts`.

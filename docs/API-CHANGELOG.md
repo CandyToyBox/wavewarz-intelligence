@@ -18,6 +18,25 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-21 — Which arena ran each battle, and a volume correction
+
+**Endpoints:** `/battles` and `/battles/:id` (new `operatorId`, `operatorAttributionBasis`, `launcherWallet`; new `operator` filter on the list), new `/operators` — **Type:** ADDITIVE. `/stats` (`volume.totalSol`) and `/battles` (`volumeSol`) for 30 battles — **Type:** CORRECTION
+
+**Which arena ran each battle.** Every battle now says which arena ran it, so an arena can show only its own battles: `GET /battles?operator=<id>`, with the ids listed at `/operators`. The arena is worked out from two facts the chain records on every battle, the fee wallet and the wallet that launched it, set against the shared operator registry. Rules, in order: an operator explicitly claims the battle; the fee wallet is one the operator collects at; the fee wallet is a destination the operator declares it routes its cut to and the launcher is one of its own. Otherwise `operatorId` is `null`. Nothing is guessed. On the first run, 1,710 listed battles are WaveWarZ and 19 are $ongChainn / WaveWarZ Africa; none of the listed battles is unattributed. The attribution matches the protocol repository's own resolver on all 1,593 battles the two hold in common.
+
+**A volume correction.** Thirty Quick Battles launched between 2025-12-02 and 2026-03-03 showed 0.00424 SOL of volume and one trade. Nothing traded: 0.00423864 SOL is exactly the rent every battle account and its vault must hold to exist on Solana. Their volume and trade count are now 0.
+
+| | Before | After |
+|---|---|---|
+| `volume.totalSol` | 1017.0121 | 1016.8849 |
+| Each of the 30 battles: `volumeSol`, trades, traders | 0.0042 SOL, 1, 1 | 0, 0, 0 |
+
+**How much your numbers move:** platform volume falls by 0.1272 SOL (about 0.012%). Battle results, winners, pools and every other field are unchanged. The new operator fields add information and change nothing that existed.
+
+**Verify:** `curl "https://wavewarz.info/api/public/battles?operator=songchainn"` returns 19 battles. `SELECT count(*) FROM battles WHERE is_test_battle = false AND trades_status = 'no_onchain_trades' AND total_volume_a + total_volume_b = 0.00423864` returns 0.
+
+---
+
 ## 2026-11-21 — Two named battle counts, and a reconciliation endpoint
 
 **Endpoints:** `/stats` (new `battles.listed`, `battles.onChainAccounts`, `battles.onChainAsOf`, and a new `reconciliation` block), new `/reconciliation` — **Type:** ADDITIVE

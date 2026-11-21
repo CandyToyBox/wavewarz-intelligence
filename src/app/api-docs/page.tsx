@@ -75,6 +75,7 @@ function Endpoint({
 const TOC = [
   { id: 'stats', label: 'GET /api/public/stats' },
   { id: 'reconciliation', label: 'GET /api/public/reconciliation' },
+  { id: 'operators', label: 'GET /api/public/operators' },
   { id: 'battles-list', label: 'GET /api/public/battles' },
   { id: 'battles-detail', label: 'GET /api/public/battles/:id' },
   { id: 'events', label: 'GET /api/public/events' },
@@ -180,6 +181,23 @@ export default function ApiDocsPage() {
       />
 
       <Endpoint
+        id="operators"
+        method="GET"
+        path="/api/public/operators"
+        summary="The arenas that run WaveWarZ battles, from the shared operator registry. A battle's arena is resolved from the chain's own fee wallet and launcher, never from what a caller claims. Pair an id with /api/public/battles?operator=<id> to show only that arena's battles. Battles no registered operator matches are reported as null, not guessed."
+        example={`curl https://wavewarz.info/api/public/operators`}
+        response={`{
+  "operators": [
+    { "id": "wavewarz", "name": "WaveWarZ", "home": "wavewarz.com", "registered": "2026-09-14", "status": "active",
+      "listedBattles": 1710, "battlesUrl": "https://wavewarz.info/api/public/battles?operator=wavewarz" },
+    { "id": "songchainn", "name": "$ongChainn / WaveWarZ Africa", "listedBattles": 19, "...": "..." }
+  ],
+  "unattributedListedBattles": 1,
+  "note": "Attribution rules, in order: explicit claim, fee wallet, declared redirect plus registered launcher, otherwise unattributed."
+}`}
+      />
+
+      <Endpoint
         id="battles-list"
         method="GET"
         path="/api/public/battles"
@@ -187,6 +205,7 @@ export default function ApiDocsPage() {
         params={[
           { name: 'type', type: 'string', desc: `"main" | "quick" | "community" — omit for all types` },
           { name: 'live', type: 'boolean', desc: '"true" to return only the currently live battle (if any)' },
+          { name: 'operator', type: 'string', desc: 'an operator id from /api/public/operators — only that arena\'s battles. Each battle also carries operatorId, operatorAttributionBasis and launcherWallet (null = unattributed).' },
           { name: 'limit', type: 'number', desc: 'default 50, max 200' },
           { name: 'offset', type: 'number', desc: 'default 0, for pagination' },
         ]}

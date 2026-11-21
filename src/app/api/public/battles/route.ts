@@ -10,6 +10,7 @@ import { canonicalSongKey } from '@/lib/song-identity'
  * Query params:
  *   type   - 'main' | 'quick' | 'community' (default: all types)
  *   live   - 'true' to return only the currently live battle
+ *   operator - an operator id (see /api/public/operators), only that arena's battles
  *   limit  - default 50, max 200
  *   offset - default 0
  *
@@ -31,7 +32,7 @@ export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() })
 }
 
-const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url,poll_winner,poll_votes_a,poll_votes_b,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at'
+const SELECT = 'battle_id,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_twitter,artist2_twitter,artist1_music_link,artist2_music_link,artist1_pool,artist2_pool,total_volume_a,total_volume_b,winner_decided,winner_artist_a,is_quick_battle,is_main_battle,is_community_battle,battle_duration,created_at,image_url,poll_winner,poll_votes_a,poll_votes_b,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at,operator_id,operator_basis,launcher_wallet'
 
 type Row = {
   battle_id: number
@@ -58,6 +59,9 @@ type Row = {
   poll_winner: string | null
   poll_votes_a: number | null
   poll_votes_b: number | null
+  operator_id: string | null
+  operator_basis: string | null
+  launcher_wallet: string | null
   dj_wavy_winner: string | null
   dj_wavy_reasoning: string | null
   main_event_human_judge: string | null
@@ -138,6 +142,11 @@ function toPublicBattle(
     createdAt: b.created_at,
     endsAt: new Date(new Date(b.created_at).getTime() + (b.battle_duration ?? 0) * 1000).toISOString(),
     url: `https://wavewarz.info/battles/${b.battle_id}`,
+    // Which arena ran the battle, resolved from the chain's own fee wallet and launcher
+    // against the shared operator registry. null = unattributed (kept honest, never guessed).
+    operatorId: b.operator_id,
+    operatorAttributionBasis: b.operator_basis,
+    launcherWallet: b.launcher_wallet,
   }
 }
 
@@ -146,6 +155,10 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
     const liveOnly = searchParams.get('live') === 'true'
+    const operator = searchParams.get('operator') ?? ''
+    if (operator && !/^[a-z0-9_-]{1,64}$/i.test(operator)) {
+      return NextResponse.json({ error: 'operator must be an operator id from /api/public/operators' }, { status: 400, headers: corsHeaders() })
+    }
     const limit = Math.min(Math.max(Number(searchParams.get('limit')) || 50, 1), 200)
     const offset = Math.max(Number(searchParams.get('offset')) || 0, 0)
 
@@ -159,6 +172,7 @@ export async function GET(request: Request) {
     if (type === 'main') query = query.eq('is_main_battle', true)
     else if (type === 'quick') query = query.eq('is_quick_battle', true)
     else if (type === 'community') query = query.eq('is_community_battle', true)
+    if (operator) query = query.eq('operator_id', operator)
 
     // Live battles are rare (WaveWarz runs one at a time) and recent, so pull
     // a bounded recent window rather than paginating past the 1000-row cap.
