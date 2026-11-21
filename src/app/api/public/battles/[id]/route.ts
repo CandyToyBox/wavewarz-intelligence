@@ -50,7 +50,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const supabase = await createClient()
     const { data: b, error } = await supabase
       .from('battles')
-      .select('battle_id,is_quick_battle,is_community_battle,created_at,battle_duration,winner_decided,winner_artist_a,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_music_link,artist2_music_link,artist1_twitter,artist2_twitter,image_url,stream_link,poll_winner,poll_votes_a,poll_votes_b,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at')
+      .select('battle_id,is_quick_battle,is_community_battle,created_at,battle_duration,winner_decided,winner_artist_a,artist1_pool,artist2_pool,total_volume_a,total_volume_b,artist1_name,artist2_name,artist1_wallet,artist2_wallet,artist1_music_link,artist2_music_link,artist1_twitter,artist2_twitter,image_url,stream_link,poll_winner,poll_votes_a,poll_votes_b,dj_wavy_winner,dj_wavy_reasoning,main_event_human_judge,main_event_x_poll_winner,main_event_sol_vote_winner,main_event_judged_at,operator_id,operator_basis,launcher_wallet')
       .eq('battle_id', battleId)
       .maybeSingle()
 
@@ -159,6 +159,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       battleDurationSeconds: b.battle_duration,
       streamLink: b.stream_link,
       url: `https://wavewarz.info/battles/${b.battle_id}`,
+      operatorId: b.operator_id ?? null,
+      operatorAttributionBasis: b.operator_basis ?? null,
+      launcherWallet: b.launcher_wallet ?? null,
     }
 
     return NextResponse.json(body, { headers: corsHeaders() })

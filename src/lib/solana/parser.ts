@@ -20,6 +20,8 @@ export interface BattleAccount {
   isInitialized: boolean
   isActive: boolean
   totalDistributionAmount: bigint
+  /** Wallet that signed InitializeBattle: Pubkey at byte 257 (chain/BATTLE-ACCOUNT.md). Null on a short account. */
+  launcher: PublicKey | null
 }
 
 export function parseBattleAccount(data: Uint8Array | Buffer): BattleAccount | null {
@@ -51,6 +53,7 @@ export function parseBattleAccount(data: Uint8Array | Buffer): BattleAccount | n
     const isInitialized = view.getUint8(offset) !== 0; offset += 1
     const isActive = view.getUint8(offset) !== 0; offset += 1
     const totalDistributionAmount = view.getBigUint64(offset, true)
+    const launcher = data.length >= 289 ? new PublicKey(data.subarray(257, 289)) : null
 
     return {
       battleId, startTime, endTime,
@@ -62,6 +65,7 @@ export function parseBattleAccount(data: Uint8Array | Buffer): BattleAccount | n
       winnerArtistA, winnerDecided,
       isInitialized, isActive,
       totalDistributionAmount,
+      launcher,
     }
   } catch {
     return null
