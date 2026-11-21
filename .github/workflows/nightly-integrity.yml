@@ -5,6 +5,8 @@
 # only ran when the Mac was on, re-synced claims for the last 60 days only, and
 # skipped any battle that never looked "settled". Same three steps, same
 # scripts; the claims step now also checks unsettled-looking battles of any age.
+# A fourth step, the chain census, counts every battle account on chain against
+# what the index lists and publishes the result at /api/public/reconciliation.
 #
 # Needs three repository secrets (Settings > Secrets and variables > Actions):
 #   NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, NEXT_PUBLIC_HELIUS_API_KEY
@@ -79,6 +81,9 @@ jobs:
           if [ -z "$SINCE" ]; then SINCE=$(date -u -d "60 days ago" +%Y-%m-%d); fi
           echo "claims re-sync since $SINCE"
           npx tsx scripts/backfill-claims-from-chain.ts --resync --include-unsettled --since="$SINCE"
+
+      - name: Chain census (battles on chain versus battles listed)
+        run: npx tsx scripts/chain-census.ts
 
       - name: Queue fees sync (skip queue and add to queue)
         run: npx tsx scripts/backfill-queue-fees.ts

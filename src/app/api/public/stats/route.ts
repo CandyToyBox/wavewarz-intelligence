@@ -57,7 +57,7 @@ export async function GET() {
   try {
     const supabase = await createClient()
 
-    const [battles, claims, solPrice, liveCandidateRes] = await Promise.all([
+    const [battles, claims, solPrice, liveCandidateRes, censusRes] = await Promise.all([
       fetchAll<MetricsBattle>((from, to) => supabase
         .from('battles')
         .select('total_volume_a, total_volume_b, artist1_pool, artist2_pool, artist1_wallet, artist2_wallet, winner_artist_a, winner_decided, is_quick_battle, is_community_battle, is_main_battle, event_subtype, created_at')
@@ -75,7 +75,15 @@ export async function GET() {
         .eq('is_test_battle', false)
         .order('created_at', { ascending: false })
         .limit(1),
+      // Latest daily chain census (see /api/public/reconciliation). If the
+      // table is unreachable the two on-chain fields are simply null.
+      supabase
+        .from('chain_census')
+        .select('census_at, on_chain, listed, test_excluded, not_indexed')
+        .order('census_at', { ascending: false })
+        .limit(1),
     ])
+    const census = censusRes.data?.[0] ?? null
 
     if (!battles.length) {
       return NextResponse.json({ error: 'No data available' }, { status: 503, headers: corsHeaders() })
@@ -129,7 +137,22 @@ export async function GET() {
         mainBattles: m.mainBattles,
         quickBattles: m.quickCount,
         communityBattles: m.communityCount,
+        // The chain and this index count different things, so both numbers are
+        // published, each with its own name. onChainAccounts = every battle
+        // account the program holds, test battles and abandoned launches
+        // included. listed = the real battles this index lists (same as total).
+        listed: battles.length,
+        onChainAccounts: census?.on_chain ?? null,
+        onChainAsOf: census?.census_at ?? null,
       },
+      reconciliation: census ? {
+        asOf: census.census_at,
+        onChainAccounts: census.on_chain,
+        listed: census.listed,
+        testBattlesExcluded: census.test_excluded,
+        notIndexed: census.not_indexed,
+        note: 'onChainAccounts = listed + testBattlesExcluded + notIndexed, all read at asOf. Detail and the named battles: /api/public/reconciliation',
+      } : null,
     }
 
     return NextResponse.json(body, { headers: corsHeaders() })
