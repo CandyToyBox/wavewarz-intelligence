@@ -18,6 +18,24 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-21 — Two named battle counts, and a reconciliation endpoint
+
+**Endpoints:** `/stats` (new `battles.listed`, `battles.onChainAccounts`, `battles.onChainAsOf`, and a new `reconciliation` block), new `/reconciliation` — **Type:** ADDITIVE
+
+The chain and this index count different things, and pages that mixed the two numbers without saying which was which ended up disagreeing with themselves. Both numbers now have names.
+
+- `battles.onChainAccounts` is every battle account the WaveWarZ program holds on Solana, test battles and launches that never traded included.
+- `battles.listed` is the real battles this index lists. It is the same number as `battles.total`, which is unchanged.
+- `/reconciliation` accounts for every battle between the two: `onChainAccounts = listed + testBattlesExcluded + notIndexed`. Test battles are left out of every public number on purpose. The rest, battles on chain that never reached this index, are almost all abandoned launches that hold no SOL; any that still hold SOL are named, with the amount.
+
+Read once a day from the chain. On the first reading: 1,871 on chain, 1,729 listed, 86 test battles left out, and 56 not indexed, of which 7 still hold SOL (0.1775 SOL in total).
+
+**How much your numbers move:** nothing existing changes. No value, field or filter is altered; these are new fields only.
+
+**Verify:** `curl https://wavewarz.info/api/public/reconciliation` and check that `onChainAccounts` equals `listed + testBattlesExcluded + notIndexed.count`.
+
+---
+
 ## 2026-11-21 — Three trader withdrawals added to two more battles
 
 **Endpoints:** `/stats` (`traderClaims.totalSol`, `traderClaims.withdrawalCount`), `/leaderboards/traders` where a trader's withdrawals are counted — **Type:** CORRECTION

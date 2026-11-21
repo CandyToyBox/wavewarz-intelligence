@@ -74,6 +74,7 @@ function Endpoint({
 
 const TOC = [
   { id: 'stats', label: 'GET /api/public/stats' },
+  { id: 'reconciliation', label: 'GET /api/public/reconciliation' },
   { id: 'battles-list', label: 'GET /api/public/battles' },
   { id: 'battles-detail', label: 'GET /api/public/battles/:id' },
   { id: 'events', label: 'GET /api/public/events' },
@@ -149,7 +150,32 @@ export default function ApiDocsPage() {
   "liveBattle": null,
   "artistPayouts": { "totalSol": 412.3, "totalUsd": 30902.5, "note": "..." },
   "traderClaims": { "totalSol": 8210.1, "totalUsd": ..., "withdrawalCount": 3140, "note": "..." },
-  "battles": { "total": 1904, "mainEvents": 88, "mainBattles": 264, "quickBattles": 1580, "communityBattles": 60 }
+  "battles": { "total": 1904, "mainEvents": 88, "mainBattles": 264, "quickBattles": 1580, "communityBattles": 60,
+               "listed": 1904, "onChainAccounts": 2046, "onChainAsOf": "2026-11-21T08:24:42Z" },
+  "reconciliation": { "asOf": "2026-11-21T08:24:42Z", "onChainAccounts": 2046, "listed": 1904, "testBattlesExcluded": 86, "notIndexed": 56, "note": "..." }
+}`}
+      />
+
+      <Endpoint
+        id="reconciliation"
+        method="GET"
+        path="/api/public/reconciliation"
+        summary="The chain and this index count different things. The WaveWarZ program holds a battle account for every battle ever launched, test battles and untraded launches included; the index lists real battles only. This endpoint publishes both counts and accounts for every battle between them: onChainAccounts = listed + testBattlesExcluded + notIndexed. Refreshed daily."
+        example={`curl https://wavewarz.info/api/public/reconciliation`}
+        response={`{
+  "asOf": "2026-11-21T08:24:42Z",
+  "onChainAccounts": 1871,
+  "listed": 1729,
+  "testBattlesExcluded": 86,
+  "notIndexed": {
+    "count": 56,
+    "stillHoldingSol": { "count": 7, "sol": 0.177504 },
+    "battles": [ { "battleId": 1793550349, "startedAt": "...", "holdingSol": 0.035123, "ended": true }, ... ]
+  },
+  "realBattlesMissingFromChain": 0,
+  "newlyNotIndexedSinceLastCensus": [],
+  "history": [ { "asOf": "...", "onChainAccounts": 1871, "listed": 1729, "testBattlesExcluded": 86, "notIndexed": 56 } ],
+  "explanation": { "...": "plain-language definition of every field" }
 }`}
       />
 
