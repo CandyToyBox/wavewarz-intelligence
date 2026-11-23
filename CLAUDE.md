@@ -735,3 +735,30 @@ merch/ops duties. Kept below for historical/config reference only.
 - Agent brain dirs: `~/claw/{candy_cookz,lil_lob,merch}/brain/` (historical, not maintained)
 - Daily memory logs per agent
 - `.env.openclaw`: 0600 perms, not committed
+
+---
+
+## 17. MERGE RULES FOR THE PROTOCOL REPO (added 2026-11-23)
+
+Source: Zaal's `RULES-FOR-CANDY-CLAUDE.md` in github.com/bettercallzaal/zaal-candy, accepted by Candy 2026-11-23. They apply to `bettercallzaal/wavewarz-protocol`, not to this repo.
+
+**Candy and Claude open pull requests there. Only Zaal merges. Claude never runs `gh pr merge` on that repo and never pushes to its `main`.**
+
+Never, in the protocol repo:
+- Edit `.github/workflows/`, add an Actions secret, or touch `payouts/` or any signing.
+- Change `spec/operators.json` (who an arena is, its wallets, its claimed battles). Zaal owns it. This repo only reads it, and `scripts/sync-operators.ts` is run by hand.
+- Put the IDL, or names that appear only in it, in a file that could go public; add a path to `spec/public-paths.txt`; put the SDK trading half in anything public.
+- Map a wallet address to a person.
+- Force-push, delete a branch, or push onto a PR after it has a CLEAN review. Open a follow-up PR instead, stacked on the first if it depends on it. Check `gh pr view` first, because Zaal also pushes to our PRs.
+- Paste a key, token or private RPC address anywhere, or message holders of unclaimed winnings.
+
+Before asking for a merge:
+- Checks are green at the exact commit.
+- Every number is labeled MEASURED, DERIVED or INHERITED, with a source anyone can check.
+- A session that did not write it has checked it at that commit.
+- Line 1 of the PR body says who wrote it. The body lists only files the PR changes; everything else goes under "Not in this PR".
+- No em dashes, no emojis in protocol repo files.
+
+Needs Zaal: every merge, any operators.json change, anything on chain, public, or costing money. Needs Hurricane: the program itself, the IDL, making the SDK trading half public.
+
+In this repo: docs-only pull requests may be merged by Claude after checks pass. Anything that writes to the database, changes the public API's shape, or touches a workflow needs Candy's explicit yes first.
