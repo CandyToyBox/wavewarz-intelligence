@@ -110,7 +110,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
       </div>
 
       {displayed.length === 0 && (
-        <div className="rounded-xl border border-border bg-[#111827] p-8 text-center text-muted-foreground text-sm">
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground text-sm">
           {filter === 'pending' ? 'No battles pending judging.' : 'No main events found.'}
         </div>
       )}
@@ -135,8 +135,8 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
           return (
             <div
               key={battle.battle_id}
-              className={`rounded-xl border bg-[#111827] overflow-hidden ${
-                isSettled && !isOverride ? 'border-[#95fe7c]/20 opacity-60' : isOverride ? 'border-amber-400/40' : isLive ? 'border-amber-500/30' : 'border-border'
+              className={`rounded-xl border bg-card overflow-hidden ${
+                isSettled && !isOverride ? 'border-[#95fe7c]/20 opacity-60' : isOverride ? 'border-[#f2a74b]/40' : isLive ? 'border-[#f2a74b]/30' : 'border-border'
               }`}
             >
               {/* Battle header */}
@@ -154,10 +154,10 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                       <span className="text-[10px] font-bold text-[#95fe7c] border border-[#95fe7c]/40 px-2 py-0.5 rounded">JUDGED</span>
                     )}
                     {isOverride && (
-                      <span className="text-[10px] font-bold text-amber-400 border border-amber-400/40 px-2 py-0.5 rounded animate-pulse">RE-JUDGING</span>
+                      <span className="text-[10px] font-bold text-[#f2a74b] border border-[#f2a74b]/40 px-2 py-0.5 rounded animate-pulse">RE-JUDGING</span>
                     )}
                     {isLive && (
-                      <span className="text-[10px] font-bold text-amber-400 border border-amber-400/40 px-2 py-0.5 rounded animate-pulse">LIVE</span>
+                      <span className="text-[10px] font-bold text-[#f2a74b] border border-[#f2a74b]/40 px-2 py-0.5 rounded animate-pulse">LIVE</span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">#{battle.battle_id} · {date} · {time} EST</p>
@@ -247,7 +247,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                   <span className="text-xs text-muted-foreground">Winner recorded in database.</span>
                   <button
                     onClick={() => toggleOverride(battle.battle_id)}
-                    className="text-[10px] font-bold text-amber-400 border border-amber-400/30 hover:bg-amber-400/10 px-3 py-1 rounded transition-colors font-display tracking-wide"
+                    className="text-[10px] font-bold text-[#f2a74b] border border-[#f2a74b]/30 hover:bg-[#f2a74b]/10 px-3 py-1 rounded transition-colors font-display tracking-wide"
                   >
                     Re-judge
                   </button>

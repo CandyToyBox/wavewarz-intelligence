@@ -31,7 +31,7 @@ export function AdminTabs({
       badge: clipsPendingCount > 0 ? `${clipsPendingCount} pending` : 'Sir Clipz',
       badgeColor: clipsPendingCount > 0
         ? 'text-[#7ec1fb] border-[#7ec1fb]/40 bg-[#7ec1fb]/10'
-        : 'text-orange-400 border-orange-500/40 bg-orange-500/10',
+        : 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10',
     },
     {
       id: 'schedule',
@@ -45,7 +45,7 @@ export function AdminTabs({
       id: 'judging',
       label: 'Main Event Judging',
       badge: pendingCount > 0 ? `${pendingCount} pending` : undefined,
-      badgeColor: 'text-amber-400 border-amber-500/40 bg-amber-500/10',
+      badgeColor: 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10',
     },
     {
       id: 'artists',
@@ -63,7 +63,7 @@ export function AdminTabs({
       id: 'events',
       label: 'Events Calendar',
       badge: eventCount > 0 ? `${eventCount} events` : undefined,
-      badgeColor: 'text-amber-400 border-amber-500/40 bg-amber-500/10',
+      badgeColor: 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10',
     },
     {
       id: 'stats',
@@ -89,7 +89,7 @@ export function AdminTabs({
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-sm font-medium transition-colors ${
               tab === t.id
-                ? 'text-white bg-[#111827] border border-b-0 border-border -mb-px'
+                ? 'text-white bg-card border border-b-0 border-border -mb-px'
                 : 'text-muted-foreground hover:text-white'
             }`}
           >

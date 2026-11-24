@@ -2,6 +2,7 @@
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
+import { WwIcon } from '@/components/ww-icon'
 type Platform = 'youtube' | 'twitter' | 'instagram' | 'tiktok'
 
 export type ScheduleClip = {
@@ -83,7 +84,7 @@ export function SchedulePanel({ clips }: { clips: ScheduleClip[] }) {
 
       {/* ── Empty state ── */}
       {upcoming.length === 0 && (
-        <div className="rounded-xl border border-border bg-[#111827] p-8 text-center space-y-2">
+        <div className="rounded-xl border border-border bg-card p-8 text-center space-y-2">
           <p className="text-white font-display font-bold text-xl">Queue is clear</p>
           <p className="text-sm text-muted-foreground">
             No approved clips with a future schedule. Approve clips from the Community Clips tab to populate the queue.
@@ -119,7 +120,7 @@ export function SchedulePanel({ clips }: { clips: ScheduleClip[] }) {
 function DensityBar({ bars }: { bars: { label: string; day: string; count: number; isToday: boolean }[] }) {
   const max = Math.max(...bars.map(b => b.count), 1)
   return (
-    <div className="rounded-xl border border-border bg-[#111827] p-4">
+    <div className="rounded-xl border border-border bg-card p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4">
         Next 7 Days — Post Density
       </p>
@@ -200,7 +201,7 @@ function ClipRow({ clip, dim }: { clip: ScheduleClip; dim: boolean }) {
 
   return (
     <div
-      className={`flex items-center gap-4 rounded-xl border bg-[#111827] px-4 py-3 ${
+      className={`flex items-center gap-4 rounded-xl border bg-card px-4 py-3 ${
         dim ? 'border-border opacity-60' : 'border-border hover:border-white/10 transition-colors'
       }`}
     >
@@ -244,7 +245,7 @@ function ClipRow({ clip, dim }: { clip: ScheduleClip; dim: boolean }) {
       <div className="shrink-0 text-right space-y-0.5">
         <p className="text-xs font-bold font-display text-[#95fe7c]">+{clip.net_votes}</p>
         {clip.postiz_post_id && (
-          <p className="text-[9px] text-muted-foreground font-mono">Postiz ✓</p>
+          <p className="text-[9px] text-muted-foreground font-mono">Postiz <WwIcon name="ui-check" size={9} className="inline-block align-[-2px]" /></p>
         )}
         {dim && (
           <p className="text-[9px] text-emerald-400 font-bold">POSTED</p>
@@ -268,7 +269,7 @@ function StatCard({
     : color === 'blue' ? 'border-[#7ec1fb]/20'
     : 'border-border'
   return (
-    <div className={`rounded-xl border bg-[#111827] p-4 ${border}`}>
+    <div className={`rounded-xl border bg-card p-4 ${border}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-2xl font-display font-bold ${valColor}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground/60 mt-0.5">{sub}</p>

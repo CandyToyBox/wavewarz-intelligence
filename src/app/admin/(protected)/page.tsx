@@ -1,3 +1,4 @@
+import { WwIcon } from '@/components/ww-icon'
 import { createAdminClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { platformMetrics, type MetricsBattle } from '@/lib/battle-metrics'
@@ -189,7 +190,7 @@ export default async function AdminPage() {
 
       {/* ── REVENUE (always visible at top) ── */}
       <section>
-        <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] p-6 mb-4">
+        <div className="rounded-2xl border border-[#95fe7c]/30 bg-card p-6 mb-4">
           <div className="flex items-end justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Total Platform Revenue (All Time)</p>
@@ -200,10 +201,10 @@ export default async function AdminPage() {
               <p>{revenue.totalBattles} battles counted</p>
               <p>{revenue.mainCount} main · {revenue.quickCount} quick · {revenue.communityCount} community</p>
               {revenue.pendingJudging.length > 0 && (
-                <p className="text-amber-400 font-bold text-xs">{revenue.pendingJudging.length} main events pending judging</p>
+                <p className="text-[#f2a74b] font-bold text-xs">{revenue.pendingJudging.length} main events pending judging</p>
               )}
               <p className="text-[#95fe7c]/70 text-[10px] font-mono pt-1">
-                ✓ Skip Queue now tracked from chain ({queueFees.skipQueueCount} txs since 2026-06-29)
+                <WwIcon name="ui-check" size={10} className="inline-block align-[-2px]" /> Skip Queue now tracked from chain ({queueFees.skipQueueCount} txs since 2026-06-29)
               </p>
             </div>
           </div>
@@ -218,7 +219,7 @@ export default async function AdminPage() {
           <RevenueCard label="Skip Queue Fees" value={`${formatSol(queueFees.skipQueueRevenue)} SOL`} usd={solToUsd(queueFees.skipQueueRevenue, solPrice)} detail={`${queueFees.skipQueueCount} txs — tracked from chain, since 06/29`} color="green" />
           <RevenueCard label="Add to Queue Fees (tracked)" value={`${formatSol(queueFees.addToQueueRevenue)} SOL`} usd={solToUsd(queueFees.addToQueueRevenue, solPrice)} detail={`${queueFees.addToQueueCount} txs — real data, not yet reconciled with the estimate above`} color="blue" />
         </div>
-        <div className="rounded-xl border border-border bg-[#111827] p-4">
+        <div className="rounded-xl border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Fee Rate Reference</p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             <FeeRef label="Trading Fee (Platform)" value="0.5% per trade" />
@@ -260,7 +261,7 @@ function RevenueCard({ label, value, usd, detail, color }: {
   const val = color === 'green' ? 'text-[#95fe7c]' : 'text-[#7ec1fb]'
   const border = color === 'green' ? 'border-[#95fe7c]/20' : 'border-[#7ec1fb]/20'
   return (
-    <div className={`rounded-xl border bg-[#111827] p-4 ${border}`}>
+    <div className={`rounded-xl border bg-card p-4 ${border}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
       <p className={`text-xl font-display font-bold ${val}`}>{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{usd}</p>

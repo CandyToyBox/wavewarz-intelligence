@@ -110,7 +110,7 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
         </form>
       </div>
 
-      <div className="rounded-xl border border-border bg-[#111827] p-4">
+      <div className="rounded-xl border border-border bg-card p-4">
         <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Homepage Display Logic</p>
         <p className="text-xs text-muted-foreground leading-relaxed">
           The Spotify section on the homepage only shows when at least one stream count is &gt; 0.

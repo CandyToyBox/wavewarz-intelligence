@@ -1,5 +1,6 @@
 'use client'
 
+import { WwIcon } from '@/components/ww-icon'
 import { useState, useTransition } from 'react'
 import { approveClip, rejectClip, saveClipEdits } from './actions'
 
@@ -38,7 +39,7 @@ const STATUS_LABELS: Record<ClipStatus, string> = {
 }
 
 const STATUS_COLORS: Record<ClipStatus, string> = {
-  voting:           'text-amber-400 border-amber-500/40 bg-amber-500/10',
+  voting:           'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10',
   pending_approval: 'text-[#7ec1fb] border-[#7ec1fb]/40 bg-[#7ec1fb]/10',
   approved:         'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10',
   rejected:         'text-red-400 border-red-500/40 bg-red-500/10',
@@ -105,7 +106,7 @@ export function ClipsPanel({ clips }: { clips: ClipRow[] }) {
           <button
             key={s}
             onClick={() => setFilter(filter === s ? 'all' : s)}
-            className={`rounded-xl border bg-[#111827] p-4 text-left transition-all hover:border-white/20 ${
+            className={`rounded-xl border bg-card p-4 text-left transition-all hover:border-white/20 ${
               filter === s ? 'ring-1 ring-white/20 border-white/20' : 'border-border'
             }`}
           >
@@ -154,7 +155,7 @@ export function ClipsPanel({ clips }: { clips: ClipRow[] }) {
 
       {/* Empty state */}
       {displayed.length === 0 && (
-        <div className="rounded-xl border border-border bg-[#111827] p-8 text-center text-muted-foreground text-sm">
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground text-sm">
           {filter === 'all'
             ? 'No clips submitted yet.'
             : `No ${STATUS_LABELS[filter as ClipStatus].toLowerCase()} clips.`}
@@ -279,7 +280,7 @@ function ClipCard({
       : 'border-border'
 
   return (
-    <div className={`rounded-xl border bg-[#111827] transition-all ${borderClass}`}>
+    <div className={`rounded-xl border bg-card transition-all ${borderClass}`}>
 
       {/* ── Collapsed header (always visible) ── */}
       <div className="flex items-start gap-4 px-5 py-4">
@@ -330,7 +331,7 @@ function ClipCard({
             <p className="text-[10px] text-[#95fe7c]">{scheduledLabel}</p>
           )}
           {clip.postiz_post_id && (
-            <p className="text-[10px] text-muted-foreground font-mono">Postiz ✓</p>
+            <p className="text-[10px] text-muted-foreground font-mono">Postiz <WwIcon name="ui-check" size={10} className="inline-block align-[-2px]" /></p>
           )}
           {canManage && (
             <button
@@ -428,7 +429,7 @@ function ClipCard({
                           : 'text-muted-foreground border-border bg-transparent hover:border-white/20 hover:text-white'
                       }`}
                     >
-                      {active ? '✓ ' : ''}{PLATFORM_SHORT[p]}
+                      {active && <><WwIcon name="ui-check" size={10} className="inline-block align-[-2px]" /> </>}{PLATFORM_SHORT[p]}
                     </button>
                   )
                 })}
@@ -465,14 +466,14 @@ function ClipCard({
                   disabled={isPending || localPlatforms.length === 0}
                   className="flex-1 bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-sm rounded-lg py-2.5 transition-colors font-display tracking-wide"
                 >
-                  {isPending ? 'Processing…' : '✓ Approve & Schedule'}
+                  {isPending ? 'Processing…' : <><WwIcon name="ui-check" size={14} className="inline-block align-[-2px]" /> Approve &amp; Schedule</>}
                 </button>
                 <button
                   onClick={handleReject}
                   disabled={isPending}
                   className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-display tracking-wide transition-colors"
                 >
-                  ✗ Reject
+                  <WwIcon name="ui-close" size={14} className="inline-block align-[-2px]" /> Reject
                 </button>
               </>
             ) : clip.status === 'approved' ? (
@@ -489,7 +490,7 @@ function ClipCard({
                   disabled={isPending}
                   className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-display tracking-wide transition-colors"
                 >
-                  ✗ Reject
+                  <WwIcon name="ui-close" size={14} className="inline-block align-[-2px]" /> Reject
                 </button>
               </>
             ) : null}

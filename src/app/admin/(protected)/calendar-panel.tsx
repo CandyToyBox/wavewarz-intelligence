@@ -20,7 +20,7 @@ const EVENT_TYPES = ['BATTLE', 'SPACES', 'COMMUNITY', 'OTHER']
 const TYPE_COLORS: Record<string, string> = {
   BATTLE: '#95fe7c',
   SPACES: '#7ec1fb',
-  COMMUNITY: '#f59e0b',
+  COMMUNITY: '#f2a74b',
   OTHER: '#989898',
 }
 
@@ -271,7 +271,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
       {error && <p className="text-xs text-red-400 bg-red-400/10 border border-red-400/30 rounded-lg px-3 py-2">{error}</p>}
 
       {showAdd && (
-        <div className="rounded-xl border border-[#95fe7c]/30 bg-[#111827] p-5">
+        <div className="rounded-xl border border-[#95fe7c]/30 bg-card p-5">
           <p className="text-sm font-display font-bold text-white mb-4">New Event</p>
           <EventForm onSubmit={handleAdd} onCancel={() => setShowAdd(false)} loading={isPending} />
         </div>
@@ -288,7 +288,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
 
           if (editId === evt.id) {
             return (
-              <div key={evt.id} className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-5">
+              <div key={evt.id} className="rounded-xl border border-[#7ec1fb]/30 bg-card p-5">
                 <p className="text-sm font-display font-bold text-white mb-4">Edit Event</p>
                 <EventForm
                   initial={evt}
@@ -303,7 +303,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
           return (
             <div
               key={evt.id}
-              className={`rounded-xl border p-4 flex items-start justify-between gap-4 ${evt.is_featured ? 'border-[#95fe7c]/20 bg-[#95fe7c]/5' : 'border-border bg-[#111827]'} ${!evt.is_active ? 'opacity-50' : ''}`}
+              className={`rounded-xl border p-4 flex items-start justify-between gap-4 ${evt.is_featured ? 'border-[#95fe7c]/20 bg-[#95fe7c]/5' : 'border-border bg-card'} ${!evt.is_active ? 'opacity-50' : ''}`}
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">

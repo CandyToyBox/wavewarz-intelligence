@@ -30,7 +30,7 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center">
       <div className="w-full max-w-sm">
-        <div className="rounded-2xl border border-border bg-[#111827] p-8">
+        <div className="rounded-2xl border border-border bg-card p-8">
           <div className="mb-6 text-center">
             <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">WaveWarZ</p>
             <h1 className="text-3xl font-display font-bold text-white tracking-wide">

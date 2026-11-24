@@ -1,5 +1,6 @@
 'use client'
 
+import { WwIcon } from '@/components/ww-icon'
 import { useState, useTransition } from 'react'
 import { updateBattleMedia } from './actions'
 
@@ -95,7 +96,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
         <div className="flex gap-1 ml-auto">
           {(['all', 'missing'] as const).map(f => (
             <button key={f} onClick={() => setMediaFilter(f)}
-              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mediaFilter === f ? 'bg-amber-500/10 text-amber-400' : 'text-muted-foreground hover:text-white'}`}>
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${mediaFilter === f ? 'bg-[#f2a74b]/10 text-[#f2a74b]' : 'text-muted-foreground hover:text-white'}`}>
               {f === 'missing' ? `Missing Media (${missingCount})` : 'All Battles'}
             </button>
           ))}
@@ -108,12 +109,12 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
         {filtered.map(b => {
           const edit = getEdit(b)
           const type = b.is_quick_battle ? 'Quick' : b.is_main_battle ? 'Main' : 'Community'
-          const typeColor = b.is_quick_battle ? 'text-[#7ec1fb]' : b.is_main_battle ? 'text-[#95fe7c]' : 'text-amber-400'
+          const typeColor = b.is_quick_battle ? 'text-[#7ec1fb]' : b.is_main_battle ? 'text-[#95fe7c]' : 'text-[#f2a74b]'
           const date = new Date(b.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: '2-digit' })
           const isDirty = edits[b.battle_id] !== undefined
 
           return (
-            <div key={b.battle_id} className={`rounded-xl border bg-[#111827] overflow-hidden ${saved[b.battle_id] ? 'border-[#95fe7c]/20' : isDirty ? 'border-[#7ec1fb]/30' : 'border-border'}`}>
+            <div key={b.battle_id} className={`rounded-xl border bg-card overflow-hidden ${saved[b.battle_id] ? 'border-[#95fe7c]/20' : isDirty ? 'border-[#7ec1fb]/30' : 'border-border'}`}>
               <div className="px-4 py-3 flex items-center gap-4">
                 {/* Battle info */}
                 <div className="flex-1 min-w-0">
@@ -154,7 +155,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
                 {/* Save */}
                 <div className="shrink-0 w-24 text-right">
                   {saved[b.battle_id] ? (
-                    <span className="text-[10px] text-[#95fe7c] font-bold">Saved ✓</span>
+                    <span className="text-[10px] text-[#95fe7c] font-bold">Saved <WwIcon name="ui-check" size={10} className="inline-block align-[-2px]" /></span>
                   ) : (
                     <button
                       onClick={() => handleSave(b)}
@@ -174,7 +175,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
         })}
 
         {filtered.length === 0 && (
-          <div className="rounded-xl border border-border bg-[#111827] p-8 text-center text-muted-foreground text-sm">
+          <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground text-sm">
             No battles match the current filters.
           </div>
         )}

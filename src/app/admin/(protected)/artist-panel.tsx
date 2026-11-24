@@ -164,7 +164,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
 
       {/* Create / Edit Form */}
       {showForm && (
-        <div className="rounded-xl border border-[#95fe7c]/30 bg-[#111827] p-6 mb-6">
+        <div className="rounded-xl border border-[#95fe7c]/30 bg-card p-6 mb-6">
           <h3 className="font-display font-bold text-white text-lg mb-4 tracking-wide">
             {editing ? 'Edit Artist Profile' : 'Create New Artist Profile'}
           </h3>
@@ -215,14 +215,14 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
 
       {/* Artist list */}
       {filtered.length === 0 && (
-        <div className="rounded-xl border border-border bg-[#111827] p-8 text-center text-muted-foreground text-sm">
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground text-sm">
           {list.length === 0 ? 'No artist profiles yet. Create one above.' : 'No results for that search.'}
         </div>
       )}
 
       <div className="space-y-3">
         {filtered.map(a => (
-          <div key={a.artist_id} className="rounded-xl border border-border bg-[#111827] overflow-hidden">
+          <div key={a.artist_id} className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="px-5 py-4 flex items-start gap-4">
               {/* Avatar */}
               <div className="shrink-0">
@@ -285,7 +285,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
                   <span className="text-xs text-muted-foreground italic">No linked wallets</span>
                 )}
                 {a.wallets.map(w => (
-                  <div key={w.wallet_address} className="flex items-center gap-1 bg-[#111827] border border-border rounded px-2 py-1">
+                  <div key={w.wallet_address} className="flex items-center gap-1 bg-card border border-border rounded px-2 py-1">
                     <span className="font-mono text-[10px] text-white">{w.wallet_address.slice(0, 8)}…{w.wallet_address.slice(-4)}</span>
                     <button
                       onClick={() => handleUnlink(w.wallet_address)}
@@ -304,7 +304,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
                   placeholder="Paste wallet address to link…"
                   value={newWallet[a.artist_id] ?? ''}
                   onChange={e => setNewWallet(prev => ({ ...prev, [a.artist_id]: e.target.value }))}
-                  className="bg-[#111827] border border-border rounded px-3 py-1.5 text-xs text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 flex-1 max-w-xs font-mono"
+                  className="bg-card border border-border rounded px-3 py-1.5 text-xs text-white placeholder:text-muted-foreground focus:outline-none focus:border-[#95fe7c]/50 flex-1 max-w-xs font-mono"
                 />
                 <button
                   onClick={() => handleLinkWallet(a.artist_id)}
@@ -415,7 +415,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
   const profileName = (id: string | null) => id ? (profiles.find(p => p.artist_id === id)?.display_name ?? 'Unknown profile') : null
 
   return (
-    <div className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-5 mb-6">
+    <div className="rounded-xl border border-[#7ec1fb]/30 bg-card p-5 mb-6">
       <h3 className="font-display font-bold text-white text-base mb-1 tracking-wide">Split a Wallet&apos;s Main Events</h3>
       <p className="text-xs text-muted-foreground mb-4">
         Paste a wallet, pick which of its Main Event battles belong to a different profile (e.g. an &quot;AI LUI&quot; sub-profile), and assign them. Quick Battles don&apos;t need this — they&apos;re already ranked by song.
@@ -439,7 +439,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
       </div>
 
       {msg && (
-        <div className={`rounded-lg px-3 py-2 mb-3 text-xs font-mono ${msg.ok ? 'bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/20' : 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/20'}`}>
+        <div className={`rounded-lg px-3 py-2 mb-3 text-xs font-mono ${msg.ok ? 'bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/20' : 'bg-[#f2a74b]/10 text-[#f2a74b] border border-[#f2a74b]/20'}`}>
           {msg.text}
         </div>
       )}

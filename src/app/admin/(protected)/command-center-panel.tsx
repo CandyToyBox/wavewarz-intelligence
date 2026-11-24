@@ -27,7 +27,7 @@ export function CommandCenterPanel({
       {/* ── LEAGUE HUB ── */}
       <a
         href="/hub"
-        className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] to-[#111827] p-4 hover:border-[#95fe7c]/60 transition-colors"
+        className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-card p-4 hover:border-[#95fe7c]/60 transition-colors"
       >
         <div>
           <p className="font-display font-bold text-white tracking-wide">League Hub →</p>
@@ -137,7 +137,7 @@ export function CommandCenterPanel({
 
 function Kpi({ label, value, sub, dim }: { label: string; value: string; sub: string; dim?: boolean }) {
   return (
-    <div className={`rounded-xl border p-4 text-center ${dim ? 'border-border bg-[#111827]' : 'border-[#95fe7c]/20 bg-gradient-to-b from-[#070a10] to-[#111827]'}`}>
+    <div className={`rounded-xl border p-4 text-center ${dim ? 'border-border bg-card' : 'border-[#95fe7c]/20 bg-card'}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
       <p className={`font-display font-bold text-2xl ${dim ? 'text-white' : 'text-[#95fe7c]'}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>
@@ -147,7 +147,7 @@ function Kpi({ label, value, sub, dim }: { label: string; value: string; sub: st
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-[#111827] p-5">
+    <div className="rounded-xl border border-border bg-card p-5">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4 pb-3 border-b border-border font-display font-bold text-[#95fe7c]">
         {title}
       </p>
@@ -183,7 +183,7 @@ function ScheduleItem({ day, time, desc, badge }: { day: string; time: string; d
 function StatusBadge({ status, color }: { status: string; color: 'green' | 'yellow' | 'red' | 'muted' }) {
   const styles = {
     green: 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10',
-    yellow: 'text-amber-400 border-amber-500/40 bg-amber-500/10',
+    yellow: 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10',
     red: 'text-red-400 border-red-500/40 bg-red-500/10',
     muted: 'text-muted-foreground border-border bg-white/5',
   }
