@@ -63,7 +63,7 @@ body { background: transparent !important; }
 .ww-chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(216, 235, 252, .16); background: rgba(255, 255, 255, .03); color: #daecfd; text-decoration: none; font: 500 .88rem 'Outfit', sans-serif; transition: color .2s ease, border-color .2s ease, background-color .2s ease; }
 @media (hover: hover) and (pointer: fine) { .ww-chip:hover { border-color: rgba(149, 254, 124, .5); color: #fff; } }
 .ww-chip { transition: color .2s ease, border-color .2s ease, background-color .2s ease, transform 160ms cubic-bezier(.23, 1, .32, 1); } .ww-chip:active { transform: scale(.97); }
-.ww-chip[aria-current="page"] { background: rgba(149, 254, 124, .12); border-color: rgba(149, 254, 124, .55); color: #95fe7c; }
+.ww-chip[aria-current="page"], .ww-chip[aria-pressed="true"] { background: rgba(149, 254, 124, .12); border-color: rgba(149, 254, 124, .55); color: #95fe7c; }
 
 /* ---------- footer ---------- */
 .ww-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; max-width: 1320px; width: 100%; margin: 64px auto 0; padding: 22px 20px 28px; border-top: 1px solid rgba(216, 235, 252, .12); font: 400 .72rem/1.6 'JetBrains Mono', monospace; letter-spacing: .04em; color: #8d9bb0; }

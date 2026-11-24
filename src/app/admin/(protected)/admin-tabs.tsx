@@ -82,18 +82,17 @@ export function AdminTabs({
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex items-center gap-1 border-b border-border mb-6 pb-1 flex-wrap">
+      {/* Same pill chips as the Statz rail; the selected tab uses the chip's green "current" state */}
+      <div className="flex items-center gap-2 mb-6 flex-wrap">
         {tabs.map(t => (
           <button
             key={t.id}
+            type="button"
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-sm font-medium transition-colors ${
-              tab === t.id
-                ? 'text-white bg-card border border-b-0 border-border -mb-px'
-                : 'text-muted-foreground hover:text-white'
-            }`}
+            aria-pressed={tab === t.id}
+            className="ww-chip"
           >
-            <span className="font-display font-bold tracking-wide">{t.label}</span>
+            <span>{t.label}</span>
             {t.badge && (
               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${t.badgeColor}`}>
                 {t.badge}
