@@ -285,6 +285,7 @@ dialog.sh[open]{animation:sheet .4s var(--ease-out)}
 <div id="printDoc" aria-hidden="true"></div>
 
 <script src="ww-celebrate.js"></script>
+<script src="icons/ww-icons.js"></script>
 <script>
 /* DJ Wavy Breakdown: a paid 1 on 1 where DJ Wavy compares two songs.
    Three views, picked from the URL:
@@ -314,6 +315,8 @@ var ICON={play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l
  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>',
  pdf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg>',
  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'};
+/* feature icons from the WaveWarZ set (icons/ww-icons.js); play/pause/search/share/pdf/plus stay plain control glyphs */
+ICON.coin=wwIcon('collect',20);ICON.bars=wwIcon('stats',20);ICON.doc=wwIcon('launch',20);ICON.x=wwIcon('ui-close',14);
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function httpsUrl(u){try{var x=new URL(u);return x.protocol==='https:'?x.href:'';}catch(e){return '';}}
