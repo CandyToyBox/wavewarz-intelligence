@@ -50,7 +50,7 @@ export function RunwayChecklist({ slug, runway, keys, title = 'Promotion Runway'
   return (
     <div className="rounded-xl border border-border bg-[#111827]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">{title}</h3>
+        <h3 className="font-display font-bold text-white tracking-wide text-sm">{title}</h3>
         <span className="text-xs text-muted-foreground">{done}/{items.length} · {pct}%{pending ? ' · saving…' : ''}</span>
       </div>
       <div className="h-1 w-full bg-[#0c121c]">

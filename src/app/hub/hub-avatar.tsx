@@ -36,7 +36,7 @@ export function HubAvatar({
             if (parent && !parent.querySelector('[data-avatar-fallback]')) {
               const span = document.createElement('span')
               span.dataset.avatarFallback = 'true'
-              span.className = 'font-rajdhani font-bold text-[#95fe7c]'
+              span.className = 'font-display font-bold text-[#95fe7c]'
               span.style.fontSize = `${Math.round(size * 0.45)}px`
               span.textContent = initial
               parent.appendChild(span)
@@ -44,7 +44,7 @@ export function HubAvatar({
           }}
         />
       ) : (
-        <span className="font-rajdhani font-bold text-[#95fe7c]" style={{ fontSize: Math.round(size * 0.45) }}>
+        <span className="font-display font-bold text-[#95fe7c]" style={{ fontSize: Math.round(size * 0.45) }}>
           {initial}
         </span>
       )}

@@ -51,7 +51,7 @@ export default async function TradersLeaderboardPage() {
 
       {rows.length === 0 ? (
         <div className="rounded-xl border border-border bg-card p-16 text-center">
-          <p className="font-rajdhani font-bold text-white text-xl mb-2">No Trade Data Yet</p>
+          <p className="font-display font-bold text-white text-xl mb-2">No Trade Data Yet</p>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
             No trades recorded yet. Trade history is sourced from WaveWarZ onchain data and updates as battles settle. Use the wallet lookup above to scan a specific wallet&apos;s history directly.
           </p>

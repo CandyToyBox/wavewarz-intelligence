@@ -10,24 +10,24 @@ import { IgniteRadio } from '@/components/ignite-radio'
 import { AdClickCapture } from '@/components/ad-click-capture'
 import { Analytics } from '@vercel/analytics/next'
 
-// Same three faces as the redesigned wavewarz.com. The old variable names stay, pointed at the new faces, so every
-// existing font-rajdhani / font-sans / font-mono class follows without edits.
+// The redesign's three faces, the same as wavewarz.com: Space Grotesk (display, font-display), Outfit (body, font-sans),
+// JetBrains Mono (numbers and labels, font-mono). No other fonts are loaded.
 const display = Space_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-rajdhani',
+  variable: '--font-grotesk',
 })
 
 const body = Outfit({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-inter',
+  variable: '--font-outfit',
 })
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '700'],
-  variable: '--font-geist-mono',
+  variable: '--font-jetbrains',
 })
 
 // Phones: paint under the notch and home bar (the fixed nav and radio bar pad back out with env()), black browser chrome

@@ -143,11 +143,11 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
               <div className="px-5 py-4 flex items-center justify-between gap-4 border-b border-border">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-rajdhani font-bold text-white text-lg">
+                    <span className="font-display font-bold text-white text-lg">
                       {battle.artist1_name}
                     </span>
                     <span className="text-muted-foreground text-sm">vs</span>
-                    <span className="font-rajdhani font-bold text-white text-lg">
+                    <span className="font-display font-bold text-white text-lg">
                       {battle.artist2_name}
                     </span>
                     {isSettled && !isOverride && (
@@ -165,7 +165,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                 {/* SOL Vote (automatic) */}
                 <div className="shrink-0 text-right">
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest">SOL Vote (auto)</p>
-                  <p className="text-sm font-rajdhani font-bold text-[#7ec1fb]">
+                  <p className="text-sm font-display font-bold text-[#7ec1fb]">
                     {solVote === 'a' ? battle.artist1_name : battle.artist2_name}
                   </p>
                   <p className="text-[10px] text-muted-foreground">
@@ -203,7 +203,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                   {projectedWinner && (
                     <div className="rounded-lg bg-[#95fe7c]/5 border border-[#95fe7c]/20 px-4 py-2 mb-3 flex items-center justify-between">
                       <span className="text-xs text-muted-foreground">2-of-3 Winner:</span>
-                      <span className="font-rajdhani font-bold text-[#95fe7c] text-sm">
+                      <span className="font-display font-bold text-[#95fe7c] text-sm">
                         {projectedWinner === 'a' ? battle.artist1_name : battle.artist2_name}
                       </span>
                       <span className="text-[10px] text-muted-foreground">
@@ -225,7 +225,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                       <button
                         onClick={() => handleSubmit(battle)}
                         disabled={isPending || !state.humanJudge || !state.xPoll}
-                        className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+                        className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-display tracking-wide"
                       >
                         {isPending ? 'Saving…' : isOverride ? 'Update Result' : 'Save Judging Result'}
                       </button>
@@ -247,7 +247,7 @@ export function JudgingPanel({ battles }: { battles: Battle[] }) {
                   <span className="text-xs text-muted-foreground">Winner recorded in database.</span>
                   <button
                     onClick={() => toggleOverride(battle.battle_id)}
-                    className="text-[10px] font-bold text-amber-400 border border-amber-400/30 hover:bg-amber-400/10 px-3 py-1 rounded transition-colors font-rajdhani tracking-wide"
+                    className="text-[10px] font-bold text-amber-400 border border-amber-400/30 hover:bg-amber-400/10 px-3 py-1 rounded transition-colors font-display tracking-wide"
                   >
                     Re-judge
                   </button>
@@ -278,7 +278,7 @@ function JudgeInput({ label, battleId, field, current, nameA, nameB, onChange }:
           <button
             key={side}
             onClick={() => onChange(battleId, field, side)}
-            className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold font-rajdhani border transition-colors ${
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold font-display border transition-colors ${
               current === side
                 ? 'bg-[#95fe7c]/20 border-[#95fe7c]/60 text-[#95fe7c]'
                 : 'bg-[#0c121c] border-border text-muted-foreground hover:text-white hover:border-border/80'

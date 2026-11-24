@@ -44,14 +44,14 @@ export default async function HubEvents() {
                   </p>
                 </div>
               </div>
-              <span className={`text-xs font-rajdhani font-bold text-center ${e.winner === 'pending' ? 'text-amber-400' : 'text-[#95fe7c]'}`}>
+              <span className={`text-xs font-display font-bold text-center ${e.winner === 'pending' ? 'text-[#f2a74b]' : 'text-[#95fe7c]'}`}>
                 {winnerName}
               </span>
               <span className="text-xs font-mono text-[#7ec1fb] text-center">{e.totalVolumeSol} SOL</span>
               <span className="text-right">
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                   e.hasThesis
-                    ? (e.thesisNeedsReview ? 'text-amber-400 border-amber-500/40 bg-amber-500/10' : 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10')
+                    ? (e.thesisNeedsReview ? 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10' : 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10')
                     : 'text-muted-foreground border-border'
                 }`}>
                   {e.hasThesis ? (e.thesisNeedsReview ? 'REVIEW' : '✓') : 'needed'}

@@ -96,7 +96,7 @@ export function AssetManager({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">{heading}</h2>
+        <h2 className="text-lg font-display font-bold text-white tracking-wide">{heading}</h2>
         <button
           onClick={() => setAdding(a => !a)}
           className="text-xs font-bold text-[#0d1321] bg-[#95fe7c] hover:bg-[#95fe7c]/90 px-3 py-1.5 rounded"
@@ -227,7 +227,7 @@ export function AssetManager({
                       {a.why_added ? (
                         <p className="text-[11px] text-white/70">Why: {a.why_added}</p>
                       ) : (
-                        <p className="text-[11px] text-amber-400">No reason recorded yet. Add one.</p>
+                        <p className="text-[11px] text-[#f2a74b]">No reason recorded yet. Add one.</p>
                       )}
                       {a.family_tags && a.family_tags.length > 0 && (
                         <p className="text-[10px] text-[#7ec1fb]">{a.family_tags.join(' · ')}</p>

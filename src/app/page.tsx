@@ -1,4 +1,5 @@
 import type React from 'react'
+import { WwIcon } from '@/components/ww-icon'
 import { createClient } from '@/lib/supabase/server'
 import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
@@ -19,7 +20,7 @@ import { LiveArena, type LiveArenaData } from '@/components/live-arena'
 import { OutboundLink } from '@/components/outbound-link'
 import { main } from '@/lib/site'
 import { WEEKLY_SHOWS } from '@/lib/weekly-schedule'
-import { Trophy, Clapperboard, Mic, PlayCircle, HeartHandshake, BarChart3, ArrowUpRight, ArrowRight } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 import { DJWavyModel } from '@/components/dj-wavy-model'
 
 async function getGlobalStats() {
@@ -285,7 +286,7 @@ export default async function HomePage() {
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
+          <h1 className="text-5xl font-display font-bold tracking-tight text-white">
             WaveWarZ <span className="text-[#7ec1fb]">Statz</span>
           </h1>
           <p className="text-muted-foreground mt-2 text-lg tracking-wide">
@@ -342,11 +343,11 @@ export default async function HomePage() {
                 <div className="absolute inset-x-0 bottom-0 p-4 flex items-end justify-between gap-2">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c]">{activePinnedEvent.matchup.side1.role}</p>
-                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{activePinnedEvent.matchup.side1.name}</p>
+                    <p className="text-lg font-display font-bold text-white leading-tight">{activePinnedEvent.matchup.side1.name}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb]">{activePinnedEvent.matchup.side2.role}</p>
-                    <p className="text-lg font-rajdhani font-bold text-white leading-tight">{activePinnedEvent.matchup.side2.name}</p>
+                    <p className="text-lg font-display font-bold text-white leading-tight">{activePinnedEvent.matchup.side2.name}</p>
                   </div>
                 </div>
               </div>
@@ -361,7 +362,7 @@ export default async function HomePage() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">{activePinnedEvent.eyebrow}</p>
-                <h3 className="text-2xl font-rajdhani font-bold text-white">{activePinnedEvent.title}</h3>
+                <h3 className="text-2xl font-display font-bold text-white">{activePinnedEvent.title}</h3>
               </div>
               <span className="text-3xl">{activePinnedEvent.icon}</span>
             </div>
@@ -419,7 +420,7 @@ export default async function HomePage() {
 
       {/* What Is WaveWarZ */}
       <section className="rounded-2xl border border-[#7ec1fb]/20 bg-[#7ec1fb]/5 p-6 md:p-8 space-y-4">
-        <h2 className="text-3xl font-rajdhani font-bold text-white">What Is WaveWarZ?</h2>
+        <h2 className="text-3xl font-display font-bold text-white">What Is WaveWarZ?</h2>
         <p className="text-gray-300 leading-relaxed max-w-3xl">
           WaveWarZ is a decentralized music battle platform built on Solana. Artists go head-to-head in timed battles while fans trade each side&apos;s battle tokens as the songs play. Every trade is denominated in SOL — no platform token, no middleman. Artists earn automatically from trading volume the moment a battle settles. It&apos;s part trading arena, part concert, part community — and it&apos;s all onchain.
         </p>
@@ -447,7 +448,7 @@ export default async function HomePage() {
         <div className="space-y-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#95fe7c] mb-1">Your AI Judge</p>
-            <h2 className="text-3xl font-rajdhani font-bold text-white">Meet DJ Wavy</h2>
+            <h2 className="text-3xl font-display font-bold text-white">Meet DJ Wavy</h2>
           </div>
           <p className="text-gray-300 leading-relaxed max-w-2xl">
             DJ Wavy is the third factor in every Quick Battle verdict — Poll + Charts (SOL) + DJ Wavy, 2 of 3 wins. He listens to every track that steps into the arena and calls it like he hears it.
@@ -477,20 +478,20 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <FeatureCard
-            icon={<Trophy size={22} aria-hidden="true" />}
+            icon={<WwIcon name="leaderboard" size={30} />}
             title="Leaderboards"
             desc="Artist and song rankings by volume, wins, and battle count. See who&apos;s dominating the arena."
             href="/leaderboards"
           />
           <FeatureCard
-            icon={<Clapperboard size={22} aria-hidden="true" />}
+            icon={<WwIcon name="launch" size={30} />}
             title="WaveWarZ Clippers"
             desc="Community members submit battle highlights. Approved clips go out on YouTube, X, and TikTok. Submit your clip and earn points."
             href="https://t.me/wavewarzclipshq"
             external
           />
           <FeatureCard
-            icon={<Mic size={22} aria-hidden="true" />}
+            icon={<WwIcon name="microphone" size={30} />}
             title="X Spaces"
             desc="Daily X Space Mon–Fri at 11 AM ET. Quick Battlez live Mon, Wed and Fri at 9 PM ET: trade the charts while the music plays."
             href="https://x.com/wavewarz"
@@ -498,7 +499,7 @@ export default async function HomePage() {
             trackConversion
           />
           <FeatureCard
-            icon={<PlayCircle size={22} aria-hidden="true" />}
+            icon={<WwIcon name="play" size={30} />}
             title="Replays on YouTube"
             desc="Watch past battles any time. Live shows stream on X, Kick and Twitch."
             href="https://www.youtube.com/@wavewarz"
@@ -506,13 +507,13 @@ export default async function HomePage() {
             trackConversion
           />
           <FeatureCard
-            icon={<HeartHandshake size={22} aria-hidden="true" />}
+            icon={<WwIcon name="collect" size={30} />}
             title="Benefits & Charities"
             desc="Battles where every trade, vote, and SOL moves directly from the arena to the cause — verifiable onchain."
             href="/benefits"
           />
           <FeatureCard
-            icon={<BarChart3 size={22} aria-hidden="true" />}
+            icon={<WwIcon name="stats" size={30} />}
             title="Battle Analytics"
             desc="Verified onchain stats for every battle. Volume, pools, trader counts, and payout breakdowns — all sourced directly from Solana."
             href="/battles"
@@ -524,7 +525,7 @@ export default async function HomePage() {
       {hasSpotify && (
         <section>
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide">Spotify Streams</h2>
+            <h2 className="text-2xl font-display font-bold text-white tracking-wide">Spotify Streams</h2>
             <a
               href={spotify.spotify_profile_url ?? 'https://open.spotify.com'}
               target="_blank" rel="noreferrer"
@@ -540,7 +541,7 @@ export default async function HomePage() {
                   <SpotifyIcon />
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#1DB954]">Monthly Listeners</p>
                 </div>
-                <p className="font-rajdhani font-bold text-3xl text-white">
+                <p className="font-display font-bold text-3xl text-white">
                   {spotify.spotify_monthly_streams.toLocaleString()}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">Across all WaveWarZ artists</p>
@@ -552,7 +553,7 @@ export default async function HomePage() {
                   <SpotifyIcon />
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[#1DB954]">Total Streams</p>
                 </div>
-                <p className="font-rajdhani font-bold text-3xl text-white">
+                <p className="font-display font-bold text-3xl text-white">
                   {spotify.spotify_total_streams.toLocaleString()}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">All-time platform total</p>
@@ -566,7 +567,7 @@ export default async function HomePage() {
       <section>
         <div className="flex items-start justify-between mb-4 gap-3 flex-wrap">
           <div>
-            <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide flex items-center gap-3">
+            <h2 className="text-2xl font-display font-bold text-white tracking-wide flex items-center gap-3">
               Live Schedule
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">Every week, Eastern time. <Link href="/calendar" className="text-[#7ec1fb] hover:underline">Full calendar</Link></p>
@@ -611,7 +612,7 @@ export default async function HomePage() {
       {calendarEvents.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide">Upcoming Events</h2>
+            <h2 className="text-2xl font-display font-bold text-white tracking-wide">Upcoming Events</h2>
             <Link href="/calendar" className="text-xs text-[#7ec1fb] hover:underline">View all →</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -623,7 +624,7 @@ export default async function HomePage() {
               const typeConfig: Record<string, { color: string; label: string }> = {
                 BATTLE:    { color: '#95fe7c', label: 'Battle' },
                 SPACES:    { color: '#7ec1fb', label: 'X Spaces' },
-                COMMUNITY: { color: '#f59e0b', label: 'Community' },
+                COMMUNITY: { color: '#f2a74b', label: 'Community' },
                 OTHER:     { color: '#989898', label: 'Event' },
               }
               const cfg = typeConfig[evt.event_type] ?? typeConfig.OTHER
@@ -654,7 +655,7 @@ export default async function HomePage() {
                         <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c]">Featured</span>
                       )}
                     </div>
-                    <p className="font-rajdhani font-bold text-white text-base leading-tight mb-1">{evt.title}</p>
+                    <p className="font-display font-bold text-white text-base leading-tight mb-1">{evt.title}</p>
                     <p className="text-[10px] font-mono text-muted-foreground mb-2">
                       {dateFmt}{evt.event_time ? ` · ${evt.event_time}` : ''}
                     </p>
@@ -699,7 +700,7 @@ function StatCard({
       </CardHeader>
       <CardContent className="pt-0">
         {/* Primary value — SOL amount */}
-        <p className={`text-2xl font-rajdhani font-bold leading-tight ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
+        <p className={`text-2xl font-display font-bold leading-tight ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
           {primary}
         </p>
         {/* Secondary — USD equivalent or sub-label */}
@@ -732,7 +733,7 @@ function ScheduleCard({
       eventType="live_show"
       className="block h-full p-6 border border-border bg-card rounded-2xl hover:border-[#7ec1fb]/60 transition-colors group"
     >
-      <h3 className={`text-lg font-bold font-rajdhani mb-1 ${titleColor}`}>{title}</h3>
+      <h3 className={`text-lg font-bold font-display mb-1 ${titleColor}`}>{title}</h3>
       <p className="text-xs text-muted-foreground mb-3">{time}</p>
       <p className="text-sm text-gray-300 mb-4">{desc}</p>
       <span className="text-sm font-bold text-[#7ec1fb] group-hover:underline">
@@ -749,8 +750,8 @@ function FeatureCard({
 }) {
   const inner = (
     <div className="h-full p-5 rounded-2xl border border-border bg-card hover:border-[#7ec1fb]/40 transition-colors group space-y-2">
-      <div className="text-[#7ec1fb] group-hover:text-[#95fe7c] transition-colors">{icon}</div>
-      <h3 className="font-rajdhani font-bold text-white text-base group-hover:text-[#7ec1fb] transition-colors">{title}</h3>
+      <div>{icon}</div>
+      <h3 className="font-display font-bold text-white text-base group-hover:text-[#7ec1fb] transition-colors">{title}</h3>
       <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
     </div>
   )

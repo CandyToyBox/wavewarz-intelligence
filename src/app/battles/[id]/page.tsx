@@ -200,7 +200,7 @@ export default async function BattleDetailPage({ params }: Props) {
   }
 
   const typeLabel = isQuick ? 'Quick Battle' : isCommunity ? 'Community Battle' : 'Main Event'
-  const typeColor = isQuick ? '#7ec1fb' : isCommunity ? '#f59e0b' : '#95fe7c'
+  const typeColor = isQuick ? '#7ec1fb' : isCommunity ? '#f2a74b' : '#95fe7c'
 
   // Same avatar precedence SidePanel uses below (quick-battle song art > stored
   // profile picture > Twitter avatar via unavatar), resolved here too since the
@@ -226,14 +226,14 @@ export default async function BattleDetailPage({ params }: Props) {
               {typeLabel.toUpperCase()}
             </Badge>
             {isSplitTie ? (
-              <Badge className="bg-orange-400/20 text-orange-300 border border-orange-400/30 text-[10px] font-bold tracking-widest">SPLIT — TIE</Badge>
+              <Badge className="bg-[#f2a74b]/20 text-[#f2a74b] border border-[#f2a74b]/30 text-[10px] font-bold tracking-widest">SPLIT — TIE</Badge>
             ) : isSettled ? (
               <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest">SETTLED</Badge>
             ) : (
-              <Badge className="bg-yellow-400/20 text-yellow-300 border border-yellow-400/30 text-[10px] font-bold tracking-widest animate-pulse">LIVE</Badge>
+              <Badge className="bg-[#f2a74b]/20 text-[#f2a74b] border border-[#f2a74b]/30 text-[10px] font-bold tracking-widest animate-pulse">LIVE</Badge>
             )}
           </div>
-          <h1 className="text-3xl sm:text-4xl font-rajdhani font-bold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight">
             Battle <span style={{ color: typeColor }}>#{battleId}</span>
           </h1>
           {battle.created_at && (
@@ -303,7 +303,7 @@ export default async function BattleDetailPage({ params }: Props) {
 
           {/* VS divider */}
           <div className="flex sm:flex-col items-center justify-center gap-4 sm:gap-0 px-3 sm:px-5 py-3 sm:py-6 border-y sm:border-y-0 sm:border-x border-border bg-[#0c121c]">
-            <span className="font-rajdhani font-bold text-2xl text-muted-foreground">VS</span>
+            <span className="font-display font-bold text-2xl text-muted-foreground">VS</span>
             <div className="sm:mt-3 text-center">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Total Vol</p>
               <p className="font-mono text-xs text-white">{formatSol(totalVol)} SOL</p>
@@ -352,7 +352,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Quick Battle 3-Factor Result */}
       {isQuick && isSettled && (
         <div className="rounded-xl border border-[#7ec1fb]/20 bg-card p-5">
-          <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">
+          <h2 className="font-display font-bold text-white text-lg mb-4 tracking-wide">
             3-Factor Result
             <span className="text-xs font-normal text-muted-foreground ml-2">Poll · Charts · DJ Wavy — 2 of 3 wins</span>
           </h2>
@@ -362,7 +362,7 @@ export default async function BattleDetailPage({ params }: Props) {
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Poll</p>
               {battle.poll_winner ? (
                 <>
-                  <p className="font-rajdhani font-bold text-white text-sm">{factorLabel(battle.poll_winner)}</p>
+                  <p className="font-display font-bold text-white text-sm">{factorLabel(battle.poll_winner)}</p>
                   {battle.poll_votes_a != null && battle.poll_votes_b != null && (
                     <p className="text-[10px] text-muted-foreground mt-1 font-mono">
                       {battle.artist1_name}: {battle.poll_votes_a} · {battle.artist2_name}: {battle.poll_votes_b}
@@ -377,7 +377,7 @@ export default async function BattleDetailPage({ params }: Props) {
             <div className="rounded-lg border border-border bg-[#0c121c] p-3">
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Charts (SOL)</p>
               {/* Charts = the side with the bigger SOL pool, which is not always the overall winner */}
-              <p className="font-rajdhani font-bold text-white text-sm">
+              <p className="font-display font-bold text-white text-sm">
                 {p1 > p2 ? battle.artist1_name : p2 > p1 ? battle.artist2_name : 'Tie'}
               </p>
               <p className="text-[10px] text-muted-foreground mt-1 font-mono">
@@ -389,7 +389,7 @@ export default async function BattleDetailPage({ params }: Props) {
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">DJ Wavy</p>
               {battle.dj_wavy_winner ? (
                 <>
-                  <p className="font-rajdhani font-bold text-white text-sm">{factorLabel(battle.dj_wavy_winner)}</p>
+                  <p className="font-display font-bold text-white text-sm">{factorLabel(battle.dj_wavy_winner)}</p>
                   {battle.dj_wavy_reasoning && (
                     <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed italic line-clamp-3">
                       {battle.dj_wavy_reasoning}
@@ -407,7 +407,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Settlement Breakdown */}
       {settlement && (
         <div className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">Settlement Breakdown</h2>
+          <h2 className="font-display font-bold text-white text-lg mb-4 tracking-wide">Settlement Breakdown</h2>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             <SettleBox label="Winning Traders" sub="40% of loser pool" value={settlement.winningTraders} solPrice={solPrice} color="#95fe7c" />
             <SettleBox label="Losing Traders" sub="50% refund" value={settlement.losingTraders} solPrice={solPrice} color="#7ec1fb" />
@@ -424,7 +424,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Artist Profiles */}
       {(profile1 || profile2) && (
         <div className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">Artist Profiles</h2>
+          <h2 className="font-display font-bold text-white text-lg mb-4 tracking-wide">Artist Profiles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
               { p: profile1, name: battle.artist1_name, wallet: battle.artist1_wallet, artUrl: art1, isWinner: a1Won, twitterHandle: battle.artist1_twitter ?? profile1?.twitter_handle ?? null },
@@ -447,7 +447,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Trader Payout Guide */}
       {settlement && (
         <div className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-rajdhani font-bold text-white text-lg mb-1 tracking-wide">Trader Payout Guide</h2>
+          <h2 className="font-display font-bold text-white text-lg mb-1 tracking-wide">Trader Payout Guide</h2>
           <p className="text-xs text-muted-foreground mb-4">
             How payouts were distributed to traders who held tokens in this battle.
             Traders must manually claim via the <span className="text-white">Withdrawal</span> button on the battle page or at{' '}
@@ -499,7 +499,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Platform Revenue */}
       {platform && (
         <div className="rounded-xl border border-border bg-card p-5">
-          <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">Platform Revenue</h2>
+          <h2 className="font-display font-bold text-white text-lg mb-4 tracking-wide">Platform Revenue</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <Stat label={<Tip text="0.5% of all trading volume">Trading Fees</Tip>} value={`${formatSol(platform.tradingFees)} SOL`} sub={solToUsd(platform.tradingFees, solPrice)} />
             <Stat label={<Tip text="3% of the loser pool at settlement">Settlement Bonus</Tip>} value={`${formatSol(platform.settlementBonus)} SOL`} sub={solToUsd(platform.settlementBonus, solPrice)} />
@@ -510,7 +510,7 @@ export default async function BattleDetailPage({ params }: Props) {
 
       {/* Metadata */}
       <div className="rounded-xl border border-border bg-card p-5">
-        <h2 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">Battle Info</h2>
+        <h2 className="font-display font-bold text-white text-lg mb-4 tracking-wide">Battle Info</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
           <MetaRow label="Battle ID" value={String(battleId)} mono />
           <MetaRow label="Status" value={battle.status ?? '—'} />
@@ -539,7 +539,7 @@ export default async function BattleDetailPage({ params }: Props) {
       {/* Onchain Contract — every account this battle actually lives in on Solana */}
       <div className="rounded-xl border border-border bg-card p-5">
         <div className="flex items-center gap-2 mb-4">
-          <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Onchain Contract</h2>
+          <h2 className="font-display font-bold text-white text-lg tracking-wide">Onchain Contract</h2>
           <Tip text="Every account below is a deterministic PDA (Program Derived Address) — same seeds the WaveWarZ program itself uses. Nothing here is a guess; view any of them directly on Solscan to verify against the raw account data.">
             <span className="text-[10px] text-muted-foreground border border-border rounded-full w-4 h-4 flex items-center justify-center cursor-help">?</span>
           </Tip>
@@ -594,7 +594,7 @@ function SidePanel({
   const profileHref = profile?.artist_id ? `/artist/${profile.artist_id}` : wallet ? `/artist/${wallet}` : null
 
   const avatar = artUrl
-    ? <ArtistAvatarImg imgSrc={artUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center overflow-hidden font-rajdhani font-bold text-3xl text-[#95fe7c]" imgClassName="w-full h-full rounded-lg object-cover" />
+    ? <ArtistAvatarImg imgSrc={artUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center overflow-hidden font-display font-bold text-3xl text-[#95fe7c]" imgClassName="w-full h-full rounded-lg object-cover" />
     : pfpUrl
     ? <ArtistAvatarImg imgSrc={pfpUrl} alt={name} initial={initial} containerClassName="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#1f2937] border-2 border-[#95fe7c]/30 flex items-center justify-center overflow-hidden" imgClassName="w-full h-full rounded-full object-cover" />
     : null
@@ -606,7 +606,7 @@ function SidePanel({
         profileHref && !artUrl ? <Link href={profileHref}>{avatar}</Link> : avatar
       ) : (
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#1f2937] border-2 border-[#95fe7c]/20 flex items-center justify-center">
-          <span className="font-rajdhani font-bold text-3xl text-[#95fe7c]">{initial}</span>
+          <span className="font-display font-bold text-3xl text-[#95fe7c]">{initial}</span>
         </div>
       )}
 
@@ -624,15 +624,15 @@ function SidePanel({
         )}
         {musicLink ? (
           <a href={musicLink} target="_blank" rel="noreferrer"
-            className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-lg sm:text-xl leading-tight">
+            className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-lg sm:text-xl leading-tight">
             {name} ↗
           </a>
         ) : profileHref ? (
-          <Link href={profileHref} className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-lg sm:text-xl leading-tight">
+          <Link href={profileHref} className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-lg sm:text-xl leading-tight">
             {name} ↗
           </Link>
         ) : (
-          <p className="font-rajdhani font-bold text-white text-lg sm:text-xl leading-tight">{name}</p>
+          <p className="font-display font-bold text-white text-lg sm:text-xl leading-tight">{name}</p>
         )}
         {genre && (
           <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20 self-start">
@@ -767,7 +767,7 @@ function ArtistProfileCard({
           })()
         ) : (
           <div className={`w-14 h-14 rounded-full flex items-center justify-center border-2 ${isWinner ? 'border-[#95fe7c]/40 bg-[#95fe7c]/10' : 'border-border bg-[#1f2937]'}`}>
-            <span className="font-rajdhani font-bold text-2xl text-[#95fe7c]">{initial}</span>
+            <span className="font-display font-bold text-2xl text-[#95fe7c]">{initial}</span>
           </div>
         )}
       </div>
@@ -776,11 +776,11 @@ function ArtistProfileCard({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           {profileHref ? (
-            <Link href={profileHref} className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-base leading-tight">
+            <Link href={profileHref} className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-base leading-tight">
               {displayName} ↗
             </Link>
           ) : (
-            <p className="font-rajdhani font-bold text-white text-base leading-tight">{displayName}</p>
+            <p className="font-display font-bold text-white text-base leading-tight">{displayName}</p>
           )}
           {isWinner && (
             <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c] bg-[#95fe7c]/10 border border-[#95fe7c]/30 px-1.5 py-0.5 rounded">

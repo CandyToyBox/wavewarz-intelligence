@@ -34,7 +34,7 @@ export default async function HubLayout({ children }: { children: React.ReactNod
     <div className="space-y-6">
       <header className="border-b border-border pb-4">
         <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-3xl font-rajdhani font-bold text-white tracking-tight">
+          <h1 className="text-3xl font-display font-bold text-white tracking-tight">
             League <span className="text-[#95fe7c]">Hub</span>
           </h1>
           <Badge className="bg-red-500/20 text-red-400 border border-red-500/40 text-[10px] font-bold tracking-widest">

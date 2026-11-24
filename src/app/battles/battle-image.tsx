@@ -23,7 +23,7 @@ export function BattleImage({
   if (!src) {
     return (
       <div
-        className={`flex items-center justify-center font-rajdhani font-bold text-2xl ${className}`}
+        className={`flex items-center justify-center font-display font-bold text-2xl ${className}`}
         style={{ backgroundColor: `${color}18`, color }}
       >
         {fallbackText.charAt(0).toUpperCase()}
@@ -48,7 +48,7 @@ export function BattleImage({
           parent.style.justifyContent = 'center'
           const span = document.createElement('span')
           span.style.color = color
-          span.style.fontFamily = 'Rajdhani, sans-serif'
+          span.style.fontFamily = 'var(--font-grotesk), sans-serif'
           span.style.fontWeight = '700'
           span.style.fontSize = '1.5rem'
           span.textContent = fallbackText.charAt(0).toUpperCase()

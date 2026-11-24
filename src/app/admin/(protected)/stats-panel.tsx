@@ -34,20 +34,20 @@ export function StatsPanel({ stats: initial }: { stats: PlatformStats }) {
       <div className="rounded-xl border border-[#1DB954]/20 bg-[#1DB954]/5 p-5">
         <div className="flex items-center gap-2 mb-4">
           <SpotifyIcon />
-          <h3 className="font-rajdhani font-bold text-white tracking-wide">Spotify Stats</h3>
+          <h3 className="font-display font-bold text-white tracking-wide">Spotify Stats</h3>
         </div>
 
         {/* Current values */}
         <div className="grid grid-cols-2 gap-4 mb-5">
           <div className="bg-[#0c121c] rounded-lg p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Monthly Listeners (current)</p>
-            <p className="font-rajdhani font-bold text-xl text-[#1DB954]">
+            <p className="font-display font-bold text-xl text-[#1DB954]">
               {stats.spotify_monthly_streams > 0 ? stats.spotify_monthly_streams.toLocaleString() : '—'}
             </p>
           </div>
           <div className="bg-[#0c121c] rounded-lg p-3">
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Total Streams (current)</p>
-            <p className="font-rajdhani font-bold text-xl text-[#1DB954]">
+            <p className="font-display font-bold text-xl text-[#1DB954]">
               {stats.spotify_total_streams > 0 ? stats.spotify_total_streams.toLocaleString() : '—'}
             </p>
           </div>

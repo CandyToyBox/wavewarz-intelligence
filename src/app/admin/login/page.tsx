@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
         <div className="rounded-2xl border border-border bg-[#111827] p-8">
           <div className="mb-6 text-center">
             <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">WaveWarZ</p>
-            <h1 className="text-3xl font-rajdhani font-bold text-white tracking-wide">
+            <h1 className="text-3xl font-display font-bold text-white tracking-wide">
               Admin <span className="text-[#95fe7c]">Portal</span>
             </h1>
             <p className="text-xs text-muted-foreground mt-2">Internal access only</p>
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading || !secret}
-              className="w-full bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-sm rounded-lg py-3 transition-colors font-rajdhani tracking-wide"
+              className="w-full bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-sm rounded-lg py-3 transition-colors font-display tracking-wide"
             >
               {loading ? 'Verifying…' : 'Enter Portal'}
             </button>

@@ -109,7 +109,7 @@ export function ClipsPanel({ clips }: { clips: ClipRow[] }) {
               filter === s ? 'ring-1 ring-white/20 border-white/20' : 'border-border'
             }`}
           >
-            <p className={`text-2xl font-rajdhani font-bold ${STATUS_COLORS[s].split(' ')[0]}`}>
+            <p className={`text-2xl font-display font-bold ${STATUS_COLORS[s].split(' ')[0]}`}>
               {counts[s]}
             </p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1 leading-tight">
@@ -319,7 +319,7 @@ function ClipCard({
         {/* Right: votes + manage button */}
         <div className="shrink-0 text-right space-y-1.5">
           <div className="flex items-center gap-1.5 justify-end">
-            <span className="text-[#95fe7c] text-sm font-bold font-rajdhani">
+            <span className="text-[#95fe7c] text-sm font-bold font-display">
               +{clip.net_votes}
             </span>
             <span className="text-[10px] text-muted-foreground">
@@ -463,14 +463,14 @@ function ClipCard({
                 <button
                   onClick={handleApprove}
                   disabled={isPending || localPlatforms.length === 0}
-                  className="flex-1 bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-sm rounded-lg py-2.5 transition-colors font-rajdhani tracking-wide"
+                  className="flex-1 bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-sm rounded-lg py-2.5 transition-colors font-display tracking-wide"
                 >
                   {isPending ? 'Processing…' : '✓ Approve & Schedule'}
                 </button>
                 <button
                   onClick={handleReject}
                   disabled={isPending}
-                  className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-rajdhani tracking-wide transition-colors"
+                  className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-display tracking-wide transition-colors"
                 >
                   ✗ Reject
                 </button>
@@ -480,14 +480,14 @@ function ClipCard({
                 <button
                   onClick={handleSaveEdits}
                   disabled={isPending}
-                  className="flex-1 bg-[#7ec1fb]/10 hover:bg-[#7ec1fb]/20 border border-[#7ec1fb]/40 text-[#7ec1fb] font-bold text-sm rounded-lg py-2.5 transition-colors font-rajdhani tracking-wide disabled:opacity-40"
+                  className="flex-1 bg-[#7ec1fb]/10 hover:bg-[#7ec1fb]/20 border border-[#7ec1fb]/40 text-[#7ec1fb] font-bold text-sm rounded-lg py-2.5 transition-colors font-display tracking-wide disabled:opacity-40"
                 >
                   {isPending ? 'Saving…' : '↻ Save Edits'}
                 </button>
                 <button
                   onClick={handleReject}
                   disabled={isPending}
-                  className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-rajdhani tracking-wide transition-colors"
+                  className="px-6 py-2.5 rounded-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 disabled:opacity-40 text-sm font-bold font-display tracking-wide transition-colors"
                 >
                   ✗ Reject
                 </button>

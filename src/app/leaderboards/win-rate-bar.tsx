@@ -4,7 +4,7 @@ export function WinRateBar({ rate, color = 'green' }: { rate: number; color?: 'g
   const colors = {
     green: { bar: 'bg-[#95fe7c]', text: 'text-[#95fe7c]' },
     blue:  { bar: 'bg-[#7ec1fb]', text: 'text-[#7ec1fb]' },
-    amber: { bar: 'bg-amber-400',  text: 'text-amber-400' },
+    amber: { bar: 'bg-[#f2a74b]',  text: 'text-[#f2a74b]' },
   }
   const c = colors[color]
   return (
@@ -12,7 +12,7 @@ export function WinRateBar({ rate, color = 'green' }: { rate: number; color?: 'g
       <div className="w-16 h-2 bg-white/10 rounded-full overflow-hidden shrink-0">
         <div className={`h-full rounded-full ${c.bar}`} style={{ width: `${rate}%` }} />
       </div>
-      <span className={`text-xs font-bold font-rajdhani ${c.text} w-8 text-left`}>{rate}%</span>
+      <span className={`text-xs font-bold font-display ${c.text} w-8 text-left`}>{rate}%</span>
     </div>
   )
 }

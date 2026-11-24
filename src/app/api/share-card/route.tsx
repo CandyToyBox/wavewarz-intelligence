@@ -13,16 +13,18 @@ const C = { black: '#000000', ink: '#06090f', ice: '#daecfd', mut: '#8d9bb0', gr
 let assets: Promise<{ fonts: { name: string; data: Buffer; weight: 600 | 700 | 500; style: 'normal' }[]; logo: string }> | null = null
 function loadAssets() {
   if (!assets) {
+    // Space Grotesk (the display face everywhere else), official static TTFs subset with no OpenType layout features:
+    // Satori mis-measures the kerned/ligated text and leaves a wide gap after words like "battles".
     const dir = join(process.cwd(), 'src/assets/share-fonts')
     assets = Promise.all([
-      readFile(join(dir, 'rajdhani-600.woff')),
-      readFile(join(dir, 'rajdhani-700.woff')),
+      readFile(join(dir, 'space-grotesk-500.ttf')),
+      readFile(join(dir, 'space-grotesk-700.ttf')),
       readFile(join(dir, 'jetbrains-mono-500.woff')),
       readFile(join(process.cwd(), 'public/wavewarz-logo.png')),
     ]).then(([r6, r7, m5, logo]) => ({
       fonts: [
-        { name: 'Rajdhani', data: r6, weight: 600, style: 'normal' },
-        { name: 'Rajdhani', data: r7, weight: 700, style: 'normal' },
+        { name: 'Space Grotesk', data: r6, weight: 500, style: 'normal' },
+        { name: 'Space Grotesk', data: r7, weight: 700, style: 'normal' },
         { name: 'Mono', data: m5, weight: 500, style: 'normal' },
       ],
       logo: `data:image/png;base64,${logo.toString('base64')}`,
@@ -90,7 +92,7 @@ export async function GET(req: Request) {
 
   return new ImageResponse(
     (
-      <div style={{ width: 1200, height: 630, display: 'flex', position: 'relative', background: C.black, color: C.ice, fontFamily: 'Rajdhani' }}>
+      <div style={{ width: 1200, height: 630, display: 'flex', position: 'relative', background: C.black, color: C.ice, fontFamily: 'Space Grotesk' }}>
         <Background bg={bg} />
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', width: '100%', height: '100%', padding: '44px 60px 40px' }}>
           {/* top: logo + badge */}

@@ -78,7 +78,7 @@ export default async function PlaybookInboxPage() {
     <div className="space-y-8">
       <section className="space-y-3">
         <div>
-          <h2 className="text-xl font-rajdhani font-bold text-white tracking-wide">Playbook</h2>
+          <h2 className="text-xl font-display font-bold text-white tracking-wide">Playbook</h2>
           <p className="text-xs text-muted-foreground max-w-2xl">
             Founding artists fill in the Playbook from their private link. Their answers wait here as drafts until you accept them
             into the Artist Archive and the Assets folders. Create an artist&apos;s link from their review page.
@@ -114,7 +114,7 @@ export default async function PlaybookInboxPage() {
                       </td>
                       <td className="px-3 py-2 text-white">
                         {r.submitted}/{MODULES.length}
-                        {r.edited > 0 && <span className="ml-2 text-[10px] text-amber-400">{r.edited} edited since</span>}
+                        {r.edited > 0 && <span className="ml-2 text-[10px] text-[#f2a74b]">{r.edited} edited since</span>}
                       </td>
                       <td className={`px-3 py-2 font-bold ${r.toReview ? 'text-[#7ec1fb]' : 'text-muted-foreground'}`}>{r.toReview}</td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">{fmt(lastAnswer.get(r.id))}</td>
@@ -131,7 +131,7 @@ export default async function PlaybookInboxPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-rajdhani font-bold text-white tracking-wide">
+        <h2 className="text-xl font-display font-bold text-white tracking-wide">
           Help requests <span className="text-sm text-muted-foreground font-sans">({open.length} open)</span>
         </h2>
         {open.length === 0 && <p className="text-sm text-muted-foreground">Nothing waiting for help.</p>}

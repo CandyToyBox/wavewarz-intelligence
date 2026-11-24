@@ -49,7 +49,7 @@ export function InlineFields({
   return (
     <div className="rounded-xl border border-border bg-[#111827]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        {title && <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">{title}</h3>}
+        {title && <h3 className="font-display font-bold text-white tracking-wide text-sm">{title}</h3>}
         {editing ? (
           <div className="flex items-center gap-2">
             {err && <span className="text-xs text-red-400">{err}</span>}

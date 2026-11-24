@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { BattleImage } from './battle-image'
@@ -81,7 +82,7 @@ export type EventGroupCardData = {
 
 const TYPE_CONFIG = {
   main:      { label: 'MAIN EVENT',  badge: 'bg-[#95fe7c]/20 text-[#95fe7c] border-[#95fe7c]/40', accent: '#95fe7c' },
-  community: { label: 'COMMUNITY',   badge: 'bg-amber-500/20 text-amber-400 border-amber-500/40', accent: '#f59e0b' },
+  community: { label: 'COMMUNITY',   badge: 'bg-[#f2a74b]/20 text-[#f2a74b] border-[#f2a74b]/40', accent: '#f2a74b' },
   charity:   { label: 'BENEFIT',     badge: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40', accent: '#7ec1fb' },
   spotlight: { label: 'SPOTLIGHT',   badge: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40', accent: '#7ec1fb' },
 }
@@ -120,7 +121,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
                 )}
                 <span className="text-[10px] text-muted-foreground ml-auto">{data.latestDateFormatted}</span>
               </div>
-              <h3 className="text-xl font-rajdhani font-bold text-white tracking-wide leading-tight flex items-center gap-2 flex-wrap">
+              <h3 className="text-xl font-display font-bold text-white tracking-wide leading-tight flex items-center gap-2 flex-wrap">
                 <ArtistAvatar name={data.artist1Name} pfpUrl={data.artist1PfpUrl} accent={cfg.accent} />
                 {data.artist1Name}
                 <span className="text-muted-foreground font-normal text-base">vs</span>
@@ -128,7 +129,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
                 {data.artist2Name}
               </h3>
               {data.overallWinner && (
-                <p className="text-xs font-bold font-rajdhani mt-1" style={{ color: cfg.accent }}>
+                <p className="text-xs font-bold font-display mt-1" style={{ color: cfg.accent }}>
                   Overall Winner: {data.overallWinner}
                 </p>
               )}
@@ -165,7 +166,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
           <div className="flex items-center gap-3 mt-auto">
             <button
               onClick={() => setExpanded(e => !e)}
-              className="text-xs font-rajdhani font-bold px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-white hover:border-white/20 transition-colors"
+              className="text-xs font-display font-bold px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-white hover:border-white/20 transition-colors"
             >
               {expanded ? 'Hide Rounds ↑' : 'View Rounds ↓'}
             </button>
@@ -218,13 +219,13 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
       {/* Round header */}
       <div className="flex items-center gap-3 px-5 py-3 border-b border-border/30 bg-muted/60">
         <span
-          className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-rajdhani border shrink-0"
+          className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-display border shrink-0"
           style={{ borderColor: `${accent}40`, backgroundColor: `${accent}10`, color: accent }}
         >
           {r.roundNumber}
         </span>
         <div className="flex-1">
-          <p className="text-sm font-rajdhani font-bold text-white leading-tight">
+          <p className="text-sm font-display font-bold text-white leading-tight">
             {r.artist1Name} <span className="text-muted-foreground font-normal text-xs">vs</span> {r.artist2Name}
           </p>
           <p className="text-xs text-muted-foreground">{r.dateFormatted} · #{r.battle_id}</p>
@@ -245,7 +246,7 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
       {/* Winner banner */}
       <div className="px-5 py-2 bg-[#95fe7c]/5">
         <p className="text-xs">
-          <span className="font-rajdhani font-bold" style={{ color: accent }}>{r.winner}</span>
+          <span className="font-display font-bold" style={{ color: accent }}>{r.winner}</span>
           <span className="text-muted-foreground ml-2">won with a</span>
           <span className="text-[#95fe7c] font-bold ml-2">+{r.marginPct}% margin</span>
         </p>
@@ -273,12 +274,12 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
       <div className="border-t border-border/30 px-5 py-2.5 flex items-center justify-between">
         <button
           onClick={() => setShowEarnings(e => !e)}
-          className="text-[10px] font-rajdhani font-bold text-muted-foreground hover:text-white transition-colors"
+          className="text-[10px] font-display font-bold text-muted-foreground hover:text-white transition-colors"
         >
           {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
         </button>
         <span className="text-xs text-muted-foreground">
-          Platform: <span className="text-[#f59e0b] font-mono font-bold">◎{r.platformEarnSol}</span>
+          Platform: <span className="text-[#f2a74b] font-mono font-bold">◎{r.platformEarnSol}</span>
           <span className="ml-1 text-muted-foreground">({r.platformEarnUsd})</span>
         </span>
       </div>
@@ -286,21 +287,21 @@ function RoundDetail({ round: r, accent }: { round: RoundData; accent: string })
       {/* Earnings breakdown */}
       {showEarnings && (
         <div className="border-t border-border/30 bg-muted/40 divide-y divide-border/30">
-          <EarningsRow icon="🎤" name={r.artist1Name} totalSol={r.a1EarnSol} totalUsd={r.a1EarnUsd}
+          <EarningsRow icon="paid-artist" name={r.artist1Name} totalSol={r.a1EarnSol} totalUsd={r.a1EarnUsd}
             totalStreams={r.a1EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${r.a1VolSol} SOL)`, sol: r.a1TradeFeesSol, usd: r.a1TradeFeesUsd },
               { label: r.a1SettleLabel, sol: r.a1SettleSol, usd: r.a1SettleUsd },
             ]}
           />
-          <EarningsRow icon="🎤" name={r.artist2Name} totalSol={r.a2EarnSol} totalUsd={r.a2EarnUsd}
+          <EarningsRow icon="paid-artist" name={r.artist2Name} totalSol={r.a2EarnSol} totalUsd={r.a2EarnUsd}
             totalStreams={r.a2EarnStreams}
             rows={[
               { label: `Trading fees (1% of ${r.a2VolSol} SOL)`, sol: r.a2TradeFeesSol, usd: r.a2TradeFeesUsd },
               { label: r.a2SettleLabel, sol: r.a2SettleSol, usd: r.a2SettleUsd },
             ]}
           />
-          <EarningsRow icon="⚡" name="WaveWarZ Platform" totalSol={r.platformEarnSol} totalUsd={r.platformEarnUsd}
+          <EarningsRow icon="collect" name="WaveWarZ Platform" totalSol={r.platformEarnSol} totalUsd={r.platformEarnUsd}
             accent="platform"
             rows={[
               { label: `Trading fees (0.5% of ${r.totalVolSol} SOL)`, sol: formatPlatformFee(r.totalVolSol), usd: '' },
@@ -333,7 +334,7 @@ function AggregateStat({ label, value, sub }: { label: ReactNode; value: string;
   return (
     <div className="card-elevated px-3 py-2.5">
       <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-base font-rajdhani font-bold text-white leading-tight">{value}</p>
+      <p className="text-base font-display font-bold text-white leading-tight">{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
@@ -362,22 +363,22 @@ function MiniStatBox({ label, value, sub }: { label: ReactNode; value: string; s
   return (
     <div className="card-elevated p-2.5">
       <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 leading-tight">{label}</p>
-      <p className="text-sm font-rajdhani font-bold text-white font-mono">{value}</p>
+      <p className="text-sm font-display font-bold text-white font-mono">{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
 }
 
 function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
-  icon: string; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
+  icon: WwIconName; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
-  const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
+  const textColor = accent === 'platform' ? 'text-[#f2a74b]' : 'text-[#95fe7c]'
   return (
     <div className="px-5 py-3">
       <div className="flex items-start justify-between gap-3 mb-1.5">
-        <p className="text-sm font-rajdhani font-bold text-white">
-          {icon} <span className="text-muted-foreground font-normal text-xs">
+        <p className="text-sm font-display font-bold text-white">
+          <WwIcon name={icon} size={18} /> <span className="text-muted-foreground font-normal text-xs">
             {name.length > 28 ? name.slice(0, 28) + '…' : name}
           </span> earned:
         </p>
@@ -428,7 +429,7 @@ function ArtistAvatar({ name, pfpUrl, accent }: {
   }
   return (
     <div
-      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-rajdhani font-bold shrink-0 border"
+      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-display font-bold shrink-0 border"
       style={{ backgroundColor: `${accent}18`, borderColor: `${accent}40`, color: accent }}
     >
       {initial}

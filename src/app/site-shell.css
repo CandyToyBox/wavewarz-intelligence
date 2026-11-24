@@ -540,3 +540,12 @@ body { background: transparent !important; }
 .ww-lookup .ww-btn:not(:disabled):active { transform: scale(.97); }
 .ww-lookup p { margin: 0; font: 400 .78rem 'Outfit', sans-serif; color: #8d9bb0; }
 @media (max-width: 640px) { .ww-lookup-row { flex-direction: column; } }
+
+/* WaveWarZ icon set (components/ww-icon.tsx) */
+.ww-icon { display: inline-flex; flex: none; line-height: 0; vertical-align: middle; }
+.ww-icon svg { width: 100%; height: 100%; overflow: visible; }
+
+/* Every Statz card wears the redesign panel: dark gradient, soft ice border, chrome edge along the top
+   (same as .ww-hl-panel and the wavewarz.com Top artists / Top songs cards). */
+.rounded-xl.bg-card, .rounded-2xl.bg-card { position: relative; background: linear-gradient(180deg, rgba(14, 21, 34, .92), rgba(7, 10, 16, .95)); border-color: rgba(216, 235, 252, .16); box-shadow: 0 24px 60px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .08); }
+.rounded-xl.bg-card::before, .rounded-2xl.bg-card::before { content: ""; position: absolute; left: 20px; right: 20px; top: 0; height: 2px; border-radius: 0 0 2px 2px; pointer-events: none; opacity: .7; background: linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%); }

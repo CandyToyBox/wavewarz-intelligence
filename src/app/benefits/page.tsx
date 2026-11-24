@@ -166,7 +166,7 @@ export default async function BenefitsPage() {
     return (
       <div className="wb">
         <header className="wb-head"><div className="wb-lede">
-          <h1 className="font-rajdhani">Benefit Battles</h1>
+          <h1 className="font-display">Benefit Battles</h1>
           <p>The first benefit battle hasn’t played yet. When it does, every round and what it sent to the cause shows up here.</p>
         </div></header>
       </div>
@@ -177,7 +177,7 @@ export default async function BenefitsPage() {
     <div className="wb">
       <header className="wb-head">
         <div className="wb-lede">
-          <h1 className="font-rajdhani">Benefit Battles</h1>
+          <h1 className="font-display">Benefit Battles</h1>
           <p>Some battles play for a cause. When they do, WaveWarZ gives up its own cut: the platform’s share of every trade and of the settlement goes to the cause’s wallet instead, on Solana where anyone can check it.</p>
         </div>
 

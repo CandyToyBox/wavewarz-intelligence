@@ -112,7 +112,7 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
             <div className="inline-flex items-center gap-2 font-mono text-[.62rem] tracking-[.16em] text-[#7ec1fb]">
               {activeSide === 'side1' ? <>&#9836; NOW PLAYING</> : 'PLAYED'}
             </div>
-            <div className="font-rajdhani font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side1.name}</div>
+            <div className="font-display font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side1.name}</div>
             {data.side1.handle && <div className="text-sm text-muted-foreground">by <b className="text-[#7ec1fb] font-semibold">@{data.side1.handle}</b></div>}
           </div>
         </div>
@@ -131,7 +131,7 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
               <span className="font-mono text-[.56rem] tracking-[.24em] text-muted-foreground">REMAINING</span>
             </div>
           </div>
-          <div className="font-rajdhani font-bold text-2xl text-white" style={{ textShadow: '0 0 18px rgba(218,236,253,.5)' }}>VS</div>
+          <div className="font-display font-bold text-2xl text-white" style={{ textShadow: '0 0 18px rgba(218,236,253,.5)' }}>VS</div>
           <div className="w-full max-w-[260px]">
             <div className="h-3 rounded-full overflow-hidden flex border border-white/[.18] bg-[#070a10]">
               <div className="h-full bg-[#7ec1fb] transition-all duration-1000" style={{ width: `${pct1}%` }} />
@@ -172,7 +172,7 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
             <div className="font-mono text-[.62rem] tracking-[.16em] text-muted-foreground">
               {activeSide === 'side2' ? <span className="text-[#95fe7c]">&#9836; NOW PLAYING</span> : 'UP NEXT'}
             </div>
-            <div className="font-rajdhani font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side2.name}</div>
+            <div className="font-display font-bold uppercase text-lg md:text-xl text-white leading-tight">{data.side2.name}</div>
             {data.side2.handle && <div className="text-sm text-muted-foreground">by <b className="text-[#95fe7c] font-semibold">@{data.side2.handle}</b></div>}
           </div>
         </div>

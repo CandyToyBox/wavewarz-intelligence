@@ -139,7 +139,7 @@ function ModuleCard({ subject, spec, state, progress, defaultOpen, children }: {
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-[10px] font-mono text-[#7ec1fb]">MODULE {spec.order}</span>
-            <h3 className="font-rajdhani font-bold text-white tracking-wide">{spec.title}</h3>
+            <h3 className="font-display font-bold text-white tracking-wide">{spec.title}</h3>
             {spec.minutes ? <span className="text-[10px] text-muted-foreground">about {spec.minutes} min</span> : null}
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">{spec.blurb}</p>

@@ -11,7 +11,7 @@ export default function VoterGuidePage() {
     <div className="max-w-5xl mx-auto py-8">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-rajdhani text-2xl font-bold text-white">Voter Onboarding Guide</h1>
+          <h1 className="font-display text-2xl font-bold text-white">Voter Onboarding Guide</h1>
           <p className="text-sm text-gray-400">Produced by Web3 Metal — a free, no-crypto-experience-needed walkthrough to get ready for battle night.</p>
         </div>
         <a

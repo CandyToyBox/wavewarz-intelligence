@@ -14,8 +14,8 @@
   --amber: #ffc857;
   --warn: #ffb86b;
   --ink: #0d1321;
-  --display: var(--font-rajdhani), Rajdhani, 'Arial Narrow', system-ui, sans-serif;
-  --body: var(--font-inter), Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: var(--font-grotesk), 'Space Grotesk', sans-serif;
+  --body: var(--font-outfit), 'Outfit', sans-serif;
   color: var(--text);
   font: 400 16px/1.6 var(--body);
   margin: -32px calc(50% - 50vw) 0; /* break out of the site's padded <main> */

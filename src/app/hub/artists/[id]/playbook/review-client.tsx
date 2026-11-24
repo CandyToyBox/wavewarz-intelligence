@@ -93,7 +93,7 @@ function InvitePanel({ artistId, artistName, invite }: { artistId: string; artis
     <div className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-4 space-y-3">
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
-          <h3 className="text-sm font-rajdhani font-bold text-white tracking-wide">Artist link</h3>
+          <h3 className="text-sm font-display font-bold text-white tracking-wide">Artist link</h3>
           <p className="text-xs text-muted-foreground">
             {invite.active
               ? `Active. Created ${fmt(invite.createdAt)}${invite.lastUsedAt ? `, last opened ${fmt(invite.lastUsedAt)}` : ', not opened yet'}.`
@@ -152,13 +152,13 @@ function ModuleBlock({ artistId, m, fields, help }: { artistId: string; m: Modul
   }
 
   const statusTone =
-    m.status === 'submitted' ? 'text-[#95fe7c]' : m.status === 'edited' ? 'text-amber-400' : m.status === 'none' ? 'text-muted-foreground' : 'text-[#7ec1fb]'
+    m.status === 'submitted' ? 'text-[#95fe7c]' : m.status === 'edited' ? 'text-[#f2a74b]' : m.status === 'none' ? 'text-muted-foreground' : 'text-[#7ec1fb]'
 
   return (
     <details className="rounded-lg border border-border bg-[#0c121c]/40" style={{ borderLeft: `4px solid ${m.color}` }} open={m.toReview > 0 && fields.length > 0 && m.status !== 'none'}>
       <summary className="cursor-pointer list-none flex items-center gap-3 flex-wrap px-4 py-3">
-        <span className="inline-flex items-center justify-center w-7 h-7 rounded-md font-rajdhani font-bold text-[#0d1321]" style={{ background: m.color }}>{m.order}</span>
-        <span className="font-rajdhani font-bold text-white tracking-wide uppercase text-lg">{m.title}</span>
+        <span className="inline-flex items-center justify-center w-7 h-7 rounded-md font-display font-bold text-[#0d1321]" style={{ background: m.color }}>{m.order}</span>
+        <span className="font-display font-bold text-white tracking-wide uppercase text-lg">{m.title}</span>
         <span className={`text-[10px] font-bold uppercase tracking-widest ${statusTone}`}>{m.statusText}</span>
         {m.submittedAt && <span className="text-[11px] text-muted-foreground">sent {fmt(m.submittedAt)}</span>}
         <span className="ml-auto text-[11px] text-muted-foreground">
@@ -208,7 +208,7 @@ export function ResolveButton({ id, resolved }: { id: string; resolved: boolean 
 
 const STATUS_STYLE: Record<ReviewField['status'], string> = {
   new: 'text-[#7ec1fb] border-[#7ec1fb]/50',
-  changed: 'text-amber-400 border-amber-400/50',
+  changed: 'text-[#f2a74b] border-[#f2a74b]/50',
   accepted: 'text-[#95fe7c] border-[#95fe7c]/50',
   skipped: 'text-muted-foreground border-border',
 }
@@ -272,7 +272,7 @@ function FieldCard({ artistId, f, help }: { artistId: string; f: ReviewField; he
       </div>
 
       {f.conflict && open && (
-        <p className="text-[11px] text-amber-400 border border-amber-500/30 bg-amber-500/10 rounded px-2 py-1.5">
+        <p className="text-[11px] text-[#f2a74b] border border-[#f2a74b]/30 bg-[#f2a74b]/10 rounded px-2 py-1.5">
           The Hub already has a different value here. Compare the two above. Accepting will replace it.
         </p>
       )}
@@ -296,11 +296,11 @@ function FieldCard({ artistId, f, help }: { artistId: string; f: ReviewField; he
           <>
             {f.conflict ? (
               confirmReplace ? (
-                <button onClick={() => accept()} disabled={pending} className="text-xs font-bold px-3 py-1.5 rounded-md bg-amber-400 text-[#0d1321] hover:brightness-95 disabled:opacity-50">
+                <button onClick={() => accept()} disabled={pending} className="text-xs font-bold px-3 py-1.5 rounded-md bg-[#f2a74b] text-[#0d1321] hover:brightness-95 disabled:opacity-50">
                   Yes, replace the Hub value
                 </button>
               ) : (
-                <button onClick={() => setConfirmReplace(true)} disabled={pending} className="text-xs font-bold px-3 py-1.5 rounded-md border border-amber-400 text-amber-400 hover:bg-amber-400/10 disabled:opacity-50">
+                <button onClick={() => setConfirmReplace(true)} disabled={pending} className="text-xs font-bold px-3 py-1.5 rounded-md border border-[#f2a74b] text-[#f2a74b] hover:bg-[#f2a74b]/10 disabled:opacity-50">
                   Replace Hub value...
                 </button>
               )
@@ -324,7 +324,7 @@ function FieldCard({ artistId, f, help }: { artistId: string; f: ReviewField; he
             <button
               onClick={() => (f.conflict && !confirmReplace ? setConfirmReplace(true) : accept(text))}
               disabled={pending}
-              className={`text-xs font-bold px-3 py-1.5 rounded-md disabled:opacity-50 ${f.conflict ? 'bg-amber-400 text-[#0d1321]' : 'bg-[#95fe7c] text-[#0d1321]'}`}
+              className={`text-xs font-bold px-3 py-1.5 rounded-md disabled:opacity-50 ${f.conflict ? 'bg-[#f2a74b] text-[#0d1321]' : 'bg-[#95fe7c] text-[#0d1321]'}`}
             >
               {f.conflict ? (confirmReplace ? 'Yes, save and replace' : 'Save and replace...') : 'Save and accept'}
             </button>

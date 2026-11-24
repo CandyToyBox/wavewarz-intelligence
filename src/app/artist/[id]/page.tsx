@@ -97,7 +97,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
 
       {/* ── PAY STUB ── */}
       <section>
-        <h2 className="text-xl font-rajdhani font-bold text-white mb-3 tracking-wide">
+        <h2 className="text-xl font-display font-bold text-white mb-3 tracking-wide">
           Pay Stub — Verified Onchain
         </h2>
         <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -119,7 +119,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
       {/* ── BATTLE HISTORY ── */}
       {stats.mainEventBattles.length > 0 && (
         <section>
-          <h2 className="text-xl font-rajdhani font-bold text-white mb-3 tracking-wide">
+          <h2 className="text-xl font-display font-bold text-white mb-3 tracking-wide">
             Main Event History
           </h2>
           <div className="rounded-xl border border-border bg-card overflow-hidden">
@@ -164,7 +164,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
                   </span>
                   <span className={`text-xs font-bold px-2 py-0.5 rounded text-center ${
                     b.status === 'ACTIVE'
-                      ? 'bg-yellow-500/20 text-yellow-400 animate-pulse'
+                      ? 'bg-[#f2a74b]/20 text-[#f2a74b] animate-pulse'
                       : won
                       ? 'bg-[#95fe7c]/20 text-[#95fe7c]'
                       : 'bg-red-500/20 text-red-400'
@@ -197,7 +197,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
       {stats.quickBattles.length > 0 && (
         <section>
           <div className="flex items-center gap-3 mb-3">
-            <h2 className="text-xl font-rajdhani font-bold text-white tracking-wide">
+            <h2 className="text-xl font-display font-bold text-white tracking-wide">
               Quick Battle Songs
             </h2>
             <span className="text-xs text-muted-foreground">
@@ -232,7 +232,7 @@ function StatBox({ label, value, sub, highlight = false }: {
   return (
     <div className="rounded-xl border border-border bg-[#0c121c] p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-      <p className={`text-lg font-rajdhani font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
+      <p className={`text-lg font-display font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
         {value}
       </p>
       {/* Fix #3: larger sub-text for mobile readability */}
@@ -328,23 +328,23 @@ async function QuickBattleSongTable({ battles, allWallets, solPrice }: {
                     <div>
                       {s.musicLink ? (
                         <a href={s.musicLink} target="_blank" rel="noreferrer"
-                          className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm leading-tight block">
+                          className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm leading-tight block">
                           {s.title} ↗
                         </a>
                       ) : (
-                        <span className="font-rajdhani font-bold text-white text-sm">{s.title}</span>
+                        <span className="font-display font-bold text-white text-sm">{s.title}</span>
                       )}
                       <span className="text-[10px] text-muted-foreground">{total} battles</span>
                     </div>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className="font-rajdhani font-bold text-[#7ec1fb]">{s.wins}W</span>
+                  <span className="font-display font-bold text-[#7ec1fb]">{s.wins}W</span>
                   <span className="text-muted-foreground mx-1">–</span>
-                  <span className="font-rajdhani font-bold text-red-400">{s.losses}L</span>
+                  <span className="font-display font-bold text-red-400">{s.losses}L</span>
                 </td>
                 <td className="px-4 py-3 text-center">
-                  <span className={`text-xs font-bold font-rajdhani ${rate >= 60 ? 'text-[#95fe7c]' : rate >= 40 ? 'text-[#7ec1fb]' : 'text-red-400'}`}>
+                  <span className={`text-xs font-bold font-display ${rate >= 60 ? 'text-[#95fe7c]' : rate >= 40 ? 'text-[#7ec1fb]' : 'text-red-400'}`}>
                     {rate}%
                   </span>
                 </td>

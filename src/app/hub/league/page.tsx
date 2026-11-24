@@ -51,8 +51,8 @@ export default async function HubLeaguePage() {
         <dl className="grid gap-2 sm:grid-cols-2">
           {FAMILY.map(f => (
             <div key={f} className="rounded-lg border border-border bg-[#0c121c]/40 p-3">
-              <dt className="font-rajdhani font-bold text-white">{f}</dt>
-              <dd className={`text-xs mt-0.5 ${FAMILY_NOTES[f] ? 'text-muted-foreground' : 'text-amber-400'}`}>
+              <dt className="font-display font-bold text-white">{f}</dt>
+              <dd className={`text-xs mt-0.5 ${FAMILY_NOTES[f] ? 'text-muted-foreground' : 'text-[#f2a74b]'}`}>
                 {FAMILY_NOTES[f] ?? 'Description needed.'}
               </dd>
             </div>
@@ -76,14 +76,14 @@ export default async function HubLeaguePage() {
             {computed.map(c => (
               <div key={c.key} className="rounded-xl border border-border bg-[#111827] p-3">
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{c.label}</p>
-                <p className="text-lg font-rajdhani font-bold text-[#95fe7c] leading-tight mt-0.5">{c.value}</p>
+                <p className="text-lg font-display font-bold text-[#95fe7c] leading-tight mt-0.5">{c.value}</p>
                 {c.holder && <p className="text-sm text-white">{c.holder}</p>}
                 {c.detail && <p className="text-[11px] text-muted-foreground">{c.detail}</p>}
               </div>
             ))}
           </div>
           <div>
-            <h4 className="text-sm font-rajdhani font-bold text-white tracking-wide mb-1">Judgement-call marks</h4>
+            <h4 className="text-sm font-display font-bold text-white tracking-wide mb-1">Judgement-call marks</h4>
             <p className="text-xs text-muted-foreground mb-3">
               Marks that need a human eye: biggest upset, biggest comeback, most charitable. Set the holder yourself.
             </p>
@@ -108,7 +108,7 @@ export default async function HubLeaguePage() {
   return (
     <div className="space-y-6">
       <section>
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">WaveWarZ Archives</h2>
+        <h2 className="text-lg font-display font-bold text-white tracking-wide">WaveWarZ Archives</h2>
         <p className="text-xs text-muted-foreground mb-3">
           The league-wide record of who we are, what we stand for and what has happened. Every file added here says why it is here.
         </p>

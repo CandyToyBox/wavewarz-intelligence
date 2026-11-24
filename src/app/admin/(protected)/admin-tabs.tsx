@@ -93,7 +93,7 @@ export function AdminTabs({
                 : 'text-muted-foreground hover:text-white'
             }`}
           >
-            <span className="font-rajdhani font-bold tracking-wide">{t.label}</span>
+            <span className="font-display font-bold tracking-wide">{t.label}</span>
             {t.badge && (
               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${t.badgeColor}`}>
                 {t.badge}

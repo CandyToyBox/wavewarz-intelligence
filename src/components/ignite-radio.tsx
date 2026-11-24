@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { WwIcon } from '@/components/ww-icon'
 import { usePathname } from 'next/navigation'
 
 export function IgniteRadio() {
@@ -18,7 +19,7 @@ export function IgniteRadio() {
           className="absolute top-1 right-2 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-black/60 text-white/60 hover:text-white hover:bg-black/80 transition-colors text-xs"
           aria-label="Close radio"
         >
-          ✕
+          <WwIcon name="ui-close" size={12} />
         </button>
         <iframe
           src="https://harmonyhub.love/embed/ignite-radio-mini.html"

@@ -13,7 +13,7 @@ export default function ClaimPage() {
   return (
     <div className="wc">
       <header className="wc-head">
-        <h1 className="font-rajdhani">Claim</h1>
+        <h1 className="font-display">Claim</h1>
         <p>Paste a Solana wallet address to see which battles it still holds shares in, and where to withdraw them.</p>
       </header>
       <Suspense>

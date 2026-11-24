@@ -91,7 +91,7 @@ export function ThesisEditor({
     <div className="rounded-xl border border-border bg-[#111827]">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <div>
-          <h3 className="font-rajdhani font-bold text-white tracking-wide text-sm">Battle Thesis</h3>
+          <h3 className="font-display font-bold text-white tracking-wide text-sm">Battle Thesis</h3>
           <p className="text-[10px] text-muted-foreground/70">Phase 25 — write this before any promo asset is made.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export function ThesisEditor({
               disabled={pending}
               className={`text-[10px] font-bold rounded px-2 py-1 border ${
                 thesis.needs_review
-                  ? 'text-amber-400 border-amber-500/40 bg-amber-500/10'
+                  ? 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10'
                   : 'text-muted-foreground border-border hover:text-white'
               }`}
             >

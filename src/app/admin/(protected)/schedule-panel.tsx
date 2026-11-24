@@ -84,7 +84,7 @@ export function SchedulePanel({ clips }: { clips: ScheduleClip[] }) {
       {/* ── Empty state ── */}
       {upcoming.length === 0 && (
         <div className="rounded-xl border border-border bg-[#111827] p-8 text-center space-y-2">
-          <p className="text-white font-rajdhani font-bold text-xl">Queue is clear</p>
+          <p className="text-white font-display font-bold text-xl">Queue is clear</p>
           <p className="text-sm text-muted-foreground">
             No approved clips with a future schedule. Approve clips from the Community Clips tab to populate the queue.
           </p>
@@ -170,7 +170,7 @@ function DayGroup({
     <div>
       <div className="flex items-center gap-3 mb-3">
         <span
-          className={`text-xs font-bold font-rajdhani tracking-widest uppercase px-2.5 py-1 rounded-md ${
+          className={`text-xs font-bold font-display tracking-widest uppercase px-2.5 py-1 rounded-md ${
             isToday
               ? 'bg-[#95fe7c]/15 text-[#95fe7c] border border-[#95fe7c]/30'
               : 'bg-white/5 text-muted-foreground border border-border'
@@ -242,7 +242,7 @@ function ClipRow({ clip, dim }: { clip: ScheduleClip; dim: boolean }) {
 
       {/* Right: votes + postiz */}
       <div className="shrink-0 text-right space-y-0.5">
-        <p className="text-xs font-bold font-rajdhani text-[#95fe7c]">+{clip.net_votes}</p>
+        <p className="text-xs font-bold font-display text-[#95fe7c]">+{clip.net_votes}</p>
         {clip.postiz_post_id && (
           <p className="text-[9px] text-muted-foreground font-mono">Postiz ✓</p>
         )}
@@ -270,7 +270,7 @@ function StatCard({
   return (
     <div className={`rounded-xl border bg-[#111827] p-4 ${border}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-      <p className={`text-2xl font-rajdhani font-bold ${valColor}`}>{value}</p>
+      <p className={`text-2xl font-display font-bold ${valColor}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground/60 mt-0.5">{sub}</p>
     </div>
   )

@@ -108,9 +108,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const STATUS_STYLES: Record<string, string> = {
-  voting:           'bg-yellow-500/20 text-yellow-400 border-yellow-500/40',
+  voting:           'bg-[#f2a74b]/20 text-[#f2a74b] border-[#f2a74b]/40',
   pending_approval: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40',
-  approved:         'bg-orange-500/20 text-orange-400 border-orange-500/40',
+  approved:         'bg-[#f2a74b]/20 text-[#f2a74b] border-[#f2a74b]/40',
   posted:           'bg-[#95fe7c]/20 text-[#95fe7c] border-[#95fe7c]/40',
   rejected:         'bg-red-500/20 text-red-400 border-red-500/40',
 }
@@ -149,10 +149,10 @@ export default async function ContributorProfilePage({ params }: { params: Promi
       </Link>
 
       {/* ── CONTRIBUTOR CARD ── */}
-      <div className="relative rounded-2xl border border-orange-500/30 bg-[#0b111c] overflow-hidden shadow-2xl shadow-orange-500/5">
+      <div className="relative rounded-2xl border border-[#f2a74b]/30 bg-[#0b111c] overflow-hidden shadow-2xl shadow-[#f2a74b]/5">
 
         {/* Top accent bar */}
-        <div className="h-1 w-full bg-orange-500/70" />
+        <div className="h-1 w-full bg-[#f2a74b]/70" />
 
         <div className="p-8">
           <div className="flex items-start justify-between gap-6">
@@ -163,20 +163,20 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                 {profile.pfpUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={profile.pfpUrl} alt={profile.displayName}
-                    className="w-20 h-20 rounded-full border-2 border-orange-500/40 object-cover" />
+                    className="w-20 h-20 rounded-full border-2 border-[#f2a74b]/40 object-cover" />
                 ) : (
-                  <div className="w-20 h-20 rounded-full border-2 border-orange-500/40 bg-[#1f2937] flex items-center justify-center">
-                    <span className="text-3xl font-rajdhani font-bold text-orange-400">
+                  <div className="w-20 h-20 rounded-full border-2 border-[#f2a74b]/40 bg-[#1f2937] flex items-center justify-center">
+                    <span className="text-3xl font-display font-bold text-[#f2a74b]">
                       {profile.displayName.charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-orange-500 rounded-full border-2 border-[#0c121c]" />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#f2a74b] rounded-full border-2 border-[#0c121c]" />
               </div>
 
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h1 className="text-4xl font-rajdhani font-bold text-white tracking-wide leading-none">
+                  <h1 className="text-4xl font-display font-bold text-white tracking-wide leading-none">
                     {profile.displayName}
                   </h1>
                   {profile.isArtist && (
@@ -184,7 +184,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                       ARTIST
                     </Badge>
                   )}
-                  <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/40 text-[10px] font-bold tracking-wider">
+                  <Badge className="bg-[#f2a74b]/20 text-[#f2a74b] border border-[#f2a74b]/40 text-[10px] font-bold tracking-wider">
                     CLIPPER
                   </Badge>
                 </div>
@@ -217,8 +217,8 @@ export default async function ContributorProfilePage({ params }: { params: Promi
 
             {/* Points badge */}
             <div className="text-right shrink-0">
-              <div className="inline-flex flex-col items-center bg-[#0c121c] border border-orange-500/30 rounded-xl px-6 py-4">
-                <p className="text-4xl font-rajdhani font-bold text-orange-400">
+              <div className="inline-flex flex-col items-center bg-[#0c121c] border border-[#f2a74b]/30 rounded-xl px-6 py-4">
+                <p className="text-4xl font-display font-bold text-[#f2a74b]">
                   {profile.points.toLocaleString()}
                 </p>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Points</p>
@@ -242,7 +242,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">
                     Also battles in WaveWarZ
                   </p>
-                  <p className="text-xl font-rajdhani font-bold text-white">
+                  <p className="text-xl font-display font-bold text-white">
                     {profile.artistName ?? profile.displayName}
                     <span className="text-[#95fe7c] ml-2">— Artist Record</span>
                   </p>
@@ -250,7 +250,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                 {profile.solWallet && (
                   <Link
                     href={`/artist/${profile.solWallet}`}
-                    className="text-sm font-rajdhani font-bold text-[#95fe7c] hover:underline shrink-0"
+                    className="text-sm font-display font-bold text-[#95fe7c] hover:underline shrink-0"
                   >
                     Full Artist Profile →
                   </Link>
@@ -260,20 +260,20 @@ export default async function ContributorProfilePage({ params }: { params: Promi
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl font-rajdhani font-bold text-[#95fe7c]">{profile.battlesWon}</span>
+                    <span className="text-2xl font-display font-bold text-[#95fe7c]">{profile.battlesWon}</span>
                     <span className="text-muted-foreground text-lg">–</span>
-                    <span className="text-2xl font-rajdhani font-bold text-red-400">{profile.totalBattles - profile.battlesWon}</span>
+                    <span className="text-2xl font-display font-bold text-red-400">{profile.totalBattles - profile.battlesWon}</span>
                   </div>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">All Battles</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-rajdhani font-bold text-white">
+                  <p className="text-2xl font-display font-bold text-white">
                     {battleWinRate}%
                   </p>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Win Rate</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-rajdhani font-bold text-white">
+                  <p className="text-2xl font-display font-bold text-white">
                     {profile.mainWins}W–{profile.mainBattles - profile.mainWins}L
                   </p>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Main Events</p>
@@ -288,7 +288,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
           <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
             WaveWarZ Statz · Community Clips HQ
           </span>
-          <span className="text-[10px] text-orange-400/60 font-mono">
+          <span className="text-[10px] text-[#f2a74b]/60 font-mono">
             Member since {new Date(profile.recentClips[profile.recentClips.length - 1]?.created_at ?? Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
           </span>
         </div>
@@ -297,7 +297,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
       {/* ── CLIP HISTORY ── */}
       {profile.recentClips.length > 0 && (
         <section>
-          <h2 className="text-xl font-rajdhani font-bold text-white mb-3 tracking-wide">
+          <h2 className="text-xl font-display font-bold text-white mb-3 tracking-wide">
             Clip History
             <span className="text-muted-foreground text-sm font-normal ml-2">
               {profile.clipsSubmitted} total
@@ -333,7 +333,7 @@ export default async function ContributorProfilePage({ params }: { params: Promi
                   <p className="text-[10px] text-muted-foreground mt-1">
                     {new Date(clip.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     {clip.scheduled_at && clip.status === 'approved' && (
-                      <span className="text-orange-400 ml-2">
+                      <span className="text-[#f2a74b] ml-2">
                         → scheduled {new Date(clip.scheduled_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
                       </span>
                     )}
@@ -394,7 +394,7 @@ function StatBox({ label, value, sub, highlight = false }: {
   return (
     <div className="rounded-xl border border-border bg-[#0c121c] p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-      <p className={`text-xl font-rajdhani font-bold ${highlight ? 'text-orange-400' : 'text-white'}`}>
+      <p className={`text-xl font-display font-bold ${highlight ? 'text-[#f2a74b]' : 'text-white'}`}>
         {value}
       </p>
       {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}

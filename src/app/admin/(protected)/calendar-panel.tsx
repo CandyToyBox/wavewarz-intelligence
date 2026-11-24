@@ -272,7 +272,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
 
       {showAdd && (
         <div className="rounded-xl border border-[#95fe7c]/30 bg-[#111827] p-5">
-          <p className="text-sm font-rajdhani font-bold text-white mb-4">New Event</p>
+          <p className="text-sm font-display font-bold text-white mb-4">New Event</p>
           <EventForm onSubmit={handleAdd} onCancel={() => setShowAdd(false)} loading={isPending} />
         </div>
       )}
@@ -289,7 +289,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
           if (editId === evt.id) {
             return (
               <div key={evt.id} className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-5">
-                <p className="text-sm font-rajdhani font-bold text-white mb-4">Edit Event</p>
+                <p className="text-sm font-display font-bold text-white mb-4">Edit Event</p>
                 <EventForm
                   initial={evt}
                   onSubmit={fd => handleEdit(evt.id, fd)}
@@ -316,7 +316,7 @@ export function CalendarPanel({ events: initial }: { events: CalendarEvent[] }) 
                   {evt.is_featured && <span className="text-[9px] font-bold uppercase tracking-widest text-[#95fe7c]">Featured</span>}
                   {!evt.is_active && <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Hidden</span>}
                 </div>
-                <p className="font-rajdhani font-bold text-white text-sm">{evt.title}</p>
+                <p className="font-display font-bold text-white text-sm">{evt.title}</p>
                 <p className="text-[10px] font-mono text-muted-foreground">
                   {dateFmt}{evt.event_time ? ` · ${evt.event_time}` : ''}
                 </p>

@@ -66,7 +66,7 @@ export function RecordMarkEditor({
 
             {!isEditing ? (
               <p className="text-sm mt-1">
-                <span className={m.artist_name ? 'text-white font-rajdhani font-bold' : 'text-muted-foreground/40 italic'}>
+                <span className={m.artist_name ? 'text-white font-display font-bold' : 'text-muted-foreground/40 italic'}>
                   {m.artist_name ?? m.value_text ?? 'not set'}
                 </span>
                 {m.artist_name && m.value_text && <span className="text-muted-foreground"> — {m.value_text}</span>}

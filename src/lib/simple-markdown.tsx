@@ -155,10 +155,10 @@ export function renderMarkdown(markdown: string): ReactNode[] {
       const level = headingMatch[1].length
       const text = headingMatch[2]
       const headingClasses: Record<number, string> = {
-        1: 'font-rajdhani text-3xl sm:text-4xl font-bold text-white mt-2 mb-4',
-        2: 'font-rajdhani text-2xl font-bold text-white mt-10 mb-3 pb-2 border-b border-border',
-        3: 'font-rajdhani text-xl font-bold text-actiongreen mt-8 mb-2',
-        4: 'font-rajdhani text-lg font-bold text-white mt-6 mb-2',
+        1: 'font-display text-3xl sm:text-4xl font-bold text-white mt-2 mb-4',
+        2: 'font-display text-2xl font-bold text-white mt-10 mb-3 pb-2 border-b border-border',
+        3: 'font-display text-xl font-bold text-actiongreen mt-8 mb-2',
+        4: 'font-display text-lg font-bold text-white mt-6 mb-2',
       }
       nodes.push(createElement(`h${level}`, { key: nextKey(), className: headingClasses[level] }, renderInline(text)))
       i += 1

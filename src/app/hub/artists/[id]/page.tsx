@@ -61,7 +61,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
                 size={64}
               />
               <div>
-                <h1 className="text-3xl font-rajdhani font-bold text-white tracking-wide leading-none">
+                <h1 className="text-3xl font-display font-bold text-white tracking-wide leading-none">
                   {card.displayName}{b.artist_emoji ? ` ${b.artist_emoji}` : ''}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -115,7 +115,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
           </div>
 
           {b.needs_review && (
-            <p className="mt-4 text-[11px] text-amber-400 border border-amber-500/30 bg-amber-500/10 rounded px-3 py-1.5">
+            <p className="mt-4 text-[11px] text-[#f2a74b] border border-[#f2a74b]/30 bg-[#f2a74b]/10 rounded px-3 py-1.5">
               This archive is flagged for review — confirm the details before anything ships from it.
             </p>
           )}
@@ -125,7 +125,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       {/* ── PLAYBOOK ── */}
       <section className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-4 flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="text-sm font-rajdhani font-bold text-white tracking-wide">Founding Artists Playbook</h2>
+          <h2 className="text-sm font-display font-bold text-white tracking-wide">Founding Artists Playbook</h2>
           <p className="text-xs text-muted-foreground">
             The guided questions this artist fills in from a private link. Review their answers and accept them into the Archive and Assets.
           </p>
@@ -137,7 +137,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
 
       {extras.length > 0 && (
         <section className="space-y-2">
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Playbook extras</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide">Playbook extras</h2>
           <p className="text-xs text-muted-foreground">Accepted playbook answers that have no Artist Archive field of their own.</p>
           <dl className="grid gap-2 sm:grid-cols-2">
             {extras.map(([k, val]) => (
@@ -153,7 +153,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       {/* ── OPEN STORYLINES ── */}
       {storylines.length > 0 && (
         <section>
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-3">Storylines</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide mb-3">Storylines</h2>
           <div className="grid gap-2 sm:grid-cols-2">
             {storylines.map(s => (
               <Link key={s.id} href="/hub/storylines" className="rounded-lg border border-border bg-[#111827] hover:border-[#7ec1fb]/40 p-3 transition-colors">
@@ -173,7 +173,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       {/* ── QUICK-BATTLE SONGS (album art from the Song Leaderboard source) ── */}
       {card.songs.length > 0 && (
         <section>
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-1">Quick-Battle Songs</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide mb-1">Quick-Battle Songs</h2>
           <p className="text-xs text-muted-foreground mb-3">
             {card.quickWins}W–{card.quickLosses}L across {card.songs.length} track{card.songs.length === 1 ? '' : 's'}. Artwork from <code className="text-[#7ec1fb]">song_registry</code> — same source as the Song Leaderboard.
           </p>
@@ -185,14 +185,14 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={s.artUrl} alt={s.title} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="font-rajdhani font-bold text-[#7ec1fb]">{s.title.charAt(0).toUpperCase()}</span>
+                    <span className="font-display font-bold text-[#7ec1fb]">{s.title.charAt(0).toUpperCase()}</span>
                   )}
                 </div>
                 <div className="min-w-0">
                   {s.musicLink ? (
-                    <a href={s.musicLink} target="_blank" rel="noreferrer" className="text-sm font-rajdhani font-bold text-white hover:text-[#7ec1fb] block truncate">{s.title} ↗</a>
+                    <a href={s.musicLink} target="_blank" rel="noreferrer" className="text-sm font-display font-bold text-white hover:text-[#7ec1fb] block truncate">{s.title} ↗</a>
                   ) : (
-                    <span className="text-sm font-rajdhani font-bold text-white block truncate">{s.title}</span>
+                    <span className="text-sm font-display font-bold text-white block truncate">{s.title}</span>
                   )}
                   <span className="text-[11px] text-muted-foreground">{s.wins}W–{s.losses}L · {s.volumeSol} SOL</span>
                 </div>
@@ -206,7 +206,7 @@ export default async function HubArtistPage({ params }: { params: Promise<{ id: 
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Artist Archive</h2>
+            <h2 className="text-lg font-display font-bold text-white tracking-wide">Artist Archive</h2>
             <p className="text-xs text-muted-foreground">Nine modules. Finish one, save it, and it moves out of the way.</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -225,7 +225,7 @@ function Metric({ label, value, sub, highlight, danger }: {
 }) {
   return (
     <div className="text-center bg-[#0c121c] border border-border rounded-xl px-3 py-2 min-w-[64px]">
-      <p className={`text-xl font-rajdhani font-bold ${danger ? 'text-red-400' : highlight ? 'text-[#95fe7c]' : 'text-white'}`}>{value}</p>
+      <p className={`text-xl font-display font-bold ${danger ? 'text-red-400' : highlight ? 'text-[#95fe7c]' : 'text-white'}`}>{value}</p>
       <p className="text-[9px] text-muted-foreground uppercase tracking-widest">{sub ? `${label} · ${sub}` : label}</p>
     </div>
   )

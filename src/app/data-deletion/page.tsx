@@ -5,7 +5,7 @@ export const metadata = {
 export default function DataDeletionPage() {
   return (
     <div className="max-w-3xl mx-auto py-12 space-y-8 text-sm text-gray-300 font-inter">
-      <h1 className="font-rajdhani text-3xl font-bold text-white">User Data Deletion</h1>
+      <h1 className="font-display text-3xl font-bold text-white">User Data Deletion</h1>
       <p className="text-gray-400">Last updated: October 2026</p>
 
       <section className="space-y-3">

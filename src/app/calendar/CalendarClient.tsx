@@ -19,7 +19,7 @@ export type CalendarEvent = {
 const TYPE_CONFIG: Record<string, { color: string; label: string }> = {
   BATTLE:    { color: '#95fe7c', label: 'Battle' },
   SPACES:    { color: '#7ec1fb', label: 'X Spaces' },
-  COMMUNITY: { color: '#f59e0b', label: 'Community' },
+  COMMUNITY: { color: '#f2a74b', label: 'Community' },
   OTHER:     { color: '#989898', label: 'Event' },
 }
 
@@ -90,7 +90,7 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
+        <h1 className="text-4xl font-display font-bold text-white tracking-tight">
           Events <span className="text-[#7ec1fb]">Calendar</span>
         </h1>
         <p className="text-muted-foreground text-sm mt-1">
@@ -103,7 +103,7 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
         {/* Month grid */}
         <div className="rounded-2xl border border-border bg-card p-4 sm:p-6">
           <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
-            <h2 className="text-xl font-rajdhani font-bold text-white">
+            <h2 className="text-xl font-display font-bold text-white">
               {MONTH_NAMES[cursor.getMonth()]} {cursor.getFullYear()}
             </h2>
             <div className="flex items-center gap-2">
@@ -178,7 +178,7 @@ export default function CalendarClient({ events }: { events: CalendarEvent[] }) 
           {selectedDate ? (
             <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-rajdhani font-bold text-white">
+                <p className="text-sm font-display font-bold text-white">
                   {new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                 </p>
                 <button onClick={() => setSelectedDate(null)} className="text-xs text-muted-foreground hover:text-white">Clear</button>

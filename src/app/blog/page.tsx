@@ -45,7 +45,7 @@ export default async function BlogPage() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
+          <h1 className="text-4xl font-display font-bold text-white tracking-tight">
             WaveWarZ <span className="text-[#7ec1fb]">Blog</span>
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
@@ -87,7 +87,7 @@ export default async function BlogPage() {
               )}
               <div className="p-5 flex flex-col gap-2 flex-1">
                 <span className="text-[10px] font-mono text-muted-foreground">{formatDate(post.publishedAt)}</span>
-                <h2 className="text-lg font-rajdhani font-bold text-white leading-tight group-hover:text-[#7ec1fb] transition-colors">
+                <h2 className="text-lg font-display font-bold text-white leading-tight group-hover:text-[#7ec1fb] transition-colors">
                   {post.title}
                 </h2>
                 {post.subtitle && (

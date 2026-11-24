@@ -71,12 +71,12 @@ export default async function HubArtists() {
               <HubAvatar name={a.name} pfpUrl={a.pfpUrl} twitterHandle={a.twitter} size={44} />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="font-rajdhani font-bold text-white text-lg leading-tight">
+                  <span className="font-display font-bold text-white text-lg leading-tight">
                     {a.rank && <span className="text-muted-foreground font-mono text-sm mr-1.5">#{a.rank}</span>}
                     {a.name}
                   </span>
                   {a.needsReview && (
-                    <span className="text-[9px] font-bold text-amber-400 border border-amber-500/40 bg-amber-500/10 rounded px-1.5 py-0.5 shrink-0">
+                    <span className="text-[9px] font-bold text-[#f2a74b] border border-[#f2a74b]/40 bg-[#f2a74b]/10 rounded px-1.5 py-0.5 shrink-0">
                       REVIEW
                     </span>
                   )}

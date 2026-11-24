@@ -121,7 +121,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
                     <span className={`text-[10px] font-bold uppercase tracking-widest ${typeColor}`}>{type}</span>
                     <span className="text-[10px] text-muted-foreground">#{b.battle_id} · {date}</span>
                   </div>
-                  <p className="font-rajdhani font-bold text-white text-sm truncate">
+                  <p className="font-display font-bold text-white text-sm truncate">
                     {b.artist1_name} <span className="text-muted-foreground font-normal">vs</span> {b.artist2_name}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export function MediaPanel({ battles }: { battles: BattleMedia[] }) {
                     <button
                       onClick={() => handleSave(b)}
                       disabled={isPending || !isDirty}
-                      className="bg-[#95fe7c]/10 hover:bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/30 disabled:opacity-30 text-xs px-3 py-1.5 rounded-lg transition-colors font-rajdhani font-bold"
+                      className="bg-[#95fe7c]/10 hover:bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/30 disabled:opacity-30 text-xs px-3 py-1.5 rounded-lg transition-colors font-display font-bold"
                     >
                       Save
                     </button>

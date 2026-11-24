@@ -50,7 +50,7 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
       )}
       {m.key === 'faceoff' && (
         <div>
-          <h3 className="text-sm font-rajdhani font-bold text-white tracking-wide mb-1">Tale of the Track</h3>
+          <h3 className="text-sm font-display font-bold text-white tracking-wide mb-1">Tale of the Track</h3>
           <p className="text-xs text-muted-foreground mb-3">Auto-generated matchup comparison from both Booker Cards. Use it for the Fight Card.</p>
           <TaleOfTheTrack event={event} a={cardA} b={cardB} />
         </div>
@@ -88,7 +88,7 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
               <HubAvatar name={event.b.name} pfpUrl={event.b.pfpUrl} twitterHandle={event.b.twitterHandle} size={48} />
             </div>
             <div>
-              <h1 className="text-3xl font-rajdhani font-bold text-white tracking-wide">{event.label}</h1>
+              <h1 className="text-3xl font-display font-bold text-white tracking-wide">{event.label}</h1>
               <p className="text-sm text-muted-foreground mt-1 font-mono">
                 {new Date(event.date).toLocaleDateString()} · {event.rounds} round{event.rounds > 1 ? 's' : ''} · {event.totalVolumeSol} SOL traded
                 {event.eventSubtype !== 'standard' && ` · ${event.eventSubtype}`}
@@ -97,7 +97,7 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
               </p>
             </div>
           </div>
-          {thesis?.headline && <p className="text-lg font-rajdhani font-bold text-[#95fe7c] mt-3">{thesis.headline}</p>}
+          {thesis?.headline && <p className="text-lg font-display font-bold text-[#95fe7c] mt-3">{thesis.headline}</p>}
           {thesis?.thesis && <p className="text-white/80 mt-1 italic max-w-2xl">{thesis.thesis}</p>}
         </div>
       </div>
@@ -105,7 +105,7 @@ export default async function HubEventPage({ params }: { params: Promise<{ slug:
       {/* The flywheel, one stage at a time */}
       <section className="space-y-3">
         <div>
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">The Battle Flywheel</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide">The Battle Flywheel</h2>
           <p className="text-xs text-muted-foreground">
             Announce, interview, Face-Off, battle, aftermath, then the next battle is announced. Finish a stage and it tucks away.
           </p>
@@ -140,12 +140,12 @@ function TaleOfTheTrack({
   return (
     <div className="rounded-xl border border-border bg-[#111827] overflow-hidden">
       <div className="grid grid-cols-[1fr_auto_1fr] gap-4 px-4 py-3 border-b border-border items-center">
-        <span className="flex items-center justify-end gap-2 font-rajdhani font-bold text-white text-right">
+        <span className="flex items-center justify-end gap-2 font-display font-bold text-white text-right">
           {event.a.name}
           <HubAvatar name={event.a.name} pfpUrl={event.a.pfpUrl} twitterHandle={event.a.twitterHandle} size={28} />
         </span>
         <span className="text-[10px] text-muted-foreground">VS</span>
-        <span className="flex items-center gap-2 font-rajdhani font-bold text-white">
+        <span className="flex items-center gap-2 font-display font-bold text-white">
           <HubAvatar name={event.b.name} pfpUrl={event.b.pfpUrl} twitterHandle={event.b.twitterHandle} size={28} />
           {event.b.name}
         </span>

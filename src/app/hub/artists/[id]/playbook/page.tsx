@@ -58,7 +58,7 @@ export default async function ArtistPlaybookReviewPage({ params }: { params: Pro
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <Link href={`/hub/artists/${id}`} className="text-xs text-muted-foreground hover:text-white">← {displayName}</Link>
-          <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide mt-1">Playbook review</h2>
+          <h2 className="text-2xl font-display font-bold text-white tracking-wide mt-1">Playbook review</h2>
           <p className="text-xs text-muted-foreground max-w-2xl">
             What {displayName} submitted, next to what the Artist Archive holds today. Nothing is written until you accept it, and a
             different value that is already in the Hub is only replaced when you choose Replace.
@@ -79,7 +79,7 @@ export default async function ArtistPlaybookReviewPage({ params }: { params: Pro
 
       {extras.length > 0 && (
         <section className="space-y-2">
-          <h3 className="text-lg font-rajdhani font-bold text-white tracking-wide">Playbook extras</h3>
+          <h3 className="text-lg font-display font-bold text-white tracking-wide">Playbook extras</h3>
           <p className="text-xs text-muted-foreground">Accepted answers that have no Artist Archive field of their own.</p>
           <dl className="grid gap-2 sm:grid-cols-2">
             {extras.map(([k, v]) => (

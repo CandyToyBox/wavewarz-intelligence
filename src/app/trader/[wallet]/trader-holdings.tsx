@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { WwIcon } from '@/components/ww-icon'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { parseBattleAccount } from '@/lib/solana/parser'
 import { PROGRAM_ID } from '@/lib/solana/pda'
 import Link from 'next/link'
-import { Loader2, Coins, ExternalLink, Zap } from 'lucide-react'
+import { Loader2, ExternalLink } from 'lucide-react'
 
 const RPC_URL = '/api/rpc'
 const TOKEN_PROGRAM = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
@@ -91,7 +92,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="px-5 py-4 border-b border-border flex items-center justify-between gap-3 flex-wrap">
         <div>
-          <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Live Onchain Holdings</h2>
+          <h2 className="font-display font-bold text-white text-lg tracking-wide">Live Onchain Holdings</h2>
           <p className="text-xs text-muted-foreground mt-0.5">Scans Solana for active or unclaimed WaveWarZ battle tokens</p>
         </div>
         <button
@@ -99,7 +100,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
           disabled={scanning}
           className="flex items-center gap-2 px-4 py-2 bg-[#95fe7c] hover:bg-[#95fe7c]/90 text-[#0d1321] font-bold text-xs rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {scanning ? <Loader2 size={13} className="animate-spin" /> : <Zap size={13} />}
+          {scanning ? <Loader2 size={13} className="animate-spin" /> : <WwIcon name="live-pulse" size={15} />}
           {scanning ? 'Scanning…' : 'Scan Wallet'}
         </button>
       </div>
@@ -121,7 +122,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
         <div>
           {holdings.length === 0 ? (
             <div className="px-5 py-8 text-center">
-              <Coins size={28} className="text-muted-foreground mx-auto mb-2" />
+              <span className="flex justify-center mb-2"><WwIcon name="collect" size={32} /></span>
               <p className="text-sm text-white font-bold mb-1">No Active Holdings</p>
               <p className="text-xs text-muted-foreground">This wallet holds no WaveWarZ battle tokens onchain.</p>
             </div>
@@ -130,7 +131,7 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
               <div className="px-5 py-3 border-b border-border flex gap-2 flex-wrap">
                 <span className="text-xs text-muted-foreground">{holdings.length} holding{holdings.length !== 1 ? 's' : ''} found</span>
                 {wonCount > 0 && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/30">{wonCount} claimable</span>}
-                {activeCount > 0 && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-yellow-400/10 text-yellow-300 border border-yellow-400/30 animate-pulse">{activeCount} live</span>}
+                {activeCount > 0 && <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded bg-[#f2a74b]/10 text-[#f2a74b] border border-[#f2a74b]/30 animate-pulse">{activeCount} live</span>}
               </div>
               <div className="divide-y divide-border/50">
                 {holdings.map(h => {
@@ -146,11 +147,11 @@ export default function TraderHoldings({ wallet }: { wallet: string }) {
                     <div key={`${h.battleId}-${h.side}`} className="px-5 py-4 flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isActionable ? 'bg-[#95fe7c]/10' : 'bg-[#1f2937]'}`}>
-                          <Coins size={16} style={{ color: statusConfig.color }} />
+                          <WwIcon name="collect" size={20} />
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <Link href={`/battles/${h.battleId}`} className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm">
+                            <Link href={`/battles/${h.battleId}`} className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm">
                               Battle #{h.battleId}
                             </Link>
                             <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border"

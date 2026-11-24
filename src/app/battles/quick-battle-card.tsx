@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type ReactNode } from 'react'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Tip } from '@/components/tip'
@@ -111,7 +112,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
       <div className="px-4 py-2 bg-[#95fe7c]/5 border-b border-[#95fe7c]/10">
         <div className="flex items-center gap-3 flex-wrap">
           <p className="text-xs">
-            <span className="font-rajdhani font-bold" style={{ color: wColor }}>{w}</span>
+            <span className="font-display font-bold" style={{ color: wColor }}>{w}</span>
             <span className="text-muted-foreground ml-2">won with a</span>
             <span className="text-[#95fe7c] font-bold ml-2">+{data.marginPct}% margin</span>
           </p>
@@ -177,7 +178,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           <SongAvatar title={data.winnerIsA ? data.song2Title : data.song1Title}
             artUrl={data.winnerIsA ? data.song2ArtUrl : data.song1ArtUrl}
             color={data.winnerIsA ? data.song2Color : data.song1Color} size="xl" dim />
-          <p className="text-sm font-rajdhani font-bold text-white/60 leading-tight px-2">
+          <p className="text-sm font-display font-bold text-white/60 leading-tight px-2">
             {data.winnerIsA ? data.song2Title : data.song1Title}
           </p>
           {data.winnerIsA
@@ -198,7 +199,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           <p className="text-xs text-muted-foreground uppercase tracking-widest">
           {data.isV2 ? 'V2 Winner' : 'V1 Winner'}
         </p>
-          <p className="text-sm font-rajdhani font-bold leading-tight" style={{ color: wColor }}>
+          <p className="text-sm font-display font-bold leading-tight" style={{ color: wColor }}>
             {w}
           </p>
           <p className="text-xs text-muted-foreground">
@@ -212,7 +213,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           <SongAvatar title={data.winnerIsA ? data.song1Title : data.song2Title}
             artUrl={data.winnerIsA ? data.song1ArtUrl : data.song2ArtUrl}
             color={data.winnerIsA ? data.song1Color : data.song2Color} size="xl" glow />
-          <p className="text-sm font-rajdhani font-bold text-white leading-tight px-2">
+          <p className="text-sm font-display font-bold text-white leading-tight px-2">
             {data.winnerIsA ? data.song1Title : data.song2Title}
           </p>
           {data.winnerIsA
@@ -248,12 +249,12 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
       <div className="border-t border-border px-5 py-3 flex items-center justify-between">
         <button
           onClick={() => setShowEarnings(e => !e)}
-          className="text-xs font-rajdhani font-bold text-muted-foreground hover:text-white border border-border px-3 py-1.5 rounded-lg hover:border-white/20 transition-colors"
+          className="text-xs font-display font-bold text-muted-foreground hover:text-white border border-border px-3 py-1.5 rounded-lg hover:border-white/20 transition-colors"
         >
           {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
         </button>
         <span className="text-xs text-muted-foreground">
-          Platform: <span className="text-[#f59e0b] font-mono font-bold">◎{data.platformEarnSol}</span>
+          Platform: <span className="text-[#f2a74b] font-mono font-bold">◎{data.platformEarnSol}</span>
           <span className="ml-1 text-muted-foreground">({data.platformEarnUsd})</span>
         </span>
       </div>
@@ -264,7 +265,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
 
           {/* Artist 1 */}
           <EarningsRow
-            icon="🎵"
+            icon="paid-artist"
             name={data.song1Title}
             totalSol={data.song1EarnSol}
             totalUsd={data.song1EarnUsd}
@@ -277,7 +278,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
 
           {/* Artist 2 */}
           <EarningsRow
-            icon="🎵"
+            icon="paid-artist"
             name={data.song2Title}
             totalSol={data.song2EarnSol}
             totalUsd={data.song2EarnUsd}
@@ -290,7 +291,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
 
           {/* Platform */}
           <EarningsRow
-            icon="⚡"
+            icon="collect"
             name="WaveWarZ Platform"
             totalSol={data.platformEarnSol}
             totalUsd={data.platformEarnUsd}
@@ -304,7 +305,7 @@ export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
           {/* Info callout */}
           <div className="px-5 py-3 bg-[#7ec1fb]/5 border-t border-[#7ec1fb]/10">
             <p className="text-[10px] text-[#7ec1fb] leading-relaxed">
-              💡 Artists earn 1% of every trade in their pool, plus settlement bonuses:<br />
+              Artists earn 1% of every trade in their pool, plus settlement bonuses:<br />
               • Winners get 5% of the losing pool &nbsp;· &nbsp;Losers get 2% consolation from their own pool
             </p>
           </div>
@@ -354,7 +355,7 @@ function SongAvatar({ title, artUrl, color, size = 'md', glow, dim }: {
 
   return (
     <div
-      className={`${sizes[size]} rounded-lg flex items-center justify-center font-rajdhani font-bold border-2 transition-all`}
+      className={`${sizes[size]} rounded-lg flex items-center justify-center font-display font-bold border-2 transition-all`}
       style={{
         backgroundColor: `${color}18`,
         borderColor: glow ? color : `${color}30`,
@@ -388,35 +389,27 @@ function StatBox({ label, value, sub }: { label: React.ReactNode; value: string;
   return (
     <div className="card-elevated p-3">
       <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1.5 leading-tight">{label}</p>
-      <p className="text-base font-rajdhani font-bold text-[#7ec1fb] font-mono">◎{value}</p>
+      <p className="text-base font-display font-bold text-[#7ec1fb] font-mono">◎{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function TrophyIcon({ color }: { color: string }) {
-  return (
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-      <path d="M4 22h16" />
-      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
-    </svg>
-  )
+  return <WwIcon name="trophy" size={28} />
 }
 
 function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
-  icon: string; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
+  icon: WwIconName; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
   rows: { label: string; sol: string; usd: string }[]
 }) {
-  const textColor = accent === 'platform' ? 'text-[#f59e0b]' : 'text-[#95fe7c]'
+  const textColor = accent === 'platform' ? 'text-[#f2a74b]' : 'text-[#95fe7c]'
   return (
     <div className="px-5 py-4">
       <div className="flex items-start justify-between gap-3 mb-2">
-        <p className="text-sm font-rajdhani font-bold text-white">
-          {icon} <span className="text-muted-foreground font-normal">
+        <p className="text-sm font-display font-bold text-white">
+          <WwIcon name={icon} size={18} /> <span className="text-muted-foreground font-normal">
             {name.length > 30 ? name.slice(0, 30) + '…' : name}
           </span> earned:
         </p>

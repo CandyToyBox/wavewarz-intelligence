@@ -146,7 +146,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
         />
         <button
           onClick={openCreate}
-          className="ml-auto bg-[#95fe7c] hover:bg-[#7de066] text-[#0d1321] font-bold text-xs px-4 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+          className="ml-auto bg-[#95fe7c] hover:bg-[#7de066] text-[#0d1321] font-bold text-xs px-4 py-2 rounded-lg transition-colors font-display tracking-wide"
         >
           + New Artist Profile
         </button>
@@ -165,7 +165,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
       {/* Create / Edit Form */}
       {showForm && (
         <div className="rounded-xl border border-[#95fe7c]/30 bg-[#111827] p-6 mb-6">
-          <h3 className="font-rajdhani font-bold text-white text-lg mb-4 tracking-wide">
+          <h3 className="font-display font-bold text-white text-lg mb-4 tracking-wide">
             {editing ? 'Edit Artist Profile' : 'Create New Artist Profile'}
           </h3>
           {editing && (
@@ -199,7 +199,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+              className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-5 py-2 rounded-lg transition-colors font-display tracking-wide"
             >
               {isPending ? 'Saving…' : editing ? 'Save Changes' : 'Create Profile'}
             </button>
@@ -231,7 +231,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
                   <img src={a.profile_picture_url} alt={a.display_name} className="w-12 h-12 rounded-full object-cover border border-border" />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-[#1f2937] border border-border flex items-center justify-center">
-                    <span className="font-rajdhani font-bold text-[#95fe7c] text-xl">{a.display_name.charAt(0).toUpperCase()}</span>
+                    <span className="font-display font-bold text-[#95fe7c] text-xl">{a.display_name.charAt(0).toUpperCase()}</span>
                   </div>
                 )}
               </div>
@@ -239,7 +239,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-rajdhani font-bold text-white text-lg">{a.display_name}</span>
+                  <span className="font-display font-bold text-white text-lg">{a.display_name}</span>
                   {a.audius_handle && <span className="text-xs text-[#7ec1fb]">Audius: @{a.audius_handle}</span>}
                   {a.twitter_handle && <span className="text-xs text-muted-foreground">X: @{a.twitter_handle}</span>}
                 </div>
@@ -309,7 +309,7 @@ export function ArtistPanel({ artists }: { artists: ArtistProfile[] }) {
                 <button
                   onClick={() => handleLinkWallet(a.artist_id)}
                   disabled={isPending || !newWallet[a.artist_id]}
-                  className="text-xs bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/30 hover:bg-[#95fe7c]/20 disabled:opacity-40 px-3 py-1.5 rounded transition-colors font-rajdhani font-bold"
+                  className="text-xs bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/30 hover:bg-[#95fe7c]/20 disabled:opacity-40 px-3 py-1.5 rounded transition-colors font-display font-bold"
                 >
                   Link
                 </button>
@@ -416,7 +416,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
 
   return (
     <div className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-5 mb-6">
-      <h3 className="font-rajdhani font-bold text-white text-base mb-1 tracking-wide">Split a Wallet&apos;s Main Events</h3>
+      <h3 className="font-display font-bold text-white text-base mb-1 tracking-wide">Split a Wallet&apos;s Main Events</h3>
       <p className="text-xs text-muted-foreground mb-4">
         Paste a wallet, pick which of its Main Event battles belong to a different profile (e.g. an &quot;AI LUI&quot; sub-profile), and assign them. Quick Battles don&apos;t need this — they&apos;re already ranked by song.
       </p>
@@ -432,7 +432,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
         <button
           onClick={load}
           disabled={loading || !wallet.trim()}
-          className="bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/30 hover:bg-[#7ec1fb]/20 disabled:opacity-40 text-xs font-bold px-4 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+          className="bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/30 hover:bg-[#7ec1fb]/20 disabled:opacity-40 text-xs font-bold px-4 py-2 rounded-lg transition-colors font-display tracking-wide"
         >
           {loading ? 'Loading…' : 'Load Battles'}
         </button>
@@ -492,7 +492,7 @@ function BattleOverrideTool({ profiles }: { profiles: ArtistProfile[] }) {
             <button
               onClick={assignSelected}
               disabled={isPending || !targetArtistId || selected.size === 0}
-              className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-4 py-2 rounded-lg transition-colors font-rajdhani tracking-wide"
+              className="bg-[#95fe7c] hover:bg-[#7de066] disabled:opacity-40 text-[#0d1321] font-bold text-xs px-4 py-2 rounded-lg transition-colors font-display tracking-wide"
             >
               Assign {selected.size > 0 ? `(${selected.size})` : ''}
             </button>

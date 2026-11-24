@@ -89,7 +89,7 @@ export default function ApiDocsPage() {
     <div className="max-w-4xl mx-auto py-12 space-y-14 font-inter">
       <div className="space-y-4">
         <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="font-rajdhani text-4xl font-bold text-white tracking-tight">
+          <h1 className="font-display text-4xl font-bold text-white tracking-tight">
             Public <span className="text-actiongreen">API</span>
           </h1>
           <span className="px-2 py-0.5 rounded bg-actiongreen/20 text-actiongreen text-[10px] font-bold tracking-widest border border-actiongreen/40">
@@ -118,14 +118,14 @@ export default function ApiDocsPage() {
 
       {/* Quick start */}
       <section className="space-y-3">
-        <h2 className="font-rajdhani text-2xl font-bold text-white">Quick Start</h2>
+        <h2 className="font-display text-2xl font-bold text-white">Quick Start</h2>
         <p className="text-sm text-gray-300">No API key, no auth header, no rate-limit token — just call the endpoint.</p>
         <Code>{`curl https://wavewarz.info/api/public/stats`}</Code>
       </section>
 
       {/* Contents */}
       <section className="space-y-3">
-        <h2 className="font-rajdhani text-2xl font-bold text-white">Endpoints</h2>
+        <h2 className="font-display text-2xl font-bold text-white">Endpoints</h2>
         <div className="grid sm:grid-cols-2 gap-2">
           {TOC.map(t => (
             <Link key={t.id} href={`#${t.id}`}
@@ -363,7 +363,7 @@ export default function ApiDocsPage() {
 
       {/* Notes */}
       <section className="space-y-3">
-        <h2 className="font-rajdhani text-2xl font-bold text-white">Notes for Agents & Developers</h2>
+        <h2 className="font-display text-2xl font-bold text-white">Notes for Agents & Developers</h2>
         <ul className="list-disc list-inside space-y-2 text-sm text-gray-300 pl-2">
           <li>All SOL amounts are plain numbers (not lamports). Multiply by <code className="text-[#7ec1fb]">solPriceUsd</code> where provided to convert to USD.</li>
           <li>&quot;Live&quot; means <code className="text-[#7ec1fb]">now &lt; created_at + battle_duration</code> — pure timer math, not a database status flag (status text is inconsistently cased across historical rows).</li>

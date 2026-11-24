@@ -26,7 +26,7 @@ export function ArtistAvatarImg({
           if (parent && !parent.querySelector('[data-avatar-fallback]')) {
             const span = document.createElement('span')
             span.dataset.avatarFallback = 'true'
-            span.className = 'font-rajdhani font-bold text-[#95fe7c]'
+            span.className = 'font-display font-bold text-[#95fe7c]'
             span.textContent = initial
             parent.appendChild(span)
           }

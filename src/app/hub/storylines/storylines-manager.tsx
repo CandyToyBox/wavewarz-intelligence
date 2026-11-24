@@ -97,13 +97,13 @@ export function StorylinesManager({
 
       {[{ label: 'Open', items: open }, { label: 'Resolved', items: resolved }].map(group => (
         <section key={group.label}>
-          <h3 className="text-sm font-rajdhani font-bold text-white tracking-wide mb-2">{group.label} ({group.items.length})</h3>
+          <h3 className="text-sm font-display font-bold text-white tracking-wide mb-2">{group.label} ({group.items.length})</h3>
           <div className="grid gap-2 md:grid-cols-2">
             {group.items.map(s => (
               <div key={s.id} className="rounded-xl border border-border bg-[#111827] p-3">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-rajdhani font-bold text-white">{s.title}</p>
+                    <p className="text-sm font-display font-bold text-white">{s.title}</p>
                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest">
                       {s.type}
                       {s.artist_a_id && ` · ${nameById.get(s.artist_a_id) ?? '?'}`}
@@ -111,7 +111,7 @@ export function StorylinesManager({
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    {s.needs_review && <span className="text-[9px] font-bold text-amber-400 border border-amber-500/40 bg-amber-500/10 rounded px-1">REVIEW</span>}
+                    {s.needs_review && <span className="text-[9px] font-bold text-[#f2a74b] border border-[#f2a74b]/40 bg-[#f2a74b]/10 rounded px-1">REVIEW</span>}
                     <button onClick={() => begin(s)} className="text-[10px] text-[#7ec1fb] hover:underline">edit</button>
                     <button onClick={() => remove(s.id)} className="text-[10px] text-muted-foreground hover:text-red-400">delete</button>
                   </div>

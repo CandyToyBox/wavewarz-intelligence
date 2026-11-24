@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { WwIcon } from '@/components/ww-icon'
 import Link from 'next/link'
 import { Tip } from '@/components/tip'
 import type { SongData, SongBattle } from '@/app/leaderboards/songs/SongChartsClient'
@@ -68,41 +69,8 @@ function RankIcon({ position }: { position: number }) {
     '#5 — Charting',
   ]
 
-  const icons = [
-    // Crown — position 1
-    <svg key="crown" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M2 18h20l-2-10-4 5-4-9-4 9-4-5-2 10z" fill="#f59e0b" stroke="#f59e0b" strokeWidth="0.5" strokeLinejoin="round"/>
-      <path d="M4 18h16" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round"/>
-      <circle cx="2" cy="8" r="1.5" fill="#fbbf24"/>
-      <circle cx="12" cy="4" r="1.5" fill="#fbbf24"/>
-      <circle cx="22" cy="8" r="1.5" fill="#fbbf24"/>
-    </svg>,
-
-    // Lightning bolt — position 2
-    <svg key="zap" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M13 2L4.5 13.5H11L11 22L19.5 10.5H13L13 2Z" fill="#7ec1fb" stroke="#7ec1fb" strokeWidth="0.5" strokeLinejoin="round"/>
-    </svg>,
-
-    // Flame — position 3
-    <svg key="flame" width="15" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2C12 2 7 8 7 13C7 15.8 8.7 18.2 11 19.3C10.4 18.3 10 17.2 10 16C10 13.5 12 11.5 12 11.5C12 11.5 14 13.5 14 16C14 17.2 13.6 18.3 13 19.3C15.3 18.2 17 15.8 17 13C17 8 12 2 12 2Z" fill="#f97316" stroke="#f97316" strokeWidth="0.5"/>
-      <path d="M12 13C12 13 10 14.5 10 16.5C10 18 11 19.5 12 20C13 19.5 14 18 14 16.5C14 14.5 12 13 12 13Z" fill="#fbbf24" stroke="none"/>
-    </svg>,
-
-    // Trending up — position 4
-    <svg key="trend" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#95fe7c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <polyline points="17 6 23 6 23 12" stroke="#95fe7c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>,
-
-    // Star — position 5
-    <svg key="star" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#52525b" stroke="#71717a" strokeWidth="1.5" strokeLinejoin="round"/>
-    </svg>,
-  ]
-
-  const bgColors = ['#f59e0b', '#7ec1fb', '#f97316', '#95fe7c', '#52525b']
-  const glowColors = ['#f59e0b50', '#7ec1fb40', '#f9731640', '#95fe7c40', 'transparent']
+  // Position badges from the WaveWarZ icon set, on the same dark chip as the rank icons
+  const icons = (['trophy', 'quick-battlez', 'live-pulse', 'chart', 'main-event'] as const).map(n => <WwIcon key={n} name={n} size={18} />)
 
   if (position >= 5) {
     return (
@@ -116,11 +84,7 @@ function RankIcon({ position }: { position: number }) {
     <Tip text={tips[position]}>
       <div
         className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform hover:scale-110"
-        style={{
-          background: `${bgColors[position]}15`,
-          border: `1px solid ${bgColors[position]}35`,
-          boxShadow: `0 0 8px ${glowColors[position]}`,
-        }}
+        style={{ background: '#04070d', border: '1px solid rgba(216, 235, 252, .16)' }}
       >
         {icons[position]}
       </div>
@@ -211,7 +175,7 @@ function SongRow({
         />
       ) : (
         <div
-          className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 font-rajdhani font-bold text-base"
+          className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 font-display font-bold text-base"
           style={{ backgroundColor: `${color}18`, borderColor: `${color}40`, color }}
         >
           {initial}
@@ -225,13 +189,13 @@ function SongRow({
             href={song.musicLink}
             target="_blank"
             rel="noreferrer"
-            className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm leading-tight flex items-center gap-1 group"
+            className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm leading-tight flex items-center gap-1 group"
           >
             <span className="truncate">{song.songTitle}</span>
             <span className="text-[10px] text-[#7ec1fb] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
           </a>
         ) : (
-          <p className="font-rajdhani font-bold text-white text-sm truncate leading-tight">{song.songTitle}</p>
+          <p className="font-display font-bold text-white text-sm truncate leading-tight">{song.songTitle}</p>
         )}
         <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
           {song.handle && (
@@ -305,7 +269,7 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
       <div className="flex items-start justify-between mb-5 gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h2 className="text-2xl font-rajdhani font-bold text-white tracking-wide">
+            <h2 className="text-2xl font-display font-bold text-white tracking-wide">
               Quick Battle <span className="text-[#7ec1fb]">Charts</span>
             </h2>
             <Tip text="Song vs Song — winner decided by Poll + Charts (SOL) + DJ Wavy AI Judge, 2 out of 3">
@@ -353,7 +317,7 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
             onClick={() => setShowGenre(v => !v)}
             className={`px-3 py-1 text-xs font-mono rounded-lg border transition-all whitespace-nowrap ${
               showGenre
-                ? 'bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/40 glow-pulse-blue'
+                ? 'bg-[#f2a74b]/20 text-[#f2a74b] border-[#f2a74b]/40 glow-pulse-blue'
                 : 'text-muted-foreground border-border hover:text-white hover:border-[#7ec1fb]/30'
             }`}
           >
@@ -418,7 +382,7 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
                       className="w-10 h-10 rounded-lg object-cover border border-border/60 shrink-0" />
                   ) : (
                     <div
-                      className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 font-rajdhani font-bold text-base"
+                      className="w-10 h-10 rounded-lg border flex items-center justify-center shrink-0 font-display font-bold text-base"
                       style={{ backgroundColor: `${letterColor(genre.charAt(0))}18`, borderColor: `${letterColor(genre.charAt(0))}40`, color: letterColor(genre.charAt(0)) }}
                     >
                       {song.songTitle.charAt(0).toUpperCase()}
@@ -427,12 +391,12 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
                   <div className="flex-1 min-w-0">
                     {song.musicLink ? (
                       <a href={song.musicLink} target="_blank" rel="noreferrer"
-                        className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm truncate flex items-center gap-1 group">
+                        className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm truncate flex items-center gap-1 group">
                         <span className="truncate">{song.songTitle}</span>
                         <span className="text-[10px] text-[#7ec1fb] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
                       </a>
                     ) : (
-                      <p className="font-rajdhani font-bold text-white text-sm truncate">{song.songTitle}</p>
+                      <p className="font-display font-bold text-white text-sm truncate">{song.songTitle}</p>
                     )}
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <span

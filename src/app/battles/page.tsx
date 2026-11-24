@@ -541,7 +541,7 @@ export default async function BattlesFeedPage({
       {/* ── HEADER ── */}
       <header>
         <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-3xl sm:text-4xl font-rajdhani font-bold text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight">
             Battles <span className="text-[#95fe7c]">Feed</span>
           </h1>
           <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest animate-pulse">
@@ -561,7 +561,7 @@ export default async function BattlesFeedPage({
             {quickCount} quick battles
           </span>
           {multiRound > 0 && (
-            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#f2a74b]/10 text-[#f2a74b] border border-[#f2a74b]/20">
               {multiRound} multi-round events
             </span>
           )}
@@ -582,7 +582,7 @@ export default async function BattlesFeedPage({
       <div className="space-y-3">
         {pageFeed.length === 0 && (
           <div className="rounded-xl border border-border bg-[#111827] p-12 text-center">
-            <p className="text-xl font-rajdhani font-bold text-white mb-2">No battles yet</p>
+            <p className="text-xl font-display font-bold text-white mb-2">No battles yet</p>
             <p className="text-muted-foreground text-sm">Battles will appear here as soon as webhooks are received from WaveWarZ.</p>
           </div>
         )}

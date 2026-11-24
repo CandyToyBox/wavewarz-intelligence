@@ -86,7 +86,7 @@ export default async function HubHome() {
 
       {/* What is next: only what still needs doing */}
       <section>
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-1">Up Next</h2>
+        <h2 className="text-lg font-display font-bold text-white tracking-wide mb-1">Up Next</h2>
         <p className="text-xs text-muted-foreground mb-3">
           Finished modules are hidden on their pages. This is what is still open.
         </p>
@@ -95,7 +95,7 @@ export default async function HubHome() {
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">WaveWarZ Archives</p>
             {nextLeague ? (
               <>
-                <p className="font-rajdhani font-bold text-white">{nextLeague.title}</p>
+                <p className="font-display font-bold text-white">{nextLeague.title}</p>
                 <p className="text-xs text-muted-foreground mt-0.5">{leagueDone.size}/{LEAGUE_MODULES.length} modules complete</p>
                 <Link href="/hub/league" className="text-xs text-[#7ec1fb] hover:underline mt-2 inline-block">Open →</Link>
               </>
@@ -115,7 +115,7 @@ export default async function HubHome() {
           </div>
           <div className="rounded-xl border border-border bg-[#111827] p-4">
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">Flywheel stages</p>
-            <p className="font-rajdhani font-bold text-white">{eventStagesDone} stages complete across {events.length} events</p>
+            <p className="font-display font-bold text-white">{eventStagesDone} stages complete across {events.length} events</p>
             <p className="text-xs text-muted-foreground mt-0.5">{EVENT_MODULES.map(m => m.title.split(' and ')[0]).join(' · ')}</p>
             <Link href="/hub/events" className="text-xs text-[#7ec1fb] hover:underline mt-2 inline-block">Events →</Link>
           </div>
@@ -127,7 +127,7 @@ export default async function HubHome() {
 
       {/* Library structure */}
       <section>
-        <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide mb-3">Content Library</h2>
+        <h2 className="text-lg font-display font-bold text-white tracking-wide mb-3">Content Library</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {Object.entries(LIBRARY).map(([folder, subs]) => (
             <div key={folder} className="rounded-xl border border-border bg-[#111827] p-4">
@@ -147,7 +147,7 @@ export default async function HubHome() {
       {/* Artists */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Artist Files</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide">Artist Files</h2>
           <Link href="/hub/artists" className="text-xs text-[#7ec1fb] hover:underline">All artists →</Link>
         </div>
         <div className="grid gap-2 sm:grid-cols-2">
@@ -160,7 +160,7 @@ export default async function HubHome() {
               <div className="flex items-center gap-2.5 mb-2">
                 {a.rank && <span className="text-xs font-mono text-muted-foreground w-6 shrink-0">#{a.rank}</span>}
                 <HubAvatar name={a.name} pfpUrl={a.pfpUrl} twitterHandle={a.twitter} size={32} />
-                <span className="font-rajdhani font-bold text-white flex-1 truncate">{a.name}</span>
+                <span className="font-display font-bold text-white flex-1 truncate">{a.name}</span>
                 <span className="text-xs text-muted-foreground">{a.completeness}%</span>
               </div>
               <Bar pct={a.completeness} />
@@ -172,7 +172,7 @@ export default async function HubHome() {
       {/* Events */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Event Files</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide">Event Files</h2>
           <Link href="/hub/events" className="text-xs text-[#7ec1fb] hover:underline">All events →</Link>
         </div>
         <div className="rounded-xl border border-border bg-[#111827] overflow-hidden">
@@ -198,7 +198,7 @@ export default async function HubHome() {
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded border shrink-0 ${
                 e.hasThesis
                   ? 'text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10'
-                  : 'text-amber-400 border-amber-500/40 bg-amber-500/10'
+                  : 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10'
               }`}>
                 {e.hasThesis ? (e.thesisNeedsReview ? 'THESIS · REVIEW' : 'THESIS ✓') : 'THESIS NEEDED'}
               </span>
@@ -210,7 +210,7 @@ export default async function HubHome() {
       {/* Sponsor snapshot */}
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-rajdhani font-bold text-white tracking-wide">Sponsor Inventory</h2>
+          <h2 className="text-lg font-display font-bold text-white tracking-wide">Sponsor Inventory</h2>
           <Link href="/hub/sponsors" className="text-xs text-[#7ec1fb] hover:underline">Manage →</Link>
         </div>
         <div className="grid grid-cols-3 gap-3">
@@ -227,7 +227,7 @@ function Kpi({ label, value, sub, href }: { label: string; value: string; sub: s
   const inner = (
     <div className="rounded-xl border border-border bg-[#111827] p-4 h-full">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
-      <p className="text-2xl font-rajdhani font-bold text-[#95fe7c]">{value}</p>
+      <p className="text-2xl font-display font-bold text-[#95fe7c]">{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
     </div>
   )

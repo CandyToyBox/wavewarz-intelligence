@@ -120,7 +120,7 @@ export default async function TraderPage({ params }: Props) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-1">Trader Profile</p>
-          <h1 className="text-2xl sm:text-3xl font-rajdhani font-bold text-white tracking-tight font-mono break-all">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-white tracking-tight font-mono break-all">
             {wallet}
           </h1>
           <div className="flex gap-2 mt-2">
@@ -142,8 +142,8 @@ export default async function TraderPage({ params }: Props) {
       </div>
 
       {!dataComplete && (
-        <div className="rounded-xl border border-[#f59e0b]/40 bg-[#f59e0b]/10 px-4 py-3">
-          <p className="text-xs text-[#f59e0b] font-bold uppercase tracking-widest mb-1">Trade history being verified</p>
+        <div className="rounded-xl border border-[#f2a74b]/40 bg-[#f2a74b]/10 px-4 py-3">
+          <p className="text-xs text-[#f2a74b] font-bold uppercase tracking-widest mb-1">Trade history being verified</p>
           <p className="text-xs text-muted-foreground leading-relaxed">
             This wallet traded in a battle whose per-trade records are still being re-fetched
             from Solana. Volume and the battle record below are a lower bound, and Net SOL is hidden
@@ -175,7 +175,7 @@ export default async function TraderPage({ params }: Props) {
       {battleIds.length > 0 && (
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
-            <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Battle History</h2>
+            <h2 className="font-display font-bold text-white text-lg tracking-wide">Battle History</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{battleIds.length} battles participated</p>
           </div>
           <div className="divide-y divide-border/50">
@@ -190,7 +190,7 @@ export default async function TraderPage({ params }: Props) {
               const sideA = firstTrade?.trade_type?.toLowerCase().includes('_a') || firstTrade?.trade_type?.toLowerCase() === 'buy'
               const won = isOver && firstTrade?.trade_type ? (sideA ? a1Won : !a1Won) : null
               const typeLabel = b.is_quick_battle ? 'Quick' : b.is_community_battle ? 'Community' : 'Main'
-              const typeColor = b.is_quick_battle ? '#7ec1fb' : b.is_community_battle ? '#f59e0b' : '#95fe7c'
+              const typeColor = b.is_quick_battle ? '#7ec1fb' : b.is_community_battle ? '#f2a74b' : '#95fe7c'
 
               return (
                 <div key={bid} className="px-5 py-4 flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
@@ -202,7 +202,7 @@ export default async function TraderPage({ params }: Props) {
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <Link href={`/battles/${bid}`} className="font-rajdhani font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm">
+                        <Link href={`/battles/${bid}`} className="font-display font-bold text-white hover:text-[#7ec1fb] transition-colors text-sm">
                           Battle #{bid}
                         </Link>
                         <span className="text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border"
@@ -230,7 +230,7 @@ export default async function TraderPage({ params }: Props) {
       {trades.length > 0 && (
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
-            <h2 className="font-rajdhani font-bold text-white text-lg tracking-wide">Trade Log</h2>
+            <h2 className="font-display font-bold text-white text-lg tracking-wide">Trade Log</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{trades.length} transactions</p>
           </div>
           <div className="overflow-x-auto">
@@ -259,7 +259,7 @@ export default async function TraderPage({ params }: Props) {
                       <td className="px-4 py-2.5">
                         <span className={`text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border ${
                           isClaim
-                            ? 'text-[#f59e0b] border-[#f59e0b]/30 bg-[#f59e0b]/10'
+                            ? 'text-[#f2a74b] border-[#f2a74b]/30 bg-[#f2a74b]/10'
                             : isBuy
                               ? 'text-[#95fe7c] border-[#95fe7c]/30 bg-[#95fe7c]/10'
                               : 'text-[#7ec1fb] border-[#7ec1fb]/30 bg-[#7ec1fb]/10'

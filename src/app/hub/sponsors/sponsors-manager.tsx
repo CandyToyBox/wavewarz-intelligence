@@ -20,7 +20,7 @@ const TYPES = ['presenting', 'franchise', 'ritual', 'surface', 'artist', 'season
 const STATUSES = ['available', 'pitched', 'sold']
 const COLUMNS: { status: string; label: string; accent: string }[] = [
   { status: 'available', label: 'Available', accent: 'border-border' },
-  { status: 'pitched', label: 'Pitched', accent: 'border-amber-500/40' },
+  { status: 'pitched', label: 'Pitched', accent: 'border-[#f2a74b]/40' },
   { status: 'sold', label: 'Sold', accent: 'border-[#95fe7c]/40' },
 ]
 
@@ -110,7 +110,7 @@ export function SponsorsManager({ properties }: { properties: SponsorProperty[] 
                   <div key={p.id} className="rounded-lg border border-border bg-[#111827] p-3">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="text-sm font-rajdhani font-bold text-white">{p.property_name}</p>
+                        <p className="text-sm font-display font-bold text-white">{p.property_name}</p>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{p.property_type}{p.partner_name && ` · ${p.partner_name}`}</p>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">

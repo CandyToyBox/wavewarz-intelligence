@@ -30,7 +30,7 @@ export function CommandCenterPanel({
         className="flex items-center justify-between rounded-xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] to-[#111827] p-4 hover:border-[#95fe7c]/60 transition-colors"
       >
         <div>
-          <p className="font-rajdhani font-bold text-white tracking-wide">League Hub →</p>
+          <p className="font-display font-bold text-white tracking-wide">League Hub →</p>
           <p className="text-xs text-muted-foreground">Artist Archives · Battle Theses · Storyline graph · Record Book · Sponsor Inventory</p>
         </div>
         <span className="text-[10px] font-bold text-[#95fe7c] border border-[#95fe7c]/40 bg-[#95fe7c]/10 rounded px-2 py-0.5">ENTERTAINMENT OS</span>
@@ -139,7 +139,7 @@ function Kpi({ label, value, sub, dim }: { label: string; value: string; sub: st
   return (
     <div className={`rounded-xl border p-4 text-center ${dim ? 'border-border bg-[#111827]' : 'border-[#95fe7c]/20 bg-gradient-to-b from-[#070a10] to-[#111827]'}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
-      <p className={`font-rajdhani font-bold text-2xl ${dim ? 'text-white' : 'text-[#95fe7c]'}`}>{value}</p>
+      <p className={`font-display font-bold text-2xl ${dim ? 'text-white' : 'text-[#95fe7c]'}`}>{value}</p>
       <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>
     </div>
   )
@@ -148,7 +148,7 @@ function Kpi({ label, value, sub, dim }: { label: string; value: string; sub: st
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-xl border border-border bg-[#111827] p-5">
-      <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4 pb-3 border-b border-border font-rajdhani font-bold text-[#95fe7c]">
+      <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-4 pb-3 border-b border-border font-display font-bold text-[#95fe7c]">
         {title}
       </p>
       {children}
@@ -160,7 +160,7 @@ function TableRow({ label, value, green, bold }: { label: string; value: string;
   return (
     <tr className="border-b border-white/5 last:border-0">
       <td className={`py-2.5 text-xs ${bold ? 'text-white font-bold' : 'text-white/70'}`}>{label}</td>
-      <td className={`py-2.5 text-right font-rajdhani font-bold text-sm ${green ? 'text-[#95fe7c]' : bold ? 'text-white' : 'text-white/80'}`}>{value}</td>
+      <td className={`py-2.5 text-right font-display font-bold text-sm ${green ? 'text-[#95fe7c]' : bold ? 'text-white' : 'text-white/80'}`}>{value}</td>
     </tr>
   )
 }
@@ -169,7 +169,7 @@ function ScheduleItem({ day, time, desc, badge }: { day: string; time: string; d
   return (
     <div className="rounded-lg border border-[#95fe7c]/20 bg-[#0c121c] p-4">
       <p className="text-[10px] font-bold uppercase tracking-widest text-white mb-1">{day}</p>
-      <p className="font-rajdhani font-bold text-xl text-[#95fe7c] mb-1">{time}</p>
+      <p className="font-display font-bold text-xl text-[#95fe7c] mb-1">{time}</p>
       <p className="text-xs text-muted-foreground">{desc}</p>
       {badge && (
         <span className="mt-2 inline-block text-[10px] font-bold px-2 py-0.5 rounded border text-[#95fe7c] border-[#95fe7c]/40 bg-[#95fe7c]/10">

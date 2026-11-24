@@ -110,7 +110,7 @@ export function ArtistArchiveEditor({ artistId, bible, fields }: {
   return (
     <div className="rounded-lg border border-border bg-[#0c121c]/40">
       <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-        <h4 className="font-rajdhani font-bold text-white tracking-wide text-sm">Artist Archive fields</h4>
+        <h4 className="font-display font-bold text-white tracking-wide text-sm">Artist Archive fields</h4>
         {editing ? (
           <div className="flex items-center gap-2 shrink-0">
             {err && <span className="text-xs text-red-400">{err}</span>}
@@ -170,7 +170,7 @@ export function NeedsReviewToggle({ artistId, needsReview }: { artistId: string;
       disabled={pending}
       className={`text-[10px] font-bold rounded px-2 py-1 border transition-colors ${
         needsReview
-          ? 'text-amber-400 border-amber-500/40 bg-amber-500/10'
+          ? 'text-[#f2a74b] border-[#f2a74b]/40 bg-[#f2a74b]/10'
           : 'text-muted-foreground border-border hover:text-white'
       }`}
     >

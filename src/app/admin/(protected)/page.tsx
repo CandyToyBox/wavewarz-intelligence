@@ -169,7 +169,7 @@ export default async function AdminPage() {
       <header className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
+            <h1 className="text-4xl font-display font-bold text-white tracking-tight">
               Admin <span className="text-[#95fe7c]">Portal</span>
             </h1>
             <Badge className="bg-red-500/20 text-red-400 border border-red-500/40 text-[10px] font-bold tracking-widest">
@@ -193,7 +193,7 @@ export default async function AdminPage() {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Total Platform Revenue (All Time)</p>
-              <p className="text-5xl font-rajdhani font-bold text-[#95fe7c]">{formatSol(revenue.totalRevenue + queueFees.skipQueueRevenue)} SOL</p>
+              <p className="text-5xl font-display font-bold text-[#95fe7c]">{formatSol(revenue.totalRevenue + queueFees.skipQueueRevenue)} SOL</p>
               <p className="text-lg text-muted-foreground mt-1">{solToUsd(revenue.totalRevenue + queueFees.skipQueueRevenue, solPrice)}</p>
             </div>
             <div className="text-right text-sm text-muted-foreground space-y-1">
@@ -262,7 +262,7 @@ function RevenueCard({ label, value, usd, detail, color }: {
   return (
     <div className={`rounded-xl border bg-[#111827] p-4 ${border}`}>
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{label}</p>
-      <p className={`text-xl font-rajdhani font-bold ${val}`}>{value}</p>
+      <p className={`text-xl font-display font-bold ${val}`}>{value}</p>
       <p className="text-xs text-muted-foreground mt-0.5">{usd}</p>
       <p className="text-[10px] text-muted-foreground/60 mt-2 border-t border-border pt-2">{detail}</p>
     </div>
