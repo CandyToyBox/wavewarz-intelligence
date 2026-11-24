@@ -1,121 +1,39 @@
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
+import type { CSSProperties } from 'react'
 import type { Metadata } from 'next'
-import { TrophyIcon, EqualizerIcon, PeopleIcon, TrendIcon, ClapperboardIcon } from './leaderboard-icons'
+import { RANK_ICONS } from '@/components/rank-icons'
+import { BOARDS } from './boards'
 
 export const metadata: Metadata = {
   title: 'Leaderboards',
   description: 'Artist, Song, and Community leaderboards for WaveWarZ battles on Solana.',
 }
 
-const BOARDS = [
-  {
-    href: '/leaderboards/artists',
-    badge: 'MAIN EVENTS',
-    badgeColor: 'bg-[#95fe7c]/20 text-[#95fe7c] border-[#95fe7c]/40',
-    borderColor: 'border-[#95fe7c]/20 hover:border-[#95fe7c]/50',
-    accentColor: 'text-[#95fe7c]',
-    hex: '#95fe7c',
-    Icon: TrophyIcon,
-    title: 'Artist Rankings',
-    desc: 'Main event competitors ranked by wins, volume, and onchain earnings.',
-    stats: ['Win / Loss record by Main Event', 'Total SOL traded by fans', 'Artist earnings: 1% fees + settlement bonus', 'Win rate %'],
-  },
-  {
-    href: '/leaderboards/songs',
-    badge: 'QUICK BATTLES',
-    badgeColor: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40',
-    borderColor: 'border-[#7ec1fb]/20 hover:border-[#7ec1fb]/50',
-    accentColor: 'text-[#7ec1fb]',
-    hex: '#7ec1fb',
-    Icon: EqualizerIcon,
-    title: 'Song Charts',
-    desc: 'Tracks ranked by quick battle performance. Album art from Audius. Winner: 2-of-3 (Poll + Charts + DJ Wavy AI Judge).',
-    stats: ['Trending score: velocity × recency × engagement', 'Win / Loss record', 'Total SOL volume', 'Battle count & unique traders'],
-  },
-  {
-    href: '/leaderboards/community',
-    badge: 'COMMUNITY',
-    badgeColor: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
-    borderColor: 'border-amber-500/20 hover:border-amber-500/50',
-    accentColor: 'text-amber-400',
-    hex: '#fbbf24',
-    Icon: PeopleIcon,
-    title: 'Community Rankings',
-    desc: 'Community battle competitors ranked by wins and trading volume. Battle artwork shown per entry.',
-    stats: ['Win / Loss record', 'Total SOL traded', 'Win rate %', 'Battle count'],
-  },
-  {
-    href: '/leaderboards/traders',
-    badge: 'TRADERS',
-    badgeColor: 'bg-[#f59e0b]/20 text-[#f59e0b] border-[#f59e0b]/40',
-    borderColor: 'border-[#f59e0b]/20 hover:border-[#f59e0b]/50',
-    accentColor: 'text-[#f59e0b]',
-    hex: '#f59e0b',
-    Icon: TrendIcon,
-    title: 'Trader Rankings',
-    desc: 'Fans and traders ranked by total SOL traded. Click any wallet to see its public onchain record.',
-    stats: ['Total SOL traded across all battles', 'How often they backed the winning side', 'Net SOL (received back minus spent)', 'Live onchain scan per wallet'],
-  },
-  {
-    href: '/leaderboards/clippers',
-    badge: 'COMMUNITY CLIPS',
-    badgeColor: 'bg-orange-500/20 text-orange-400 border-orange-500/40',
-    borderColor: 'border-orange-500/20 hover:border-orange-500/50',
-    accentColor: 'text-orange-400',
-    hex: '#fb923c',
-    Icon: ClapperboardIcon,
-    title: 'Clipper Rankings',
-    desc: 'Community contributors ranked by clip submissions, approvals, and points. Many are also active battle artists.',
-    stats: ['Clips submitted → approved → posted', 'Points earned', 'Battle record (if they compete)', 'SOL wallet for future rewards'],
-  },
-]
-
+// Hub: five boards as the homepage's chrome-edged panels (.ww-hl-panel look), 3 across then 2 wide
 export default function LeaderboardsHub() {
   return (
     <div className="space-y-8">
-      <header>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-1">WaveWarZ Statz</p>
-        <h1 className="text-5xl font-rajdhani font-bold tracking-tight text-white">
-          <span className="text-[#95fe7c]">Leader</span>boards
-        </h1>
-        <p className="text-muted-foreground mt-2 max-w-lg">
-          Five ranking boards. Pick one below. All stats derived from onchain data. Test battles and charity events excluded.
-        </p>
+      <header className="ww-bh" style={{ '--acc': '#95fe7c' } as CSSProperties}>
+        <div className="ww-bh-main">
+          <p className="ww-bh-k"><i aria-hidden="true" />WaveWarZ Statz</p>
+          <h1><span>Leader</span>boards</h1>
+          <p className="ww-bh-d">Five ranking boards. Pick one below. All stats derived from onchain data. Test battles and charity events excluded.</p>
+        </div>
       </header>
 
-      {/* 3 across, then 2 wide: five boards with no empty slot */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-5">
-        {BOARDS.map((b, i) => (
-          <Link
-            key={b.href}
-            href={b.href}
-            className={`group rounded-xl border ${b.borderColor} bg-card p-5 flex flex-col transition-colors hover:bg-white/[0.03] ${i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'} ${i === 4 ? 'sm:col-span-2 lg:col-span-3' : ''}`}
-          >
-            <div className="flex items-start justify-between mb-3">
-              <div
-                className="w-12 h-12 rounded-lg border flex items-center justify-center shrink-0"
-                style={{ backgroundColor: `${b.hex}18`, borderColor: `${b.hex}40` }}
-              >
-                <b.Icon color={b.hex} className="w-6 h-6" />
-              </div>
-              <Badge className={`${b.badgeColor} border text-[9px] font-bold tracking-widest`}>{b.badge}</Badge>
-            </div>
-            <h2 className={`text-xl font-rajdhani font-bold text-white mb-1.5 tracking-wide group-hover:${b.accentColor} transition-colors`}>
-              {b.title}
-            </h2>
-            <p className="text-xs text-muted-foreground leading-relaxed mb-4 flex-1">{b.desc}</p>
-            <ul className="space-y-1 mb-4">
-              {b.stats.map(s => (
-                <li key={s} className="flex items-start gap-2 text-xs text-muted-foreground">
-                  <span className={`w-1 h-1 rounded-full mt-1.5 ${b.accentColor} bg-current shrink-0`} />
-                  {s}
-                </li>
-              ))}
-            </ul>
-            <span className={`text-xs font-rajdhani font-bold ${b.accentColor} group-hover:underline`}>
-              View Rankings →
+      <div className="ww-boards">
+        {BOARDS.map(b => (
+          <Link key={b.href} href={b.href} className="ww-board" style={{ '--acc': b.accent } as CSSProperties}>
+            <span className="ww-board-top">
+              <span className="ww-hl-ico" aria-hidden="true">{RANK_ICONS[b.key]}</span>
+              <span className="ww-bh-k"><i aria-hidden="true" />{b.label}</span>
             </span>
+            <h2>{b.title[0]} {b.title[1]}</h2>
+            <p>{b.desc}</p>
+            <ul>
+              {b.stats.map(s => <li key={s}>{s}</li>)}
+            </ul>
+            <span className="ww-board-go">View rankings <span aria-hidden="true">→</span></span>
           </Link>
         ))}
       </div>

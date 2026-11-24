@@ -1,7 +1,7 @@
 import { getArtistLeaderboard } from '@/lib/leaderboards/artists'
-import { Badge } from '@/components/ui/badge'
 import { ArtistTable } from './artist-table'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import { BoardHead } from '@/app/leaderboards/board-head'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -16,20 +16,9 @@ export default async function ArtistLeaderboardPage() {
     <div className="space-y-6">
       <LeaderboardNav />
 
-      <div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
-            Artist <span className="text-[#95fe7c]">Rankings</span>
-          </h1>
-          <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest">
-            MAIN EVENTS
-          </Badge>
-          <span className="text-xs text-muted-foreground ml-auto">{clientRows.length} artists</span>
-        </div>
-        <p className="text-muted-foreground text-sm mt-1">
-          Ranked by Main Event wins. Each event = 2-of-3 or 3-of-5 rounds — round winner = Human Judge + X Poll + SOL Vote (2-of-3). Charity & spotlight events excluded.
-        </p>
-      </div>
+      <BoardHead k="artists">
+        Ranked by Main Event wins. Each event is 2-of-3 or 3-of-5 rounds; a round goes to whoever takes 2 of 3: Human Judge, X Poll, SOL Vote. Charity and spotlight events excluded.
+      </BoardHead>
 
       <ArtistTable rows={clientRows} />
     </div>

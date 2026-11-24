@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { RankPanel, RankRow, RankEmpty, RANK_ICONS } from '@/components/rank-list'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import { BoardHead, BoardFigure } from '@/app/leaderboards/board-head'
 import { OutboundLink } from '@/components/outbound-link'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -303,10 +304,9 @@ export default function SongChartsClient({ songs }: { songs: SongData[] }) {
     <div className="space-y-6">
       <LeaderboardNav />
 
-      <header>
-        <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">Song <span className="text-[#7ec1fb]">Charts</span></h1>
-        <p className="text-muted-foreground text-sm mt-1">Every song that has played a Quick Battle. Tap a song to listen on Audius.</p>
-      </header>
+      <BoardHead k="songs" aside={<BoardFigure label="Charted" value={songs.length} unit={songs.length === 1 ? 'song' : 'songs'} />}>
+        Every song that has played a Quick Battle. Tap a song to listen on Audius.
+      </BoardHead>
 
       {category === 'genre'
         ? <GenreView songs={rankedSongs} controls={controls} />

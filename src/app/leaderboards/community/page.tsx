@@ -3,9 +3,10 @@ import { fetchAll } from '@/lib/supabase/fetch-all'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { isBattleLive } from '@/lib/battle-metrics'
-import { Badge } from '@/components/ui/badge'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
-import { RankPanel, RankRow, RankEmpty, RANK_ICONS } from '@/components/rank-list'
+import { RankPanel, RankRow, RankEmpty } from '@/components/rank-list'
+import { RANK_ICONS } from '@/components/rank-icons'
+import { BoardHead, BoardFigure } from '@/app/leaderboards/board-head'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -120,20 +121,9 @@ export default async function CommunityLeaderboardPage() {
     <div className="space-y-6">
       <LeaderboardNav />
 
-      <div>
-        <div className="flex items-center gap-3 flex-wrap">
-          <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
-            Community <span className="text-amber-400">Rankings</span>
-          </h1>
-          <Badge className="bg-amber-500/20 text-amber-400 border border-amber-500/40 text-[10px] font-bold tracking-widest">
-            COMMUNITY
-          </Badge>
-          <span className="text-xs text-muted-foreground ml-auto">{rows.length} competitors</span>
-        </div>
-        <p className="text-muted-foreground text-sm mt-1">
-          Ranked by wins, then total SOL volume. Battle artwork shown per entry.
-        </p>
-      </div>
+      <BoardHead k="community" aside={<BoardFigure label="Ranked" value={rows.length} unit={rows.length === 1 ? 'competitor' : 'competitors'} />}>
+        Ranked by wins, then total SOL volume. Battle artwork shown per entry.
+      </BoardHead>
 
       <RankPanel icon={RANK_ICONS.community} title="Top community competitors" sub="Community battles · most wins">
         {rows.map((c, i) => (

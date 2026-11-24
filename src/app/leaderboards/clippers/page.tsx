@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import { Badge } from '@/components/ui/badge'
 import { ClipperTable, type ClipperRowClient } from './clipper-table'
 import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
+import { BoardHead } from '@/app/leaderboards/board-head'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -70,37 +70,17 @@ export default async function ClipperLeaderboardPage() {
 
       <LeaderboardNav />
 
-      {/* Header */}
-      <div>
-        <div className="flex items-center gap-3">
-          <h1 className="text-4xl font-rajdhani font-bold text-white tracking-tight">
-            Clipper <span className="text-orange-400">Rankings</span>
-          </h1>
-          <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/40 text-[10px] font-bold tracking-widest">
-            COMMUNITY CLIPS
-          </Badge>
-        </div>
-        <p className="text-muted-foreground text-sm mt-1">
-          Ranked by points. Contributors earn points for every clip submitted, approved, and posted.
-          {artistCount > 0 && (artistCount === 1 ? ` 1 contributor is also an active WaveWarZ battle artist.` : ` ${artistCount} contributors are also active WaveWarZ battle artists.`)}
-        </p>
-      </div>
+      <BoardHead k="clippers">
+        Ranked by points. Contributors earn points for every clip submitted, approved, and posted.
+        {artistCount > 0 && (artistCount === 1 ? ` 1 contributor is also an active WaveWarZ battle artist.` : ` ${artistCount} contributors are also active WaveWarZ battle artists.`)}
+      </BoardHead>
 
       {/* Quick stats */}
       {rows.length > 0 && (
-        <div className="grid grid-cols-3 gap-4">
-          <div className="rounded-xl border border-border bg-[#111827] p-4 text-center">
-            <p className="text-2xl font-rajdhani font-bold text-orange-400">{rows.length}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Contributors</p>
-          </div>
-          <div className="rounded-xl border border-border bg-[#111827] p-4 text-center">
-            <p className="text-2xl font-rajdhani font-bold text-[#7ec1fb]">{totalSubmitted}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Clips Submitted</p>
-          </div>
-          <div className="rounded-xl border border-border bg-[#111827] p-4 text-center">
-            <p className="text-2xl font-rajdhani font-bold text-[#95fe7c]">{totalPosted}</p>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">Posted to Socials</p>
-          </div>
+        <div className="ww-tiles">
+          <div><b style={{ color: '#e5c25a' }}>{rows.length}</b><small>Contributors</small></div>
+          <div><b style={{ color: '#7ec1fb' }}>{totalSubmitted}</b><small>Clips submitted</small></div>
+          <div><b style={{ color: '#95fe7c' }}>{totalPosted}</b><small>Posted to socials</small></div>
         </div>
       )}
 

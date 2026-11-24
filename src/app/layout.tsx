@@ -4,6 +4,7 @@ import Script from 'next/script'
 import './globals.css'
 import './site-shell.css'
 import { SiteNav } from '@/components/site-nav'
+import { WaveStrands } from '@/components/wave-strands'
 import { SiteFooter } from '@/components/site-footer'
 import { IgniteRadio } from '@/components/ignite-radio'
 import { AdClickCapture } from '@/components/ad-click-capture'
@@ -109,6 +110,7 @@ export default function RootLayout({
           twq('config','reaex');`}
         </Script>
         <AdClickCapture />
+        <WaveStrands />
         <SiteNav />
         <main className="max-w-[1320px] mx-auto px-4 sm:px-5 py-8 flex-1 w-full">
           {children}
