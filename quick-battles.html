@@ -9,7 +9,7 @@
   <meta name="description" content="Every Quick BattleZ waiting to play on WaveWarZ. Launch the next battle, skip to the front, or open a finished battle." />
 
   <!-- Dynamic Non-Stretched Square Favicon -->
-  <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="wavewarz-logo.svg?v=3" />
+  <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="wavewarz-logo.svg?v=4" />
 
   <!-- Fonts: Outfit, Space Grotesk, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,9 +142,9 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      -webkit-mask: url("wavewarz-logo.svg?v=3") center / contain no-repeat;
-      mask: url("wavewarz-logo.svg?v=3") center / contain no-repeat;
-      background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.9) 50%, transparent 58%) 140% 0 / 260% 100% no-repeat;
+      -webkit-mask: url("wavewarz-logo.svg?v=4") center / contain no-repeat;
+      mask: url("wavewarz-logo.svg?v=4") center / contain no-repeat;
+      background: linear-gradient(105deg, transparent 44%, rgba(255, 255, 255, 0.4) 50%, transparent 56%) 140% 0 / 260% 100% no-repeat;
       mix-blend-mode: screen;
       animation: logoGlint 6.5s ease-in-out 3.4s infinite;
     }
@@ -2485,6 +2485,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex]:focus-v
 .wz-st b{display:block;font:700 1.7rem/1.1 'Space Grotesk',sans-serif;color:#fff}
 .wz-st span{font:600 .72rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ice);opacity:.8}
 .wz-cta{display:flex;gap:12px;flex-wrap:wrap}
+.wz-risk{margin:16px 0 0;max-width:560px;font:400 .82rem/1.55 'Outfit',sans-serif;color:var(--text-muted)}
 .wz-deck{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:36px;align-items:center;padding:34px 34px 30px;border-radius:34px;border:5px solid transparent;background:radial-gradient(60% 90% at 30% 40%,rgba(255,255,255,.05),transparent 70%) padding-box,linear-gradient(#05080e,#05080e) padding-box,var(--chrome) border-box;box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 10px 40px rgba(0,0,0,.85)}
 .wz-feat{display:grid;gap:22px;justify-items:start}
 .wz-shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:30px 22px}
@@ -2746,7 +2747,11 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .spx-logo.round,.spx-logo.round img{height:128px}.spx-logo.round img{border-radius:50%}
 .spx-logo:hover{opacity:1;transform:translateY(-3px) scale(1.03)}
 .spx-logo img{display:block;height:96px;width:auto;max-width:220px;object-fit:contain}
-.cp-foot .cp-so{display:inline-flex;align-items:center;gap:10px}.cp-foot .cp-so svg{width:16px;height:16px;fill:currentColor;flex:none;opacity:.85}
+.spx-item{display:flex;flex-direction:column;align-items:center;gap:12px}
+.spx-x{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 4px;font:500 .75rem/1 'JetBrains Mono',monospace;letter-spacing:.02em;color:var(--brand-ice);text-decoration:none;transition:color .2s ease}.spx-x svg{width:13px;height:13px;flex:none}
+@media(hover:hover) and (pointer:fine){.spx-x:hover{color:#fff}}
+.spx-x:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
+.cp-foot .cp-so{display:inline-flex;align-items:center;gap:10px}.cp-foot .cp-so svg{width:16px;height:16px;fill:currentColor;flex:none}
 @media(max-width:1000px){.tw-grid{grid-template-columns:1fr}.spx{grid-template-columns:1fr;margin-top:56px;padding-top:44px}.spx-logos{justify-content:flex-start}}
 @media(max-width:760px){
   .tw-head{align-items:flex-start}
@@ -2809,25 +2814,39 @@ body[data-page="queue"] .qp-all { display: none; }
 @media (max-width: 1100px) { .ql .hl-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .ql .hl-row { grid-template-columns: 22px minmax(0, 1fr) auto; } .ql .hl-art { display: none; } .ql-btn { padding: 0 12px; } }
 </style>
-<link rel="stylesheet" href="ww-base.css">
+<link rel="stylesheet" href="ww-base.css"><link rel=\"stylesheet\" href=\"ww-v2.css?v=3\"><script src=\"ww-v2.js?v=3\" defer></script>
+<style id="wavy-stage-chrome">
+  /* 2026-11-21 (Candy): DJ Wavy stage in chrome. Plain dark stage, steel edges, neutral light so his
+     true colours show (teal backdrop, gold cone, cyan ring and crown removed). Only this section. */
+  .royal-3d-sticky { background: #05060a; }
+  .throne-spotlight, .crest-crown { display: none; }
+  .pedestal-ring { border: 2px solid #aebccb; box-shadow: 0 18px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.35); opacity: .55; }
+  .pedestal-ring-inner { border: 1px solid rgba(219,230,239,.22); }
+  .prestige-gate { background: #07090d; }
+  .prestige-gate-left { border-right: 3px solid #aebccb; }
+  .prestige-gate-right { border-left: 3px solid #aebccb; }
+  .prestige-gate::after { border-color: rgba(219,230,239,.14); }
+  .crest-subtitle { color: #aebccb; }
+  .interaction-hint { color: #dbe6ef; border-color: rgba(219,230,239,.28); }
+</style>
 </head>
 
 <body data-page="queue">
-  <!-- GENERATED from home.html by tools/build-queue-page.py. Edit the homepage or the generator, not this file. -->
+  <!-- GENERATED from index.html by tools/build-queue-page.py. Edit the homepage or the generator, not this file. -->
   <div class="ambient-canvas"></div>
   <div class="grid-overlay"></div>
 
   <div class="nav-wrapper">
     <nav class="navbar">
-      <a href="home.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
-        <img src="wavewarz-logo.svg?v=3" alt="WaveWarZ, home" class="nav-logo" width="114" height="50" />
+      <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+        <img src="wavewarz-logo.svg?v=4" alt="WaveWarz, home" class="nav-logo" width="114" height="50" />
       </a>
 
       <ul class="nav-links">
         <li><details class="cp-watch"><summary class="">Watch live<span class="cp-chev" aria-hidden="true"></span></summary><div class="cp-watch-menu"><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch on X</a><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Watch on Kick</a><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Watch on Twitch</a><p>No wallet needed to watch. YouTube is replays only; current livestreams are on X, Kick, and Twitch.</p></div></details></li>
-        <li><a href="home.html#tonight">Schedule</a></li>
-        <li><a href="home.html#how-it-works">How it works</a></li>
-        <li><a href="home.html#for-artists">For Artists</a></li>
+        <li><a href="index.html#tonight">Schedule</a></li>
+        <li><a href="index.html#how-it-works">How it works</a></li>
+        <li><a href="index.html#for-artists">For Artists</a></li>
         <li><a href="quick-battles.html">Queue</a></li>
         <li><a href="https://wavewarz.info">Statz</a></li>
         <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
@@ -2935,17 +2954,17 @@ body[data-page="queue"] .qp-all { display: none; }
   <footer class="cp-foot">
     <div class="cp-foot-in">
       <div>
-        <div class="cp-logo"><img src="wavewarz-logo.svg?v=3" alt="WaveWarZ" width="96" height="42" /></div>
+        <div class="cp-logo"><img src="wavewarz-logo.svg?v=4" alt="WaveWarz" width="96" height="42" /></div>
         <h4>About WaveWarZ</h4>
-        <p>WaveWarZ is a live music-battle stage on Solana. Artists go head to head, fans listen and support the songs that move them, and traders can trade the live market while the timer runs. Our mission is to get real support to working musicians &mdash; win or lose &mdash; and to throw a high-energy show while we do it.</p>
+        <p>WaveWarz is a live music-battle stage on Solana. Artists go head to head, fans listen and support the songs that move them, and traders can trade the live market while the timer runs. Our mission is to get real support to working musicians &mdash; win or lose &mdash; and to throw a high-energy show while we do it.</p>
         <p>Watch with us on X, Kick, and Twitch. Replays live on YouTube.</p>
       </div>
       <div>
         <h4>Quick links</h4>
         <ul>
           <li><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch live</a></li>
-          <li><a href="home.html#how-it-works">How it works</a></li>
-          <li><a href="home.html#for-artists">For Artists</a></li>
+          <li><a href="index.html#how-it-works">How it works</a></li>
+          <li><a href="index.html#for-artists">For Artists</a></li>
           <li><a href="https://wavewarz.info">Statz</a></li>
           <li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li>
           <li><a href="https://www.wavewarz.com/docs" target="_blank" rel="noopener">Docs</a></li>
@@ -2955,12 +2974,12 @@ body[data-page="queue"] .qp-all { display: none; }
       <div>
         <h4>Connect</h4>
         <ul>
-          <li><a class="cp-so" href="https://x.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>X</a></li>
-          <li><a class="cp-so" href="https://t.me/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Telegram</a></li>
-          <li><a class="cp-so" href="https://discord.gg/5nHwDhuWjK" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Discord</a></li>
-          <li><a class="cp-so" href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YouTube</a></li>
-          <li><a class="cp-so" href="https://kick.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"/></svg>Kick</a></li>
-          <li><a class="cp-so" href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>Twitch</a></li>
+          <li><a class="cp-so" href="https://x.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>X</a></li>
+          <li><a class="cp-so" href="https://t.me/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#26A5E4"/><path fill="#fff" d="M16.906 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>Telegram</a></li>
+          <li><a class="cp-so" href="https://discord.gg/5nHwDhuWjK" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path fill="#5865F2" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Discord</a></li>
+          <li><a class="cp-so" href="https://www.youtube.com/@WaveWarZ" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/><path fill="#fff" d="M9.545 15.568V8.432L15.818 12z"/></svg>YouTube</a></li>
+          <li><a class="cp-so" href="https://kick.com/wavewarz" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path fill="#53FC18" d="M1.333 0h8v5.333H12V2.667h2.667V0h8v8H20v2.667h-2.667v2.666H20V16h2.667v8h-8v-2.667H12v-2.666H9.333V24h-8Z"/></svg>Kick</a></li>
+          <li><a class="cp-so" href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener"><svg class="si" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M6.857 1.714h13.714v9.429l-3.428 3.428h-3.429l-3 3v-3H6.857z"/><path fill="#9146FF" d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>Twitch</a></li>
         </ul>
       </div>
       <div>
@@ -2974,7 +2993,7 @@ body[data-page="queue"] .qp-all { display: none; }
         </ul>
       </div>
     </div>
-    <div class="cp-copy"><span>&copy; 2026 WaveWarZ. All Rights Reserved</span></div>
+    <div class="cp-copy"><span>&copy; 2026 WaveWarz. All Rights Reserved</span></div>
   </footer>
 
 <script id="forms-js">
@@ -2997,7 +3016,7 @@ body[data-page="queue"] .qp-all { display: none; }
           ['bio', 'Your sound, in a few lines', 'area', 1, 'Genre, style, and a short bio', {}]]
     },
     sponsorship: {
-      eb: 'Sponsorship', t: 'Become a WaveWarZ sponsor',
+      eb: 'Sponsorship', t: 'Become a WaveWarz sponsor',
       lead: 'Put your brand in front of a live music audience. Tell us a little and we will send the options.',
       send: 'Send enquiry', fine: 'We reply by email.',
       done: ['Thanks for reaching out.', 'Your enquiry is with the team. We will email you with sponsorship options.'],
@@ -3028,7 +3047,7 @@ body[data-page="queue"] .qp-all { display: none; }
       send: 'Remind me', fine: 'Sunday reminders only. Unsubscribe any time.',
       done: ['You are on the list.', 'We will remind you before Sunday Featured BattleZ.'],
       f: [['phone', 'Mobile number', 'tel', 0, '(555) 555-0123', { half: 1, ac: 'tel' }], ['email', 'Email', 'email', 0, 'you@example.com', { half: 1, ac: 'email' }],
-          ['smsConsent', 'Text me WaveWarZ battle reminders at this number. Message and data rates may apply. Reply STOP to opt out.', 'check', 0, '', {}]]
+          ['smsConsent', 'Text me WaveWarz battle reminders at this number. Message and data rates may apply. Reply STOP to opt out.', 'check', 0, '', {}]]
     }
   };
   var TOP = { name: 1, email: 1, phone: 1 }, kind = null, opener = null, busy = false;
@@ -3249,7 +3268,7 @@ body[data-page="queue"] .qp-all { display: none; }
   tr.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); select(sel + (e.key === 'ArrowRight' ? 1 : -1), true); } });
   $('qpGo').addEventListener('click', function () {
     var it = items[sel]; if (!it) return;
-    if (it.kind === 'active') { window.open('https://www.wavewarz.com/v2/battles/' + encodeURIComponent(it.x.battle_id || ''), '_blank', 'noopener'); return; }
+    if (it.kind === 'active') { window.open('battle.html?id=' + encodeURIComponent(it.x.battle_id || ''), '_blank', 'noopener'); return; }
     if (window.WWAct) WWAct.open(it.pos === 1 ? 'launch' : 'skip', { x: it.x, pos: it.pos, price: price, sample: sample }, this);
   });
   $('qpPrev').addEventListener('click', function () { select(sel - 1, true); });
@@ -3292,7 +3311,7 @@ body[data-page="queue"] .qp-all { display: none; }
     var d = e.detail.data, price = e.detail.price, act = d.active || [], q = d.queued || [], rows = [];
     last = e.detail;
     act.forEach(function (x) {
-      rows.push('<li><div class="hl-row"><span class="hl-rk ql-now">&#9679;</span>' + pair(x.artist1_artwork_url, x.artist2_artwork_url) + text(x) + '<a class="ql-btn go" href="https://www.wavewarz.com/v2/battles/' + encodeURIComponent(x.battle_id || '') + '" target="_blank" rel="noopener">Playing now</a></div></li>');
+      rows.push('<li><div class="hl-row"><span class="hl-rk ql-now">&#9679;</span>' + pair(x.artist1_artwork_url, x.artist2_artwork_url) + text(x) + '<a class="ql-btn go" href="battle.html?id=' + encodeURIComponent(x.battle_id || '') + '">Playing now</a></div></li>');
     });
     q.forEach(function (x, i) {
       rows.push('<li><div class="hl-row"><span class="hl-rk">' + (i + 1) + '</span>' + pair(x.artist1_artwork_url, x.artist2_artwork_url) + text(x) +
@@ -3313,7 +3332,7 @@ body[data-page="queue"] .qp-all { display: none; }
     $('qlRecent').innerHTML = L.map(function (x) {
       return '<li><div class="hl-row"><span class="hl-rk"></span>' + pair(x.artist1_artwork_url, x.artist2_artwork_url) +
         '<span class="hl-tx"><span class="hl-t">' + esc(x.artist1_track_title) + ' vs ' + esc(x.artist2_track_title) + '</span><span class="hl-s">@' + esc(x.artist1_handle) + ' vs @' + esc(x.artist2_handle) + ' &middot; ' + esc(when(x.completed_at)) + '</span></span>' +
-        '<a class="ql-btn" href="https://www.wavewarz.com/v2/battles/' + encodeURIComponent(x.battle_id) + '" target="_blank" rel="noopener">View battle</a></div></li>';
+        '<a class="ql-btn" href="battle.html?id=' + encodeURIComponent(x.battle_id) + '">View battle</a></div></li>';
     }).join('') || '<li class="hl-empty">No finished battles yet.</li>';
   }
   fetch(BASE + '/api/quick-battles/recent').then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(recent)

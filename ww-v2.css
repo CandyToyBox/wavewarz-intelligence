@@ -1,0 +1,60 @@
+/* WaveWarZ v2 layer, shared by every page except the old homepage.
+   Light comes from the Wave IDs: a black stage with slow Wave ID strands that react to the mouse.
+   No grid lines, color blobs or cursor glow. To go back, remove the ww-v2 link and script from a page. */
+html { background: #020203; }
+body { background-color: transparent !important; }
+.ambient-canvas, .grid-overlay, .cursor-orb, .bg-grid, .grid-bg { display: none !important; }
+#v2Strands { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+.v2-vig { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(120% 90% at 50% 40%, transparent 50%, rgba(0, 0, 0, .7) 100%); }
+
+/* A Wave ID aura behind any album art or artist photo: wrap the image in .wid-aura and add data-wid="green|blue|ice" */
+.wid-aura { position: relative; isolation: isolate; }
+.wid-aura::before { content: ""; position: absolute; inset: -22%; z-index: -1; border-radius: 50%; opacity: .5; mix-blend-mode: screen; pointer-events: none;
+  background: url("wave-id/wave-id-green.jpeg") center / cover; -webkit-mask: radial-gradient(closest-side, #000 66%, transparent); mask: radial-gradient(closest-side, #000 66%, transparent); filter: brightness(1.6) contrast(1.2); }
+.wid-aura[data-wid="blue"]::before { background-image: url("wave-id/wave-id-aqua.jpeg"); filter: hue-rotate(28deg) saturate(1.25) brightness(1.7) contrast(1.2); }
+.wid-aura[data-wid="ice"]::before { background-image: url("wave-id/wave-id-ice.jpeg"); }
+
+/* DJ Wavy toast (the "wavy" easter egg) */
+.v2-toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 9000; transform: translate(-50%, 170%); display: flex; gap: 14px; align-items: center; padding: 10px 22px 10px 10px; border-radius: 999px; background: rgba(5, 7, 10, .97); border: 1px solid #5a6b7e; box-shadow: 0 20px 50px -10px #000; transition: transform .45s cubic-bezier(.22, 1, .36, 1); max-width: calc(100% - 32px); }
+.v2-toast.show { transform: translate(-50%, 0); }
+.v2-toast img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex: none; }
+.v2-toast p { margin: 0; font: 500 15px/1.4 'Outfit', sans-serif; color: #fff; }
+.v2-toast b { display: block; font: 500 11px 'JetBrains Mono', monospace; letter-spacing: .12em; color: #95fe7c; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .v2-toast { transition: none; } }
+
+/* ===== Battle setup page (audius-search.html): album art first, Wave ID behind it ===== */
+.wid-page, #deck > .wid { display: none !important; }
+#deck { --aw: clamp(190px, 21vw, 290px); }
+#deck .col, #deck .col.r { grid-template-columns: minmax(0, 1fr) !important; justify-items: center; text-align: center !important; position: relative; gap: 18px !important; }
+#deck .col .art { width: var(--aw); order: 0 !important; }
+#deck .col .info { justify-items: center !important; width: 100%; }
+#deck .col .info .nm { max-width: 18ch; }
+#deck .col::before { content: ""; position: absolute; top: calc(var(--aw) / 2); left: 50% !important; right: auto !important; width: calc(var(--aw) * 1.5); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; z-index: 0; pointer-events: none; mix-blend-mode: screen; opacity: .7;
+  background: url("wave-id/wave-id-green.jpeg") center / cover; -webkit-mask: radial-gradient(closest-side, #000 66%, transparent); mask: radial-gradient(closest-side, #000 66%, transparent); filter: brightness(1.6) contrast(1.2); transition: opacity .5s; }
+#deck .col.r::before { background-image: url("wave-id/wave-id-aqua.jpeg"); filter: hue-rotate(28deg) saturate(1.25) brightness(1.7) contrast(1.2); }
+#deck .col.empty::before { opacity: .14; }
+#deck .art { position: relative; z-index: 1; transform: none !important; border: 10px solid transparent !important; border-radius: 18px !important;
+  background: linear-gradient(#05070a, #05070a) padding-box, linear-gradient(150deg, #f6fbff, #aebccb 18%, #5a6b7e 42%, #dbe6ef 60%, #2c3746) border-box !important; box-shadow: 0 30px 60px -18px #000 !important; }
+#deck .art .face.front::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255,255,255,.26), rgba(255,255,255,.05) 24%, transparent 38%); }
+#deck .slot.empty .art { border-style: solid !important; opacity: .85; }
+#deck .slot.picking .art { box-shadow: 0 0 0 2px #95fe7c, 0 30px 60px -18px #000 !important; }
+#deck .slot.b.picking .art { box-shadow: 0 0 0 2px #7ec1fb, 0 30px 60px -18px #000 !important; }
+#deck .stage3 { align-items: start !important; }
+@media (max-width: 780px) { #deck { --aw: min(62vw, 260px); } }
+
+/* ===== Battle page (battle.html): Wave ID ring behind each jewel case, calmer side panels ===== */
+.ck-side .jc::before { content: ""; position: absolute; inset: -24%; z-index: -1; border-radius: 50%; pointer-events: none; mix-blend-mode: screen; opacity: .55;
+  background: url("wave-id/wave-id-green.jpeg") center / cover; -webkit-mask: radial-gradient(closest-side, #000 66%, transparent); mask: radial-gradient(closest-side, #000 66%, transparent); filter: brightness(1.6) contrast(1.2); }
+.ck-side.b .jc::before { background-image: url("wave-id/wave-id-aqua.jpeg"); filter: hue-rotate(28deg) saturate(1.25) brightness(1.7) contrast(1.2); }
+.ck-side, .ck-stage { background: rgba(3, 5, 8, .72) !important; }
+.ck-side::before { box-shadow: none !important; }
+
+/* ===== Queue page and live slot: the giant edge orbs give way to the strand background ===== */
+#liveSlot::before, #liveSlot::after, #quick-battles::before, #quick-battles::after { display: none !important; }
+
+/* ===== Wave ID display page: no blueprint grid; the strand background carries it ===== */
+.grid[aria-hidden], body > .grid { display: none !important; }
+
+/* ===== Getting started (onboarding.html): a dark contact shadow under DJ Wavy instead of a green glow ===== */
+.wavy .floor { background: radial-gradient(closest-side, rgba(0, 0, 0, .75), transparent 72%) !important; }
+.wavy { background: radial-gradient(70% 55% at 50% 62%, rgba(218, 236, 253, .05), transparent 70%), #020203 !important; }
