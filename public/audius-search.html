@@ -274,6 +274,16 @@ select.in{-webkit-appearance:none;appearance:none;padding-right:40px;cursor:poin
 @keyframes pring{0%{transform:scale(.03);opacity:1}70%{opacity:.5}100%{transform:scale(1);opacity:0}}
 @media(prefers-reduced-motion:reduce){.wid-page .wv,.wid-page .st,.wid-page .bn{translate:none}.wid-page .pr{animation:prfade .6s both}@keyframes prfade{0%{transform:scale(.25);opacity:.8}100%{transform:scale(.25);opacity:0}}}
 @media(prefers-reduced-motion:reduce){.wid-page video{display:none}.wid-page .still{display:block}}
+
+/* Side colours (Candy, 2026-11-25): side A (first pick, left) is wave blue, side B (second pick, right) is action green. */
+.l .np{color:var(--blue-ink)}.r .np{color:var(--green-ink)}
+.l .eq i{background:var(--blue);box-shadow:0 0 12px rgba(126,193,251,.6)}.r .eq i{background:var(--green);box-shadow:0 0 12px rgba(149,254,124,.6)}
+.slot.picking .art{box-shadow:var(--glow-blue)}.slot.b.picking .art{box-shadow:var(--glow-green)}
+.slot .plus{color:var(--blue-ink)}.slot.b .plus{color:var(--green-ink)}
+.cs.g.ready{border-color:rgba(126,193,251,.5);background:rgba(126,193,251,.06)}.cs.b.ready{border-color:rgba(149,254,124,.5);background:rgba(149,254,124,.06)}
+.cs.g.picking{border-color:var(--blue)}.cs.b.picking{border-color:var(--green)}
+.cs.g .sd,.rv .g .sd,.lm-s.g .sd{color:var(--blue-ink)}.cs.b .sd,.rv .b .sd,.lm-s.b .sd{color:var(--green-ink)}
+.cs.g.emptyc .pl{color:var(--blue-ink);border-color:var(--blue-ink)}.cs.b.emptyc .pl{color:var(--green-ink);border-color:var(--green-ink)}
 </style><script src="ww-celebrate.js" defer></script>
 <link rel="stylesheet" href="ww-base.css"><link rel="stylesheet" href="ww-v2.css?v=3"><script src="ww-v2.js?v=3" defer></script>
 </head><body class="ww-flow">
@@ -286,7 +296,7 @@ select.in{-webkit-appearance:none;appearance:none;padding-right:40px;cursor:poin
 <p class="sub">Choose a song for each side. Reserve your matchup.</p>
 
 <section class="deck" id="deck" aria-label="Your battle matchup">
- <img class="wid g" src="wave-id/wave-id-green.jpeg" alt="" aria-hidden="true"><img class="wid b" src="wave-id/wave-id-ice.jpeg" alt="" aria-hidden="true">
+ <img class="wid g" src="wave-id/wave-id-ice.jpeg" alt="" aria-hidden="true"><img class="wid b" src="wave-id/wave-id-green.jpeg" alt="" aria-hidden="true">
  <div class="dtop"><span class="label live"><span class="dot"></span>Your battle matchup</span><span class="label" id="count">0 / 2 songs</span></div>
  <div class="stage3" id="stage"></div>
  <div class="cta"><div class="ctxt"><b id="ctitle">Two songs make a battle.</b><span class="label" id="avail"></span></div>
@@ -323,7 +333,7 @@ select.in{-webkit-appearance:none;appearance:none;padding-right:40px;cursor:poin
 window.WWLaunched=(function(){
  var timer=null,SONG='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 18.2V6.2L19.5 4.2v11.6" stroke="#95fe7c"/><path d="M9.5 6.2 19.5 4.2v3L9.5 9.2z" fill="#7ec1fb" stroke="none"/><circle cx="6.9" cy="18.2" r="2.6" stroke="#95fe7c"/><circle cx="16.9" cy="15.8" r="2.6" stroke="#7ec1fb"/></svg>';
  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
- function side(k,s){return '<div class="lm-s '+k+'"><div class="cv '+s.c+'">'+SONG+'</div><div style="min-width:0"><div class="sd">'+(k==='g'?'Green':'Blue')+' side</div><div class="n">'+esc(s.t)+'</div><div class="a">'+esc(s.a)+'</div></div></div>'}
+ function side(k,s){return '<div class="lm-s '+k+'"><div class="cv '+s.c+'">'+SONG+'</div><div style="min-width:0"><div class="sd">'+(k==='g'?'Side A':'Side B')+'</div><div class="n">'+esc(s.t)+'</div><div class="a">'+esc(s.a)+'</div></div></div>'}
  function html(g,b,url,secs){return '<div class="lm"><div class="label lk"><span class="dot"></span>Battle launched</div><h2 id="dh">Your battle is launched.</h2><p>The music starts in <span id="lmsecs">'+secs+'</span> seconds. Copy the link and share it by text message or on social media while you wait.</p>'+
   '<div class="lm-vs">'+side('g',g)+'<span class="lm-x">VS</span>'+side('b',b)+'</div>'+
   '<div class="lm-link"><label class="label" for="lmurl">Battle page link</label><div class="lm-row"><input class="lm-in" id="lmurl" readonly value="'+esc(url)+'"><button class="lm-copy" id="lmcopy" type="button">Copy link</button></div><span class="label" id="lmcopied" aria-live="polite"></span></div>'+
@@ -378,7 +388,7 @@ window.WWReserved=(function(){
  function norm(t){return {id:t.audius_track_id,title:t.title,handle:t.artist_handle,secs:t.duration_seconds,art:t.artwork_url,link:t.stream_url,wallet:t.artist_wallet,genre:t.genre||'',stat:t.stat||null}}
  function adapt(s,c){return {t:s.title,a:'@'+s.handle,c:c}}
  function seed(id){var h=0;for(var i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))%9973;return h}
- function side(k){return k==='g'?'Green':'Blue'}
+ function side(k){return k==='g'?'Side A':'Side B'}
  function n(){return (st.g?1:0)+(st.b?1:0)}
  function pickedBy(id){return st.g&&st.g.id===id?'g':(st.b&&st.b.id===id?'b':null)}
  function img(s,cls){return s.art?'<img class="'+cls+'" src="'+esc(s.art)+'" alt="" loading="lazy" onerror="this.remove()">':''}
@@ -452,7 +462,7 @@ window.WWReserved=(function(){
   return '<div class="wprev" tabindex="0" role="group" aria-label="Wave ID preview for '+esc(s.title)+'"><div class="orbm" aria-hidden="true"><img src="wave-id/wave-id-aqua.jpeg" alt=""></div><svg class="wl" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'+lines+'</svg>'+nodes+tiles+'<div class="wfoot">Wave ID &middot; <span class="hh">hover to read</span><span class="th">hold to read</span></div></div>';}
  function slotBig(k){var s=st[k],fl=!!(s&&st.flip&&st.flip[k]),cls=(k==='g'?'l':'r')+' slot '+(k==='b'?'b ':'')+(s?'full':'empty')+(st.target===k&&!s?' picking':'')+(fl?' flipped':'');
   var stat=s?'ready':(st.target===k?'picking':'empty');
-  var front='<div class="face front"><span class="pill">'+side(k)+' side</span>'+(s?'<button class="clr" data-clr="'+k+'" aria-label="Clear '+side(k).toLowerCase()+' side">&times;</button><div class="cov">'+I.song+img(s,'cvimg')+'</div>'+pvBtn(s,'big'):'<span class="plus">+</span>')+'<div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
+  var front='<div class="face front"><span class="pill">'+side(k)+'</span>'+(s?'<button class="clr" data-clr="'+k+'" aria-label="Clear '+side(k)+'">&times;</button><div class="cov">'+I.song+img(s,'cvimg')+'</div>'+pvBtn(s,'big'):'<span class="plus">+</span>')+'<div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>';
   var art='<div class="art" data-art="'+k+'"><div class="flip">'+front+(s?'<div class="face back"'+(fl?'':' aria-hidden="true"')+'>'+wprev(k,s)+'</div>':'')+'</div></div>';
   var body='<div class="info"><div class="pstat '+stat+'">'+(s?'Ready':(st.target===k?'Picking':'Empty'))+'</div><h3 class="nm">'+(s?esc(s.title):(k==='g'?'Choose song one':'Choose song two'))+'</h3>'+
    (s?'<p class="by"><b>@'+esc(s.handle)+'</b></p><div class="meta2">'+(s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+'<span class="dur2">'+fmt(s.secs)+'</span></div><div class="sacts"><button type="button" class="widt" data-flip="'+k+'" aria-pressed="'+fl+'"><i aria-hidden="true"></i>'+(fl?'Show cover':'Wave ID')+'</button><button class="chg" data-chg="'+k+'">&#8635; Change song</button></div>':'<p class="by">'+(k==='g'?'Add a song from the catalog below':'Tap to pick for this side')+'</p>')+'</div>';
@@ -460,8 +470,8 @@ window.WWReserved=(function(){
  function center(){var f=289-144.5*n();return '<div class="mid"><div class="ring count" aria-hidden="true"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="rgba(218,236,253,.08)" stroke-width="3"/><circle cx="50" cy="50" r="46" fill="none" stroke="#95fe7c" stroke-width="3.6" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="'+f+'" style="filter:drop-shadow(0 0 6px rgba(149,254,124,.6));transition:stroke-dashoffset .48s cubic-bezier(.22,1,.36,1)"/></svg><div class="time">'+n()+' / 2<small>SONGS</small></div></div><div class="vs">VS</div><button class="swap" id="swap" aria-label="Reverse battle sides"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4-4 4M21 7H8M7 21l-4-4 4-4M3 17h13"/></svg></button></div>';}
  /* ---------- dock ---------- */
  function slotDock(k){var s=st[k];
-  if(!s)return '<div class="cs '+k+' emptyc'+(st.target===k?' picking':'')+'"><span class="pl">+</span><div><div class="sd">'+side(k)+' side &middot; '+(st.target===k?'Picking':'Empty')+'</div><div class="nm2" style="font-size:14px">'+(k==='g'?'Choose song one':'Choose song two')+'</div><div class="ar2">Add a song from the catalog &darr;</div></div></div>';
-  return '<div class="cs '+k+' ready'+(st.target===k?' picking':'')+'"><div class="cover">'+I.song28+img(s,'cvimg')+pvBtn(s)+'</div><div class="top"><span class="sd">'+side(k)+' side &middot; Ready</span><button class="x" data-clr="'+k+'" aria-label="Clear '+side(k).toLowerCase()+' side">&times;</button></div><div class="nm2">'+esc(s.title)+'</div><div class="ar2">@'+esc(s.handle)+'</div><div class="row3">'+(s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+'<span class="dur2">'+fmt(s.secs)+'</span><button class="chg" data-chg="'+k+'">&#8635; Change song</button></div></div>';}
+  if(!s)return '<div class="cs '+k+' emptyc'+(st.target===k?' picking':'')+'"><span class="pl">+</span><div><div class="sd">'+side(k)+' &middot; '+(st.target===k?'Picking':'Empty')+'</div><div class="nm2" style="font-size:14px">'+(k==='g'?'Choose song one':'Choose song two')+'</div><div class="ar2">Add a song from the catalog &darr;</div></div></div>';
+  return '<div class="cs '+k+' ready'+(st.target===k?' picking':'')+'"><div class="cover">'+I.song28+img(s,'cvimg')+pvBtn(s)+'</div><div class="top"><span class="sd">'+side(k)+' &middot; Ready</span><button class="x" data-clr="'+k+'" aria-label="Clear '+side(k)+'">&times;</button></div><div class="nm2">'+esc(s.title)+'</div><div class="ar2">@'+esc(s.handle)+'</div><div class="row3">'+(s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+'<span class="dur2">'+fmt(s.secs)+'</span><button class="chg" data-chg="'+k+'">&#8635; Change song</button></div></div>';}
  function render(){st.flip=st.flip||{};['g','b'].forEach(function(k){var id=st[k]&&st[k].id;if(st.flipFor&&st.flipFor[k]!==id)st.flip[k]=false;st.flipFor=st.flipFor||{};st.flipFor[k]=id});
   var r=n()===2;
   $('stage').innerHTML=slotBig('g')+center()+slotBig('b');
@@ -473,8 +483,8 @@ window.WWReserved=(function(){
   var msg=r?(st.avail==='ok'?'Both tracks can battle.':(st.avail==='bad'?'One of these tracks is not available on Audius right now.':'Checking track availability…')):'';
   $('ctitle').textContent=$('dtitle').textContent=r?'Your next showdown is ready.':'Two songs make a battle.';
   $('avail').textContent=msg;$('tiny').textContent=r?'Review before you reserve':'Both songs needed';
-  var other=st.target==='g'?'green':'blue';
-  var h=r?'<b style="font-size:18px">&check;</b> Your matchup is ready. Reserve your battle.':'&darr; Choose a song for the '+(st.target?other:(st.g?'blue':'green'))+' side.';
+  var other=st.target==='g'?'side A':'side B';
+  var h=r?'<b style="font-size:18px">&check;</b> Your matchup is ready. Reserve your battle.':'&darr; Choose a song for '+(st.target?other:(st.g?'side B':'side A'))+'.';
   $('hint').innerHTML=$('dhint').innerHTML=h;
   $('dg').innerHTML=slotDock('g');$('db').innerHTML=slotDock('b');
   renderList();
@@ -482,10 +492,10 @@ window.WWReserved=(function(){
  /* ---------- catalog ---------- */
  function bars(id){var s=seed(id),h='';for(var i=0;i<64;i++){var v=Math.abs(Math.sin(i*.37+s)*Math.cos(i*.13+s*1.7));h+='<i style="height:'+Math.round(16+v*84)+'%"></i>';}return h}
  function addBtn(s){var by=pickedBy(s.id);
-  if(by)return '<button class="add sel'+(by==='b'?' blue':'')+'" data-rm="'+by+'" aria-label="Remove from '+side(by).toLowerCase()+' side">&check; '+side(by)+' side</button>';
-  if(st.chooser===s.id)return '<div class="chooser"><button class="add" data-put="g" data-id="'+esc(s.id)+'">Green</button><button class="add blue" data-put="b" data-id="'+esc(s.id)+'">Blue</button></div>';
+  if(by)return '<button class="add sel'+(by==='g'?' blue':'')+'" data-rm="'+by+'" aria-label="Remove from '+side(by)+'">&check; '+side(by)+'</button>';
+  if(st.chooser===s.id)return '<div class="chooser"><button class="add blue" data-put="g" data-id="'+esc(s.id)+'">Side A</button><button class="add" data-put="b" data-id="'+esc(s.id)+'">Side B</button></div>';
   if(!st.target)return '<button class="add choose" data-choose="'+esc(s.id)+'">Choose side</button>';
-  return '<button class="add'+(st.target==='b'?' blue':'')+'" data-put="'+st.target+'" data-id="'+esc(s.id)+'">+ '+side(st.target)+'</button>';}
+  return '<button class="add'+(st.target==='g'?' blue':'')+'" data-put="'+st.target+'" data-id="'+esc(s.id)+'">+ '+side(st.target)+'</button>';}
  function tagHTML(s){return (s.genre?'<span class="tg">'+esc(s.genre)+'</span>':'')+(s.stat&&s.stat.battles?'<span class="lbs">'+s.stat.battles+' '+(s.stat.battles===1?'battle':'battles')+' &middot; '+s.stat.wins+'W '+s.stat.losses+'L &middot; '+s.stat.rate+'%</span>':'')}
  function renderList(){
   var L=st.tracks,pages=Math.max(1,Math.ceil(st.total/PER)),el=$('list');
@@ -494,8 +504,8 @@ window.WWReserved=(function(){
   else el.innerHTML=L.length?L.map(function(s){var by=pickedBy(s.id);
    return '<div class="song'+(by?' sel-'+by:'')+'"><div class="cover">'+I.song28+img(s,'cvimg')+pvBtn(s)+'</div><div class="meta"><div class="title" title="'+esc(s.title)+'">'+(s.rank?'<span class="rk">#'+s.rank+'</span>':'')+esc(s.title)+'</div><div class="artist">@'+esc(s.handle)+'</div><div class="mline">'+tagHTML(s)+'</div></div><div class="wf"><div class="bars" aria-hidden="true">'+bars(s.id)+'</div><span class="dur">'+fmt(s.secs)+'</span></div><div class="addwrap">'+addBtn(s)+'</div></div>'}).join(''):'<div class="empty">No songs match these filters. Try another genre or clear a filter.</div>';
   $('pg').textContent='Page '+(st.page+1)+' of '+pages;$('prev').disabled=st.page===0;$('next').disabled=st.page>=pages-1;
-  var a=$('adding');a.className='adding label'+(st.target==='b'?' blue':'')+(st.target?'':' done');
-  a.textContent=st.target?('Adding to '+(st.target==='g'?'green':'blue')+' side · Tap + '+(st.target==='g'?'green':'blue')+' on any song.'):'Both songs picked. Change either side below, or reserve your battle.';
+  var a=$('adding');a.className='adding label'+(st.target==='g'?' blue':'')+(st.target?'':' done');
+  a.textContent=st.target?('Adding to side '+(st.target==='g'?'A':'B')+' · Tap + Side '+(st.target==='g'?'A':'B')+' on any song.'):'Both songs picked. Change either side below, or reserve your battle.';
   $('sort').disabled=!!st.board&&st.board!=='fresh';
   renderCount();
  }
@@ -517,7 +527,7 @@ window.WWReserved=(function(){
  function modal(html){$('dbody').innerHTML=html;var d=$('dlg');if(!d.open)d.showModal();}
  function reviewHTML(kind){var g=st.g,b=st.b;
   var side=function(s,k,lab){return '<div class="'+k+'"><div class="rc">'+img(s,'rci')+'</div><div class="sd">'+lab+'</div><div class="n" title="'+esc(s.title)+'">'+esc(s.title)+'</div><div class="a">@'+esc(s.handle)+'</div></div>'};
-  var rv='<div class="rv">'+side(g,'g','Green side')+'<div class="vs2">VS</div>'+side(b,'b','Blue side')+'</div>';
+  var rv='<div class="rv">'+side(g,'g','Side A')+'<div class="vs2">VS</div>'+side(b,'b','Side B')+'</div>';
   var tot=g.secs+b.secs,tt=fmt(tot);
   if(kind==='bk')return '<div class="label">DJ Wavy Breakdown</div><h2 id="dh">Which song wins, and why.</h2><p>Pay a one-time fee and DJ Wavy breaks down which of these two songs wins and why.</p>'+rv+'<div class="fees"><div><span>Fee, one time</span><b>0.015 SOL</b></div><div><span>To @'+esc(g.handle)+'</span><b>0.005 SOL</b></div><div><span>To @'+esc(b.handle)+'</span><b>0.005 SOL</b></div><div><span>To WaveWarz</span><b>0.005 SOL</b></div></div><div class="dbtn"><button class="go ready" id="pay" data-kind="bk">Pay 0.015 SOL</button><button class="alt ready" id="back">Back</button></div><div class="dstat" id="dstat"></div>';
   return '<div class="label">Review your battle</div><h2 id="dh">Reserve your matchup.</h2><p>Two songs. One stage. Take one last look.</p>'+rv+'<div class="fees"><div><span>Total listening time</span><b>'+tt+'</b></div><div><span>Add to queue</span><b>0.005 SOL</b></div></div><p class="fnote">Your battle starts when it reaches the front of the Quick BattleZ queue.</p><div class="dbtn"><button class="go ready" id="pay" data-kind="rs">Add to queue &middot; 0.005 SOL</button><button class="alt ready" id="back">Back to catalog</button></div><div class="dstat" id="dstat"></div>';}
@@ -542,7 +552,7 @@ window.WWReserved=(function(){
  document.addEventListener('click',function(e){var b=e.target.closest('[data-pv]');if(!b)return;e.stopImmediatePropagation();e.preventDefault();pvPlay(b.dataset.pv)},true);
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&pv.state)pvStop()});
  document.addEventListener('visibilitychange',function(){if(document.hidden&&pv.state)pvStop()});
- function howHTML(){return '<div class="label">How it works</div><h2 id="dh">Pick two. Reserve. Watch it go live.</h2><div class="steps"><div><b>01</b><span>Pick two songs<small>One for the green side, one for the blue side.</small></span></div><div><b>02</b><span>Reserve your battle<small>It joins the Quick Battlez queue for 0.005 SOL. You see the cost before your wallet opens.</small></span></div><div><b>03</b><span>Trade the one you believe in<small>Battles run one after another, every hour of every day. Artists earn 1% of every trade on their side.</small></span></div></div><div class="label">On a phone, open wavewarz.com inside the Phantom or Solflare app browser.</div>';}
+ function howHTML(){return '<div class="label">How it works</div><h2 id="dh">Pick two. Reserve. Watch it go live.</h2><div class="steps"><div><b>01</b><span>Pick two songs<small>One for side A, one for side B.</small></span></div><div><b>02</b><span>Reserve your battle<small>It joins the Quick Battlez queue for 0.005 SOL. You see the cost before your wallet opens.</small></span></div><div><b>03</b><span>Trade the one you believe in<small>Battles run one after another, every hour of every day. Artists earn 1% of every trade on their side.</small></span></div></div><div class="label">On a phone, open wavewarz.com inside the Phantom or Solflare app browser.</div>';}
 
  document.addEventListener('click',function(e){var f=e.target.closest&&e.target.closest('[data-flip]');if(!f)return;var k=f.dataset.flip;st.flip=st.flip||{};st.flip[k]=!st.flip[k];render();var nb=document.querySelector('[data-flip="'+k+'"]');if(nb)nb.focus()});
  document.addEventListener('click',function(e){var t=e.target.closest('[data-put],[data-rm],[data-choose],[data-chg],[data-clr],[data-art],[data-genre],[data-board]');
@@ -558,7 +568,7 @@ window.WWReserved=(function(){
   else if(id==='how')modal(howHTML());else if(id==='wallet')W.connectWallet();else if(id==='resync')W.resyncAudius();
   else if(id==='dclose'||id==='back')$('dlg').close();
   else if(id==='pay'){var kind=b.dataset.kind;
-   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-g'),B=adapt(st.b,'t-b');modal(WWReserved.html(A,B,r.position,r.skipPrice,'quick-battles.html'));if(window.WWCelebrate)WWCelebrate('bubbles');WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
+   if(kind==='rs'){$('dstat').textContent='Waiting for your wallet…';Promise.resolve(W.reserve(st.g,st.b)).then(function(r){var A=adapt(st.g,'t-b'),B=adapt(st.b,'t-g');modal(WWReserved.html(A,B,r.position,r.skipPrice,'quick-battles.html'));if(window.WWCelebrate)WWCelebrate('bubbles');WWReserved.start($('dbody'),{previewNote:'Prototype: the live app confirms the skip in your wallet.'})},function(){$('dstat').textContent='The reservation did not go through. Nothing was charged. Try again.'})}
    else $('dstat').textContent='Prototype: the live app opens your Solana wallet to confirm.'}
   else if(id==='prev'){st.page--;loadTracks();$('browse').scrollIntoView()}else if(id==='next'){st.page++;loadTracks();$('browse').scrollIntoView()}
  });
