@@ -1,15 +1,15 @@
 'use client'
 
 // Shared pieces of the battle cards (quick-battle-card.tsx, event-group-card.tsx). Styles: .bt-* in site-shell.css.
-// Side A is always green, side B always blue, the platform oxide-amber, so a reader learns the colours once.
+// Side A is always wave blue, side B always action green, the platform oxide-amber, so a reader learns the colours once.
 import { useState, type CSSProperties, type ReactNode } from 'react'
 import Link from 'next/link'
 import { Copy, ExternalLink } from 'lucide-react'
 import { WwIcon, type WwIconName } from '@/components/ww-icon'
 import { Pfp } from '@/components/wavid/pfp'
 
-export const SIDE_A = '#95fe7c'
-export const SIDE_B = '#7ec1fb'
+export const SIDE_A = '#7ec1fb'
+export const SIDE_B = '#95fe7c'
 export const PLATFORM = '#f2a74b'
 
 type Money = { sol: string; usd: string }

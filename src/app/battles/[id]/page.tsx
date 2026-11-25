@@ -335,14 +335,15 @@ export default async function BattleDetailPage({ params }: Props) {
         {totalVol > 0 && (
           <div className="px-5 py-3 border-t border-border">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground mb-1">
-              <span className="text-[#95fe7c]">{Math.round(vol1 / totalVol * 100)}%</span>
-              <div className="flex-1 h-1.5 rounded-full bg-[#1f2937] overflow-hidden">
+              {/* Side A is wave blue, side B action green (same as the battles feed) */}
+              <span className="text-[#7ec1fb]">{Math.round(vol1 / totalVol * 100)}%</span>
+              <div className="flex-1 h-1.5 rounded-full bg-[#95fe7c] overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#95fe7c]"
+                  className="h-full rounded-full bg-[#7ec1fb]"
                   style={{ width: `${vol1 / totalVol * 100}%` }}
                 />
               </div>
-              <span className="text-[#7ec1fb]">{Math.round(vol2 / totalVol * 100)}%</span>
+              <span className="text-[#95fe7c]">{Math.round(vol2 / totalVol * 100)}%</span>
             </div>
             <p className="text-[10px] text-muted-foreground text-center">Volume distribution</p>
           </div>

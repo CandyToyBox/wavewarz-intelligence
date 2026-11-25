@@ -1,6 +1,6 @@
 'use client'
 
-// A Quick Battle as a two-side scoreboard: song A (green) on the left, song B (blue) on the right, the decided
+// A Quick Battle as a two-side scoreboard: song A (blue) on the left, song B (green) on the right, the decided
 // result and its three factors in the middle, then every money number in one ledger and the onchain receipts.
 // Winner logic is unchanged (decided 2-of-3 from page.tsx); this file only presents it. Styles: .bt-* in site-shell.css.
 import { useState, type CSSProperties } from 'react'
