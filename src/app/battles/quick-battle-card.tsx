@@ -1,24 +1,30 @@
 'use client'
 
-import { useState, type ReactNode } from 'react'
-import { WwIcon, type WwIconName } from '@/components/ww-icon'
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
+// A Quick Battle as a two-side scoreboard: song A (green) on the left, song B (blue) on the right, the decided
+// result and its three factors in the middle, then every money number in one ledger and the onchain receipts.
+// Winner logic is unchanged (decided 2-of-3 from page.tsx); this file only presents it. Styles: .bt-* in site-shell.css.
+import { useState, type CSSProperties } from 'react'
 import { Tip } from '@/components/tip'
-import { SolscanLink } from '@/components/solscan-link'
+import { Pfp } from '@/components/wavid/pfp'
+import { Ledger, Receipts, Rcpt, solscan, SIDE_A, SIDE_B, PLATFORM } from './battle-parts'
 
 export type QuickBattleCardData = {
   battle_id: number
   dateFormatted: string
   isV2?: boolean  // true = Poll + Charts + DJ Wavy; false/absent = Charts Only
-  // Factor breakdown (V2 only -- each is null when that factor has no data)
+  // Factor breakdown: which side each factor went to (null = no data or a tie)
+  chartsA: boolean
+  pollA: boolean | null
+  djA: boolean | null
+  scoreFor: number
+  scoreAgainst: number
   pollWinnerTitle: string | null
   pollIsTie: boolean
   pollVotesA: number | null
   pollVotesB: number | null
   chartsWinnerTitle: string
   djWavyWinnerTitle: string | null
-  // Songs
+  // Songs and the artists behind them
   song1Title: string
   song2Title: string
   song1Link: string | null
@@ -27,8 +33,10 @@ export type QuickBattleCardData = {
   song2Handle: string | null
   song1ArtUrl: string | null
   song2ArtUrl: string | null
-  song1Color: string
-  song2Color: string
+  song1PfpUrl: string | null
+  song2PfpUrl: string | null
+  song1Wavid: string | null
+  song2Wavid: string | null
   // Pools (final)
   song1PoolSol: string
   song1PoolUsd: string
@@ -57,7 +65,7 @@ export type QuickBattleCardData = {
   song1TradeFeesUsd: string
   song1SettleSol: string
   song1SettleUsd: string
-  song1SettleLabel: string   // "Winner bonus (5%)" or "Consolation (2%)"
+  song1SettleLabel: string
   song2EarnSol: string
   song2EarnUsd: string
   song2EarnStreams: string
@@ -81,364 +89,137 @@ export type QuickBattleCardData = {
   battleAddress: string
 }
 
-export function QuickBattleCard({ data }: { data: QuickBattleCardData }) {
-  const [showEarnings, setShowEarnings] = useState(false)
-  const w = data.winnerIsA ? data.song1Title : data.song2Title
-  const wColor = data.winnerIsA ? data.song1Color : data.song2Color
+const settleNote = (label: string) => label.startsWith('Winner') ? '5% winner bonus' : '2% consolation'
+
+export function QuickBattleCard({ data: d }: { data: QuickBattleCardData }) {
+  const winColor = d.winnerIsA ? SIDE_A : SIDE_B
+  const sideOf = (a: boolean | null) => a === null ? null : a ? { name: d.song1Title, color: SIDE_A } : { name: d.song2Title, color: SIDE_B }
+  const charts = sideOf(d.chartsA)
+  const poll = sideOf(d.pollA)
+  const dj = sideOf(d.djA)
+  const hasScore = d.isV2 && d.scoreFor + d.scoreAgainst > 0
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
-
-      {/* ── STATUS HEADER ── */}
-      <div className="flex items-center gap-3 px-4 py-2.5 border-b border-border bg-muted">
-        <span className="w-2 h-2 rounded-full bg-[#95fe7c] shrink-0" />
-        <Badge className="bg-[#7ec1fb]/20 text-[#7ec1fb] border border-[#7ec1fb]/40 text-[10px] font-bold tracking-widest">
-          QUICK BATTLE · COMPLETED
-        </Badge>
-        <span className="flex-1 text-xs text-muted-foreground truncate">
-          {data.song1Title}
-          <span className="mx-2 text-muted-foreground/50">vs</span>
-          {data.song2Title}
-        </span>
-        <span className="text-xs text-muted-foreground shrink-0">{data.dateFormatted}</span>
-        <SolscanLink address={data.vaultAddress} label="Verify Onchain" />
-        <SolscanLink address={data.battleAddress} label="Battle Solscan" />
-        <Link href={`/battles/${data.battle_id}`} className="font-mono text-xs text-[#7ec1fb]/60 hover:text-[#7ec1fb] shrink-0 transition-colors">
-          #{data.battle_id} ↗
-        </Link>
-      </div>
-
-      {/* ── WINNER BANNER ── */}
-      <div className="px-4 py-2 bg-[#95fe7c]/5 border-b border-[#95fe7c]/10">
-        <div className="flex items-center gap-3 flex-wrap">
-          <p className="text-xs">
-            <span className="font-display font-bold" style={{ color: wColor }}>{w}</span>
-            <span className="text-muted-foreground ml-2">won with a</span>
-            <span className="text-[#95fe7c] font-bold ml-2">+{data.marginPct}% margin</span>
-          </p>
-          {data.isV2 === true && (
-            <Tip text="V2 Winner System: Poll (live listener vote) + Charts (SOL pool) + DJ Wavy (AI Judge) — 2 out of 3 wins. Launched March 10, 2026.">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider border bg-[#7ec1fb]/15 text-[#7ec1fb] border-[#7ec1fb]/35 cursor-help">
-                V2 · Poll + Charts + DJ Wavy
-              </span>
-            </Tip>
-          )}
-          {data.isV2 === false && (
-            <Tip text="V1 Winner System: Charts only — whichever song had the larger SOL pool when time expired. Replaced March 10, 2026.">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider border bg-muted/60 text-muted-foreground border-border cursor-help">
-                V1 · Charts Only
-              </span>
-            </Tip>
-          )}
-        </div>
-        {data.isV2 === true && (
-          <div className="flex items-center gap-4 flex-wrap mt-1.5 text-[11px]">
-            <span>
-              <span className="text-muted-foreground">Charts:</span>{' '}
-              <span className="font-semibold" style={{ color: data.chartsWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
-                {data.chartsWinnerTitle}
-              </span>
-            </span>
-            <span>
-              <span className="text-muted-foreground">Poll:</span>{' '}
-              {data.pollIsTie ? (
-                <span className="text-muted-foreground">Tie</span>
-              ) : data.pollWinnerTitle ? (
-                <>
-                  <span className="font-semibold" style={{ color: data.pollWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
-                    {data.pollWinnerTitle}
-                  </span>
-                  {data.pollVotesA !== null && data.pollVotesB !== null && (
-                    <span className="text-muted-foreground ml-1">({data.pollVotesA}-{data.pollVotesB})</span>
-                  )}
-                </>
-              ) : (
-                <span className="text-muted-foreground">No data</span>
-              )}
-            </span>
-            <span>
-              <span className="text-muted-foreground">DJ Wavy:</span>{' '}
-              {data.djWavyWinnerTitle ? (
-                <span className="font-semibold" style={{ color: data.djWavyWinnerTitle === data.song1Title ? data.song1Color : data.song2Color }}>
-                  {data.djWavyWinnerTitle}
-                </span>
-              ) : (
-                <span className="text-muted-foreground">No data</span>
-              )}
-            </span>
-          </div>
+    <article className="rounded-xl border border-border bg-card bt-card" aria-label={`${d.song1Title} vs ${d.song2Title}`}>
+      <header className="bt-head">
+        <span className="bt-type" style={{ '--side': SIDE_B } as CSSProperties}>Quick Battle</span>
+        <time>{d.dateFormatted}</time>
+        {d.isV2 === true && (
+          <Tip text="V2 winner system: Poll (live listener vote) + Charts (bigger SOL pool) + DJ Wavy (AI judge). 2 out of 3 wins. Launched March 10, 2026.">
+            <span className="bt-sys">Poll + Charts + DJ Wavy · 2 of 3</span>
+          </Tip>
         )}
-      </div>
+        {d.isV2 === false && (
+          <Tip text="V1 winner system: Charts only. Whichever song had the bigger SOL pool when time ran out. Replaced March 10, 2026.">
+            <span className="bt-sys">V1 · Charts only</span>
+          </Tip>
+        )}
+      </header>
 
-      {/* ── HERO: TWO SIDES ── */}
-      <div className="grid grid-cols-3 gap-0 p-3 sm:p-5">
+      <div className="bt-board">
+        <Side side="a" title={d.song1Title} art={d.song1ArtUrl} wavid={d.song1Wavid} pfp={d.song1PfpUrl}
+          handle={d.song1Handle} link={d.song1Link} win={d.winnerIsA}
+          pool={[d.song1PoolSol, d.song1PoolUsd]} earned={[d.song1EarnSol, d.song1EarnUsd]} />
 
-        {/* Loser side */}
-        <div className="flex flex-col items-center text-center gap-2">
-          <SongAvatar title={data.winnerIsA ? data.song2Title : data.song1Title}
-            artUrl={data.winnerIsA ? data.song2ArtUrl : data.song1ArtUrl}
-            color={data.winnerIsA ? data.song2Color : data.song1Color} size="xl" dim />
-          <p className="text-sm font-display font-bold text-white/60 leading-tight px-2">
-            {data.winnerIsA ? data.song2Title : data.song1Title}
+        <div className="bt-result">
+          <p className="bt-verdict">
+            <b style={{ color: winColor }}>{d.winnerTitle}</b>
+            <span>{hasScore ? <>wins <em>{d.scoreFor}–{d.scoreAgainst}</em></> : d.isV2 ? 'wins' : 'wins on Charts'}</span>
           </p>
-          {data.winnerIsA
-            ? <SolStat sol={data.song2PoolSol} usd={data.song2PoolUsd} label="FINAL POOL VALUE" dim />
-            : <SolStat sol={data.song1PoolSol} usd={data.song1PoolUsd} label="FINAL POOL VALUE" dim />
-          }
-          {(data.winnerIsA ? data.song2Link : data.song1Link) && (
-            <a href={data.winnerIsA ? data.song2Link! : data.song1Link!} target="_blank" rel="noreferrer"
-              className="text-[10px] text-muted-foreground hover:text-[#7ec1fb] hover:underline">
-              Audius ↗
-            </a>
-          )}
+          <ul className="bt-factors" aria-label="How the result was decided">
+            <Factor k="Charts" who={charts} detail={Number(d.marginSol) === 0 ? 'Pools level' : `Pool led by ◎${d.marginSol} (${d.marginPct}%)`} />
+            {d.isV2 && (
+              <Factor k="Poll" who={poll}
+                detail={d.pollIsTie ? 'Tied' : d.pollVotesA !== null && d.pollVotesB !== null ? `Votes ${d.pollVotesA}–${d.pollVotesB}` : poll ? undefined : 'No poll data'} />
+            )}
+            {d.isV2 && <Factor k="DJ Wavy" who={dj} detail={dj ? 'AI judge pick' : 'No pick recorded'} />}
+          </ul>
         </div>
 
-        {/* Center: trophy + margin */}
-        <div className="flex flex-col items-center justify-center gap-2 text-center">
-          <TrophyIcon color={wColor} />
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">
-          {data.isV2 ? 'V2 Winner' : 'V1 Winner'}
-        </p>
-          <p className="text-sm font-display font-bold leading-tight" style={{ color: wColor }}>
-            {w}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Margin: <span className="font-mono text-white">{data.marginSol} SOL</span>
-          </p>
-          <p className="text-xs text-[#95fe7c] font-bold">+{data.marginPct}%</p>
-        </div>
-
-        {/* Winner side */}
-        <div className="flex flex-col items-center text-center gap-2">
-          <SongAvatar title={data.winnerIsA ? data.song1Title : data.song2Title}
-            artUrl={data.winnerIsA ? data.song1ArtUrl : data.song2ArtUrl}
-            color={data.winnerIsA ? data.song1Color : data.song2Color} size="xl" glow />
-          <p className="text-sm font-display font-bold text-white leading-tight px-2">
-            {data.winnerIsA ? data.song1Title : data.song2Title}
-          </p>
-          {data.winnerIsA
-            ? <SolStat sol={data.song1PoolSol} usd={data.song1PoolUsd} label="FINAL POOL VALUE" accent />
-            : <SolStat sol={data.song2PoolSol} usd={data.song2PoolUsd} label="FINAL POOL VALUE" accent />
-          }
-          {(data.winnerIsA ? data.song1Link : data.song2Link) && (
-            <a href={data.winnerIsA ? data.song1Link! : data.song2Link!} target="_blank" rel="noreferrer"
-              className="text-[10px] text-[#7ec1fb] hover:underline">
-              Audius ↗
-            </a>
-          )}
-        </div>
+        <Side side="b" title={d.song2Title} art={d.song2ArtUrl} wavid={d.song2Wavid} pfp={d.song2PfpUrl}
+          handle={d.song2Handle} link={d.song2Link} win={!d.winnerIsA}
+          pool={[d.song2PoolSol, d.song2PoolUsd]} earned={[d.song2EarnSol, d.song2EarnUsd]} />
       </div>
 
-      {/* ── STATS GRID ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-4 sm:px-5 pb-4">
-        <StatBox
-          label={<Tip text="Total SOL traded by fans on both sides of this battle -- buys and sells from real vault transaction history. Trader claim withdrawals happen separately after settlement; Verify Onchain above shows the vault's complete activity, claims included." wide>Total Trading Volume</Tip>}
-          value={`${data.totalVolSol} SOL`} sub={data.totalVolUsd} />
-        <StatBox
-          label={<Tip text="Equivalent Spotify streams this battle's USD volume could buy at $0.003 per stream.">Spotify Equivalent</Tip>}
-          value={data.streamEquivalent} sub="at $0.003 / stream" />
-        <StatBox
-          label={`${data.song1Title.split(' ').slice(0, 2).join(' ')} Vol`}
-          value={`${data.song1VolSol} SOL`} sub={data.song1VolUsd} />
-        <StatBox
-          label={`${data.song2Title.split(' ').slice(0, 2).join(' ')} Vol`}
-          value={`${data.song2VolSol} SOL`} sub={data.song2VolUsd} />
-      </div>
-
-      {/* ── EARNINGS TOGGLE ── */}
-      <div className="border-t border-border px-5 py-3 flex items-center justify-between">
-        <button
-          onClick={() => setShowEarnings(e => !e)}
-          className="text-xs font-display font-bold text-muted-foreground hover:text-white border border-border px-3 py-1.5 rounded-lg hover:border-white/20 transition-colors"
-        >
-          {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
-        </button>
-        <span className="text-xs text-muted-foreground">
-          Platform: <span className="text-[#f2a74b] font-mono font-bold">◎{data.platformEarnSol}</span>
-          <span className="ml-1 text-muted-foreground">({data.platformEarnUsd})</span>
-        </span>
-      </div>
-
-      {/* ── EARNINGS BREAKDOWN ── */}
-      {showEarnings && (
-        <div className="border-t border-border bg-muted/40 divide-y divide-border/50">
-
-          {/* Artist 1 */}
-          <EarningsRow
-            icon="paid-artist"
-            name={data.song1Title}
-            totalSol={data.song1EarnSol}
-            totalUsd={data.song1EarnUsd}
-            totalStreams={data.song1EarnStreams}
-            rows={[
-              { label: `Trading fees (1% of ${data.song1VolSol} SOL)`, sol: data.song1TradeFeesSol, usd: data.song1TradeFeesUsd },
-              { label: data.song1SettleLabel, sol: data.song1SettleSol, usd: data.song1SettleUsd },
-            ]}
-          />
-
-          {/* Artist 2 */}
-          <EarningsRow
-            icon="paid-artist"
-            name={data.song2Title}
-            totalSol={data.song2EarnSol}
-            totalUsd={data.song2EarnUsd}
-            totalStreams={data.song2EarnStreams}
-            rows={[
-              { label: `Trading fees (1% of ${data.song2VolSol} SOL)`, sol: data.song2TradeFeesSol, usd: data.song2TradeFeesUsd },
-              { label: data.song2SettleLabel, sol: data.song2SettleSol, usd: data.song2SettleUsd },
-            ]}
-          />
-
-          {/* Platform */}
-          <EarningsRow
-            icon="collect"
-            name="WaveWarZ Platform"
-            totalSol={data.platformEarnSol}
-            totalUsd={data.platformEarnUsd}
-            accent="platform"
-            rows={[
-              { label: 'Trading fees (0.5% of total volume)', sol: data.platformTradeFeesSol, usd: data.platformTradeFeesUsd },
-              { label: 'Settlement bonus (3% of loser pool)', sol: data.platformSettleSol, usd: data.platformSettleUsd },
-            ]}
-          />
-
-          {/* Info callout */}
-          <div className="px-5 py-3 bg-[#7ec1fb]/5 border-t border-[#7ec1fb]/10">
-            <p className="text-[10px] text-[#7ec1fb] leading-relaxed">
-              Artists earn 1% of every trade in their pool, plus settlement bonuses:<br />
-              • Winners get 5% of the losing pool &nbsp;· &nbsp;Losers get 2% consolation from their own pool
-            </p>
-          </div>
-
-          {/* Wallet addresses */}
-          {(data.song1Wallet || data.song2Wallet || data.wavewarzWallet) && (
-            <div className="px-5 py-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Wallet Addresses</p>
-              <div className="space-y-1.5">
-                {data.song1Wallet && <WalletRow label="Wallet A" addr={data.song1Wallet} />}
-                {data.song2Wallet && <WalletRow label="Wallet B" addr={data.song2Wallet} />}
-                {data.wavewarzWallet && <WalletRow label="Treasury" addr={data.wavewarzWallet} />}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ─── Sub-components ────────────────────────────────────────────────────────────
-
-function SongAvatar({ title, artUrl, color, size = 'md', glow, dim }: {
-  title: string; artUrl?: string | null; color: string; size?: 'sm' | 'md' | 'lg' | 'xl'
-  glow?: boolean; dim?: boolean
-}) {
-  const sizes = { sm: 'w-10 h-10 text-base', md: 'w-16 h-16 text-2xl', lg: 'w-20 h-20 text-3xl', xl: 'w-28 h-28 text-4xl' }
-  const [imgFailed, setImgFailed] = useState(false)
-
-  if (artUrl && !imgFailed) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={artUrl}
-        alt={title}
-        className={`${sizes[size]} rounded-lg object-cover border-2 transition-all`}
-        style={{
-          borderColor: glow ? color : `${color}30`,
-          boxShadow: glow ? `0 0 20px ${color}40, 0 0 8px ${color}20` : undefined,
-          opacity: dim ? 0.5 : 1,
-        }}
-        onError={() => setImgFailed(true)}
-      />
-    )
-  }
-
-  return (
-    <div
-      className={`${sizes[size]} rounded-lg flex items-center justify-center font-display font-bold border-2 transition-all`}
-      style={{
-        backgroundColor: `${color}18`,
-        borderColor: glow ? color : `${color}30`,
-        color: dim ? `${color}60` : color,
-        boxShadow: glow ? `0 0 20px ${color}40, 0 0 8px ${color}20` : undefined,
-        opacity: dim ? 0.6 : 1,
-      }}
-    >
-      {title.charAt(0).toUpperCase()}
-    </div>
-  )
-}
-
-function SolStat({ sol, usd, label, accent, dim }: {
-  sol: string; usd: string; label: string; accent?: boolean; dim?: boolean
-}) {
-  return (
-    <div className="text-center">
-      <p className={`font-mono font-bold text-xl leading-tight ${dim ? 'text-muted-foreground' : accent ? 'text-[#95fe7c]' : 'text-white'}`}>
-        ◎{sol}
+      <p className="bt-sum">
+        <Tip text="Total SOL traded by fans on both sides: buys and sells from the vault's real transaction history. Trader claims happen separately after settlement; Verify Onchain shows the vault's full activity." wide>
+          <span>Traded</span>
+        </Tip>
+        <b>◎{d.totalVolSol}</b><small>{d.totalVolUsd}</small>
+        <span className="bt-dot" aria-hidden="true" />
+        <span>Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
       </p>
-      <p className={`text-xs mt-0.5 ${dim ? 'text-muted-foreground/50' : 'text-muted-foreground'}`}>{usd}</p>
-      <p className={`text-[11px] uppercase tracking-widest mt-0.5 ${dim ? 'text-muted-foreground/40' : accent ? 'text-[#95fe7c]/70' : 'text-muted-foreground/60'}`}>
-        {label}
-      </p>
-    </div>
+
+      <Ledger caption={`Earnings for ${d.song1Title} vs ${d.song2Title}`} parties={[
+        {
+          name: d.song1Title, color: SIDE_A, wallet: d.song1Wallet, streams: d.song1EarnStreams,
+          traded: { sol: d.song1VolSol, usd: d.song1VolUsd },
+          fee: { sol: d.song1TradeFeesSol, usd: d.song1TradeFeesUsd, note: '1%' },
+          settle: { sol: d.song1SettleSol, usd: d.song1SettleUsd, note: settleNote(d.song1SettleLabel) },
+          earned: { sol: d.song1EarnSol, usd: d.song1EarnUsd },
+        },
+        {
+          name: d.song2Title, color: SIDE_B, wallet: d.song2Wallet, streams: d.song2EarnStreams,
+          traded: { sol: d.song2VolSol, usd: d.song2VolUsd },
+          fee: { sol: d.song2TradeFeesSol, usd: d.song2TradeFeesUsd, note: '1%' },
+          settle: { sol: d.song2SettleSol, usd: d.song2SettleUsd, note: settleNote(d.song2SettleLabel) },
+          earned: { sol: d.song2EarnSol, usd: d.song2EarnUsd },
+        },
+        {
+          name: 'WaveWarZ platform', color: PLATFORM, wallet: d.wavewarzWallet, streams: null,
+          traded: { sol: d.totalVolSol, usd: d.totalVolUsd, note: 'both sides' },
+          fee: { sol: d.platformTradeFeesSol, usd: d.platformTradeFeesUsd, note: '0.5%' },
+          settle: { sol: d.platformSettleSol, usd: d.platformSettleUsd, note: '3% of losing pool' },
+          earned: { sol: d.platformEarnSol, usd: d.platformEarnUsd },
+        },
+      ]} />
+
+      <Receipts>
+        <Rcpt href={solscan(d.vaultAddress)}>Verify Onchain</Rcpt>
+        <Rcpt href={solscan(d.battleAddress)}>Battle account</Rcpt>
+        <Rcpt href={`/battles/${d.battle_id}`} internal>Battle #{d.battle_id}</Rcpt>
+      </Receipts>
+    </article>
   )
 }
 
-function StatBox({ label, value, sub }: { label: React.ReactNode; value: string; sub: string }) {
+function Factor({ k, who, detail }: { k: string; who: { name: string; color: string } | null; detail?: string }) {
   return (
-    <div className="card-elevated p-3">
-      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1.5 leading-tight">{label}</p>
-      <p className="text-base font-display font-bold text-[#7ec1fb] font-mono">◎{value}</p>
-      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
-    </div>
+    <li style={{ '--side': who?.color ?? 'rgba(216,235,252,.35)' } as CSSProperties} className={who ? undefined : 'none'}>
+      <span className="bt-f-k"><i aria-hidden="true" />{k}</span>
+      <span className="bt-f-v">{who ? who.name : 'No result'}</span>
+      {detail && <span className="bt-f-d">{detail}</span>}
+    </li>
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function TrophyIcon({ color }: { color: string }) {
-  return <WwIcon name="trophy" size={28} />
-}
-
-function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
-  icon: WwIconName; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
-  rows: { label: string; sol: string; usd: string }[]
+function Side({ side, title, art, wavid, pfp, handle, link, win, pool, earned }: {
+  side: 'a' | 'b'; title: string; art: string | null; wavid: string | null; pfp: string | null
+  handle: string | null; link: string | null; win: boolean; pool: [string, string]; earned: [string, string]
 }) {
-  const textColor = accent === 'platform' ? 'text-[#f2a74b]' : 'text-[#95fe7c]'
+  const color = side === 'a' ? SIDE_A : SIDE_B
+  const [bad, setBad] = useState(false)
   return (
-    <div className="px-5 py-4">
-      <div className="flex items-start justify-between gap-3 mb-2">
-        <p className="text-sm font-display font-bold text-white">
-          <WwIcon name={icon} size={18} /> <span className="text-muted-foreground font-normal">
-            {name.length > 30 ? name.slice(0, 30) + '…' : name}
-          </span> earned:
-        </p>
-        <div className="text-right shrink-0">
-          <p className={`font-mono font-bold text-base ${textColor}`}>◎{totalSol}</p>
-          <p className="text-xs text-muted-foreground">{totalUsd}</p>
-          {totalStreams && <p className="text-[10px] text-[#7ec1fb]">≈ {totalStreams} Spotify streams</p>}
-        </div>
+    <section className={`bt-side ${side}${win ? ' win' : ''}`} style={{ '--side': color } as CSSProperties} aria-label={`${title}${win ? ', winner' : ''}`}>
+      <div className="bt-cover">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {art && !bad ? <img src={art} alt={`${title} cover art`} loading="lazy" onError={() => setBad(true)} /> : <b aria-hidden="true">{title.charAt(0).toUpperCase()}</b>}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {wavid && <img className="bt-cover-wid" src={wavid} alt={handle ? `@${handle}'s Wave ID` : 'Wave ID'} loading="lazy" />}
       </div>
-      <div className="space-y-1.5 ml-4">
-        {rows.map(r => (
-          <div key={r.label} className="flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">└── {r.label}</p>
-            <div className="text-right shrink-0">
-              <span className="font-mono text-xs text-white">◎{r.sol}</span>
-              <span className="text-xs text-muted-foreground ml-1">{r.usd}</span>
-            </div>
-          </div>
-        ))}
+      <div className="bt-side-txt">
+        {win && <span className="bt-win">Winner</span>}
+        <h3 className="bt-name">{title}</h3>
+        {handle && link && (
+          <a className="bt-by" href={link} target="_blank" rel="noreferrer">
+            <Pfp className="bt-by-pfp" src={pfp} name={handle} />@{handle} on Audius
+          </a>
+        )}
+        <dl className="bt-nums">
+          <div><dt>Final pool</dt><dd><b>◎{pool[0]}</b><small>{pool[1]}</small></dd></div>
+          <div><dt>Artist earned</dt><dd><b>◎{earned[0]}</b><small>{earned[1]}</small></dd></div>
+        </dl>
       </div>
-    </div>
-  )
-}
-
-function WalletRow({ label, addr }: { label: string; addr: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-[10px] text-muted-foreground w-16 shrink-0">{label}:</span>
-      <span className="font-mono text-xs text-[#7ec1fb] break-all">{addr}</span>
-    </div>
+    </section>
   )
 }

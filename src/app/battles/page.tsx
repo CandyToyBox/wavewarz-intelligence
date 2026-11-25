@@ -6,7 +6,7 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { getBattleAddress, getBattleVaultAddress } from '@/lib/solana/pda'
 import { groupIntoEvents, pairKey as sharedPairKey } from '@/lib/event-grouping'
-import { Badge } from '@/components/ui/badge'
+import { getWavIdRoster, findWavIdArtist, type WavIdRoster } from '@/lib/wavid/roster'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
 import { QuickBattleCard, type QuickBattleCardData } from './quick-battle-card'
 import { BattlesControls } from './battles-controls'
@@ -36,11 +36,11 @@ const V2_QB_LAUNCH = new Date('2026-03-10T00:00:00')
 type SortKey   = 'newest' | 'oldest' | 'volume'
 type FilterKey = 'all' | 'main' | 'quick' | 'community'
 
-const PALETTE = ['#95fe7c', '#7ec1fb', '#f2a74b', '#76f3df', '#e5c25a', '#62b8df'] // brand + Wave ID accents, no pink or purple
-function colorFor(str: string): string {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  return PALETTE[Math.abs(hash) % PALETTE.length]
+// Each side's Wave ID as a small raster (the artist's own colour identity). Quick Battles look up by the
+// song's Audius handle then wallet (artist1_name is a song title there, so never by name); events also by name.
+function wavidArt(roster: WavIdRoster | null, who: { audiusHandle?: string | null; wallet?: string | null; name?: string | null }): string | null {
+  const handle = findWavIdArtist(roster, who)?.identity?.audiusHandle as string | undefined
+  return handle ? `/api/wavid-art/${encodeURIComponent(handle)}?format=png&size=128` : null
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -140,7 +140,8 @@ async function getBattles(): Promise<RawBattle[]> {
     .order('created_at', { ascending: false })
     .range(from, to))
 
-  return data as unknown as RawBattle[]
+  // Names are trimmed here: a leading space made first-word labels come out blank ("R2" with no winner).
+  return (data as unknown as RawBattle[]).map(b => ({ ...b, artist1_name: (b.artist1_name ?? '').trim(), artist2_name: (b.artist2_name ?? '').trim() }))
 }
 
 async function getArtistPfpMap(): Promise<Map<string, string | null>> {
@@ -178,7 +179,7 @@ function buildGroups(nonQuick: RawBattle[]): Group[] {
 
 // ─── Feed construction ────────────────────────────────────────────────────────
 
-function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, string | null>): FeedItem {
+function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, string | null>, roster: WavIdRoster | null): FeedItem {
   const battles = group.battles // sorted oldest→newest
   const first = battles[0]
 
@@ -239,16 +240,21 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
       // Volumes
       a1VolSol: formatSol(v1),
       a2VolSol: formatSol(v2),
+      a1VolUsd: solToUsd(v1, solPrice),
+      a2VolUsd: solToUsd(v2, solPrice),
       totalVolSol: formatSol(totalVol),
       totalVolUsd: solToUsd(totalVol, solPrice),
+      streamEquivalent: formatStreams((totalVol * solPrice) / SPOTIFY_RATE),
       // Winner
       winner: winnerIsA ? b.artist1_name : b.artist2_name,
       loser:  winnerIsA ? b.artist2_name : b.artist1_name,
       winnerIsA,
       marginSol: formatSol(Math.abs(p1 - p2)),
       marginPct: marginPct(p1, p2),
-      pct1: totalVol > 0 ? Math.round((v1 / totalVol) * 100) : 50,
-      pct2: totalVol > 0 ? Math.round((v2 / totalVol) * 100) : 50,
+      // Bar widths are each side's share of the final pools, matching the pool numbers printed beside them
+      pct1: p1 + p2 > 0 ? Math.round((p1 / (p1 + p2)) * 100) : 50,
+      pct2: p1 + p2 > 0 ? Math.round((p2 / (p1 + p2)) * 100) : 50,
+      rawA1Earn: a1Earn.totalSol, rawA2Earn: a2Earn.totalSol, rawPlatEarn: platEarn.totalSol,
       // Earnings
       a1EarnSol: formatSol(a1Earn.totalSol),
       a1EarnUsd: solToUsd(a1Earn.totalSol, solPrice),
@@ -268,6 +274,10 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
       a2SettleLabel: !winnerIsA ? 'Winner bonus (5% of loser pool)' : 'Consolation (2% of loser pool)',
       platformEarnSol: formatSol(platEarn.totalSol),
       platformEarnUsd: solToUsd(platEarn.totalSol, solPrice),
+      platformTradeFeesSol: formatSol(platEarn.tradingFees),
+      platformTradeFeesUsd: solToUsd(platEarn.tradingFees, solPrice),
+      platformSettleSol: formatSol(platEarn.settlementBonus),
+      platformSettleUsd: solToUsd(platEarn.settlementBonus, solPrice),
       // Links
       youtubeLink: b.youtube_replay_link,
       streamLink: b.stream_link,
@@ -285,8 +295,19 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
     }
   })
 
+  // Event totals: each artist's and the platform's earnings summed across every round
+  const sum = (k: 'rawA1Earn' | 'rawA2Earn' | 'rawPlatEarn') => rounds.reduce((s, r) => s + r[k], 0)
+  const a1Total = sum('rawA1Earn'), a2Total = sum('rawA2Earn'), platTotal = sum('rawPlatEarn')
+
   const data: EventGroupCardData = {
     groupKey: String(first.battle_id),
+    artist1Wavid: wavidArt(roster, { wallet: first.artist1_wallet, name: first.artist1_name }),
+    artist2Wavid: wavidArt(roster, { wallet: first.artist2_wallet, name: first.artist2_name }),
+    a1Wins, a2Wins,
+    overallWinnerIsA: a1Wins === a2Wins ? null : a1Wins > a2Wins,
+    a1EarnSol: formatSol(a1Total), a1EarnUsd: solToUsd(a1Total, solPrice),
+    a2EarnSol: formatSol(a2Total), a2EarnUsd: solToUsd(a2Total, solPrice),
+    platformEarnSol: formatSol(platTotal), platformEarnUsd: solToUsd(platTotal, solPrice),
     eventType,
     artist1Name: first.artist1_name,
     artist2Name: first.artist2_name,
@@ -305,7 +326,7 @@ function buildGroupItem(group: Group, solPrice: number, pfpMap: Map<string, stri
   return { kind: 'group', data, latestAt: group.latestAt, totalVol: totalVolRaw }
 }
 
-function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | null, song2ArtUrl: string | null): FeedItem {
+function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | null, song2ArtUrl: string | null, pfpMap: Map<string, string | null>, roster: WavIdRoster | null): FeedItem {
   const p1 = b.artist1_pool ?? 0, p2 = b.artist2_pool ?? 0
   const v1 = b.total_volume_a ?? 0, v2 = b.total_volume_b ?? 0
   const totalVol = v1 + v2
@@ -330,8 +351,21 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
   const pollWinnerIsA = parseQuickFactor(b.poll_winner, b.artist1_name)
   const djWavyWinnerIsA = parseQuickFactor(b.dj_wavy_winner, b.artist1_name)
 
+  // Score of the decided result: how many of the three factors went each way (V2). Missing factors don't count.
+  const factors = [chartsWinnerIsA, pollWinnerIsA, djWavyWinnerIsA].filter((x): x is boolean => x !== null)
+  const handle1 = parseAudiusHandle(b.artist1_music_link), handle2 = parseAudiusHandle(b.artist2_music_link)
+
   const data: QuickBattleCardData = {
     battle_id: b.battle_id,
+    chartsA: chartsWinnerIsA,
+    pollA: pollWinnerIsA,
+    djA: djWavyWinnerIsA,
+    scoreFor: factors.filter(x => x === winnerIsA).length,
+    scoreAgainst: factors.filter(x => x !== winnerIsA).length,
+    song1PfpUrl: pfpMap.get(b.artist1_wallet ?? '') ?? null,
+    song2PfpUrl: pfpMap.get(b.artist2_wallet ?? '') ?? null,
+    song1Wavid: wavidArt(roster, { audiusHandle: handle1, wallet: b.artist1_wallet }),
+    song2Wavid: wavidArt(roster, { audiusHandle: handle2, wallet: b.artist2_wallet }),
     dateFormatted: fmtDate(b.created_at, true),
     // Factor breakdown (V2 only -- null when the data doesn't exist)
     pollWinnerTitle: pollWinnerIsA === null ? null : pollWinnerIsA ? b.artist1_name : b.artist2_name,
@@ -345,12 +379,10 @@ function buildQuickItem(b: RawBattle, solPrice: number, song1ArtUrl: string | nu
     song2Title: b.artist2_name,
     song1Link: b.artist1_music_link,
     song2Link: b.artist2_music_link,
-    song1Handle: parseAudiusHandle(b.artist1_music_link),
-    song2Handle: parseAudiusHandle(b.artist2_music_link),
+    song1Handle: handle1,
+    song2Handle: handle2,
     song1ArtUrl,
     song2ArtUrl,
-    song1Color: colorFor(b.artist1_name),
-    song2Color: colorFor(b.artist2_name),
     // Pools
     song1PoolSol: formatSol(p1),
     song1PoolUsd: solToUsd(p1, solPrice),
@@ -421,7 +453,7 @@ export default async function BattlesFeedPage({
   const sort   = (['newest','oldest','volume'].includes(sp.sort ?? '') ? sp.sort : 'newest') as SortKey
   const filter = (['all','main','quick','community'].includes(sp.filter ?? '') ? sp.filter : 'all') as FilterKey
 
-  const [battles, solPrice, pfpMap] = await Promise.all([getBattles(), getLiveSolPrice(), getArtistPfpMap()])
+  const [battles, solPrice, pfpMap, roster] = await Promise.all([getBattles(), getLiveSolPrice(), getArtistPfpMap(), getWavIdRoster().catch(() => null)])
 
   const quickBattles = battles.filter(b => b.is_quick_battle)
   const nonQuick    = battles.filter(b => !b.is_quick_battle)
@@ -429,7 +461,7 @@ export default async function BattlesFeedPage({
   const groups = buildGroups(nonQuick)
 
   // Build full item list (no Audius art yet)
-  const allGroupItems = groups.map(g => buildGroupItem(g, solPrice, pfpMap))
+  const allGroupItems = groups.map(g => buildGroupItem(g, solPrice, pfpMap, roster))
   const allQuickItems: Array<{ battle: RawBattle; latestAt: number; totalVol: number }> = quickBattles.map(b => ({
     battle: b,
     latestAt: new Date(b.created_at).getTime(),
@@ -528,7 +560,7 @@ export default async function BattlesFeedPage({
   const pageFeed: FeedItem[] = pageStubs.map(s => {
     if (s.kind === 'group') return s.item
     const art = artworkMap.get(s.battle.battle_id) ?? { song1ArtUrl: null, song2ArtUrl: null }
-    return buildQuickItem(s.battle, solPrice, art.song1ArtUrl, art.song2ArtUrl)
+    return buildQuickItem(s.battle, solPrice, art.song1ArtUrl, art.song2ArtUrl, pfpMap, roster)
   })
 
   const quickCount  = quickBattles.length
@@ -536,54 +568,41 @@ export default async function BattlesFeedPage({
   const multiRound  = groups.filter(g => g.battles.length > 1).length
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
 
-      {/* ── HEADER ── */}
-      <header>
-        <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-3xl sm:text-4xl font-display font-bold text-white tracking-tight">
-            Battles <span className="text-[#95fe7c]">Feed</span>
-          </h1>
-          <Badge className="bg-[#95fe7c]/20 text-[#95fe7c] border border-[#95fe7c]/40 text-[10px] font-bold tracking-widest animate-pulse">
-            LIVE
-          </Badge>
+      {/* ── HEADER: same board header as the leaderboards (.ww-bh in site-shell.css) ── */}
+      <header className="ww-bh">
+        <div className="ww-bh-main">
+          <p className="ww-bh-k"><i aria-hidden="true" />WaveWarZ Statz</p>
+          <h1>Battles <span>Feed</span></h1>
+          <p className="ww-bh-d">Every battle, all time, with each result, the earnings and the onchain receipts. Main events are grouped by round.</p>
         </div>
-        <p className="text-muted-foreground text-sm">
-          Every battle, all time. Main events grouped by round automatically.
-        </p>
-
-        {/* Summary chips */}
-        <div className="flex flex-wrap gap-2 mt-3">
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/20">
-            {eventCount} events
-          </span>
-          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#7ec1fb]/10 text-[#7ec1fb] border border-[#7ec1fb]/20">
-            {quickCount} quick battles
-          </span>
-          {multiRound > 0 && (
-            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#f2a74b]/10 text-[#f2a74b] border border-[#f2a74b]/20">
-              {multiRound} multi-round events
-            </span>
-          )}
-          <span className="text-[10px] text-muted-foreground px-2.5 py-1 hidden sm:inline">
-            {totalItems} shown · test battles excluded
-          </span>
-        </div>
-
-        {/* Sort / Filter controls */}
-        <div className="mt-4">
-          <Suspense>
-            <BattlesControls sort={sort} filter={filter} />
-          </Suspense>
-        </div>
+        <dl className="bt-counts">
+          <div><dt>Events</dt><dd>{eventCount}</dd></div>
+          <div><dt>Quick Battles</dt><dd>{quickCount}</dd></div>
+          {multiRound > 0 && <div><dt>Multi-round</dt><dd>{multiRound}</dd></div>}
+        </dl>
       </header>
 
+      <div className="bt-toolbar">
+        <Suspense>
+          <BattlesControls sort={sort} filter={filter} />
+        </Suspense>
+        <p className="bt-shown">{totalItems} shown · test battles excluded</p>
+      </div>
+
+      <p className="bt-howto">
+        How earnings work: artists earn 1% of every trade on their side, plus 5% of the losing pool for the winner or a 2%
+        consolation for the other side. The platform takes 0.5% of trades and 3% of the losing pool. Spotify equivalent is
+        what the same dollars would earn at $0.003 per stream. <a href="/benefits">More on artist earnings</a>
+      </p>
+
       {/* ── FEED ── */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {pageFeed.length === 0 && (
-          <div className="rounded-xl border border-border bg-[#111827] p-12 text-center">
-            <p className="text-xl font-display font-bold text-white mb-2">No battles yet</p>
-            <p className="text-muted-foreground text-sm">Battles will appear here as soon as webhooks are received from WaveWarZ.</p>
+          <div className="rounded-xl border border-border bg-card p-12 text-center">
+            <p className="text-xl font-display font-bold text-white mb-2">No battles here yet</p>
+            <p className="text-muted-foreground text-sm">Nothing matches this filter. Pick All Battles to see the full record.</p>
           </div>
         )}
 
@@ -603,7 +622,7 @@ export default async function BattlesFeedPage({
             href={safePage > 1 ? `/battles?page=${safePage - 1}&sort=${sort}&filter=${filter}` : undefined}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
               safePage <= 1
-                ? 'border-border text-muted-foreground/40 pointer-events-none'
+                ? 'border-border text-muted-foreground opacity-50 pointer-events-none'
                 : 'border-border text-muted-foreground hover:text-white hover:border-white/20'
             }`}
           >
@@ -611,7 +630,7 @@ export default async function BattlesFeedPage({
           </a>
 
           <div className="flex items-center gap-1 flex-wrap justify-center">
-            <span className="text-[10px] text-muted-foreground mr-1">
+            <span className="text-xs text-muted-foreground mr-1">
               Page {safePage} of {totalPages}
             </span>
             {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -623,7 +642,7 @@ export default async function BattlesFeedPage({
               }, [])
               .map((p, i) =>
                 p === 'gap' ? (
-                  <span key={`gap-${i}`} className="text-muted-foreground/40 px-1">…</span>
+                  <span key={`gap-${i}`} className="text-muted-foreground px-1">…</span>
                 ) : (
                   <a
                     key={p}
@@ -644,7 +663,7 @@ export default async function BattlesFeedPage({
             href={safePage < totalPages ? `/battles?page=${safePage + 1}&sort=${sort}&filter=${filter}` : undefined}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
               safePage >= totalPages
-                ? 'border-border text-muted-foreground/40 pointer-events-none'
+                ? 'border-border text-muted-foreground opacity-50 pointer-events-none'
                 : 'border-border text-muted-foreground hover:text-white hover:border-white/20'
             }`}
           >

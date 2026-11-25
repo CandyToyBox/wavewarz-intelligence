@@ -1,13 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { WwIcon, type WwIconName } from '@/components/ww-icon'
-import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
+// A Main / Community / Benefit / Spotlight event: the flyer, both fighters with their Wave IDs, the event result,
+// each artist's earnings totalled across rounds, and every round's full numbers and receipts behind "View rounds".
+// Round winners come from page.tsx (judging panel result) unchanged. Styles: .bt-* in site-shell.css.
+import { useState, type CSSProperties } from 'react'
 import { BattleImage } from './battle-image'
-import { SolscanLink } from '@/components/solscan-link'
 import { Tip } from '@/components/tip'
-import type { ReactNode } from 'react'
+import { IdMark, Ledger, Receipts, Rcpt, solscan, SIDE_A, SIDE_B, PLATFORM } from './battle-parts'
 
 export type RoundData = {
   battle_id: number
@@ -23,8 +22,11 @@ export type RoundData = {
   // Volumes
   a1VolSol: string
   a2VolSol: string
+  a1VolUsd: string
+  a2VolUsd: string
   totalVolSol: string
   totalVolUsd: string
+  streamEquivalent: string
   // Winner
   winner: string
   loser: string
@@ -33,6 +35,9 @@ export type RoundData = {
   marginPct: string
   pct1: number
   pct2: number
+  rawA1Earn: number
+  rawA2Earn: number
+  rawPlatEarn: number
   // Earnings
   a1EarnSol: string
   a1EarnUsd: string
@@ -52,6 +57,10 @@ export type RoundData = {
   a2SettleLabel: string
   platformEarnSol: string
   platformEarnUsd: string
+  platformTradeFeesSol: string
+  platformTradeFeesUsd: string
+  platformSettleSol: string
+  platformSettleUsd: string
   // Links
   youtubeLink: string | null
   streamLink: string | null
@@ -70,6 +79,8 @@ export type EventGroupCardData = {
   artist2Name: string
   artist1PfpUrl: string | null
   artist2PfpUrl: string | null
+  artist1Wavid: string | null
+  artist2Wavid: string | null
   imageUrl: string | null
   latestDateFormatted: string
   totalRounds: number
@@ -77,362 +88,173 @@ export type EventGroupCardData = {
   totalVolUsd: string
   streamEquivalent: string
   overallWinner: string | null
+  overallWinnerIsA: boolean | null
+  a1Wins: number
+  a2Wins: number
+  a1EarnSol: string
+  a1EarnUsd: string
+  a2EarnSol: string
+  a2EarnUsd: string
+  platformEarnSol: string
+  platformEarnUsd: string
   rounds: RoundData[]
 }
 
-const TYPE_CONFIG = {
-  main:      { label: 'MAIN EVENT',  badge: 'bg-[#95fe7c]/20 text-[#95fe7c] border-[#95fe7c]/40', accent: '#95fe7c' },
-  community: { label: 'COMMUNITY',   badge: 'bg-[#f2a74b]/20 text-[#f2a74b] border-[#f2a74b]/40', accent: '#f2a74b' },
-  charity:   { label: 'BENEFIT',     badge: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40', accent: '#7ec1fb' },
-  spotlight: { label: 'SPOTLIGHT',   badge: 'bg-[#7ec1fb]/20 text-[#7ec1fb] border-[#7ec1fb]/40', accent: '#7ec1fb' },
-}
+const TYPE_LABEL = { main: 'Main Event', community: 'Community', charity: 'Benefit', spotlight: 'Spotlight' } as const
+const TYPE_COLOR = { main: '#95fe7c', community: '#f2a74b', charity: '#76f3df', spotlight: '#e5c25a' } as const
+const settleNote = (label: string) => label.startsWith('Winner') ? '5% winner bonus' : '2% consolation'
 
-export function EventGroupCard({ data }: { data: EventGroupCardData }) {
-  const [expanded, setExpanded] = useState(false)
-  const cfg = TYPE_CONFIG[data.eventType]
-
-  return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-[rgba(216,235,252,0.24)] transition-colors">
-      <div className="flex flex-col md:flex-row">
-
-        {/* ── LANDSCAPE IMAGE ── */}
-        <div className="md:w-64 md:shrink-0 h-40 md:h-auto relative overflow-hidden bg-muted">
-          <BattleImage
-            src={data.imageUrl}
-            alt={`${data.artist1Name} vs ${data.artist2Name}`}
-            className="w-full h-full"
-            fallbackText={data.artist1Name}
-          />
-          {data.imageUrl && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/70 hidden md:block" />
-          )}
-        </div>
-
-        {/* ── CARD BODY ── */}
-        <div className="flex-1 p-5 flex flex-col">
-          <div className="flex items-start justify-between gap-3 mb-3">
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <Badge className={`${cfg.badge} border text-[10px] font-bold tracking-widest`}>
-                  {cfg.label}
-                </Badge>
-                {data.totalRounds > 1 && (
-                  <span className="text-[10px] text-muted-foreground">{data.totalRounds} rounds</span>
-                )}
-                <span className="text-[10px] text-muted-foreground ml-auto">{data.latestDateFormatted}</span>
-              </div>
-              <h3 className="text-xl font-display font-bold text-white tracking-wide leading-tight flex items-center gap-2 flex-wrap">
-                <ArtistAvatar name={data.artist1Name} pfpUrl={data.artist1PfpUrl} accent={cfg.accent} />
-                {data.artist1Name}
-                <span className="text-muted-foreground font-normal text-base">vs</span>
-                <ArtistAvatar name={data.artist2Name} pfpUrl={data.artist2PfpUrl} accent={cfg.accent} />
-                {data.artist2Name}
-              </h3>
-              {data.overallWinner && (
-                <p className="text-xs font-bold font-display mt-1" style={{ color: cfg.accent }}>
-                  Overall Winner: {data.overallWinner}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Aggregate stats */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <AggregateStat
-              label={<Tip text="Gross trading volume: every buy + sell during the battle window, computed from real vault transaction history. Trader claim withdrawals happen after settlement and are a separate onchain flow -- see Verify Onchain below to view the vault's full history, claims included." wide>Total Volume</Tip>}
-              value={`${data.totalVolSol} SOL`} sub={data.totalVolUsd} />
-            <AggregateStat label="Spotify Equiv" value={data.streamEquivalent} sub="at $0.003/stream" />
-            <AggregateStat label="Rounds" value={String(data.totalRounds)} sub="battle rounds" />
-          </div>
-
-          {/* Round pills */}
-          {data.totalRounds > 1 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">
-              {data.rounds.map(r => (
-                <div
-                  key={r.battle_id}
-                  className="flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold border"
-                  style={{ borderColor: `${cfg.accent}40`, backgroundColor: `${cfg.accent}10`, color: cfg.accent }}
-                >
-                  R{r.roundNumber}
-                  <span className="text-muted-foreground font-normal ml-1">
-                    {r.winner.split(' ')[0]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="flex items-center gap-3 mt-auto">
-            <button
-              onClick={() => setExpanded(e => !e)}
-              className="text-xs font-display font-bold px-3 py-1.5 rounded-lg border border-border text-muted-foreground hover:text-white hover:border-white/20 transition-colors"
-            >
-              {expanded ? 'Hide Rounds ↑' : 'View Rounds ↓'}
-            </button>
-            {data.rounds[0]?.youtubeLink && (
-              <a href={data.rounds[0].youtubeLink} target="_blank" rel="noreferrer"
-                className="text-xs text-[#7ec1fb] hover:underline">Watch Replay ↗</a>
-            )}
-            {data.rounds[0]?.streamLink && (
-              <a href={data.rounds[0].streamLink} target="_blank" rel="noreferrer"
-                className="text-xs text-muted-foreground hover:text-white hover:underline">Stream ↗</a>
-            )}
-            <div className="ml-auto flex items-center gap-2">
-              {data.rounds[0]?.battleAddress && (
-                <SolscanLink address={data.rounds[0].battleAddress} label="Battle Solscan" />
-              )}
-              <Link
-                href={`/battles/${data.rounds[0]?.battle_id}`}
-                className="text-[10px] text-muted-foreground/40 hover:text-[#7ec1fb] font-mono transition-colors"
-              >
-                #{data.rounds[0]?.battle_id}
-                {data.rounds.length > 1 && `–#${data.rounds[data.rounds.length - 1].battle_id}`} ↗
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── EXPANDED ROUNDS ── */}
-      {expanded && (
-        <div className="border-t border-border">
-          <div className="px-5 py-2.5 bg-muted">
-            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Round-by-Round Breakdown</p>
-          </div>
-          <div className="divide-y divide-border/50">
-            {data.rounds.map(r => (
-              <RoundDetail key={r.battle_id} round={r} accent={cfg.accent} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function RoundDetail({ round: r, accent }: { round: RoundData; accent: string }) {
-  const [showEarnings, setShowEarnings] = useState(false)
+export function EventGroupCard({ data: d }: { data: EventGroupCardData }) {
+  const [open, setOpen] = useState(false)
+  const multi = d.totalRounds > 1
+  const first = d.rounds[0]
+  const last = d.rounds[d.rounds.length - 1]
+  const winColor = d.overallWinnerIsA === null ? '#daecfd' : d.overallWinnerIsA ? SIDE_A : SIDE_B
+  const panelId = `rounds-${d.groupKey}`
 
   return (
-    <div className="bg-card">
-      {/* Round header */}
-      <div className="flex items-center gap-3 px-5 py-3 border-b border-border/30 bg-muted/60">
-        <span
-          className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold font-display border shrink-0"
-          style={{ borderColor: `${accent}40`, backgroundColor: `${accent}10`, color: accent }}
-        >
-          {r.roundNumber}
-        </span>
-        <div className="flex-1">
-          <p className="text-sm font-display font-bold text-white leading-tight">
-            {r.artist1Name} <span className="text-muted-foreground font-normal text-xs">vs</span> {r.artist2Name}
+    <article className="rounded-xl border border-border bg-card bt-card bt-event" aria-label={`${d.artist1Name} vs ${d.artist2Name}`}>
+      <div className="bt-ev-top">
+        <div className="bt-flyer">
+          <BattleImage src={d.imageUrl} alt={`${d.artist1Name} vs ${d.artist2Name} battle flyer`} className="w-full h-full" fallbackText={d.artist1Name} />
+        </div>
+
+        <div className="bt-ev-body">
+          <header className="bt-head">
+            <span className="bt-type" style={{ '--side': TYPE_COLOR[d.eventType] } as CSSProperties}>{TYPE_LABEL[d.eventType]}</span>
+            {multi && <span className="bt-soft">{d.totalRounds} rounds</span>}
+            <time>{d.latestDateFormatted}</time>
+          </header>
+
+          <div className="bt-fighters">
+            <Fighter name={d.artist1Name} pfp={d.artist1PfpUrl} wavid={d.artist1Wavid} color={SIDE_A}
+              win={d.overallWinnerIsA === true} rounds={multi ? d.a1Wins : null} earned={[d.a1EarnSol, d.a1EarnUsd]} />
+            <span className="bt-vs" aria-hidden="true">vs</span>
+            <Fighter name={d.artist2Name} pfp={d.artist2PfpUrl} wavid={d.artist2Wavid} color={SIDE_B}
+              win={d.overallWinnerIsA === false} rounds={multi ? d.a2Wins : null} earned={[d.a2EarnSol, d.a2EarnUsd]} />
+          </div>
+
+          <p className="bt-verdict ev">
+            {d.overallWinner
+              ? <><b style={{ color: winColor }}>{d.overallWinner}</b><span>{multi ? <>wins the event <em>{Math.max(d.a1Wins, d.a2Wins)}–{Math.min(d.a1Wins, d.a2Wins)}</em></> : 'wins'}</span></>
+              : <><b>Event drawn</b><span><em>{d.a1Wins}–{d.a2Wins}</em></span></>}
           </p>
-          <p className="text-xs text-muted-foreground">{r.dateFormatted} · #{r.battle_id}</p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          {r.youtubeLink && (
-            <a href={r.youtubeLink} target="_blank" rel="noreferrer"
-              className="text-[10px] text-[#7ec1fb] hover:underline">Watch ↗</a>
+
+          {multi && (
+            <ol className="bt-strip" aria-label="Round winners">
+              {d.rounds.map(r => (
+                <li key={r.battle_id} style={{ '--side': r.winnerIsA ? SIDE_A : SIDE_B } as CSSProperties}>
+                  <span>R{r.roundNumber}</span><i aria-hidden="true" />{r.winner}
+                </li>
+              ))}
+            </ol>
           )}
-          <SolscanLink address={r.vaultAddress} label="Verify Onchain" />
-          <SolscanLink address={r.battleAddress} label="Battle Solscan" />
-          <Link href={`/battles/${r.battle_id}`} className="text-[10px] text-muted-foreground hover:text-white transition-colors">
-            Details ↗
-          </Link>
+
+          <p className="bt-sum">
+            <Tip text="Every buy and sell across all rounds, from the vaults' real transaction history. Trader claims happen separately after settlement." wide>
+              <span>Traded</span>
+            </Tip>
+            <b>◎{d.totalVolSol}</b><small>{d.totalVolUsd}</small>
+            <span className="bt-dot" aria-hidden="true" />
+            <span>Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
+            <span className="bt-dot" aria-hidden="true" />
+            <span>Platform earned</span><b style={{ color: PLATFORM }}>◎{d.platformEarnSol}</b><small>{d.platformEarnUsd}</small>
+          </p>
+
+          <div className="bt-actions">
+            <button type="button" className="ww-chip sm" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(o => !o)}>
+              {open ? 'Hide' : 'Show'} {multi ? `all ${d.totalRounds} rounds` : 'the full numbers'}
+            </button>
+            {first?.youtubeLink && <a className="bt-link" href={first.youtubeLink} target="_blank" rel="noreferrer">Watch replay</a>}
+            {first?.streamLink && <a className="bt-link" href={first.streamLink} target="_blank" rel="noreferrer">Stream</a>}
+          </div>
         </div>
       </div>
 
-      {/* Winner banner */}
-      <div className="px-5 py-2 bg-[#95fe7c]/5">
-        <p className="text-xs">
-          <span className="font-display font-bold" style={{ color: accent }}>{r.winner}</span>
-          <span className="text-muted-foreground ml-2">won with a</span>
-          <span className="text-[#95fe7c] font-bold ml-2">+{r.marginPct}% margin</span>
-        </p>
-      </div>
-
-      {/* Pool bars */}
-      <div className="px-5 py-4 space-y-2">
-        <PoolBarRow name={r.artist1Name} poolSol={r.a1PoolSol} poolUsd={r.a1PoolUsd}
-          pct={r.pct1} won={r.winnerIsA} accent={accent} />
-        <PoolBarRow name={r.artist2Name} poolSol={r.a2PoolSol} poolUsd={r.a2PoolUsd}
-          pct={r.pct2} won={!r.winnerIsA} accent={accent} />
-      </div>
-
-      {/* Stats row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 px-5 pb-3">
-        <MiniStatBox
-          label={<Tip text="Buys + sells during this round, from the vault's real transaction history. Claim withdrawals (settlement payouts) are separate -- Verify Onchain above shows the vault's complete activity." wide>Round Volume</Tip>}
-          value={`${r.totalVolSol} SOL`} sub={r.totalVolUsd} />
-        <MiniStatBox label="Margin" value={`${r.marginSol} SOL`} sub={`+${r.marginPct}%`} />
-        <MiniStatBox label={`${r.artist1Name.split(' ')[0]} Vol`} value={`${r.a1VolSol} SOL`} sub={r.a1PoolUsd} />
-        <MiniStatBox label={`${r.artist2Name.split(' ')[0]} Vol`} value={`${r.a2VolSol} SOL`} sub={r.a2PoolUsd} />
-      </div>
-
-      {/* Earnings toggle */}
-      <div className="border-t border-border/30 px-5 py-2.5 flex items-center justify-between">
-        <button
-          onClick={() => setShowEarnings(e => !e)}
-          className="text-[10px] font-display font-bold text-muted-foreground hover:text-white transition-colors"
-        >
-          {showEarnings ? 'Hide Earnings ↑' : 'Show Artist Earnings ↓'}
-        </button>
-        <span className="text-xs text-muted-foreground">
-          Platform: <span className="text-[#f2a74b] font-mono font-bold">◎{r.platformEarnSol}</span>
-          <span className="ml-1 text-muted-foreground">({r.platformEarnUsd})</span>
-        </span>
-      </div>
-
-      {/* Earnings breakdown */}
-      {showEarnings && (
-        <div className="border-t border-border/30 bg-muted/40 divide-y divide-border/30">
-          <EarningsRow icon="paid-artist" name={r.artist1Name} totalSol={r.a1EarnSol} totalUsd={r.a1EarnUsd}
-            totalStreams={r.a1EarnStreams}
-            rows={[
-              { label: `Trading fees (1% of ${r.a1VolSol} SOL)`, sol: r.a1TradeFeesSol, usd: r.a1TradeFeesUsd },
-              { label: r.a1SettleLabel, sol: r.a1SettleSol, usd: r.a1SettleUsd },
-            ]}
-          />
-          <EarningsRow icon="paid-artist" name={r.artist2Name} totalSol={r.a2EarnSol} totalUsd={r.a2EarnUsd}
-            totalStreams={r.a2EarnStreams}
-            rows={[
-              { label: `Trading fees (1% of ${r.a2VolSol} SOL)`, sol: r.a2TradeFeesSol, usd: r.a2TradeFeesUsd },
-              { label: r.a2SettleLabel, sol: r.a2SettleSol, usd: r.a2SettleUsd },
-            ]}
-          />
-          <EarningsRow icon="collect" name="WaveWarZ Platform" totalSol={r.platformEarnSol} totalUsd={r.platformEarnUsd}
-            accent="platform"
-            rows={[
-              { label: `Trading fees (0.5% of ${r.totalVolSol} SOL)`, sol: formatPlatformFee(r.totalVolSol), usd: '' },
-              { label: 'Settlement bonus (3% of loser pool)', sol: r.platformEarnSol, usd: r.platformEarnUsd },
-            ]}
-          />
-          {(r.a1Wallet || r.a2Wallet || r.wavewarzWallet) && (
-            <div className="px-5 py-3">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Wallets</p>
-              <div className="space-y-1">
-                {r.a1Wallet && <WalletRow label="Wallet A" addr={r.a1Wallet} />}
-                {r.a2Wallet && <WalletRow label="Wallet B" addr={r.a2Wallet} />}
-                {r.wavewarzWallet && <WalletRow label="Treasury" addr={r.wavewarzWallet} />}
-              </div>
-            </div>
-          )}
-        </div>
+      {!open && first && (
+        <Receipts>
+          <Rcpt href={solscan(first.vaultAddress)}>Verify Onchain{multi ? ' (round 1)' : ''}</Rcpt>
+          <Rcpt href={solscan(first.battleAddress)}>Battle account{multi ? ' (round 1)' : ''}</Rcpt>
+          <Rcpt href={`/battles/${first.battle_id}`} internal>Battle #{first.battle_id}{multi ? `–#${last.battle_id}` : ''}</Rcpt>
+        </Receipts>
       )}
-    </div>
+
+      <div id={panelId} hidden={!open}>
+        {open && d.rounds.map(r => <Round key={r.battle_id} r={r} multi={multi} />)}
+      </div>
+    </article>
   )
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function formatPlatformFee(volSol: string): string {
-  return parseFloat((parseFloat(volSol) * 0.00495).toFixed(4)).toString()
-}
-
-function AggregateStat({ label, value, sub }: { label: ReactNode; value: string; sub: string }) {
-  return (
-    <div className="card-elevated px-3 py-2.5">
-      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-base font-display font-bold text-white leading-tight">{value}</p>
-      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
-    </div>
-  )
-}
-
-function PoolBarRow({ name, poolSol, poolUsd, pct, won, accent }: {
-  name: string; poolSol: string; poolUsd: string; pct: number; won: boolean; accent: string
+function Fighter({ name, pfp, wavid, color, win, rounds, earned }: {
+  name: string; pfp: string | null; wavid: string | null; color: string; win: boolean; rounds: number | null; earned: [string, string]
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-muted-foreground w-28 shrink-0 truncate">{name}</span>
-      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-        <div className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, backgroundColor: won ? accent : `${accent}40` }} />
+    <div className={`bt-fighter${win ? ' win' : ''}`} style={{ '--side': color } as CSSProperties}>
+      <IdMark name={name} pfpUrl={pfp} wavid={wavid} color={color} size={56} />
+      <div className="min-w-0">
+        {win && <span className="bt-win">Winner</span>}
+        <h3 className="bt-name">{name}</h3>
+        <p className="bt-fig"><span>Earned</span><b>◎{earned[0]}</b><small>{earned[1]}</small></p>
+        {rounds !== null && <p className="bt-soft">{rounds} {rounds === 1 ? 'round' : 'rounds'} won</p>}
       </div>
-      <span className="font-mono text-xs w-16 text-right font-bold" style={{ color: won ? accent : '#6b7280' }}>
-        ◎{poolSol}
-      </span>
-      <span className="text-xs text-muted-foreground w-16 text-right">{poolUsd}</span>
-      <span className="text-xs font-bold w-4" style={{ color: won ? accent : 'transparent' }}>W</span>
     </div>
   )
 }
 
-function MiniStatBox({ label, value, sub }: { label: ReactNode; value: string; sub: string }) {
+function Round({ r, multi }: { r: RoundData; multi: boolean }) {
   return (
-    <div className="card-elevated p-2.5">
-      <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 leading-tight">{label}</p>
-      <p className="text-sm font-display font-bold text-white font-mono">{value}</p>
-      <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
-    </div>
-  )
-}
+    <section className="bt-round" aria-label={`Round ${r.roundNumber}`}>
+      <header className="bt-round-head">
+        {multi && <b>Round {r.roundNumber}</b>}
+        <time>{r.dateFormatted}</time>
+        <span><b style={{ color: r.winnerIsA ? SIDE_A : SIDE_B }}>{r.winner}</b> won{multi ? ' the round' : ''}</span>
+      </header>
 
-function EarningsRow({ icon, name, totalSol, totalUsd, totalStreams, rows, accent }: {
-  icon: WwIconName; name: string; totalSol: string; totalUsd: string; totalStreams?: string; accent?: string
-  rows: { label: string; sol: string; usd: string }[]
-}) {
-  const textColor = accent === 'platform' ? 'text-[#f2a74b]' : 'text-[#95fe7c]'
-  return (
-    <div className="px-5 py-3">
-      <div className="flex items-start justify-between gap-3 mb-1.5">
-        <p className="text-sm font-display font-bold text-white">
-          <WwIcon name={icon} size={18} /> <span className="text-muted-foreground font-normal text-xs">
-            {name.length > 28 ? name.slice(0, 28) + '…' : name}
-          </span> earned:
-        </p>
-        <div className="text-right shrink-0">
-          <p className={`font-mono font-bold text-sm ${textColor}`}>◎{totalSol}</p>
-          {totalUsd && <p className="text-xs text-muted-foreground">{totalUsd}</p>}
-          {totalStreams && <p className="text-[10px] text-[#7ec1fb]">≈ {totalStreams} Spotify streams</p>}
-        </div>
-      </div>
-      <div className="space-y-1 ml-3">
-        {rows.map(r => r.sol && (
-          <div key={r.label} className="flex items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">└── {r.label}</p>
-            <div className="text-right shrink-0">
-              <span className="font-mono text-xs text-white">◎{r.sol}</span>
-              {r.usd && <span className="text-xs text-muted-foreground ml-1">{r.usd}</span>}
-            </div>
+      <div className="bt-pools" aria-label="Final pools">
+        {[
+          { name: r.artist1Name, sol: r.a1PoolSol, usd: r.a1PoolUsd, pct: r.pct1, color: SIDE_A, win: r.winnerIsA },
+          { name: r.artist2Name, sol: r.a2PoolSol, usd: r.a2PoolUsd, pct: r.pct2, color: SIDE_B, win: !r.winnerIsA },
+        ].map(p => (
+          <div key={p.name} className="bt-pool-row" style={{ '--side': p.color } as CSSProperties}>
+            <span className="bt-pool-n">{p.name}{p.win && <span className="sr-only"> (round winner)</span>}</span>
+            <span className="bt-bar" aria-hidden="true"><i style={{ width: `${p.pct}%` }} /></span>
+            <b>◎{p.sol}</b><small>{p.usd}</small>
           </div>
         ))}
+        <p className="bt-soft">Final pools. Gap ◎{r.marginSol} ({r.marginPct}%). The round winner comes from the judging, not the pool size.</p>
       </div>
-    </div>
-  )
-}
 
-function WalletRow({ label, addr }: { label: string; addr: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-muted-foreground w-16 shrink-0">{label}:</span>
-      <span className="font-mono text-xs text-[#7ec1fb] break-all">{addr}</span>
-    </div>
-  )
-}
+      <Ledger caption={`Round ${r.roundNumber} earnings`} parties={[
+        {
+          name: r.artist1Name, color: SIDE_A, wallet: r.a1Wallet, streams: r.a1EarnStreams,
+          traded: { sol: r.a1VolSol, usd: r.a1VolUsd },
+          fee: { sol: r.a1TradeFeesSol, usd: r.a1TradeFeesUsd, note: '1%' },
+          settle: { sol: r.a1SettleSol, usd: r.a1SettleUsd, note: settleNote(r.a1SettleLabel) },
+          earned: { sol: r.a1EarnSol, usd: r.a1EarnUsd },
+        },
+        {
+          name: r.artist2Name, color: SIDE_B, wallet: r.a2Wallet, streams: r.a2EarnStreams,
+          traded: { sol: r.a2VolSol, usd: r.a2VolUsd },
+          fee: { sol: r.a2TradeFeesSol, usd: r.a2TradeFeesUsd, note: '1%' },
+          settle: { sol: r.a2SettleSol, usd: r.a2SettleUsd, note: settleNote(r.a2SettleLabel) },
+          earned: { sol: r.a2EarnSol, usd: r.a2EarnUsd },
+        },
+        {
+          name: 'WaveWarZ platform', color: PLATFORM, wallet: r.wavewarzWallet, streams: null,
+          traded: { sol: r.totalVolSol, usd: r.totalVolUsd, note: `both sides · ≈ ${r.streamEquivalent}` },
+          fee: { sol: r.platformTradeFeesSol, usd: r.platformTradeFeesUsd, note: '0.5%' },
+          settle: { sol: r.platformSettleSol, usd: r.platformSettleUsd, note: '3% of losing pool' },
+          earned: { sol: r.platformEarnSol, usd: r.platformEarnUsd },
+        },
+      ]} />
 
-function ArtistAvatar({ name, pfpUrl, accent }: {
-  name: string; pfpUrl: string | null; accent: string
-}) {
-  const initial = name.charAt(0).toUpperCase()
-  if (pfpUrl) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={pfpUrl}
-        alt={name}
-        className="w-7 h-7 rounded-full object-cover border-2 shrink-0"
-        style={{ borderColor: `${accent}40` }}
-      />
-    )
-  }
-  return (
-    <div
-      className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-display font-bold shrink-0 border"
-      style={{ backgroundColor: `${accent}18`, borderColor: `${accent}40`, color: accent }}
-    >
-      {initial}
-    </div>
+      <Receipts>
+        {r.youtubeLink && <Rcpt href={r.youtubeLink}>Watch</Rcpt>}
+        <Rcpt href={solscan(r.vaultAddress)}>Verify Onchain</Rcpt>
+        <Rcpt href={solscan(r.battleAddress)}>Battle account</Rcpt>
+        <Rcpt href={`/battles/${r.battle_id}`} internal>Battle #{r.battle_id}</Rcpt>
+      </Receipts>
+    </section>
   )
 }

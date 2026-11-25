@@ -9,5 +9,5 @@ export function Pfp({ src, name, className }: { src: string | null; name: string
     // eslint-disable-next-line @next/next/no-img-element
     return <img className={className} src={src} alt="" onError={() => setBad(true)} />
   }
-  return <b className={className} aria-hidden="true">{name.trim().charAt(0).toUpperCase() || '?'}</b>
+  return <b className={className} aria-hidden="true">{(name.match(/[\p{L}\p{N}]/u)?.[0] ?? '?').toUpperCase()}</b>
 }
