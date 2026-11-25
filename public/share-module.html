@@ -266,7 +266,7 @@
   html.embed .modal{max-width:none;box-shadow:none}
   html.embed .modal-body{max-height:none}
   html.embed .modal{border:0;border-radius:0}
-</style><link rel="stylesheet" href="ww-base.css">
+</style><link rel="stylesheet" href="ww-base.css"><link rel="stylesheet" href="ww-v2.css?v=3"><script src="ww-v2.js?v=3" defer></script>
 
 
 <div class="wrap">
@@ -307,7 +307,7 @@
     <div class="trigger-row" id="triggerRow">
       <button class="withdraw-btn" id="openModalBtn" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 4v13M6 11l6 6 6-6"/><path d="M5 21h14"/></svg>
-        Withdraw Winnings
+        Withdraw
       </button>
       <p class="lead">In production, the share card opens right after this withdrawal confirms — the one moment a trader is already done trading for this battle.</p>
       <div class="fine">SIMULATED — no funds move in this prototype</div>
@@ -326,7 +326,7 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
             </button>
             <button class="icon-btn close" id="closeBtn" title="Close" type="button">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              <i data-ww-icon="ui-close" data-size="18"></i>
             </button>
           </div>
         </div>
@@ -844,5 +844,6 @@
 </script>
 
 
+<script src="icons/ww-icons.js"></script>
 </body>
 </html>

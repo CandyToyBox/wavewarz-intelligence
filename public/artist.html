@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020203"><title>LUI | Artist Statz | WaveWarz</title>
+<meta name="description" content="LUI on WaveWarz: battle record, songs, and the Wave ID drawn from every battle.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#daecfd;--muted:#8d99a8;--line:rgba(218,236,253,.13);--green:#95fe7c;--blue:#7ec1fb;--on:#0d1321;--c1:#f6fbff;--c2:#dbe6ef;--c3:#aebccb;--c4:#5a6b7e;--c5:#2c3746;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);font:400 17px/1.6 'Outfit',sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+.crumb{font:500 13px 'JetBrains Mono',monospace;color:var(--muted);margin:28px 0 0}.crumb a{color:var(--muted)}
+.samp{font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 9px;margin-left:10px}
+/* focal plane: the full Wave ID is the biggest thing on the page (Quan's WavID card layout) */
+.focal{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:48px;align-items:center;padding:28px 0 64px}
+.id{position:relative;aspect-ratio:1;width:100%;max-width:680px;justify-self:center;perspective:1000px}
+.id .in{position:absolute;inset:0;border-radius:50%;overflow:hidden;transition:transform .5s var(--ease)}
+.id .in img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;filter:brightness(1.5) contrast(1.15);-webkit-mask:radial-gradient(closest-side,#000 68%,transparent);mask:radial-gradient(closest-side,#000 68%,transparent);animation:spin 140s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+.id .lamp{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(180px circle at var(--mx,50%) var(--my,50%),rgba(246,251,255,.16),transparent 70%);mix-blend-mode:screen}
+.id svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;opacity:0;transition:opacity .35s}
+.id .co{position:absolute;font:500 12.5px/1.45 'JetBrains Mono',monospace;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(2,2,3,.86);white-space:nowrap;opacity:0;translate:0 6px;transition:opacity .35s,translate .35s var(--ease)}
+.id .co b{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.id:hover svg.lines,.id:focus-within svg.lines,.id.hold svg.lines{opacity:1}.id:hover .co,.id:focus-within .co,.id.hold .co{opacity:1;translate:0 0}
+.co1{left:2%;top:10%}.co2{right:0;top:40%}.co3{left:8%;bottom:16%}
+.hint{position:absolute;left:50%;top:6px;translate:-50% 0;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);transition:opacity .3s}.id:hover .hint{opacity:0}
+.who{position:absolute;left:0;bottom:0;display:flex;align-items:center;gap:14px;padding:10px 18px 10px 10px;border-radius:999px;background:rgba(2,2,3,.86);border:1px solid var(--line)}
+.who .ph{width:64px;height:64px;border-radius:50%;overflow:hidden;border:2px solid transparent;background:linear-gradient(#05070a,#05070a) padding-box,linear-gradient(150deg,var(--c1),var(--c3) 25%,var(--c4) 50%,var(--c2) 70%,var(--c5)) border-box;flex:none}
+.who .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.who b{display:block;font:700 22px/1.1 'Space Grotesk',sans-serif;color:#fff}.who span{font:500 13px 'JetBrains Mono',monospace;color:var(--muted)}
+h1{font:700 clamp(44px,5.4vw,76px)/.98 'Space Grotesk',sans-serif;letter-spacing:-.03em;margin:0 0 14px;color:#fff}
+.lede{color:var(--muted);font-size:19px;margin:0 0 28px;max-width:40ch}
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--line);margin:0 0 28px;padding:0;list-style:none}
+.figs li{padding:18px 0;border-bottom:1px solid var(--line)}.figs li:nth-child(odd){padding-right:18px;border-right:1px solid var(--line)}.figs li:nth-child(even){padding-left:22px}
+.figs b{display:block;font:600 clamp(28px,3vw,40px)/1 'Space Grotesk',sans-serif;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:#fff}
+.figs span{font-size:14px;color:var(--muted)}.figs small{display:block;font:400 12px 'JetBrains Mono',monospace;color:var(--muted);margin-top:4px}
+.acts{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;font:600 16px 'Outfit',sans-serif;text-decoration:none;border:1px solid transparent;transition:transform .14s var(--ease),background .2s,border-color .2s}
+.btn:active{transform:scale(.97)}.btn.go{background:var(--green);color:var(--on)}.btn.ghost{color:#fff;border-color:rgba(218,236,253,.22)}
+@media (hover:hover) and (pointer:fine){.btn.go:hover{background:#aaff95}.btn.ghost:hover{border-color:var(--c3)}}
+section{padding:72px 0;border-top:1px solid var(--line)}
+h2{font:700 clamp(28px,3.4vw,44px)/1.05 'Space Grotesk',sans-serif;letter-spacing:-.02em;margin:0 0 10px;color:#fff}
+.sub{color:var(--muted);margin:0 0 32px}
+/* songs: album art first, each in a small chrome jewel case */
+.songs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:28px}
+.song{display:grid;gap:10px;text-decoration:none;color:inherit}
+.case{position:relative;aspect-ratio:1;padding:7px;border-radius:14px;background:linear-gradient(150deg,var(--c1),var(--c3) 18%,var(--c4) 42%,var(--c2) 60%,var(--c5));box-shadow:0 22px 44px -16px #000;transition:transform .3s var(--ease)}
+.case img{width:100%;height:100%;object-fit:cover;border-radius:9px;display:block}
+.case::after{content:"";position:absolute;inset:7px;border-radius:9px;background:linear-gradient(115deg,rgba(255,255,255,.24),rgba(255,255,255,.05) 24%,transparent 38%);pointer-events:none}
+@media (hover:hover) and (pointer:fine){.song:hover .case{transform:translateY(-4px)}}
+.song b{font:600 18px/1.25 'Space Grotesk',sans-serif;color:#fff}.song span{font:500 13px 'JetBrains Mono',monospace;color:var(--muted)}
+.rec{display:flex;gap:10px;font:500 13px 'JetBrains Mono',monospace}.rec .w{color:var(--green)}.rec .l{color:var(--blue)}
+/* how the Wave ID changed: one small ID per battle */
+.evo{display:flex;gap:22px;overflow-x:auto;padding:6px 0 14px;scroll-snap-type:x mandatory;overscroll-behavior-x:contain}
+.ev{flex:0 0 170px;scroll-snap-align:start;display:grid;gap:10px;justify-items:center;text-align:center}
+.ev .o{width:150px;aspect-ratio:1;border-radius:50%;overflow:hidden}
+.ev .o img{width:100%;height:100%;object-fit:cover;mix-blend-mode:screen;-webkit-mask:radial-gradient(closest-side,#000 66%,transparent);mask:radial-gradient(closest-side,#000 66%,transparent)}
+.ev b{font:600 15px 'Space Grotesk',sans-serif;color:#fff}.ev span{font:500 12px 'JetBrains Mono',monospace;color:var(--muted)}
+.ev .res{font:500 12px 'JetBrains Mono',monospace}.ev .res.w{color:var(--green)}.ev .res.l{color:var(--blue)}
+/* recent battles: both album arts */
+.battles{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.battles li{display:grid;grid-template-columns:64px auto 64px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+.battles img{width:64px;height:64px;border-radius:8px;object-fit:cover}
+.battles .vs{font:700 13px 'Space Grotesk',sans-serif;letter-spacing:.2em;color:var(--muted)}
+.battles b{font:600 16px 'Space Grotesk',sans-serif;color:#fff;display:block}.battles span{font-size:14px;color:var(--muted)}
+.battles .res{font:500 13px 'JetBrains Mono',monospace;text-align:right}.battles .res.w{color:var(--green)}.battles .res.l{color:var(--blue)}
+.foot{padding:40px 0 60px;color:var(--muted);font-size:14px}
+@media (max-width:900px){.focal{grid-template-columns:1fr;gap:28px}.who{position:static;margin-top:-30px;width:max-content;max-width:100%}.co{font-size:10.5px}.battles li{grid-template-columns:48px auto 48px minmax(0,1fr)}.battles img{width:48px;height:48px}.battles .res{grid-column:4}}
+@media (prefers-reduced-motion:reduce){.id .in img{animation:none}.id .in,.id .co,.case{transition:none}}
+</style>
+<link rel="stylesheet" href="ww-base.css"><link rel="stylesheet" href="ww-v2.css?v=3"><script src="ww-v2.js?v=3" defer></script>
+</head><body class="ww-flow">
+
+<div class="nav-wrapper"><nav class="navbar" aria-label="Main"><a href="index.html" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=4" alt="WaveWarZ" class="nav-logo" width="114" height="50"></a><ul class="nav-links"><li><details class="cp-watch"><summary class="">Watch live<span class="cp-chev" aria-hidden="true"></span></summary><div class="cp-watch-menu"><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch on X</a><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Watch on Kick</a><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Watch on Twitch</a><p>No wallet needed to watch. YouTube is replays only; current livestreams are on X, Kick, and Twitch.</p></div></details></li><li><a href="index.html#tonight">Schedule</a></li><li><a href="index.html#how-it-works">How it works</a></li><li><a href="index.html#for-artists">For Artists</a></li><li><a href="quick-battles.html">Queue</a></li><li><a href="https://wavewarz.info">Statz</a></li><li><a href="https://merch.wavewarz.info" target="_blank" rel="noopener">Merch</a></li></ul><div class="nav-actions"><button class="ww-btn solid" id="wallet" type="button">Connect wallet</button></div></nav></div>
+<main class="wrap">
+ <p class="crumb"><a href="https://wavewarz.info">Statz</a> / Artists / LUI <span class="samp">Sample data</span></p>
+ <div class="focal">
+  <div class="id" id="wid" tabindex="0" aria-label="LUI's Wave ID. Hover or hold to read it.">
+   <div class="in" id="widIn"><img src="wave-id/wave-id-green.jpeg" alt="LUI's Wave ID, drawn from his battle history"></div>
+   <div class="lamp" id="widLamp"></div>
+   <span class="hint">Hover or hold to read</span>
+   <svg class="lines" viewBox="0 0 100 100" aria-hidden="true"><path d="M32 30 L24 16 L14 16" fill="none" stroke="#95fe7c" stroke-width="1.2" vector-effect="non-scaling-stroke"/><circle cx="32" cy="30" r=".8" fill="#95fe7c"/><path d="M64 44 L82 44" fill="none" stroke="#daecfd" stroke-opacity=".7" stroke-width="1.2" vector-effect="non-scaling-stroke"/><circle cx="64" cy="44" r=".8" fill="#daecfd"/><path d="M42 64 L30 76 L20 76" fill="none" stroke="#7ec1fb" stroke-width="1.2" vector-effect="non-scaling-stroke"/><circle cx="42" cy="64" r=".8" fill="#7ec1fb"/></svg>
+   <div class="co co1"><b>Loudest song</b>Bleu Dream &middot; 12.4 SOL &middot; 9W 3L</div>
+   <div class="co co2"><b>Battle activity</b>20 battles</div>
+   <div class="co co3"><b>Win ratio</b>70% &middot; 14W 6L</div>
+   <div class="who"><span class="ph"><img src="LUI.png" alt="LUI"></span><div><b>LUI</b><span>@luiwrites</span></div></div>
+  </div>
+  <div>
+   <h1>LUI</h1>
+   <p class="lede">Hip hop from the WaveWarZ stage. His Wave ID grows with every battle he plays.</p>
+   <ul class="figs">
+    <li><b>14 W &middot; 6 L</b><span>Battle record</span></li>
+    <li><b>70%</b><span>Win rate</span></li>
+    <li><b>$1,240</b><span>Traded on his songs</span><small>12.3 SOL</small></li>
+    <li><b>$38</b><span>Paid to LUI</span><small>0.38 SOL</small></li>
+   </ul>
+   <div class="acts"><a class="btn go" href="https://audius.co/luiwrites" target="_blank" rel="noopener">Listen on Audius</a><a class="btn ghost" href="https://wavewarz.info/wavid">Get his Wave ID card</a></div>
+  </div>
+ </div>
+
+ <section aria-labelledby="songsT">
+  <h2 id="songsT">Songs</h2><p class="sub">Every song LUI has brought to a battle.</p>
+  <div class="songs">
+   <a class="song" href="https://audius.co/luiwrites" target="_blank" rel="noopener"><div class="case"><img src="https://audius-creator-4.theblueprint.xyz/content/baeaaaiqsea7ljituvcjuq7umrszr75xzruw5i45xyipyx47jc3v7rrpcbdadg/480x480.jpg" alt="Cover art for Bleu Dream"></div><b>Bleu Dream</b><div class="rec"><span class="w">9 W</span><span class="l">3 L</span><span>12.4 SOL traded</span></div></a>
+   <a class="song" href="https://audius.co/luiwrites" target="_blank" rel="noopener"><div class="case"><img src="https://audius-04.staked.cloud/content/01KCHHCB8EDNZ5Z7G1HCBKEVHF/480x480.jpg" alt="Cover art for AI LUI - A Christmas Love Song"></div><b>AI LUI - A Christmas Love Song</b><div class="rec"><span class="w">5 W</span><span class="l">3 L</span><span>6.1 SOL traded</span></div></a>
+  </div>
+ </section>
+
+ <section aria-labelledby="evoT">
+  <h2 id="evoT">How his Wave ID changed</h2><p class="sub">One Wave ID after each of his last battles. Newest on the left.</p>
+  <div class="evo">
+   <div class="ev"><div class="o"><img src="wave-id/wave-id-green.jpeg" alt=""></div><b>vs Geek Myth</b><span>Nov 23</span><span class="res w">Won</span></div>
+   <div class="ev"><div class="o"><img src="wave-id/wave-id-aqua.jpeg" alt="" style="filter:hue-rotate(-40deg)"></div><b>vs @srchappell</b><span>Nov 16</span><span class="res w">Won</span></div>
+   <div class="ev"><div class="o"><img src="wave-id/wave-id-ice.jpeg" alt=""></div><b>vs Stella</b><span>Nov 9</span><span class="res l">Lost</span></div>
+   <div class="ev"><div class="o"><img src="wave-id/wave-id-green.jpeg" alt="" style="filter:saturate(.6)"></div><b>vs R3PLIC4NT</b><span>Nov 2</span><span class="res w">Won</span></div>
+  </div>
+ </section>
+
+ <section aria-labelledby="batT">
+  <h2 id="batT">Recent battles</h2><p class="sub">Both songs, the result, and what LUI earned.</p>
+  <ul class="battles">
+   <li><img src="https://audius-creator-4.theblueprint.xyz/content/baeaaaiqsea7ljituvcjuq7umrszr75xzruw5i45xyipyx47jc3v7rrpcbdadg/480x480.jpg" alt=""><span class="vs">VS</span><img src="https://audius-creator-10.theblueprint.xyz/content/baeaaaiqseagrsnhvnf363eo436liotxjhk7ye7chzmeloq26rolvb25dwzm4m/480x480.jpg" alt=""><div><b>Bleu Dream vs ZAZA</b><span>Quick Battle &middot; Nov 23</span></div><span class="res w">Won &middot; +0.06 SOL</span></li>
+   <li><img src="https://audius-04.staked.cloud/content/01KCHHCB8EDNZ5Z7G1HCBKEVHF/480x480.jpg" alt=""><span class="vs">VS</span><img src="https://val015.open-audio-validator.com/content/baeaaaiqsedwzt5vkp4y5m3dydmecgxs4jkpyl6oalrjirle4ogashxcsu54aq/480x480.jpg" alt=""><div><b>A Christmas Love Song vs Just Don't</b><span>Quick Battle &middot; Nov 16</span></div><span class="res w">Won &middot; +0.04 SOL</span></li>
+   <li><img src="https://audius-creator-4.theblueprint.xyz/content/baeaaaiqsea7ljituvcjuq7umrszr75xzruw5i45xyipyx47jc3v7rrpcbdadg/480x480.jpg" alt=""><span class="vs">VS</span><img src="https://val006.open-audio-validator.com/content/baeaaaiqsed2met5meckcpvn3fzppjwfhwarh7foooykcbfxlkwlonyclm7tos/480x480.jpg" alt=""><div><b>Bleu Dream vs Glitch</b><span>Quick Battle &middot; Nov 9</span></div><span class="res l">Lost &middot; +0.01 SOL</span></li>
+  </ul>
+ </section>
+ <p class="foot">Prototype of the Artist Statz page. All figures are sample data. Wave IDs by Quan; on the live page each one is drawn by his WavID renderer from the artist's real record.</p>
+</main>
+<script>
+(function(){var o=document.getElementById('wid'),inn=document.getElementById('widIn'),lamp=document.getElementById('widLamp'),RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ if(!RM&&matchMedia('(hover:hover) and (pointer:fine)').matches){o.addEventListener('pointermove',function(e){var r=o.getBoundingClientRect(),px=(e.clientX-r.left)/r.width,py=(e.clientY-r.top)/r.height;inn.style.transform='rotateY('+((px-.5)*10)+'deg) rotateX('+((.5-py)*10)+'deg)';lamp.style.setProperty('--mx',px*100+'%');lamp.style.setProperty('--my',py*100+'%')});o.addEventListener('pointerleave',function(){inn.style.transform=''})}
+ /* touch: hold to read */
+ o.addEventListener('touchstart',function(){o.classList.add('hold')},{passive:true});o.addEventListener('touchend',function(){o.classList.remove('hold')});
+})();
+</script>
+</body></html>

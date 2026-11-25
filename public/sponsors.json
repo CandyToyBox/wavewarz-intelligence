@@ -1,22 +1,25 @@
 {
-  "note": "Shown in the sponsor block under This week. Logos are transparent PNGs in sponsors/. \"shape\": \"round\" marks a circular badge, shown a little larger so it carries the same weight as a wordmark.",
+  "note": "Shown in the sponsor block under This week. Logos are transparent PNGs in sponsors/. \"shape\": \"round\" marks a circular badge, shown a little larger so it carries the same weight as a wordmark. Optional \"x\" is the sponsor's X profile URL; it shows as a small follow link under the logo. Only add handles taken from the sponsor's own site or confirmed by them.",
   "sponsors": [
     {
       "name": "Lit Studio",
       "logo": "sponsors/lit-studio.png?v=2",
       "url": "https://litstudio.online",
-      "shape": "round"
+      "shape": "round",
+      "x": ""
     },
     {
       "name": "Ignite Radio",
       "logo": "sponsors/ignite-radio.png?v=2",
       "url": "https://igniteradio.xyz",
-      "shape": "round"
+      "shape": "round",
+      "x": ""
     },
     {
       "name": "The ZAO",
       "logo": "sponsors/the-zao.png",
-      "url": "https://thezao.com"
+      "url": "https://thezao.com",
+      "x": "https://x.com/TheZAODAO"
     }
   ]
 }

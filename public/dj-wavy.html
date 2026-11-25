@@ -256,11 +256,11 @@ dialog.sh[open]{animation:sheet .4s var(--ease-out)}
  #printDoc .pf{margin-top:16pt;padding-top:8pt;border-top:1px solid #ccd;font-size:8.5pt;color:#555}
 }
 </style>
-<link rel="stylesheet" href="ww-base.css">
+<link rel="stylesheet" href="ww-base.css"><link rel="stylesheet" href="ww-v2.css?v=3"><script src="ww-v2.js?v=3" defer></script>
 </head>
 <body class="ww-flow">
 <div class="wid-top" aria-hidden="true"></div>
-<div class="nav-wrapper"><nav class="navbar" aria-label="Main"><a href="index.html" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=3" alt="WaveWarZ" class="nav-logo" width="114" height="50"></a><ul class="nav-links"><li><details class="cp-watch"><summary>Watch live<span class="cp-chev" aria-hidden="true"></span></summary><div class="cp-watch-menu"><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch on X</a><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Watch on Kick</a><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Watch on Twitch</a><p>No wallet needed to watch. YouTube is replays only; current livestreams are on X, Kick, and Twitch.</p></div></details></li><li><a href="index.html#tonight">Schedule</a></li><li><a href="index.html#how-it-works">How it works</a></li><li><a href="index.html#for-artists">For Artists</a></li><li><a href="quick-battles.html">Queue</a></li><li><a href="https://wavewarz.info">Statz</a></li></ul><div class="nav-actions"><button class="ww-btn solid" id="wallet" type="button">Connect wallet</button></div></nav></div>
+<div class="nav-wrapper"><nav class="navbar" aria-label="Main"><a href="index.html" aria-label="WaveWarZ home"><img src="wavewarz-logo.svg?v=4" alt="WaveWarZ" class="nav-logo" width="114" height="50"></a><ul class="nav-links"><li><details class="cp-watch"><summary>Watch live<span class="cp-chev" aria-hidden="true"></span></summary><div class="cp-watch-menu"><a href="https://x.com/wavewarz" target="_blank" rel="noopener">Watch on X</a><a href="https://kick.com/wavewarz" target="_blank" rel="noopener">Watch on Kick</a><a href="https://www.twitch.tv/wavewarzofficial" target="_blank" rel="noopener">Watch on Twitch</a><p>No wallet needed to watch. YouTube is replays only; current livestreams are on X, Kick, and Twitch.</p></div></details></li><li><a href="index.html#tonight">Schedule</a></li><li><a href="index.html#how-it-works">How it works</a></li><li><a href="index.html#for-artists">For Artists</a></li><li><a href="quick-battles.html">Queue</a></li><li><a href="https://wavewarz.info">Statz</a></li></ul><div class="nav-actions"><button class="ww-btn solid" id="wallet" type="button">Connect wallet</button></div></nav></div>
 
 <main class="page" id="main"></main>
 
@@ -285,6 +285,7 @@ dialog.sh[open]{animation:sheet .4s var(--ease-out)}
 <div id="printDoc" aria-hidden="true"></div>
 
 <script src="ww-celebrate.js"></script>
+<script src="icons/ww-icons.js"></script>
 <script>
 /* DJ Wavy Breakdown: a paid 1 on 1 where DJ Wavy compares two songs.
    Three views, picked from the URL:
@@ -314,6 +315,8 @@ var ICON={play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l
  share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"/></svg>',
  pdf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M12 10v6M9.5 13.5 12 16l2.5-2.5"/></svg>',
  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'};
+/* feature icons from the WaveWarZ set (icons/ww-icons.js); play/pause/search/share/pdf/plus stay plain control glyphs */
+ICON.coin=wwIcon('collect',20);ICON.bars=wwIcon('stats',20);ICON.doc=wwIcon('launch',20);ICON.x=wwIcon('ui-close',14);
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function httpsUrl(u){try{var x=new URL(u);return x.protocol==='https:'?x.href:'';}catch(e){return '';}}
@@ -557,7 +560,7 @@ function drawCard(){
  var q=data.request,j=data.judgement,n=j.winner==='B'?2:1,pc=Math.round((+j.confidence||0)*100),m=j.metrics||{};
  var W2=1080,H=1350,cv=document.createElement('canvas');cv.width=W2;cv.height=H;var ctx=cv.getContext('2d');
  return Promise.all([document.fonts.load('700 64px "Space Grotesk"'),document.fonts.load('400 30px Outfit'),document.fonts.load('600 26px "JetBrains Mono"')]).catch(function(){}).then(function(){
-  return Promise.all([img(httpsUrl(q.artist1_artwork_url)),img(httpsUrl(q.artist2_artwork_url)),img('djwavy/'+face(+j.confidence||0)+'.webp'),img('djwavy/approved.webp'),img('wave-id/wave-id-green.jpeg'),img('wavewarz-logo.svg?v=3')]);
+  return Promise.all([img(httpsUrl(q.artist1_artwork_url)),img(httpsUrl(q.artist2_artwork_url)),img('djwavy/'+face(+j.confidence||0)+'.webp'),img('djwavy/approved.webp'),img('wave-id/wave-id-green.jpeg'),img('wavewarz-logo.svg?v=4')]);
  }).then(function(I){
   var g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#101a2e');g.addColorStop(1,'#070b14');ctx.fillStyle=g;ctx.fillRect(0,0,W2,H);
   if(I[4]){ctx.save();ctx.globalAlpha=.22;var k=Math.max(W2/I[4].width,560/I[4].height);ctx.drawImage(I[4],(W2-I[4].width*k)/2,0,I[4].width*k,I[4].height*k);ctx.restore();var fg=ctx.createLinearGradient(0,200,0,560);fg.addColorStop(0,'rgba(16,26,46,0)');fg.addColorStop(1,'#0e1729');ctx.fillStyle=fg;ctx.fillRect(0,200,W2,360);}
