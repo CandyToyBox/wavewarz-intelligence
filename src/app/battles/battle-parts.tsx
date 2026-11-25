@@ -5,7 +5,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react'
 import Link from 'next/link'
 import { Copy, ExternalLink } from 'lucide-react'
-import { WwIcon } from '@/components/ww-icon'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 import { Pfp } from '@/components/wavid/pfp'
 
 export const SIDE_A = '#95fe7c'
@@ -49,9 +49,10 @@ export function Receipts({ children, label = 'Receipts' }: { children: ReactNode
   )
 }
 
-export function Rcpt({ href, children, internal }: { href: string; children: ReactNode; internal?: boolean }) {
-  if (internal) return <Link className="bt-rcpt" href={href}>{children} <span aria-hidden="true">→</span></Link>
-  return <a className="bt-rcpt" href={href} target="_blank" rel="noreferrer">{children} <ExternalLink size={12} aria-hidden="true" /></a>
+export function Rcpt({ href, children, internal, icon }: { href: string; children: ReactNode; internal?: boolean; icon?: WwIconName }) {
+  const ic = icon ? <WwIcon name={icon} size={16} /> : null
+  if (internal) return <Link className="bt-rcpt" href={href}>{ic}{children} <span aria-hidden="true">→</span></Link>
+  return <a className="bt-rcpt" href={href} target="_blank" rel="noreferrer">{ic}{children} <ExternalLink size={12} aria-hidden="true" /></a>
 }
 
 export const solscan = (address: string) => `https://solscan.io/account/${address}`
@@ -72,13 +73,13 @@ function Wallet({ addr, owner }: { addr: string; owner: string }) {
   )
 }
 
-const ROWS: { k: string; render: (p: LedgerParty) => ReactNode; total?: boolean }[] = [
-  { k: 'Traded', render: p => <><b>◎{p.traded.sol}</b><small>{p.traded.usd}{p.traded.note ? ` · ${p.traded.note}` : ''}</small></> },
-  { k: 'Trading fee', render: p => <><b>◎{p.fee.sol}</b><small>{p.fee.usd} · {p.fee.note}</small></> },
-  { k: 'Settlement', render: p => <><b>◎{p.settle.sol}</b><small>{p.settle.usd} · {p.settle.note}</small></> },
-  { k: 'Earned', total: true, render: p => <><b>◎{p.earned.sol}</b><small>{p.earned.usd}</small></> },
-  { k: 'Spotify equivalent', render: p => p.streams ? <span className="bt-soft">≈ {p.streams}</span> : <span className="bt-soft">–</span> },
-  { k: 'Wallet', render: p => p.wallet ? <Wallet addr={p.wallet} owner={p.name} /> : <span className="bt-soft">–</span> },
+const ROWS: { k: string; icon: WwIconName; render: (p: LedgerParty) => ReactNode; total?: boolean }[] = [
+  { k: 'Traded', icon: 'trade', render: p => <><b>◎{p.traded.sol}</b><small>{p.traded.usd}{p.traded.note ? ` · ${p.traded.note}` : ''}</small></> },
+  { k: 'Trading fee', icon: 'equalizer', render: p => <><b>◎{p.fee.sol}</b><small>{p.fee.usd} · {p.fee.note}</small></> },
+  { k: 'Settlement', icon: 'verified', render: p => <><b>◎{p.settle.sol}</b><small>{p.settle.usd} · {p.settle.note}</small></> },
+  { k: 'Earned', icon: 'paid-artist', total: true, render: p => <><b>◎{p.earned.sol}</b><small>{p.earned.usd}</small></> },
+  { k: 'Spotify equivalent', icon: 'headphones', render: p => p.streams ? <span className="bt-soft">≈ {p.streams}</span> : <span className="bt-soft">–</span> },
+  { k: 'Wallet', icon: 'wallet', render: p => p.wallet ? <Wallet addr={p.wallet} owner={p.name} /> : <span className="bt-soft">–</span> },
 ]
 
 /** Every money number for one battle or round: artists A and B plus the platform, same rows for all three. */
@@ -98,7 +99,7 @@ export function Ledger({ parties, caption }: { parties: LedgerParty[]; caption: 
         <tbody>
           {ROWS.map(r => (
             <tr key={r.k} className={r.total ? 'total' : undefined}>
-              <th scope="row">{r.k}</th>
+              <th scope="row"><WwIcon name={r.icon} size={16} />{r.k}</th>
               {parties.map(p => <td key={p.name} style={{ '--side': p.color } as CSSProperties}>{r.render(p)}</td>)}
             </tr>
           ))}
@@ -112,7 +113,7 @@ export function Ledger({ parties, caption }: { parties: LedgerParty[]; caption: 
         </div>
         {ROWS.map(r => (
           <div key={r.k} className={`bt-lm-row${r.total ? ' total' : ''}`}>
-            <p>{r.k}</p>
+            <p><WwIcon name={r.icon} size={14} />{r.k}</p>
             <div>{parties.map(p => <span key={p.name} style={{ '--side': p.color } as CSSProperties}>{r.render(p)}</span>)}</div>
           </div>
         ))}

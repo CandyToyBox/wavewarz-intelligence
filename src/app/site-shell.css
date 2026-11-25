@@ -591,6 +591,7 @@ body { background: transparent !important; }
 .bt-by-pfp { flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; object-fit: cover; background: #0c121c; font: 700 .65rem 'Space Grotesk', sans-serif; color: var(--side); }
 .bt-nums { display: flex; flex-wrap: wrap; gap: 6px 22px; margin: 6px 0 0; }
 .bt-side.b .bt-nums { justify-content: flex-end; }
+.bt-side.b .bt-nums div { justify-items: end; }
 .bt-nums div { display: grid; gap: 1px; }
 .bt-nums dt { font: 500 .68rem 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: #8d9bb0; }
 .bt-nums dd { margin: 0; display: grid; }
@@ -717,3 +718,16 @@ body { background: transparent !important; }
   .bt-pool-row .bt-bar { grid-column: 1 / -1; order: 3; }
   .bt-counts { gap: 20px; }
 }
+
+/* battles feed icons: the WaveWarZ set inline with labels */
+.bt-type .ww-icon, .bt-ic .ww-icon, .bt-f-k .ww-icon, .bt-win .ww-icon, .bt-nums dt .ww-icon, .bt-rcpt .ww-icon, .bt-link .ww-icon, .bt-counts dt .ww-icon, .bt-ledger tbody th .ww-icon, .bt-lm-row p .ww-icon, .ww-chip .ww-icon { flex: none; display: inline-block; vertical-align: -3px; }
+.bt-type::before { display: none; }
+.bt-type, .bt-ic, .bt-link, .bt-win, .bt-nums dt, .bt-counts dt { display: inline-flex; align-items: center; gap: 6px; }
+.bt-win { gap: 5px; }
+.bt-ledger tbody th { white-space: nowrap; }
+.bt-ledger tbody th .ww-icon, .bt-lm-row p .ww-icon { margin-right: 8px; }
+.bt-f-k { gap: 8px; }
+.bt-f-v i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--side); margin-right: 6px; vertical-align: 1px; }
+.bt-factors li.none .bt-f-v i { display: none; }
+.bt-vs { display: grid; place-items: center; opacity: .8; }
+.bt-howto-ic { display: inline-block; vertical-align: -4px; margin-right: 8px; }

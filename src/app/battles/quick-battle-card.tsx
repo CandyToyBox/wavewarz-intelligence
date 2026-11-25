@@ -7,6 +7,7 @@ import { useState, type CSSProperties } from 'react'
 import { Tip } from '@/components/tip'
 import { Pfp } from '@/components/wavid/pfp'
 import { Ledger, Receipts, Rcpt, solscan, SIDE_A, SIDE_B, PLATFORM } from './battle-parts'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 
 export type QuickBattleCardData = {
   battle_id: number
@@ -102,7 +103,7 @@ export function QuickBattleCard({ data: d }: { data: QuickBattleCardData }) {
   return (
     <article className="rounded-xl border border-border bg-card bt-card" aria-label={`${d.song1Title} vs ${d.song2Title}`}>
       <header className="bt-head">
-        <span className="bt-type" style={{ '--side': SIDE_B } as CSSProperties}>Quick Battle</span>
+        <span className="bt-type" style={{ '--side': SIDE_B } as CSSProperties}><WwIcon name="quick-battlez" size={18} />Quick Battle</span>
         <time>{d.dateFormatted}</time>
         {d.isV2 === true && (
           <Tip text="V2 winner system: Poll (live listener vote) + Charts (bigger SOL pool) + DJ Wavy (AI judge). 2 out of 3 wins. Launched March 10, 2026.">
@@ -127,12 +128,12 @@ export function QuickBattleCard({ data: d }: { data: QuickBattleCardData }) {
             <span>{hasScore ? <>wins <em>{d.scoreFor}–{d.scoreAgainst}</em></> : d.isV2 ? 'wins' : 'wins on Charts'}</span>
           </p>
           <ul className="bt-factors" aria-label="How the result was decided">
-            <Factor k="Charts" who={charts} detail={Number(d.marginSol) === 0 ? 'Pools level' : `Pool led by ◎${d.marginSol} (${d.marginPct}%)`} />
+            <Factor k="Charts" icon="chart" who={charts} detail={Number(d.marginSol) === 0 ? 'Pools level' : `Pool led by ◎${d.marginSol} (${d.marginPct}%)`} />
             {d.isV2 && (
-              <Factor k="Poll" who={poll}
+              <Factor k="Poll" icon="headphones" who={poll}
                 detail={d.pollIsTie ? 'Tied' : d.pollVotesA !== null && d.pollVotesB !== null ? `Votes ${d.pollVotesA}–${d.pollVotesB}` : poll ? undefined : 'No poll data'} />
             )}
-            {d.isV2 && <Factor k="DJ Wavy" who={dj} detail={dj ? 'AI judge pick' : 'No pick recorded'} />}
+            {d.isV2 && <Factor k="DJ Wavy" icon="dj-wavy" who={dj} detail={dj ? 'AI judge pick' : 'No pick recorded'} />}
           </ul>
         </div>
 
@@ -143,11 +144,11 @@ export function QuickBattleCard({ data: d }: { data: QuickBattleCardData }) {
 
       <p className="bt-sum">
         <Tip text="Total SOL traded by fans on both sides: buys and sells from the vault's real transaction history. Trader claims happen separately after settlement; Verify Onchain shows the vault's full activity." wide>
-          <span>Traded</span>
+          <span className="bt-ic"><WwIcon name="trade" size={16} />Traded</span>
         </Tip>
         <b>◎{d.totalVolSol}</b><small>{d.totalVolUsd}</small>
         <span className="bt-dot" aria-hidden="true" />
-        <span>Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
+        <span className="bt-ic"><WwIcon name="headphones" size={16} />Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
       </p>
 
       <Ledger caption={`Earnings for ${d.song1Title} vs ${d.song2Title}`} parties={[
@@ -175,19 +176,19 @@ export function QuickBattleCard({ data: d }: { data: QuickBattleCardData }) {
       ]} />
 
       <Receipts>
-        <Rcpt href={solscan(d.vaultAddress)}>Verify Onchain</Rcpt>
-        <Rcpt href={solscan(d.battleAddress)}>Battle account</Rcpt>
-        <Rcpt href={`/battles/${d.battle_id}`} internal>Battle #{d.battle_id}</Rcpt>
+        <Rcpt icon="verified" href={solscan(d.vaultAddress)}>Verify Onchain</Rcpt>
+        <Rcpt icon="vs-waveform" href={solscan(d.battleAddress)}>Battle account</Rcpt>
+        <Rcpt icon="stats" href={`/battles/${d.battle_id}`} internal>Battle #{d.battle_id}</Rcpt>
       </Receipts>
     </article>
   )
 }
 
-function Factor({ k, who, detail }: { k: string; who: { name: string; color: string } | null; detail?: string }) {
+function Factor({ k, icon, who, detail }: { k: string; icon: WwIconName; who: { name: string; color: string } | null; detail?: string }) {
   return (
     <li style={{ '--side': who?.color ?? 'rgba(216,235,252,.35)' } as CSSProperties} className={who ? undefined : 'none'}>
-      <span className="bt-f-k"><i aria-hidden="true" />{k}</span>
-      <span className="bt-f-v">{who ? who.name : 'No result'}</span>
+      <span className="bt-f-k"><WwIcon name={icon} size={18} />{k}</span>
+      <span className="bt-f-v"><i aria-hidden="true" />{who ? who.name : 'No result'}</span>
       {detail && <span className="bt-f-d">{detail}</span>}
     </li>
   )
@@ -208,7 +209,7 @@ function Side({ side, title, art, wavid, pfp, handle, link, win, pool, earned }:
         {wavid && <img className="bt-cover-wid" src={wavid} alt={handle ? `@${handle}'s Wave ID` : 'Wave ID'} loading="lazy" />}
       </div>
       <div className="bt-side-txt">
-        {win && <span className="bt-win">Winner</span>}
+        {win && <span className="bt-win"><WwIcon name="trophy" size={14} />Winner</span>}
         <h3 className="bt-name">{title}</h3>
         {handle && link && (
           <a className="bt-by" href={link} target="_blank" rel="noreferrer">
@@ -216,8 +217,8 @@ function Side({ side, title, art, wavid, pfp, handle, link, win, pool, earned }:
           </a>
         )}
         <dl className="bt-nums">
-          <div><dt>Final pool</dt><dd><b>◎{pool[0]}</b><small>{pool[1]}</small></dd></div>
-          <div><dt>Artist earned</dt><dd><b>◎{earned[0]}</b><small>{earned[1]}</small></dd></div>
+          <div><dt><WwIcon name="chart" size={14} />Final pool</dt><dd><b>◎{pool[0]}</b><small>{pool[1]}</small></dd></div>
+          <div><dt><WwIcon name="paid-artist" size={14} />Artist earned</dt><dd><b>◎{earned[0]}</b><small>{earned[1]}</small></dd></div>
         </dl>
       </div>
     </section>

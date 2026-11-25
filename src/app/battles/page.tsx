@@ -6,6 +6,7 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import { canonicalSongKey } from '@/lib/song-identity'
 import { getBattleAddress, getBattleVaultAddress } from '@/lib/solana/pda'
 import { groupIntoEvents, pairKey as sharedPairKey } from '@/lib/event-grouping'
+import { WwIcon } from '@/components/ww-icon'
 import { getWavIdRoster, findWavIdArtist, type WavIdRoster } from '@/lib/wavid/roster'
 import { EventGroupCard, type EventGroupCardData, type RoundData } from './event-group-card'
 import { QuickBattleCard, type QuickBattleCardData } from './quick-battle-card'
@@ -578,9 +579,9 @@ export default async function BattlesFeedPage({
           <p className="ww-bh-d">Every battle, all time, with each result, the earnings and the onchain receipts. Main events are grouped by round.</p>
         </div>
         <dl className="bt-counts">
-          <div><dt>Events</dt><dd>{eventCount}</dd></div>
-          <div><dt>Quick Battles</dt><dd>{quickCount}</dd></div>
-          {multiRound > 0 && <div><dt>Multi-round</dt><dd>{multiRound}</dd></div>}
+          <div><dt><WwIcon name="main-event" size={14} />Events</dt><dd>{eventCount}</dd></div>
+          <div><dt><WwIcon name="quick-battlez" size={14} />Quick Battles</dt><dd>{quickCount}</dd></div>
+          {multiRound > 0 && <div><dt><WwIcon name="vs-waveform" size={14} />Multi-round</dt><dd>{multiRound}</dd></div>}
         </dl>
       </header>
 
@@ -592,6 +593,7 @@ export default async function BattlesFeedPage({
       </div>
 
       <p className="bt-howto">
+        <WwIcon name="paid-artist" size={18} className="bt-howto-ic" />
         How earnings work: artists earn 1% of every trade on their side, plus 5% of the losing pool for the winner or a 2%
         consolation for the other side. The platform takes 0.5% of trades and 3% of the losing pool. Spotify equivalent is
         what the same dollars would earn at $0.003 per stream. <a href="/benefits">More on artist earnings</a>

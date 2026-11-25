@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest' },
@@ -8,11 +9,11 @@ const SORT_OPTIONS = [
   { value: 'volume', label: 'Most traded' },
 ]
 
-const FILTER_OPTIONS = [
-  { value: 'all',       label: 'All Battles' },
-  { value: 'main',      label: 'Main Events' },
-  { value: 'quick',     label: 'Quick Battles' },
-  { value: 'community', label: 'Community' },
+const FILTER_OPTIONS: { value: string; label: string; icon: WwIconName }[] = [
+  { value: 'all',       label: 'All Battles',   icon: 'vs-waveform' },
+  { value: 'main',      label: 'Main Events',   icon: 'main-event' },
+  { value: 'quick',     label: 'Quick Battles', icon: 'quick-battlez' },
+  { value: 'community', label: 'Community',     icon: 'community-battlez' },
 ]
 
 // Same pill chips as the Statz menu and the leaderboard tabs; the selected one uses the chip's green state.
@@ -32,7 +33,7 @@ export function BattlesControls({ sort, filter }: { sort: string; filter: string
       <div role="group" aria-label="Show" className="bt-chipset">
         {FILTER_OPTIONS.map(o => (
           <button key={o.value} type="button" className="ww-chip" aria-pressed={filter === o.value} onClick={() => navigate('filter', o.value)}>
-            {o.label}
+            <WwIcon name={o.icon} size={18} />{o.label}
           </button>
         ))}
       </div>

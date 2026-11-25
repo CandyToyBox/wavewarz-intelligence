@@ -7,6 +7,7 @@ import { useState, type CSSProperties } from 'react'
 import { BattleImage } from './battle-image'
 import { Tip } from '@/components/tip'
 import { IdMark, Ledger, Receipts, Rcpt, solscan, SIDE_A, SIDE_B, PLATFORM } from './battle-parts'
+import { WwIcon, type WwIconName } from '@/components/ww-icon'
 
 export type RoundData = {
   battle_id: number
@@ -101,6 +102,7 @@ export type EventGroupCardData = {
 }
 
 const TYPE_LABEL = { main: 'Main Event', community: 'Community', charity: 'Benefit', spotlight: 'Spotlight' } as const
+const TYPE_ICON: Record<EventGroupCardData['eventType'], WwIconName> = { main: 'main-event', community: 'community-battlez', charity: 'collect', spotlight: 'microphone' }
 const TYPE_COLOR = { main: '#95fe7c', community: '#f2a74b', charity: '#76f3df', spotlight: '#e5c25a' } as const
 const settleNote = (label: string) => label.startsWith('Winner') ? '5% winner bonus' : '2% consolation'
 
@@ -121,7 +123,7 @@ export function EventGroupCard({ data: d }: { data: EventGroupCardData }) {
 
         <div className="bt-ev-body">
           <header className="bt-head">
-            <span className="bt-type" style={{ '--side': TYPE_COLOR[d.eventType] } as CSSProperties}>{TYPE_LABEL[d.eventType]}</span>
+            <span className="bt-type" style={{ '--side': TYPE_COLOR[d.eventType] } as CSSProperties}><WwIcon name={TYPE_ICON[d.eventType]} size={18} />{TYPE_LABEL[d.eventType]}</span>
             {multi && <span className="bt-soft">{d.totalRounds} rounds</span>}
             <time>{d.latestDateFormatted}</time>
           </header>
@@ -129,7 +131,7 @@ export function EventGroupCard({ data: d }: { data: EventGroupCardData }) {
           <div className="bt-fighters">
             <Fighter name={d.artist1Name} pfp={d.artist1PfpUrl} wavid={d.artist1Wavid} color={SIDE_A}
               win={d.overallWinnerIsA === true} rounds={multi ? d.a1Wins : null} earned={[d.a1EarnSol, d.a1EarnUsd]} />
-            <span className="bt-vs" aria-hidden="true">vs</span>
+            <span className="bt-vs" aria-hidden="true"><WwIcon name="vs-waveform" size={28} /></span>
             <Fighter name={d.artist2Name} pfp={d.artist2PfpUrl} wavid={d.artist2Wavid} color={SIDE_B}
               win={d.overallWinnerIsA === false} rounds={multi ? d.a2Wins : null} earned={[d.a2EarnSol, d.a2EarnUsd]} />
           </div>
@@ -152,30 +154,30 @@ export function EventGroupCard({ data: d }: { data: EventGroupCardData }) {
 
           <p className="bt-sum">
             <Tip text="Every buy and sell across all rounds, from the vaults' real transaction history. Trader claims happen separately after settlement." wide>
-              <span>Traded</span>
+              <span className="bt-ic"><WwIcon name="trade" size={16} />Traded</span>
             </Tip>
             <b>◎{d.totalVolSol}</b><small>{d.totalVolUsd}</small>
             <span className="bt-dot" aria-hidden="true" />
-            <span>Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
+            <span className="bt-ic"><WwIcon name="headphones" size={16} />Spotify equivalent</span><b>≈ {d.streamEquivalent}</b>
             <span className="bt-dot" aria-hidden="true" />
-            <span>Platform earned</span><b style={{ color: PLATFORM }}>◎{d.platformEarnSol}</b><small>{d.platformEarnUsd}</small>
+            <span className="bt-ic"><WwIcon name="collect" size={16} />Platform earned</span><b style={{ color: PLATFORM }}>◎{d.platformEarnSol}</b><small>{d.platformEarnUsd}</small>
           </p>
 
           <div className="bt-actions">
             <button type="button" className="ww-chip sm" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(o => !o)}>
-              {open ? 'Hide' : 'Show'} {multi ? `all ${d.totalRounds} rounds` : 'the full numbers'}
+              <WwIcon name="queue" size={16} />{open ? 'Hide' : 'Show'} {multi ? `all ${d.totalRounds} rounds` : 'the full numbers'}
             </button>
-            {first?.youtubeLink && <a className="bt-link" href={first.youtubeLink} target="_blank" rel="noreferrer">Watch replay</a>}
-            {first?.streamLink && <a className="bt-link" href={first.streamLink} target="_blank" rel="noreferrer">Stream</a>}
+            {first?.youtubeLink && <a className="bt-link" href={first.youtubeLink} target="_blank" rel="noreferrer"><WwIcon name="play" size={16} />Watch replay</a>}
+            {first?.streamLink && <a className="bt-link" href={first.streamLink} target="_blank" rel="noreferrer"><WwIcon name="live-pulse" size={16} />Stream</a>}
           </div>
         </div>
       </div>
 
       {!open && first && (
         <Receipts>
-          <Rcpt href={solscan(first.vaultAddress)}>Verify Onchain{multi ? ' (round 1)' : ''}</Rcpt>
-          <Rcpt href={solscan(first.battleAddress)}>Battle account{multi ? ' (round 1)' : ''}</Rcpt>
-          <Rcpt href={`/battles/${first.battle_id}`} internal>Battle #{first.battle_id}{multi ? `–#${last.battle_id}` : ''}</Rcpt>
+          <Rcpt icon="verified" href={solscan(first.vaultAddress)}>Verify Onchain{multi ? ' (round 1)' : ''}</Rcpt>
+          <Rcpt icon="vs-waveform" href={solscan(first.battleAddress)}>Battle account{multi ? ' (round 1)' : ''}</Rcpt>
+          <Rcpt icon="stats" href={`/battles/${first.battle_id}`} internal>Battle #{first.battle_id}{multi ? `–#${last.battle_id}` : ''}</Rcpt>
         </Receipts>
       )}
 
@@ -193,9 +195,9 @@ function Fighter({ name, pfp, wavid, color, win, rounds, earned }: {
     <div className={`bt-fighter${win ? ' win' : ''}`} style={{ '--side': color } as CSSProperties}>
       <IdMark name={name} pfpUrl={pfp} wavid={wavid} color={color} size={56} />
       <div className="min-w-0">
-        {win && <span className="bt-win">Winner</span>}
+        {win && <span className="bt-win"><WwIcon name="trophy" size={14} />Winner</span>}
         <h3 className="bt-name">{name}</h3>
-        <p className="bt-fig"><span>Earned</span><b>◎{earned[0]}</b><small>{earned[1]}</small></p>
+        <p className="bt-fig"><span className="bt-ic"><WwIcon name="paid-artist" size={14} />Earned</span><b>◎{earned[0]}</b><small>{earned[1]}</small></p>
         {rounds !== null && <p className="bt-soft">{rounds} {rounds === 1 ? 'round' : 'rounds'} won</p>}
       </div>
     </div>
@@ -250,10 +252,10 @@ function Round({ r, multi }: { r: RoundData; multi: boolean }) {
       ]} />
 
       <Receipts>
-        {r.youtubeLink && <Rcpt href={r.youtubeLink}>Watch</Rcpt>}
-        <Rcpt href={solscan(r.vaultAddress)}>Verify Onchain</Rcpt>
-        <Rcpt href={solscan(r.battleAddress)}>Battle account</Rcpt>
-        <Rcpt href={`/battles/${r.battle_id}`} internal>Battle #{r.battle_id}</Rcpt>
+        {r.youtubeLink && <Rcpt icon="play" href={r.youtubeLink}>Watch</Rcpt>}
+        <Rcpt icon="verified" href={solscan(r.vaultAddress)}>Verify Onchain</Rcpt>
+        <Rcpt icon="vs-waveform" href={solscan(r.battleAddress)}>Battle account</Rcpt>
+        <Rcpt icon="stats" href={`/battles/${r.battle_id}`} internal>Battle #{r.battle_id}</Rcpt>
       </Receipts>
     </section>
   )
