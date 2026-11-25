@@ -18,6 +18,19 @@ move · how to verify it yourself.
 
 ---
 
+## 2026-11-25 — Games API and Games MCP server
+
+**Endpoints:** `GET /games/battles/:id` (new), `GET /games/battles/:id/events` (new), `GET /games/themes` (new), `POST /api/mcp/games` (new MCP server) — **Type:** ADDITIVE
+
+New read-only endpoints for building games on WaveWarz battles, documented at
+wavewarz.info/api-docs/games. Battle state carries the stored result only
+(`outcome` is null until the battle is decided). Trade events come from the
+vault's onchain history while live and from the trades table for history, each
+with a game cue for the chosen theme. `netA` / `netB` are running buys minus
+sells for animation, not settled pools. No existing endpoint or value changed.
+
+---
+
 ## 2026-11-16 — Two new read endpoints: calendar and WaveZStation
 
 **Endpoints:** `GET /calendar` (new), `GET /wavezstation` (new) — **Type:** ADDITIVE

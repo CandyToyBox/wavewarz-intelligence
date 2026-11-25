@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchRecentBattleTradesFromChain } from '@/lib/solana/hydrate'
 
-// Polled by the live arena (see src/app/battles/[id]/live-arena.tsx) every
+// Kept for existing callers. The battle page's Battle Stage now polls
+// /api/public/games/battles/[id]/events, which reads the same chain history. Polled every
 // few seconds while a battle is active. Reads the WaveWarz program's own
 // buyShares/sellShares instructions straight off the vault PDA's transaction
 // history via Helius — independent of wavewarz.com's webhook/Supabase, so it

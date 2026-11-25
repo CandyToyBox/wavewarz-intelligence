@@ -9,7 +9,7 @@ import { shareOgImages } from '@/lib/share-options'
 import { Tip } from '@/components/tip'
 import { SolscanLink } from '@/components/solscan-link'
 import { ArtistAvatarImg } from '@/components/artist-avatar-img'
-import { LiveArena } from './live-arena'
+import { BattleStage } from '@/components/battle-stage/battle-stage'
 import { isBattleLive } from '@/lib/battle-metrics'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -261,23 +261,30 @@ export default async function BattleDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Live Arena — real-time fighter viz, driven off Supabase Realtime on
-          the `battles` row (see live-arena.tsx for why that's the feed we
-          have, not a per-trade one). Only while the battle is actually live, so
-          old unsettled battles don't poll the chain. Swaps out once winner_decided lands. */}
-      {!isSettled && isBattleLive({ created_at: battle.created_at, battle_duration: battle.battle_duration ?? null }) && (
-        <LiveArena
-          battleId={battleId}
-          artist1Name={battle.artist1_name}
-          artist2Name={battle.artist2_name}
-          artist1Pool={p1}
-          artist2Pool={p2}
-          artist1AvatarUrl={avatar1}
-          artist2AvatarUrl={avatar2}
-          battleDurationSec={battle.battle_duration ?? null}
-          createdAtIso={battle.created_at ?? null}
-        />
-      )}
+      {/* Battle Stage: the one game area. Live battles stream trades off the vault;
+          finished battles offer a replay of the stored trades. The scoreboard below
+          stays the only place for art, names, pools and the result. */}
+      {(() => {
+        const live = !isSettled && isBattleLive({ created_at: battle.created_at, battle_duration: battle.battle_duration ?? null })
+        const endsAt = battle.created_at && battle.battle_duration
+          ? new Date(new Date(battle.created_at).getTime() + battle.battle_duration * 1000).toISOString()
+          : null
+        return (
+          <BattleStage
+            battleId={battleId}
+            nameA={(battle.artist1_name ?? 'Side A').trim()}
+            nameB={(battle.artist2_name ?? 'Side B').trim()}
+            photoA={avatar1}
+            photoB={avatar2}
+            live={live}
+            endsAtIso={endsAt}
+            startPoolA={p1}
+            startPoolB={p2}
+            winner={hasRealWinner ? (a1Won ? 'A' : 'B') : null}
+            quick={isQuick}
+          />
+        )
+      })()}
 
       {/* Head-to-Head */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
