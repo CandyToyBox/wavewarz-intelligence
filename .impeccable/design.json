@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-25T06:08:37.487482+00:00",
+  "title": "Design System: WaveWarZ Statz",
+  "extensions": {
+    "colorMeta": {
+      "action-green": {
+        "role": "primary",
+        "displayName": "Action Green",
+        "canonical": "#95fe7c",
+        "tonalRamp": [
+          "#162613",
+          "#2d4c25",
+          "#4a7f3e",
+          "#68b257",
+          "#95fe7c",
+          "#b5fea3",
+          "#cfffc4",
+          "#eaffe5"
+        ]
+      },
+      "wave-blue": {
+        "role": "secondary",
+        "displayName": "Wave Blue",
+        "canonical": "#7ec1fb",
+        "tonalRamp": [
+          "#131d26",
+          "#263a4b",
+          "#3f607e",
+          "#5887b0",
+          "#7ec1fb",
+          "#a5d4fc",
+          "#c5e3fd",
+          "#e5f3fe"
+        ]
+      },
+      "wave-aqua": {
+        "role": "tertiary",
+        "displayName": "Wave Aqua",
+        "canonical": "#76f3df",
+        "tonalRamp": [
+          "#122421",
+          "#234943",
+          "#3b7a70",
+          "#53aa9c",
+          "#76f3df",
+          "#9ff7e9",
+          "#c1faf1",
+          "#e4fdf9"
+        ]
+      },
+      "oxide-amber": {
+        "role": "tertiary",
+        "displayName": "Oxide Amber",
+        "canonical": "#f2a74b",
+        "tonalRamp": [
+          "#24190b",
+          "#493216",
+          "#795426",
+          "#a97534",
+          "#f2a74b",
+          "#f6c181",
+          "#f9d7ae",
+          "#fceddb"
+        ]
+      },
+      "sodium": {
+        "role": "tertiary",
+        "displayName": "Sodium",
+        "canonical": "#e5c25a",
+        "tonalRamp": [
+          "#221d0e",
+          "#453a1b",
+          "#72612d",
+          "#a0883f",
+          "#e5c25a",
+          "#edd48c",
+          "#f3e4b5",
+          "#faf3de"
+        ]
+      },
+      "ice": {
+        "role": "neutral",
+        "displayName": "Ice",
+        "canonical": "#daecfd",
+        "tonalRamp": [
+          "#212326",
+          "#41474c",
+          "#6d767e",
+          "#99a5b1",
+          "#daecfd",
+          "#e5f2fe",
+          "#eef6fe",
+          "#f8fbff"
+        ]
+      },
+      "stage-black": {
+        "role": "neutral",
+        "displayName": "Stage Black",
+        "canonical": "#000000",
+        "tonalRamp": [
+          "#000000",
+          "#000000",
+          "#000000",
+          "#000000",
+          "#000000",
+          "#4c4c4c",
+          "#8c8c8c",
+          "#cccccc"
+        ]
+      },
+      "smoked-panel": {
+        "role": "neutral",
+        "displayName": "Smoked Panel",
+        "canonical": "#070a10",
+        "tonalRamp": [
+          "#010202",
+          "#020305",
+          "#040508",
+          "#05070b",
+          "#070a10",
+          "#515458",
+          "#8f9193",
+          "#cdcecf"
+        ]
+      },
+      "panel-inset": {
+        "role": "neutral",
+        "displayName": "Panel Inset",
+        "canonical": "#0c121c",
+        "tonalRamp": [
+          "#020304",
+          "#040508",
+          "#06090e",
+          "#080d14",
+          "#0c121c",
+          "#555960",
+          "#929499",
+          "#ced0d2"
+        ]
+      },
+      "deep-navy": {
+        "role": "neutral",
+        "displayName": "Deep Navy",
+        "canonical": "#0d1321",
+        "tonalRamp": [
+          "#020305",
+          "#04060a",
+          "#060a10",
+          "#090d17",
+          "#0d1321",
+          "#565a64",
+          "#92959b",
+          "#cfd0d3"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#e8f1fb",
+        "tonalRamp": [
+          "#232426",
+          "#46484b",
+          "#74787e",
+          "#a2a9b0",
+          "#e8f1fb",
+          "#eff5fc",
+          "#f5f9fd",
+          "#fafcfe"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "#b6c3d1",
+        "tonalRamp": [
+          "#1b1d1f",
+          "#373a3f",
+          "#5b6268",
+          "#7f8892",
+          "#b6c3d1",
+          "#ccd5df",
+          "#dee4ea",
+          "#f0f3f6"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Ink Muted",
+        "canonical": "#8d9bb0",
+        "tonalRamp": [
+          "#15171a",
+          "#2a2e35",
+          "#464e58",
+          "#636c7b",
+          "#8d9bb0",
+          "#afb9c8",
+          "#ccd2db",
+          "#e8ebef"
+        ]
+      },
+      "on-accent": {
+        "role": "neutral",
+        "displayName": "On Accent",
+        "canonical": "#06090f",
+        "tonalRamp": [
+          "#010102",
+          "#020304",
+          "#030408",
+          "#04060a",
+          "#06090f",
+          "#515357",
+          "#8f9093",
+          "#cdcecf"
+        ]
+      },
+      "alert-red": {
+        "role": "error",
+        "displayName": "Alert Red",
+        "canonical": "#ef4444",
+        "tonalRamp": [
+          "#240a0a",
+          "#481414",
+          "#782222",
+          "#a73030",
+          "#ef4444",
+          "#f47c7c",
+          "#f8abab",
+          "#fcdada"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page titles in the board header."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Battle result line."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Song, artist and card names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Descriptions and explainers."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase kickers, stat and row labels."
+      },
+      "number": {
+        "displayName": "Number",
+        "purpose": "SOL amounts, counts and votes, tabular."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel",
+        "value": "0 24px 60px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .08)",
+        "purpose": "Cards and panels."
+      },
+      {
+        "name": "object",
+        "value": "0 14px 28px rgba(0, 0, 0, .5)",
+        "purpose": "Album covers and flyers."
+      },
+      {
+        "name": "ring",
+        "value": "0 8px 18px rgba(0, 0, 0, .55)",
+        "purpose": "Avatars, Wave ID rings, badges."
+      },
+      {
+        "name": "button-solid",
+        "value": "inset 0 1px 0 rgba(255, 255, 255, .5), 0 8px 22px rgba(0, 0, 0, .45)",
+        "purpose": "Solid green button."
+      }
+    ],
+    "chrome": {
+      "value": "linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%)",
+      "purpose": "2px top rim on every panel; ring around avatars and Wave ID badges."
+    },
+    "panelSurface": {
+      "value": "linear-gradient(180deg, rgba(14, 21, 34, .92), rgba(7, 10, 16, .95))",
+      "purpose": "Smoked panel body."
+    },
+    "motion": [
+      {
+        "name": "ease-out-strong",
+        "value": "cubic-bezier(.23, 1, .32, 1)",
+        "purpose": "Press feedback (scale .97, 160ms)."
+      },
+      {
+        "name": "state",
+        "value": "ease 150-200ms",
+        "purpose": "Color, border and background changes on hover."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "640px"
+      },
+      {
+        "name": "tablet",
+        "value": "900px"
+      },
+      {
+        "name": "content-max",
+        "value": "1320px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filter and section chip; leads with a set icon when one fits.",
+      "html": "<div class=\"ds-row\"><button class=\"ds-chip\" aria-pressed=\"true\">Main Events</button><button class=\"ds-chip\">Quick Battles</button></div>",
+      "css": ".ds-row{display:flex;gap:8px;padding:16px;background:#000} .ds-chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 16px;border-radius:999px;border:1px solid rgba(216,235,252,.16);background:rgba(255,255,255,.03);color:#daecfd;font:500 .88rem Outfit,sans-serif;cursor:pointer;transition:color .2s ease,border-color .2s ease,background-color .2s ease,transform 160ms cubic-bezier(.23,1,.32,1)} .ds-chip:hover{border-color:rgba(149,254,124,.5);color:#fff} .ds-chip:active{transform:scale(.97)} .ds-chip:focus-visible{outline:2px solid #95fe7c;outline-offset:2px} .ds-chip[aria-pressed=true]{background:rgba(149,254,124,.12);border-color:rgba(149,254,124,.55);color:#95fe7c}"
+    },
+    {
+      "name": "Solid Button",
+      "kind": "button",
+      "refersTo": "button-solid",
+      "description": "Primary action.",
+      "html": "<div class=\"ds-row\"><a class=\"ds-btn\" href=\"#\">Connect wallet</a></div>",
+      "css": ".ds-row{padding:16px;background:#000} .ds-btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 24px;border-radius:999px;background:#95fe7c;color:#06090f;border:1px solid rgba(255,255,255,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 22px rgba(0,0,0,.45);font:700 .84rem/1 'Space Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:background .2s ease,transform .16s ease} .ds-btn:hover{background:#b6ffa4;transform:translateY(-1px)} .ds-btn:active{transform:scale(.97)} .ds-btn:focus-visible{outline:2px solid #95fe7c;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action.",
+      "html": "<div class=\"ds-row\"><a class=\"ds-ghost\" href=\"#\">View rankings</a></div>",
+      "css": ".ds-row{padding:16px;background:#000} .ds-ghost{display:inline-flex;align-items:center;min-height:46px;padding:0 24px;border-radius:999px;background:rgba(255,255,255,.03);color:#fff;border:1px solid rgba(216,235,252,.3);font:700 .84rem/1 'Space Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:border-color .2s ease,background .2s ease} .ds-ghost:hover{border-color:#95fe7c;background:rgba(149,254,124,.08)} .ds-ghost:focus-visible{outline:2px solid #95fe7c;outline-offset:2px}"
+    },
+    {
+      "name": "Wallet Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Lookup field for wallets and IDs.",
+      "html": "<div class=\"ds-row\"><input class=\"ds-in\" placeholder=\"Paste a wallet address\"></div>",
+      "css": ".ds-row{padding:16px;background:#000} .ds-in{width:320px;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(216,235,252,.18);background:rgba(255,255,255,.03);color:#fff;font:500 .9rem 'JetBrains Mono',monospace} .ds-in::placeholder{color:#8d9bb0} .ds-in:focus{outline:none;border-color:rgba(149,254,124,.6)}"
+    },
+    {
+      "name": "Panel Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Smoked panel with the chrome rim.",
+      "html": "<div class=\"ds-stage\"><article class=\"ds-card\"><p class=\"ds-k\">Artist earned</p><b class=\"ds-n\">◎0.0054</b><small class=\"ds-u\">$0.37</small></article></div>",
+      "css": ".ds-stage{padding:24px;background:#000} .ds-card{position:relative;display:grid;gap:2px;width:260px;padding:20px;border-radius:18px;border:1px solid rgba(216,235,252,.16);background:linear-gradient(180deg, rgba(14, 21, 34, .92), rgba(7, 10, 16, .95));box-shadow:0 24px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)} .ds-card::before{content:'';position:absolute;left:20px;right:20px;top:0;height:2px;border-radius:0 0 2px 2px;opacity:.7;background:linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%)} .ds-k{margin:0;font:500 .68rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#8d9bb0} .ds-n{font:700 1.25rem 'JetBrains Mono',monospace;color:#95fe7c;font-variant-numeric:tabular-nums} .ds-u{font:400 .78rem 'JetBrains Mono',monospace;color:#8d9bb0}"
+    },
+    {
+      "name": "Receipt",
+      "kind": "custom",
+      "refersTo": "receipt",
+      "description": "Onchain receipt link that closes every battle card.",
+      "html": "<div class=\"ds-row\"><span class=\"ds-rk\">Receipts</span><a class=\"ds-r\" href=\"#\">Verify Onchain</a><a class=\"ds-r\" href=\"#\">Battle account</a></div>",
+      "css": ".ds-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:16px;background:#070a10} .ds-rk{font:500 .7rem 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8d9bb0} .ds-r{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(126,193,251,.28);color:#7ec1fb;font:500 .8rem Outfit,sans-serif;text-decoration:none;transition:background-color .15s ease,border-color .15s ease} .ds-r:hover{background:rgba(126,193,251,.1);border-color:rgba(126,193,251,.5)} .ds-r:focus-visible{outline:2px solid #95fe7c;outline-offset:2px}"
+    },
+    {
+      "name": "Battle Result",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Result line and factor rows from the battle scoreboard.",
+      "html": "<div class=\"ds-stage\"><p class=\"ds-v\"><b>circles</b><span>wins <em>2–1</em></span></p><ul class=\"ds-f\"><li style=\"--s:#95fe7c\"><span>Charts</span><i></i>Power to the People</li><li style=\"--s:#7ec1fb\"><span>Poll</span><i></i>circles</li><li style=\"--s:#7ec1fb\"><span>DJ Wavy</span><i></i>circles</li></ul></div>",
+      "css": ".ds-stage{display:grid;gap:12px;width:260px;padding:20px;background:#070a10;text-align:center} .ds-v{margin:0;display:grid;font:400 .9rem Outfit,sans-serif;color:#b6c3d1} .ds-v b{font:700 1.3rem 'Space Grotesk',sans-serif;color:#7ec1fb} .ds-v em{font:700 1.05rem 'JetBrains Mono',monospace;font-style:normal;color:#fff} .ds-f{list-style:none;margin:0;padding:0;display:grid;gap:6px} .ds-f li{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(216,235,252,.08);font:600 .85rem Outfit,sans-serif;color:var(--s)} .ds-f span{flex:1;text-align:left;font:600 .7rem 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#8d9bb0} .ds-f i{width:8px;height:8px;border-radius:50%;background:var(--s)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Broadcast",
+    "overview": "WaveWarZ Statz looks like a live music show at night. The stage is black, a slow field of thin Wave ID strands drifts behind everything, and the hardware (panels, the nav shell, the logo) is smoked glass with polished chrome edges. The only real color comes from the artists themselves: Wave ID accents, album art, battle flyers. Numbers are set like a broadcast scoreboard, in tabular mono, big where they answer a question and quiet where they support one.\n\nThe system is dense but ranked. This is a record people read for results and earnings, so the hierarchy does the work: one result line, two big numbers per side, everything else in smaller rows that are present but never competing. Cards feel like hardware: thick smoked panels, a strong chrome rim, confident blue and green accents on the parts that matter (the winner in their side color, the selected filter, the earned total).\n\nThe look rejects the old v1 brand (Rajdhani, Inter, navy with orange) and neon. Light comes from color and chrome, not from glowing halos. The one exception is something happening live right now.",
+    "keyCharacteristics": [
+      "Black stage with a drifting Wave ID strand background and a soft vignette.",
+      "Smoked panels with a chrome top edge; pill-shaped controls everywhere.",
+      "Side A is always wave blue, side B always action green, the platform always oxide amber.",
+      "Numbers in JetBrains Mono with tabular figures; labels in small uppercase mono.",
+      "The WaveWarZ icon set beside labels, never emoji or unicode glyphs."
+    ],
+    "rules": [
+      {
+        "name": "The Fixed Sides Rule",
+        "body": "Side A is wave blue and side B is action green on every card, chart and table, whatever the song or artist. Color follows the side, never a hash of the name.",
+        "section": "colors"
+      },
+      {
+        "name": "The Artist Is The Light Rule",
+        "body": "Saturated color belongs to Wave IDs, artwork and the side accents. Backgrounds, panels and body text stay neutral.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Purple Rule",
+        "body": "No purple, violet or pink in any UI element. Artwork supplied by artists or partners is content and stays as it is.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Faces Rule",
+        "body": "Space Grotesk, Outfit and JetBrains Mono only. Rajdhani, Inter and Geist are retired everywhere, including share images and embedded pages.",
+        "section": "typography"
+      },
+      {
+        "name": "The Readout Rule",
+        "body": "Every number uses tabular figures, and every SOL amount carries the ◎ sign once, never \"◎0.15 SOL\".",
+        "section": "typography"
+      },
+      {
+        "name": "The Receipt Last Rule",
+        "body": "Every battle card ends with a wrapping row of receipts (Verify Onchain, Battle account, battle page). They are never hidden in a header where a phone can clip them.",
+        "section": "layout"
+      },
+      {
+        "name": "The Chrome Rim Rule",
+        "body": "Every panel carries a 2px chrome edge along its top, inset 20px from each side: `linear-gradient(145deg, #f6fbff 0%, #aebccb 17%, #5a6b7e 40%, #dbe6ef 57%, #6d7e91 76%, #2c3746 100%)`. Avatars and Wave ID badges sit in a chrome ring of the same gradient.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Live Glow Rule",
+        "body": "A colored glow is allowed only on something happening live right now (a battle in progress, the live mix). Finished battles, winners and buttons never glow; they use a solid accent border instead.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep side A wave blue and side B action green on every card, table and chart.",
+      "Do put the WaveWarZ set icon beside a label wherever one fits (filters, types, factors, row labels, receipts).",
+      "Do show every number, ranked: tier-1 figures at 1.1–1.3rem mono in the side color, supporting figures at 0.8–0.9rem, dollars underneath in ink muted.",
+      "Do end every battle with its receipts row and give every wallet its owner's name, a Solscan link and a copy button.",
+      "Do use the chrome rim on panels and chrome rings on avatars."
+    ],
+    "donts": [
+      "Don't use Rajdhani, Inter, Geist or any font beyond the three faces.",
+      "Don't use purple, pink or violet, or the old Tailwind orange and yellow; use oxide amber.",
+      "Don't add colored glows or halos to finished content; glows are for live moments only.",
+      "Don't use emoji or unicode check, cross and tree characters as icons.",
+      "Don't set functional text below 11px or fade labels with opacity until they fail contrast.",
+      "Don't describe a pool size as why someone won; the result line states the decided result."
+    ]
+  }
+}
