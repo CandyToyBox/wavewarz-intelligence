@@ -2278,6 +2278,11 @@
 }
 @media (max-width: 960px) and (min-width: 601px) { .qp-stage{height:560px} }
 @media (prefers-reduced-motion: reduce) { .qp-wave img,.qp-pair.on .v i b{animation:none} }
+  /* Side colours (Candy, 2026-11-25): side A / left = wave blue, side B / right = action green. Reverses the original green-left. */
+  .ld-col.l .ld-eq i { background: var(--brand-blue); box-shadow: 0 0 12px rgba(126,193,251,.6); } .ld-col.r .ld-eq i { background: var(--brand-green); box-shadow: 0 0 12px rgba(149,254,124,.6); }
+  .ld-np { color: var(--brand-blue); } .ld-col.r .ld-np { color: var(--brand-green); }
+  .ld-pc .a { color: var(--brand-blue); } .ld-pc .c { color: var(--brand-green); }
+  .ld-bar { background: linear-gradient(var(--brand-green), var(--brand-green)) padding-box, var(--chrome) border-box; } .ld-bar i { background: var(--brand-blue); }
 </style>
 
 <style id="copy-rewrite">
@@ -4105,7 +4110,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
       (a.musicLink ? '<a class="ld-play" href="' + esc(a.musicLink) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + ' on Audius">' + PLAY + '</a>' : '') +
       (art ? '<img src="' + esc(art) + '" alt="" loading="eager">' : '') + '<div class="ld-eq" aria-hidden="true">' + '<i></i>'.repeat(9) + '</div></div>' +
       '<div class="ld-np">' + (ended ? 'Final' : 'Now playing') + '</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
-      '<a class="ld-act ' + (leader ? (k === 'l' ? 'fill-g' : 'fill-b') : (k === 'l' ? 'out-g' : 'out-b')) + '" href="' + esc(live.url) + '">' + (ended ? 'See the battle' : 'Trade ' + esc(a.name)) + '</a></div>';
+      '<a class="ld-act ' + (leader ? (k === 'l' ? 'fill-b' : 'fill-g') : (k === 'l' ? 'out-b' : 'out-g')) + '" href="' + esc(live.url) + '">' + (ended ? 'See the battle' : 'Trade ' + esc(a.name)) + '</a></div>';
   }
   function renderLive() {
     var b = live, A = b.a, B = b.b, pa = A.poolSol || 0, pb = B.poolSol || 0, tot = pa + pb, ga = tot ? Math.round(100 * pa / tot) : 50;

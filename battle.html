@@ -2274,6 +2274,11 @@
 }
 @media (max-width: 960px) and (min-width: 601px) { .qp-stage{height:560px} }
 @media (prefers-reduced-motion: reduce) { .qp-wave img,.qp-pair.on .v i b{animation:none} }
+  /* Side colours (Candy, 2026-11-25): side A / left = wave blue, side B / right = action green. Reverses the original green-left. */
+  .ld-col.l .ld-eq i { background: var(--brand-blue); box-shadow: 0 0 12px rgba(126,193,251,.6); } .ld-col.r .ld-eq i { background: var(--brand-green); box-shadow: 0 0 12px rgba(149,254,124,.6); }
+  .ld-np { color: var(--brand-blue); } .ld-col.r .ld-np { color: var(--brand-green); }
+  .ld-pc .a { color: var(--brand-blue); } .ld-pc .c { color: var(--brand-green); }
+  .ld-bar { background: linear-gradient(var(--brand-green), var(--brand-green)) padding-box, var(--chrome) border-box; } .ld-bar i { background: var(--brand-blue); }
 </style>
 
 <style id="copy-rewrite">
@@ -2825,18 +2830,18 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bc-plot:focus { outline: none; } .bc-plot:focus-visible { outline: none; box-shadow: inset 0 0 0 1px rgba(149,254,124,.45); }
 .bc-plot svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
 .bc-plot .gl { stroke: rgba(216,235,252,.08); stroke-width: 1; } .bc-plot .ax { fill: #8d9bb0; font: 400 11px 'JetBrains Mono', monospace; }
-.bc-plot .la { fill: none; stroke: #95fe7c; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; } .bc-plot .lb { fill: none; stroke: #7ec1fb; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
-.bc-plot .ea { fill: #95fe7c; stroke: #0a0f18; stroke-width: 2; } .bc-plot .eb { fill: #7ec1fb; stroke: #0a0f18; stroke-width: 2; }
+.bc-plot .la { fill: none; stroke: #7ec1fb; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; } .bc-plot .lb { fill: none; stroke: #95fe7c; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.bc-plot .ea { fill: #7ec1fb; stroke: #0a0f18; stroke-width: 2; } .bc-plot .eb { fill: #95fe7c; stroke: #0a0f18; stroke-width: 2; }
 .bc-plot .el { fill: #fff; font: 600 12px 'JetBrains Mono', monospace; }
 .bc-plot .ch { stroke: rgba(216,235,252,.4); stroke-width: 1; display: none; }
 /* a new trade: the newest stretch of line draws in, the end point rings once, and the amount rises off it */
 .bc-plot .grow { stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len); animation: bcGrow .55s cubic-bezier(.16,1,.3,1) forwards; }
 @keyframes bcGrow { to { stroke-dashoffset: 0; } }
 .bc-plot .ring { fill: none; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: bcRing .9s cubic-bezier(.16,1,.3,1) .2s both; }
-.bc-plot .ring.a { stroke: #95fe7c; } .bc-plot .ring.b { stroke: #7ec1fb; }
+.bc-plot .ring.a { stroke: #7ec1fb; } .bc-plot .ring.b { stroke: #95fe7c; }
 @keyframes bcRing { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(3.2); } }
 .bc-plot .dl { font: 700 12px 'JetBrains Mono', monospace; animation: bcRise 1.6s cubic-bezier(.16,1,.3,1) .15s both; }
-.bc-plot .dl.a { fill: #95fe7c; } .bc-plot .dl.b { fill: #7ec1fb; }
+.bc-plot .dl.a { fill: #7ec1fb; } .bc-plot .dl.b { fill: #95fe7c; }
 @keyframes bcRise { 0% { opacity: 0; transform: translateY(6px); } 18% { opacity: 1; transform: translateY(0); } 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
 .cs-pool b.bump { animation: csBump .5s cubic-bezier(.16,1,.3,1); }
 @keyframes csBump { 40% { color: #fff; text-shadow: 0 0 18px currentColor; } }
@@ -2851,7 +2856,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bp th:first-child, .bp td:first-child { text-align: left; color: var(--text-muted); font-weight: 400; }
 .bp thead th { border-top: 0; font: 600 .88rem 'Space Grotesk', sans-serif; color: #fff; max-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bp thead th i, .bf-who i, .br-w i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
-.ka { background: #95fe7c; } .kb { background: #7ec1fb; }
+.ka { background: #7ec1fb; } .kb { background: #95fe7c; }
 /* how it is decided */
 .bf { list-style: none; margin: 0; padding: 0; }
 .bf li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; padding: 16px 4px; border-top: 1px solid rgba(216,235,252,.08); }
@@ -2883,7 +2888,7 @@ a.sp-logo:focus-visible{outline:2px solid var(--brand-green);outline-offset:4px;
 .bp-top [hidden], .bp [hidden] { display: none !important; }
 /* vote first: the poll is the main action on each side, trade sits under it */
 .bp-top .ld-act.vote small { margin-left: 10px; padding: 3px 9px; border-radius: 999px; background: rgba(13,19,33,.2); font: 700 .66rem 'JetBrains Mono', monospace; letter-spacing: .12em; vertical-align: 1px; }
-.bp-top .ld-act.voted { background: transparent; cursor: default; box-shadow: none; } .bp-top .ld-col.l .ld-act.voted { color: var(--brand-green); border-color: var(--brand-green); } .bp-top .ld-col.r .ld-act.voted { color: var(--brand-blue); border-color: var(--brand-blue); }
+.bp-top .ld-act.voted { background: transparent; cursor: default; box-shadow: none; } .bp-top .ld-col.l .ld-act.voted { color: var(--brand-blue); border-color: var(--brand-blue); } .bp-top .ld-col.r .ld-act.voted { color: var(--brand-green); border-color: var(--brand-green); }
 .bp-top .ld-act.vote:disabled:not(.voted) { opacity: .4; cursor: default; }
 .bp-top .ld-act.trade { height: 44px; line-height: 42px; font-size: .78rem; background: transparent; }
 .bp-top .ld-pc em { font: 500 .62rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .18em; color: var(--text-muted); align-self: center; }
@@ -2923,7 +2928,9 @@ body[data-page="battle"] .mn { display: none; }   /* the Mainnet tag would sit o
 .ck-grid { display: grid; grid-template-columns: minmax(270px, 320px) minmax(0, 1fr) minmax(270px, 320px); gap: 16px; margin-top: 14px; height: calc(100svh - 206px); min-height: 640px; max-height: 820px; }
 .ck-side, .ck-stage { position: relative; min-width: 0; min-height: 0; display: flex; flex-direction: column; border-radius: 26px; border: 1px solid var(--hair); background: linear-gradient(180deg, rgba(14,21,34,.9), rgba(6,9,15,.94)); box-shadow: 0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.07); }
 .ck-side { padding: 14px; gap: 10px; }
-.ck-side.a { --c: #95fe7c; --cr: 149,254,124; } .ck-side.b { --c: #7ec1fb; --cr: 126,193,251; }
+/* Side colours (Candy, 2026-11-25): side A / left = wave blue, side B / right = action green */
+.ld-pc .a { color: var(--brand-blue); } .ld-pc .c { color: var(--brand-green); } .ld-bar i { background: var(--brand-blue); }
+.ck-side.a { --c: #7ec1fb; --cr: 126,193,251; } .ck-side.b { --c: #95fe7c; --cr: 149,254,124; }
 .ck-side::before { content: ""; position: absolute; left: 26px; right: 26px; top: -1px; height: 2px; border-radius: 2px; background: var(--c); opacity: .85; box-shadow: 0 0 18px rgba(var(--cr), .7); }
 .cs-artbox { flex: 1 1 150px; min-height: 120px; container-type: size; display: grid; place-items: center; }
 /* The cover sits in a square CD jewel case, still in its cellophane: dark hinge spine, clear case edge, the art under the lid,
@@ -3014,7 +3021,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 .tv-scr::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,.1) 0%, transparent 28%); }
 .tv-ft { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; font: 500 .7rem 'JetBrains Mono', monospace; letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); } .tv-ft a { color: var(--brand-green); text-decoration: none; } .tv-ft i { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #ff5a4d; margin-right: 8px; box-shadow: 0 0 10px #ff5a4d; }
 .ck-meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; } .ck-meters:has(> :only-child) { grid-template-columns: 1fr; }
-.ck .ld-split { gap: 5px; } .ck .ld-bar { height: 8px; border: 0; background: var(--brand-blue); } .ck .ld-pc { font: 500 .74rem 'JetBrains Mono', monospace; } .ck .ld-pc em { font: 500 .56rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .2em; color: var(--text-muted); }
+.ck .ld-split { gap: 5px; } .ck .ld-bar { height: 8px; border: 0; background: var(--brand-green); } .ck .ld-pc { font: 500 .74rem 'JetBrains Mono', monospace; } .ck .ld-pc em { font: 500 .56rem 'JetBrains Mono', monospace; font-style: normal; letter-spacing: .2em; color: var(--text-muted); }
 .ck-risk { margin: 10px 0 0; text-align: center; font: 400 .68rem 'JetBrains Mono', monospace; letter-spacing: .04em; color: var(--text-muted); }
 .ck .bp-msg { margin-top: 8px; }
 /* phone: it should feel like an app. Timer on top, trade dock under the thumb. */
@@ -3041,7 +3048,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   .dk-mode button { min-height: 32px; min-width: 64px; border: 0; border-radius: 999px; background: transparent; color: var(--brand-ice); font: 600 .74rem 'Outfit', sans-serif; cursor: pointer; } .dk-mode button[aria-pressed="true"] { background: #fff; color: #0a0f18; }
   .dk-st { flex: 1; min-width: 0; text-align: right; font: 500 .66rem 'JetBrains Mono', monospace; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .dk-st.ok { color: var(--brand-green); }
   .dk-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; }
-  .dk-col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; } .dk-col.a { --c: #95fe7c; --cr: 149,254,124; } .dk-col.b { --c: #7ec1fb; --cr: 126,193,251; }
+  .dk-col { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; min-width: 0; } .dk-col.a { --c: #7ec1fb; --cr: 126,193,251; } .dk-col.b { --c: #95fe7c; --cr: 149,254,124; }
   .dk-amt { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
   .ck-dock button.cx { min-height: 48px; border-radius: 14px; cursor: pointer; font: 600 .82rem 'Outfit', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: transform .1s; } .ck-dock button.cx:active:not(:disabled) { transform: scale(.95); } .ck-dock button.cx:disabled { opacity: .38; }
   .ck-dock .cs-vote { display: flex; align-items: center; justify-content: center; white-space: nowrap; padding: 0 10px; min-width: 0; } .ck-dock .cs-buy, .ck-dock .cs-sell { font-size: .78rem; padding: 0; }
@@ -3064,7 +3071,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
 .bg { position: relative; aspect-ratio: 1280 / 800; border-radius: 16px; overflow: hidden; background: #04070d; border: 1px solid rgba(216,235,252,.12); margin-top: 4px; }
 .bg iframe { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; }
 .bc-plot .bx { fill: none; stroke: rgba(216,235,252,.14); stroke-width: 1; } .bc-plot .at { fill: #8d9bb0; font: 400 11px 'Outfit', sans-serif; }
-.bc-plot .pa { fill: #0a0f18; stroke: #95fe7c; stroke-width: 1.5; } .bc-plot .pb { fill: #0a0f18; stroke: #7ec1fb; stroke-width: 1.5; }
+.bc-plot .pa { fill: #0a0f18; stroke: #7ec1fb; stroke-width: 1.5; } .bc-plot .pb { fill: #0a0f18; stroke: #95fe7c; stroke-width: 1.5; }
 .bc-leg i.box { width: 28px; height: 11px; border-radius: 1px; background: transparent !important; border: 2px solid; }
 @media (max-width: 1000px) { .bp .hl-grid, .bp .hl-grid + .hl-grid { grid-template-columns: 1fr; } }
 @media (max-width: 860px) { .bp-top { padding: 104px 16px 0; } .bc-plot { height: 260px; } .bm-big { grid-template-columns: 1fr; } }
@@ -3085,6 +3092,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   .crest-subtitle { color: #aebccb; }
   .interaction-hint { color: #dbe6ef; border-color: rgba(219,230,239,.28); }
 </style>
+<script src="icons/ww-icons.js"></script>
 </head>
 
 <body data-page="battle">
@@ -3427,7 +3435,7 @@ a.cs-vote { display: flex; align-items: center; justify-content: center; min-hei
   var qs = new URLSearchParams(location.search), demo = qs.get('demo'), wantId = (qs.get('id') || '').replace(/[^0-9]/g, '');
   var $ = function (id) { return document.getElementById(id); };
   var B = null, EV = null, pts = [], sampleChart = false, tick = null, poll = null, lastKey = '';
-  var CA = '#95fe7c', CB = '#7ec1fb';
+  var CA = '#7ec1fb', CB = '#95fe7c';
   function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function jget(u) { return fetch(u).then(function (r) { if (!r.ok) throw 0; return r.json(); }); }
   function sol(n, d) { return (+n || 0).toFixed(d == null ? 2 : d) + ' SOL'; }

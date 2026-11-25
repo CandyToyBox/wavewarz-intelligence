@@ -2278,6 +2278,11 @@
 }
 @media (max-width: 960px) and (min-width: 601px) { .qp-stage{height:560px} }
 @media (prefers-reduced-motion: reduce) { .qp-wave img,.qp-pair.on .v i b{animation:none} }
+  /* Side colours (Candy, 2026-11-25): side A / left = wave blue, side B / right = action green. Reverses the original green-left. */
+  .ld-col.l .ld-eq i { background: var(--brand-blue); box-shadow: 0 0 12px rgba(126,193,251,.6); } .ld-col.r .ld-eq i { background: var(--brand-green); box-shadow: 0 0 12px rgba(149,254,124,.6); }
+  .ld-np { color: var(--brand-blue); } .ld-col.r .ld-np { color: var(--brand-green); }
+  .ld-pc .a { color: var(--brand-blue); } .ld-pc .c { color: var(--brand-green); }
+  .ld-bar { background: linear-gradient(var(--brand-green), var(--brand-green)) padding-box, var(--chrome) border-box; } .ld-bar i { background: var(--brand-blue); }
 </style>
 
 <style id="copy-rewrite">
@@ -2860,7 +2865,7 @@ html{background:#020203}body{background:transparent!important}
 .ld-eq i:nth-child(2n){animation-delay:-.35s!important}.ld-eq i:nth-child(3n){animation-delay:-.7s!important}.ld-eq i:nth-child(5n){animation-delay:-.15s!important}
 .ld-np{font-size:.8rem!important;margin-top:18px}
 .ld-stage[data-playing] .ld-col .ld-np{color:var(--v2-muted)!important}
-.ld-stage[data-playing="l"] .ld-col.l .ld-np{color:var(--brand-green)!important}.ld-stage[data-playing="r"] .ld-col.r .ld-np{color:var(--brand-blue)!important}
+.ld-stage[data-playing="l"] .ld-col.l .ld-np{color:var(--brand-blue)!important}.ld-stage[data-playing="r"] .ld-col.r .ld-np{color:var(--brand-green)!important}
 .ld-nm{font-family:'Space Grotesk',sans-serif!important;font-size:clamp(1.6rem,2.8vw,2.8rem)!important}
 .ld-act{width:min(100%,420px)}
 .ld-foot{font-size:.8rem!important;max-width:1240px;margin:0 auto;width:100%}
@@ -3984,7 +3989,7 @@ html{background:#020203}body{background:transparent!important}
       (a.musicLink ? '<a class="ld-play" href="' + esc(a.musicLink) + '" target="_blank" rel="noopener" aria-label="Listen to ' + esc(a.name) + ' on Audius">' + PLAY + '</a>' : '') +
       '<div class="v2aura" aria-hidden="true"><img src="wave-id/wave-id-' + (k === 'l' ? 'green' : 'aqua') + '.jpeg" alt=""></div>' + (art ? '<div class="cdv"><div class="cdv-disc" aria-hidden="true"><img src="' + esc(art) + '" alt=""></div><div class="cdv-case"><img src="' + esc(art) + '" alt="Cover art for ' + esc(a.name) + '" loading="eager"></div></div>' : '') + '<div class="ld-eq" aria-hidden="true">' + '<i></i>'.repeat(9) + '</div></div>' +
       '<div class="ld-np">' + (ended ? 'Final' : 'Now playing') + '</div><h3 class="ld-nm">' + esc(a.name) + '</h3><p class="ld-by">' + (by ? 'by <b>@' + esc(by) + '</b>' : '&nbsp;') + '</p>' +
-      '<a class="ld-act ' + (leader ? (k === 'l' ? 'fill-g' : 'fill-b') : (k === 'l' ? 'out-g' : 'out-b')) + '" href="' + esc(live.url) + '">' + (ended ? 'See the battle' : 'Trade ' + esc(a.name)) + '</a></div>';
+      '<a class="ld-act ' + (leader ? (k === 'l' ? 'fill-b' : 'fill-g') : (k === 'l' ? 'out-b' : 'out-g')) + '" href="' + esc(live.url) + '">' + (ended ? 'See the battle' : 'Trade ' + esc(a.name)) + '</a></div>';
   }
   function renderLive() {
     var b = live, A = b.a, B = b.b, pa = A.poolSol || 0, pb = B.poolSol || 0, tot = pa + pb, ga = tot ? Math.round(100 * pa / tot) : 50;

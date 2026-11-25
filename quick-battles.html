@@ -2274,6 +2274,11 @@
 }
 @media (max-width: 960px) and (min-width: 601px) { .qp-stage{height:560px} }
 @media (prefers-reduced-motion: reduce) { .qp-wave img,.qp-pair.on .v i b{animation:none} }
+  /* Side colours (Candy, 2026-11-25): side A / left = wave blue, side B / right = action green. Reverses the original green-left. */
+  .ld-col.l .ld-eq i { background: var(--brand-blue); box-shadow: 0 0 12px rgba(126,193,251,.6); } .ld-col.r .ld-eq i { background: var(--brand-green); box-shadow: 0 0 12px rgba(149,254,124,.6); }
+  .ld-np { color: var(--brand-blue); } .ld-col.r .ld-np { color: var(--brand-green); }
+  .ld-pc .a { color: var(--brand-blue); } .ld-pc .c { color: var(--brand-green); }
+  .ld-bar { background: linear-gradient(var(--brand-green), var(--brand-green)) padding-box, var(--chrome) border-box; } .ld-bar i { background: var(--brand-blue); }
 </style>
 
 <style id="copy-rewrite">
