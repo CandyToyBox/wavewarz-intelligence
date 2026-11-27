@@ -69,7 +69,7 @@ export function SponsorsManager({ properties }: { properties: SponsorProperty[] 
     startTransition(async () => { await deleteSponsorProperty(id); router.refresh() })
   }
 
-  const input = 'w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
+  const input = 'w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
 
   return (
     <div className="space-y-5">
@@ -103,7 +103,7 @@ export function SponsorsManager({ properties }: { properties: SponsorProperty[] 
         {COLUMNS.map(col => {
           const items = properties.filter(p => p.status === col.status)
           return (
-            <div key={col.status} className={`rounded-xl border ${col.accent} bg-[#0d1321]/40 p-3`}>
+            <div key={col.status} className={`rounded-xl border ${col.accent} bg-[#0c121c]/40 p-3`}>
               <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">{col.label} ({items.length})</p>
               <div className="space-y-2">
                 {items.map(p => (

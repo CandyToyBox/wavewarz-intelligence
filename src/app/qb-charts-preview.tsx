@@ -47,7 +47,7 @@ function formatVol(sol: number): string {
 
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
-const PALETTE = ['#95fe7c', '#7ec1fb', '#f59e0b', '#f472b6', '#34d399', '#60a5fa']
+const PALETTE = ['#95fe7c', '#7ec1fb', '#f2a74b', '#76f3df', '#e5c25a', '#62b8df'] // brand + Wave ID accents, no pink or purple
 function letterColor(s: string) {
   return PALETTE[s.toUpperCase().charCodeAt(0) % PALETTE.length]
 }
@@ -330,7 +330,7 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
       {/* ── Controls ────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
         {/* Period tabs */}
-        <div className="flex items-center gap-1 bg-[#0d1321] border border-border rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-[#0c121c] border border-border rounded-lg p-1">
           {(Object.keys(PERIOD_META) as Period[]).map(p => (
             <Tip key={p} text={PERIOD_META[p].desc}>
               <button
@@ -391,7 +391,7 @@ export default function QBChartsPreview({ songs }: { songs: SongData[] }) {
       <div className="rounded-xl border border-border overflow-hidden">
 
         {/* Table header */}
-        <div className="flex items-center gap-3 px-4 py-2 bg-[#0d1321]/80 border-b border-border">
+        <div className="flex items-center gap-3 px-4 py-2 bg-[#0c121c]/80 border-b border-border">
           <span className="w-7 shrink-0" />
           <span className="w-10 shrink-0" />
           <span className="flex-1 text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Song</span>

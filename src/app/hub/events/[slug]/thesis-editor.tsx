@@ -132,16 +132,16 @@ export function ThesisEditor({
                 <p className={`text-sm whitespace-pre-wrap ${val ? 'text-white' : 'text-muted-foreground/40 italic'}`}>{val || 'not set'}</p>
               ) : f.ta ? (
                 <textarea value={val} onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))} rows={2}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
               ) : f.select ? (
                 <select value={val} onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]">
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]">
                   <option value="">—</option>
                   {f.select.map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
               ) : (
                 <input value={val} onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
-                  className="w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
+                  className="w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]" />
               )}
               {f.hint && editing && <p className="text-[10px] text-muted-foreground/60 mt-1">{f.hint}</p>}
             </div>

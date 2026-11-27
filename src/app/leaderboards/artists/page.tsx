@@ -5,7 +5,7 @@ import { LeaderboardNav } from '@/app/leaderboards/leaderboard-nav'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Artist Rankings — WaveWarZ Intelligence',
+  title: 'Artist Rankings',
   description: 'Main event artist rankings by wins, volume, and onchain earnings.',
 }
 

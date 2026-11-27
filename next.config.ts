@@ -12,6 +12,8 @@ const nextConfig: NextConfig = {
   // sure the file ships with the serverless bundle.
   outputFileTracingIncludes: {
     '/api-docs/changelog': ['./docs/API-CHANGELOG.md'],
+    // Share cards draw with the brand fonts and logo read from disk
+    '/api/share-card': ['./src/assets/share-fonts/**', './public/wavewarz-logo.png'],
   },
   async redirects() {
     return [

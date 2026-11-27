@@ -36,47 +36,47 @@
   --color-actiongreen: #95fe7c;
   --color-iceblue: #daecfd;
   --color-grey: #989898;
+  --color-amber: #f2a74b;
+  --color-aqua: #76f3df;
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.875rem;
 
-  /* Deep Space Navy theme — always dark, no light mode */
-  --background: #04080f;   /* true deep space — much darker than before */
-  --foreground: #e8edf5;
+  /* Same surfaces as the redesigned wavewarz.com: black page, near-black panels, ice hairlines */
+  --background: #000000;
+  --foreground: #e8f1fb;
 
-  --card: #0c1828;         /* real contrast vs background */
+  --card: #070a10;
   --card-foreground: #ffffff;
 
-  --popover: #0c1828;
+  --popover: #070a10;
   --popover-foreground: #ffffff;
 
-  /* Action Green as primary */
-  --primary: #95fe7c;
-  --primary-foreground: #04080f;
+  --primary: #95fe7c;          /* Action Green */
+  --primary-foreground: #06090f;
 
-  /* Wave Blue as secondary */
-  --secondary: #7ec1fb;
-  --secondary-foreground: #04080f;
+  --secondary: #7ec1fb;        /* Wave Blue */
+  --secondary-foreground: #06090f;
 
-  --muted: #0f1e30;        /* nested panel / elevated card bg */
-  --muted-foreground: #8b9cb5;
+  --muted: #0c121c;            /* nested panel inside a card */
+  --muted-foreground: #8d9bb0;
 
   --accent: #7ec1fb;
-  --accent-foreground: #04080f;
+  --accent-foreground: #06090f;
 
   --destructive: #ef4444;
 
-  --border: #1a2d44;       /* now actually visible */
-  --input: #0f1e30;
+  --border: rgba(216, 235, 252, 0.12);
+  --input: #0c121c;
   --ring: #95fe7c;
 
-  /* Chart colors — no purple */
-  --chart-1: #95fe7c;  /* action green */
-  --chart-2: #7ec1fb;  /* wave blue */
-  --chart-3: #daecfd;  /* ice blue */
-  --chart-4: #f59e0b;  /* amber */
-  --chart-5: #ef4444;  /* red */
+  /* Chart colors: brand plus Wave ID accents. No purple, no pink. */
+  --chart-1: #95fe7c;
+  --chart-2: #7ec1fb;
+  --chart-3: #f2a74b;
+  --chart-4: #76f3df;
+  --chart-5: #e5c25a;
 }
 
 @layer base {
@@ -85,17 +85,13 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Grid pattern — now visible against the darker background */
-    background-image:
-      linear-gradient(to right, #1a2d44 1px, transparent 1px),
-      linear-gradient(to bottom, #1a2d44 1px, transparent 1px);
-    background-size: 40px 40px;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-rajdhani), sans-serif;
+    font-family: var(--font-rajdhani), sans-serif;   /* Space Grotesk, see layout.tsx */
     font-weight: 700;
-    letter-spacing: 0.025em;
+    letter-spacing: -0.02em;
   }
+  h1 { text-transform: uppercase; line-height: 1.05; }
 }
 
 /* ── Shimmer skeleton animation ──────────────────────────────────────────── */
@@ -107,9 +103,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    #0c1828 25%,
-    #1a2d44 50%,
-    #0c1828 75%
+    #0c121c 25%,
+    #161e2b 50%,
+    #0c121c 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
@@ -152,9 +148,9 @@
 
 /* ── Elevated card layer (inner stat boxes, panels within cards) ───────────── */
 .card-elevated {
-  background: #0f1e30;
-  border: 1px solid #1a2d44;
-  border-radius: 8px;
+  background: #0c121c;
+  border: 1px solid rgba(216, 235, 252, 0.1);
+  border-radius: 12px;
 }
 
 /* ── Section divider accent ────────────────────────────────────────────────── */

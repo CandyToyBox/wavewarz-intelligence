@@ -4,14 +4,19 @@ import { resolveAudiusTrack } from '@/lib/audius'
 import { getLiveSolPrice, solToUsd } from '@/lib/coingecko'
 import { formatSol } from '@/lib/wavewarz-math'
 import { getArtistStats, isUUID, type Battle } from '@/lib/artist-stats'
-import { Badge } from '@/components/ui/badge'
+import { ArtistPlate } from '@/components/wavid/artist-plate'
+import { getArtistWavId } from '@/lib/wavid/artist-wavid'
+import { CdCase } from '@/components/cd-case'
+import { ShareStatz } from '@/components/share-statz'
+import { shareOgImages } from '@/lib/share-options'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
 // ─── OG Metadata ──────────────────────────────────────────────────────────────
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ id: string }>; searchParams?: Promise<Record<string, string | string[] | undefined>> }): Promise<Metadata> {
   const { id } = await params
+  const { card } = (await searchParams) ?? {}
   const stats = await getArtistStats(id)
   if (!stats) return { title: 'Artist Not Found — WaveWarZ' }
   return {
@@ -20,8 +25,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     openGraph: {
       title: `${stats.displayName} — WaveWarZ`,
       description: `${stats.wins}W ${stats.losses}L · ${formatSol(stats.totalEarningsSol)} SOL earned`,
-      images: stats.pfpUrl ? [stats.pfpUrl] : [],
+      images: shareOgImages('artist', id, card),
     },
+    twitter: { card: 'summary_large_image', images: shareOgImages('artist', id, card).map(i => i.url) },
   }
 }
 
@@ -35,6 +41,7 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
   ])
 
   if (!stats) notFound()
+  const wavid = await getArtistWavId({ audiusHandle: stats.audiusHandle, wallets: stats.allWallets, name: stats.displayName })
 
   const totalUsd = stats.totalEarningsSol * solPrice
   const spotifyStreams = Math.floor(totalUsd / 0.003)
@@ -49,212 +56,44 @@ export default async function ArtistProfilePage({ params }: { params: Promise<{ 
   const solscanUrl = `https://solscan.io/account/${stats.wallet}`
 
   return (
-    <div className="space-y-8 max-w-4xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto">
 
-      {/* ── PLAYER CARD (the shareable hero) ── */}
-      <div className="relative rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] overflow-hidden shadow-2xl shadow-[#95fe7c]/5">
+      {/* ── ARTIST PLATE: the Wave ID is the hero ── */}
+      <ArtistPlate
+        name={stats.displayName}
+        pfpUrl={stats.pfpUrl}
+        wavid={wavid}
+        action={<ShareStatz kind="artist" id={id} />}
+        meta={hasRealWallet
+          ? <><span>{stats.wallet.slice(0, 4)}…{stats.wallet.slice(-4)}</span><a href={solscanUrl} target="_blank" rel="noreferrer">Verify on Solscan</a></>
+          : <span>Sub-profile</span>}
+        social={<>
+          {stats.twitterHandle && <SocialIcon href={`https://x.com/${stats.twitterHandle}`} label="X"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></SocialIcon>}
+          {stats.audiusHandle && <SocialIcon href={`https://audius.co/${stats.audiusHandle}`} label="Audius"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.5 14.5L8 12l7.5-4.5v9z"/></SocialIcon>}
+          {stats.youtubeUrl && <SocialIcon href={stats.youtubeUrl} label="YouTube"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></SocialIcon>}
+          {stats.instagramHandle && <SocialIcon href={`https://instagram.com/${stats.instagramHandle}`} label="Instagram"><path d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2zm0 3.6a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9z"/></SocialIcon>}
+          {stats.tiktokHandle && <SocialIcon href={`https://tiktok.com/@${stats.tiktokHandle}`} label="TikTok"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></SocialIcon>}
+        </>}
+        record={[stats.wins, stats.losses]}
+        recordSub={[
+          winRate === null ? 'First battle coming up' : winRate === 100 ? 'Undefeated' : `${winRate}% win rate`,
+          (stats.mainWins + stats.mainLosses) > 0 ? `Main ${stats.mainWins}-${stats.mainLosses}` : null,
+          (stats.quickWins + stats.quickLosses) > 0 ? `Quick ${stats.quickWins}-${stats.quickLosses}` : null,
+        ].filter(Boolean).join(' · ')}
+        stats={[
+          { k: 'Earned on WaveWarZ', v: formatSol(stats.totalEarningsSol), unit: 'SOL', sub: solToUsd(stats.totalEarningsSol, solPrice), hi: true },
+          { k: 'Traded on their music', v: formatSol(stats.totalVolumeSol), unit: 'SOL', sub: solToUsd(stats.totalVolumeSol, solPrice) },
+          { k: 'From trades', v: formatSol(stats.tradingFeesSol), unit: 'SOL', sub: '1% of every trade' },
+          { k: 'From settlements', v: formatSol(stats.settlementBonusSol), unit: 'SOL', sub: '5% win · 2% loss' },
+        ]}
+        foot={<span>
+          About <b>{spotifyStreams.toLocaleString('en-US')}</b> Spotify streams at $0.003 each, paid straight to the artist&apos;s wallet · 1 SOL = {solToUsd(1, solPrice)}
+        </span>}
+      />
 
-        {/* Top accent bar */}
-        <div className="h-1 w-full bg-gradient-to-r from-[#95fe7c] via-[#7ec1fb] to-[#95fe7c]" />
-
-        <div className="p-8">
-          {/* Header row */}
-          <div className="flex items-start justify-between gap-6 mb-8">
-
-            {/* PFP + Identity */}
-            <div className="flex items-center gap-5">
-              <div className="relative">
-                {stats.pfpUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={stats.pfpUrl}
-                    alt={stats.displayName}
-                    className="w-20 h-20 rounded-full border-2 border-[#95fe7c]/40 object-cover"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-full border-2 border-[#95fe7c]/40 bg-[#1f2937] flex items-center justify-center">
-                    <span className="text-3xl font-rajdhani font-bold text-[#95fe7c]">
-                      {stats.displayName.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                )}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#95fe7c] rounded-full border-2 border-[#0d1321]" />
-              </div>
-
-              <div>
-                <h1 className="text-4xl font-rajdhani font-bold text-white tracking-wide leading-none">
-                  {stats.displayName}
-                </h1>
-                {hasRealWallet ? (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {stats.wallet.slice(0, 6)}...{stats.wallet.slice(-4)}
-                    </span>
-                    <a
-                      href={solscanUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] text-[#7ec1fb] hover:underline font-mono"
-                    >
-                      Verify on Solscan ↗
-                    </a>
-                  </div>
-                ) : (
-                  <p className="text-[10px] text-muted-foreground mt-2 uppercase tracking-widest">Sub-profile</p>
-                )}
-                {/* Social icons */}
-                <div className="flex items-center gap-2 mt-2">
-                  {stats.twitterHandle && (
-                    <SocialIcon href={`https://x.com/${stats.twitterHandle}`} label="X / Twitter" color="#989898">
-                      {/* X logo */}
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </SocialIcon>
-                  )}
-                  {stats.audiusHandle && (
-                    <SocialIcon href={`https://audius.co/${stats.audiusHandle}`} label="Audius" color="#7ec1fb">
-                      {/* Audius logo mark */}
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.5 14.5L8 12l7.5-4.5v9z"/></svg>
-                    </SocialIcon>
-                  )}
-                  {stats.youtubeUrl && (
-                    <SocialIcon href={stats.youtubeUrl} label="YouTube" color="#ff4444">
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                    </SocialIcon>
-                  )}
-                  {stats.instagramHandle && (
-                    <SocialIcon href={`https://instagram.com/${stats.instagramHandle}`} label="Instagram" color="#e1306c">
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-                    </SocialIcon>
-                  )}
-                  {stats.tiktokHandle && (
-                    <SocialIcon href={`https://tiktok.com/@${stats.tiktokHandle}`} label="TikTok" color="#ffffff">
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
-                    </SocialIcon>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* W/L Record badge */}
-            <div className="text-right shrink-0 space-y-2">
-              {/* Overall record */}
-              <div className="inline-flex items-center gap-2 bg-[#0d1321] border border-border rounded-xl px-5 py-3">
-                <div className="text-center">
-                  <p className="text-3xl font-rajdhani font-bold text-[#95fe7c]">{stats.wins}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Wins</p>
-                </div>
-                <div className="text-2xl text-muted-foreground font-light mx-1">—</div>
-                <div className="text-center">
-                  <p className="text-3xl font-rajdhani font-bold text-red-400">{stats.losses}</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Losses</p>
-                </div>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {winRate === null
-                  ? 'First win incoming'
-                  : winRate === 100
-                  ? 'Undefeated'
-                  : `${winRate}% overall`}
-              </p>
-              {/* Per-category breakdown */}
-              <div className="flex gap-3 justify-end text-[11px]">
-                {(stats.mainWins + stats.mainLosses) > 0 && (
-                  <span className="text-muted-foreground">
-                    <span className="text-white font-bold font-rajdhani">{stats.mainWins}W–{stats.mainLosses}L</span>
-                    {' '}Main
-                    {(stats.mainWins + stats.mainLosses) > 0 && (
-                      <span className="text-[#95fe7c]/70 ml-1">
-                        {Math.round(stats.mainWins / (stats.mainWins + stats.mainLosses) * 100)}%
-                      </span>
-                    )}
-                  </span>
-                )}
-                {(stats.quickWins + stats.quickLosses) > 0 && (
-                  <span className="text-muted-foreground">
-                    <span className="text-white font-bold font-rajdhani">{stats.quickWins}W–{stats.quickLosses}L</span>
-                    {' '}Quick
-                    <span className="text-[#7ec1fb]/70 ml-1">
-                      {Math.round(stats.quickWins / (stats.quickWins + stats.quickLosses) * 100)}%
-                    </span>
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Bio */}
-          {stats.bio && (
-            <p className="text-sm text-muted-foreground mb-6 border-l-2 border-[#95fe7c]/40 pl-4 italic">
-              {stats.bio}
-            </p>
-          )}
-
-          {/* Stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <StatBox
-              label="Total Volume"
-              value={`${formatSol(stats.totalVolumeSol)} SOL`}
-              sub={solToUsd(stats.totalVolumeSol, solPrice)}
-            />
-            <StatBox
-              label="Career Earnings"
-              value={`${formatSol(stats.totalEarningsSol)} SOL`}
-              sub={solToUsd(stats.totalEarningsSol, solPrice)}
-              highlight
-            />
-            <StatBox
-              label="Trading Fees"
-              value={`${formatSol(stats.tradingFeesSol)} SOL`}
-              sub="1% per trade"
-            />
-            <StatBox
-              label="Settlement Bonuses"
-              value={`${formatSol(stats.settlementBonusSol)} SOL`}
-              sub="5% win / 2% loss"
-            />
-          </div>
-
-          {/* Spotify equivalency */}
-          <div className="rounded-xl bg-[#0d1321] border border-[#7ec1fb]/20 p-4 flex items-center justify-between">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-1">
-                Spotify Stream Equivalent
-              </p>
-              <p className="text-2xl font-rajdhani font-bold text-[#7ec1fb]">
-                {spotifyStreams.toLocaleString()} streams
-              </p>
-              {/* Fix #1: tooltip explaining the $0.003 benchmark */}
-              <p className="text-xs text-muted-foreground mt-1">
-                {solToUsd(stats.totalEarningsSol, solPrice)} ÷ $0.003 per stream
-                <span
-                  title="Based on average Spotify per-stream payout rates (~$0.003–$0.005). WaveWarZ pays artists instantly and automatically — no label, no middleman."
-                  className="ml-1 inline-flex items-center justify-center w-3.5 h-3.5 rounded-full border border-muted-foreground/40 text-[9px] text-muted-foreground cursor-help align-middle"
-                >
-                  ?
-                </span>
-              </p>
-            </div>
-            <div className="text-right">
-              <Badge className="bg-[#95fe7c]/10 text-[#95fe7c] border border-[#95fe7c]/30 text-xs">
-                INSTANT AUTOMATIC PAYOUT
-              </Badge>
-              <p className="text-[10px] text-muted-foreground mt-2">
-                Paid directly to artist wallet
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom accent */}
-        <div className="px-8 py-3 bg-[#0d1321]/60 border-t border-border flex items-center justify-between">
-          <span className="text-[10px] text-muted-foreground font-mono tracking-widest uppercase">
-            WaveWarZ Intelligence · Solana Mainnet
-          </span>
-          <span className="text-[10px] text-muted-foreground font-mono">
-            1 SOL = {solToUsd(1, solPrice)}
-          </span>
-        </div>
-      </div>
+      {stats.bio && (
+        <p className="max-w-[68ch] text-[15px] leading-relaxed text-[#c3cfdc]">{stats.bio}</p>
+      )}
 
       {/* ── PAY STUB ── */}
       <section>
@@ -391,7 +230,7 @@ function StatBox({ label, value, sub, highlight = false }: {
   label: string; value: string; sub?: string; highlight?: boolean
 }) {
   return (
-    <div className="rounded-xl border border-border bg-[#0d1321] p-4">
+    <div className="rounded-xl border border-border bg-[#0c121c] p-4">
       <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-1">{label}</p>
       <p className={`text-lg font-rajdhani font-bold ${highlight ? 'text-[#95fe7c]' : 'text-white'}`}>
         {value}
@@ -402,19 +241,10 @@ function StatBox({ label, value, sub, highlight = false }: {
   )
 }
 
-function SocialIcon({ href, label, color, children }: {
-  href: string; label: string; color: string; children: React.ReactNode
-}) {
+function SocialIcon({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      title={label}
-      style={{ color }}
-      className="w-8 h-8 rounded-lg border border-border bg-[#0d1321] flex items-center justify-center hover:border-current/50 hover:bg-white/5 transition-colors opacity-70 hover:opacity-100"
-    >
-      {children}
+    <a href={href} target="_blank" rel="noreferrer" aria-label={label} title={label}>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{children}</svg>
     </a>
   )
 }
@@ -486,34 +316,15 @@ async function QuickBattleSongTable({ battles, allWallets, solPrice }: {
           {songs.map((s, i) => {
             const total = s.wins + s.losses
             const rate = total > 0 ? Math.round(s.wins / total * 100) : 0
-            const initial = s.title.charAt(0).toUpperCase()
             const artUrl = artByKey.get(songKeys[i]) ?? null
             return (
               <tr key={i} className="border-b border-border/50 hover:bg-white/[0.02] transition-colors">
                 <td className="px-4 py-3 text-xs text-muted-foreground">{i + 1}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    {/* Album art — resolved via song_registry/Audius, falls back to an initial */}
-                    {s.musicLink ? (
-                      <a href={s.musicLink} target="_blank" rel="noreferrer"
-                        className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#7ec1fb]/20 to-[#7ec1fb]/5 border border-[#7ec1fb]/20 flex items-center justify-center shrink-0 hover:border-[#7ec1fb]/50 transition-colors overflow-hidden">
-                        {artUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={artUrl} alt={s.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="font-rajdhani font-bold text-[#7ec1fb] text-sm">{initial}</span>
-                        )}
-                      </a>
-                    ) : (
-                      <div className="w-9 h-9 rounded-lg bg-[#1f2937] border border-border flex items-center justify-center shrink-0 overflow-hidden">
-                        {artUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={artUrl} alt={s.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="font-rajdhani font-bold text-muted-foreground text-sm">{initial}</span>
-                        )}
-                      </div>
-                    )}
+                    {s.musicLink
+                      ? <a href={s.musicLink} target="_blank" rel="noreferrer" className="block w-11 shrink-0" aria-label={`${s.title} on Audius`}><CdCase src={artUrl} /></a>
+                      : <span className="block w-11 shrink-0"><CdCase src={artUrl} /></span>}
                     <div>
                       {s.musicLink ? (
                         <a href={s.musicLink} target="_blank" rel="noreferrer"

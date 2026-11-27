@@ -70,7 +70,7 @@ function EventForm({
             name="title"
             defaultValue={initial?.title ?? ''}
             required
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
             placeholder="e.g. Main Event — IKE vs Rival"
           />
         </div>
@@ -79,7 +79,7 @@ function EventForm({
           <select
             name="event_type"
             defaultValue={initial?.event_type ?? 'BATTLE'}
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
           >
             {EVENT_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
@@ -91,7 +91,7 @@ function EventForm({
             name="event_date"
             defaultValue={initial?.event_date ?? ''}
             required
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]"
           />
         </div>
         <div>
@@ -99,7 +99,7 @@ function EventForm({
           <input
             name="event_time"
             defaultValue={initial?.event_time ?? ''}
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
             placeholder="8:00 PM EST"
           />
         </div>
@@ -108,7 +108,7 @@ function EventForm({
           <input
             name="location_or_link"
             defaultValue={initial?.location_or_link ?? ''}
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb]"
             placeholder="https://x.com/wavewarz or IRL address"
           />
         </div>
@@ -118,7 +118,7 @@ function EventForm({
             name="description"
             defaultValue={initial?.description ?? ''}
             rows={2}
-            className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb] resize-none"
+            className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/50 focus:outline-none focus:border-[#7ec1fb] resize-none"
             placeholder="Optional event description"
           />
         </div>

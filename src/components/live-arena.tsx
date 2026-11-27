@@ -87,21 +87,21 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
         </span>
       </div>
 
-      <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 items-center rounded-[26px] border border-[#7ec1fb]/[.14] bg-gradient-to-b from-[#111a2c]/85 to-[#0d1321]/60 p-6 md:p-10 shadow-[0_30px_90px_rgba(0,0,0,.5)] overflow-hidden">
+      <div className="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 items-center rounded-[26px] border border-[#7ec1fb]/[.14] bg-gradient-to-b from-[#111a2c]/85 to-[#070a10]/60 p-6 md:p-10 shadow-[0_30px_90px_rgba(0,0,0,.5)] overflow-hidden">
         <div className="pointer-events-none absolute -top-[60%] left-[30%] w-2/5 h-[220%] rotate-[18deg] bg-gradient-to-r from-transparent via-white/[.05] to-transparent" />
 
         {/* Side A */}
         <div className="flex flex-col gap-3 min-w-0 group">
           <div className="relative w-full max-w-[340px] aspect-square rounded-[20px] overflow-hidden border border-[#7ec1fb]/30 shadow-[0_24px_60px_rgba(0,0,0,.55)] -rotate-[2.2deg] group-hover:rotate-0 transition-transform duration-500 ease-[cubic-bezier(.34,1.56,.64,1)]">
-            <span className="absolute top-3 left-3 z-10 font-mono text-[.62rem] font-bold tracking-[.2em] bg-[#0d1321]/85 border border-[#7ec1fb]/40 text-[#7ec1fb] px-2.5 py-1 rounded-lg">SIDE A</span>
+            <span className="absolute top-3 left-3 z-10 font-mono text-[.62rem] font-bold tracking-[.2em] bg-[#0c121c]/85 border border-[#7ec1fb]/40 text-[#7ec1fb] px-2.5 py-1 rounded-lg">SIDE A</span>
             {data.side1.artUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={data.side1.artUrl} alt={`${data.side1.name} album art`} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0f1826]" />
+              <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0c121c]" />
             )}
             {activeSide === 'side1' && (
-              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#080d17]/85">
+              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#070a10]/85">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <span key={i} className="flex-1 bg-[#7ec1fb] rounded-t-sm" style={{ height: '18%', opacity: .9 }} />
                 ))}
@@ -133,9 +133,9 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
           </div>
           <div className="font-rajdhani font-bold text-2xl text-white" style={{ textShadow: '0 0 18px rgba(218,236,253,.5)' }}>VS</div>
           <div className="w-full max-w-[260px]">
-            <div className="h-3 rounded-full overflow-hidden flex border border-white/[.18] bg-[#080d17]">
-              <div className="h-full bg-gradient-to-r from-[#4f97d8] to-[#7ec1fb] transition-all duration-1000" style={{ width: `${pct1}%` }} />
-              <div className="h-full flex-1 bg-gradient-to-r from-[#95fe7c] to-[#5fdf49]" />
+            <div className="h-3 rounded-full overflow-hidden flex border border-white/[.18] bg-[#070a10]">
+              <div className="h-full bg-[#7ec1fb] transition-all duration-1000" style={{ width: `${pct1}%` }} />
+              <div className="h-full flex-1 bg-[#95fe7c]" />
             </div>
             <div className="flex justify-between font-mono text-[.66rem] text-muted-foreground mt-2 tabular-nums">
               <span className="text-[#7ec1fb]">{data.side1.poolSol.toFixed(2)} SOL</span>
@@ -153,15 +153,15 @@ export function LiveArena({ data }: { data: LiveArenaData }) {
         {/* Side B */}
         <div className="flex flex-col gap-3 min-w-0 items-end text-right group">
           <div className="relative w-full max-w-[340px] aspect-square rounded-[20px] overflow-hidden border border-[#95fe7c]/35 shadow-[0_24px_60px_rgba(0,0,0,.55)] rotate-[2.2deg] group-hover:rotate-0 transition-transform duration-500 ease-[cubic-bezier(.34,1.56,.64,1)]">
-            <span className="absolute top-3 right-3 z-10 font-mono text-[.62rem] font-bold tracking-[.2em] bg-[#0d1321]/85 border border-[#95fe7c]/40 text-[#95fe7c] px-2.5 py-1 rounded-lg">SIDE B</span>
+            <span className="absolute top-3 right-3 z-10 font-mono text-[.62rem] font-bold tracking-[.2em] bg-[#0c121c]/85 border border-[#95fe7c]/40 text-[#95fe7c] px-2.5 py-1 rounded-lg">SIDE B</span>
             {data.side2.artUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={data.side2.artUrl} alt={`${data.side2.name} album art`} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0f1826]" />
+              <div className="w-full h-full bg-gradient-to-br from-[#1a2740] to-[#0c121c]" />
             )}
             {activeSide === 'side2' && (
-              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#080d17]/85">
+              <div className="ww-eq absolute left-0 right-0 bottom-0 h-14 flex items-end gap-[3px] px-3.5 pb-2.5 bg-gradient-to-t from-[#08131700] to-[#070a10]/85">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <span key={i} className="flex-1 bg-[#95fe7c] rounded-t-sm" style={{ height: '18%', opacity: .9 }} />
                 ))}

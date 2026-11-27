@@ -112,7 +112,7 @@ export function AssetManager({
             <select
               value={form.category}
               onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             >
               {categories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -122,7 +122,7 @@ export function AssetManager({
             <select
               value={form.franchise}
               onChange={e => setForm(f => ({ ...f, franchise: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             >
               {FRANCHISES.map(c => <option key={c} value={c}>{c || '—'}</option>)}
             </select>
@@ -132,7 +132,7 @@ export function AssetManager({
             <input
               value={form.title}
               onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             />
           </label>
           <label className="text-xs text-muted-foreground md:col-span-2">
@@ -140,7 +140,7 @@ export function AssetManager({
             <input
               value={form.url}
               onChange={e => setForm(f => ({ ...f, url: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             />
           </label>
           <label className="text-xs text-muted-foreground md:col-span-2">
@@ -149,7 +149,7 @@ export function AssetManager({
               value={form.why_added}
               onChange={e => setForm(f => ({ ...f, why_added: e.target.value }))}
               rows={2}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             />
           </label>
           <div className="md:col-span-2">
@@ -177,7 +177,7 @@ export function AssetManager({
             <select
               value={form.asset_type}
               onChange={e => setForm(f => ({ ...f, asset_type: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             >
               {ASSET_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
@@ -187,7 +187,7 @@ export function AssetManager({
             <input
               value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-              className="mt-1 w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white"
+              className="mt-1 w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white"
             />
           </label>
           <div className="md:col-span-2 flex items-center gap-3">

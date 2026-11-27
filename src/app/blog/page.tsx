@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Blog — WaveWarZ Intelligence',
+  title: 'Blog',
   description: 'Battle recaps and news from WaveWarZ, published on Paragraph.',
 }
 

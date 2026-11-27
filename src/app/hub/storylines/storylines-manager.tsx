@@ -140,7 +140,7 @@ function Editor({ draft, setDraft, artists, types, pending, onCancel, onSave }: 
   onSave: () => void
 }) {
   const set = (patch: Partial<Storyline>) => setDraft(d => ({ ...d, ...patch }))
-  const input = 'w-full rounded-md bg-[#0d1321] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
+  const input = 'w-full rounded-md bg-[#0c121c] border border-border px-3 py-2 text-sm text-white focus:outline-none focus:border-[#7ec1fb]'
   return (
     <div className="rounded-xl border border-[#7ec1fb]/30 bg-[#111827] p-4 grid gap-3 md:grid-cols-2">
       <input placeholder="Title" value={draft.title} onChange={e => set({ title: e.target.value })} className={`${input} md:col-span-2`} />

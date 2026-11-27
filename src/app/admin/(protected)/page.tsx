@@ -189,7 +189,7 @@ export default async function AdminPage() {
 
       {/* ── REVENUE (always visible at top) ── */}
       <section>
-        <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#0d1321] via-[#111827] to-[#0d1321] p-6 mb-4">
+        <div className="rounded-2xl border border-[#95fe7c]/30 bg-gradient-to-br from-[#070a10] via-[#111827] to-[#070a10] p-6 mb-4">
           <div className="flex items-end justify-between">
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-widest mb-2">Total Platform Revenue (All Time)</p>
@@ -271,7 +271,7 @@ function RevenueCard({ label, value, usd, detail, color }: {
 
 function FeeRef({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
-    <div className="bg-[#0d1321] rounded-lg p-3">
+    <div className="bg-[#0c121c] rounded-lg p-3">
       <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
       <p className="font-mono text-white font-bold text-xs">{value}</p>
       {note && <p className="text-[9px] text-muted-foreground/60 mt-0.5">{note}</p>}

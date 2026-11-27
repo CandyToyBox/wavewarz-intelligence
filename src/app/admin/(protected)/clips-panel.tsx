@@ -389,7 +389,7 @@ function ClipCard({
                         }
                         rows={p === 'twitter' ? 3 : 4}
                         placeholder={`${PLATFORM_LABELS[p]} caption…`}
-                        className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-[#7ec1fb]/40 resize-none transition-colors font-mono leading-relaxed"
+                        className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2 text-sm text-white placeholder:text-muted-foreground/40 focus:outline-none focus:border-[#7ec1fb]/40 resize-none transition-colors font-mono leading-relaxed"
                       />
                       <div className="flex justify-end mt-0.5">
                         <span
@@ -448,7 +448,7 @@ function ClipCard({
                 value={localSchedule}
                 onChange={e => setLocalSchedule(e.target.value)}
                 min={new Date().toISOString().slice(0, 16)}
-                className="w-full bg-[#0d1321] border border-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#7ec1fb]/40 transition-colors"
+                className="w-full bg-[#0c121c] border border-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#7ec1fb]/40 transition-colors"
               />
               <p className="text-[10px] text-muted-foreground/40 mt-1.5">
                 Leave empty to schedule 1 hour from now.

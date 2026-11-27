@@ -14,7 +14,7 @@ export function TraderLookup() {
   }
 
   return (
-    <div className="rounded-xl border border-[#7ec1fb]/25 bg-[#0d1321] p-4">
+    <div className="rounded-xl border border-[#7ec1fb]/25 bg-[#0c121c] p-4">
       <p className="text-[10px] font-bold uppercase tracking-widest text-[#7ec1fb] mb-3">
         Look Up Your Trading Stats
       </p>
@@ -36,7 +36,7 @@ export function TraderLookup() {
         </button>
       </div>
       <p className="text-[10px] text-muted-foreground mt-2">
-        Pulls your full trade history, battle record, win rate, and net P&L from the WaveWarZ database.
+        Pulls your full trade history, battle record, and net SOL from the WaveWarZ database.
       </p>
     </div>
   )

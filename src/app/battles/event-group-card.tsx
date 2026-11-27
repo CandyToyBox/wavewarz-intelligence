@@ -91,7 +91,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
   const cfg = TYPE_CONFIG[data.eventType]
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-[#1a2d44] transition-colors">
+    <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-[rgba(216,235,252,0.24)] transition-colors">
       <div className="flex flex-col md:flex-row">
 
         {/* ── LANDSCAPE IMAGE ── */}
@@ -103,7 +103,7 @@ export function EventGroupCard({ data }: { data: EventGroupCardData }) {
             fallbackText={data.artist1Name}
           />
           {data.imageUrl && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#04080f]/70 hidden md:block" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/70 hidden md:block" />
           )}
         </div>
 
